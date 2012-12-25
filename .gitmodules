@@ -1,0 +1,18 @@
+[submodule "lib/clojure-mode"]
+	path = lib/clojure-mode
+	url = https://github.com/technomancy/clojure-mode
+[submodule "lib/smex"]
+	path = lib/smex
+	url = https://github.com/nonsequitur/smex
+[submodule "lib/ac-nrepl"]
+	path = lib/ac-nrepl
+	url = https://github.com/purcell/ac-nrepl
+[submodule "lib/nrepl"]
+	path = lib/nrepl
+	url = https://github.com/kingtim/nrepl.el
+[submodule "lib/auto-complete"]
+	path = lib/auto-complete
+	url = https://github.com/auto-complete/auto-complete
+[submodule "lib/popup"]
+	path = lib/popup
+	url = https://github.com/auto-complete/popup-el
