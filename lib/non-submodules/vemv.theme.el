@@ -2,18 +2,30 @@
 
 (provide 'vemv.theme)
 
+(set-face-background 'comint-highlight-prompt "#4D575F")
+(set-face-foreground 'comint-highlight-prompt "white")
+
 (deftheme vemv "")
 
+(comm
+
+`(escape-glyph-face ((t (:foreground ,zenburn-red))))
+`(fringe ((t (:foreground ,zenburn-fg :background ,zenburn-bg+1))))
+`(header-line ((t (:foreground ,zenburn-yellow
+							  :background ,zenburn-bg-1
+							  :box (:line-width -1 :style released-button)))))
+`(highlight ((t (:background ,zenburn-bg-05))))
+
+ `(header-line ((t (:foreground "#009900"
+							  :background "000000"
+							  :box (:line-width -1 :style released-button)))))
+
+)
+   
 (custom-theme-set-faces 'vemv
 
      '(default ((t (:background "#4D575F" :foreground "#F5F5F5"))))
-   `(cursor ((t (:foreground ,zenburn-fg :background "white"))))
-   `(escape-glyph-face ((t (:foreground ,zenburn-red))))
-   `(fringe ((t (:foreground ,zenburn-fg :background ,zenburn-bg+1))))
-   `(header-line ((t (:foreground ,zenburn-yellow
-                                  :background ,zenburn-bg-1
-                                  :box (:line-width -1 :style released-button)))))
-   `(highlight ((t (:background ,zenburn-bg-05))))
+	 '(cursor ((t (:foreground "#4D575F" :background "#EAEAEA"))))
      '(blue ((t (:foreground "blue"))))
      '(bold ((t (:bold t))))
      '(bold-italic ((t (:bold t :italc t))))
@@ -68,11 +80,11 @@
 
      '(eval-sexp-fu-flash ((t (:background "grey15" :foreground "DeepPink3"))))
 
-     '(ac-completion-face ((t (:foreground "darkgray" :underline t))))
-     '(ac-candidate-face ((t (:background "#A2A2A2" :foreground "black"))))
-     '(ac-selection-face ((t (:background "deep pink" :foreground "black"))))
-     '(popup-isearch-match ((t (:background "black" :foreground "deep pink"))))
-     '(popup-tip-face ((t (:background "#333333" :foreground "whitepnpnn"))))
+     '(ac-completion-face ((t (:foreground "darkgray" :underline t :slant normal :weight normal))))
+     '(ac-candidate-face ((t (:background "#A2A2A2" :foreground "black" :slant normal :weight normal))))
+     '(ac-selection-face ((t (:background "deep pink" :foreground "black" :slant normal :weight normal))))
+     '(popup-isearch-match ((t (:background "black" :foreground "deep pink" :slant normal :weight normal))))
+     '(popup-tip-face ((t (:background "#333333" :foreground "whitepnpnn" :slant normal :weight normal))))
      '(popup-scroll-bar-foreground-face ((t (:background "#0A0A0A"))))
      '(popup-scroll-bar-background-face ((t (:background "#333333"))))
 

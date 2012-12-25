@@ -148,12 +148,11 @@ Finally, go back to sender window."
                      (vemv/sexpr-content backward?))))
     (if (equal where :emacs)
         (eval (read content))
-        (let ((sender (buffer-name))
-              (sender-number (vemv/selected-window-number)))
+        (let ((sender (selected-window)))
           (comm window-number-select (if (equal where :shell) 2 2)) ; 4 3
           (if (equal where :shell) (select-window vemv/repl2) (select-window vemv/repl1))
           (switch-to-buffer (case where
-                              (:slime (slime-output-buffer))
+                              (:slime "*nrepl*")
                               (:ielm "*ielm*")
                               (:shell "*shell*")
                               (:cljs (if cljs-launched
@@ -182,7 +181,7 @@ Finally, go back to sender window."
           (insert content)
 
           (case where
-            (:slime (slime-repl-return))
+            (:slime (nrepl-return))
             (:ielm (ielm-return))
             (:shell (comint-send-input))
             (:cljs (if cljs-launched (comint-send-input))))
@@ -191,7 +190,7 @@ Finally, go back to sender window."
 
           (pop kill-ring)
           (end-of-buffer)
-          (window-number-select sender-number)))))
+          (select-window sender)))))
 
 (defun vemv/exit-cljs () ; XXX coupled to layout
   "Closes the ClojureScript processes. Meant to be called interactively."

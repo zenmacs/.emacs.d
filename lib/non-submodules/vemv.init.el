@@ -1,4 +1,6 @@
 (show-paren-mode 1)      
+(cua-mode 1)
+(ido-mode 1)
 
 (require 'nrepl)
 (require 'popup)
@@ -16,13 +18,13 @@
 (require 'vemv.theme)
 (provide 'vemv.init)
 
-(comm delay (argless (vemv/color-theme)))
-
 (eval-after-load "auto-complete"
   '(add-to-list 'ac-modes 'nrepl-mode))
 
 (add-hook 'clojure-mode-hook 'enable-paredit-mode)
+(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 (comm add-hook 'clojure-mode-hook 'auto-complete-mode)
+(add-hook 'emacs-lisp-mode-hook 'auto-complete-mode)
 
 (comm  
 (add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
@@ -50,9 +52,10 @@
 
 (add-hook 'nrepl-connected-hook (argless (delay (argless ; apparently needed only on the first run!
                                                  (delete-window)
-                                                 (vemv/next-window)
-                                                 (switch-to-buffer "*nrepl*")
-                                                 (vemv/previous-window)))))
+                                                 (let ((w (selected-window)))
+                                                   (select-window vemv/repl1)
+                                                   (switch-to-buffer "*nrepl*")
+                                                   (select-window w))))))
 
 (add-hook 'slime-connected-hook (argless (delay (argless (kill-buffer "*slime-events*"))
                                                 5)))
@@ -121,14 +124,16 @@
 ;; opens the latest file
 (recentf-mode 1)
 (delay
- (argless (if (file-readable-p recentf-save-file)
+ (argless
+     (switch-to-buffer "*scratch*") (erase-buffer)
+     (if (file-readable-p recentf-save-file)
               (if (pos? (length recentf-list))
                   (let ((head (car recentf-list)))
                     (ignore-errors (vemv/open
                                     (if (vemv/ends-with head ".ido.last")
                                         (second recentf-list)
                                         head)))))))
- 4)
+ 2)
 
 ; (cd "~/clj/src/")
 
@@ -171,7 +176,5 @@
     (third binding)))
 
 ; customize-group tree-widget: tree-widget-image-enable
-
-(cua-mode 1)
 
 ;(nrepl-jack-in)
