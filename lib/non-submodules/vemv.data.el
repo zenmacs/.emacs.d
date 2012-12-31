@@ -10,11 +10,13 @@
 
 (setq vemv/tree-dirs
       '(:clj "~/clj/src"
-       :cljs "~/clj/src-cljs"
-       :soundcloud-cljs "~/Development/needleforsoundcloud/frontend/cljs/needle"
-       :ellipse "~/Development/ellipse/src/ellipse"
-       :emacs "~/.emacs.d/packs/user/user-pack"
-       :haskell "~/Development/vemv/src/haskell"
+        :lib "~/.emacs.d/lib"
+        :non "~/.emacs.d/lib/non-submodules"
+       ;:cljs "~/clj/src-cljs"
+       ;:soundcloud-cljs "~/Development/needleforsoundcloud/frontend/cljs/needle"
+       ;:ellipse "~/Development/ellipse/src/ellipse"
+       ;:emacs "~/.emacs.d/packs/user/user-pack"
+       ;:haskell "~/Development/vemv/src/haskell"
        :loudlist "~/loudlist"))
 (setq vemv/headers (vemv/hash-map
 
@@ -52,13 +54,14 @@
 (setq vemv/key-bindings-to-dummy '([mouse-6] [mouse-7] [double-mouse-6] [double-mouse-7] [triple-mouse-6] [triple-mouse-7]))
 
 (setq vemv/local-key-bindings
-      (list clojure-mode-map  "C-`" 'vemv/slime-popup-documentation
-            clojure-mode-map  "M-`" 'vemv/slime-window-documentation
+      (list clojure-mode-map  "C-`" 'nrepl-doc
+            clojure-mode-map  "M-`" 'nrepl-src
             clojure-mode-map  "C-e" (argless (vemv/send :slime))
             clojure-mode-map  "M-e" (argless (vemv/send :slime :backward))
             clojure-mode-map  "C-," 'nrepl-set-ns
             emacs-lisp-mode-map "C-`" 'vemv/elisp-popup-documentation
             emacs-lisp-mode-map "M-`" 'vemv/elisp-window-documentation
+	    emacs-lisp-mode-map "C-z" 'undo-tree-undo
             haskell-mode-map  "C-e" (argless (vemv/send :shell))
             haskell-mode-map  "M-e" (argless (vemv/send :shell :backward))
             haskell-mode-map "RET" (argless (insert "\n"))
@@ -128,7 +131,7 @@
             [f10] 'vemv/ensure-layout
             [f11] 'vemv/maximize
             "C-;" 'toggle-truncate-lines
-            "C-&" (argless (vemv/open (concat "/home/vemv/.emacs.d/packs/user/user-pack/lib/"
+            "C-&" (argless (vemv/open (concat "~/.emacs.d/lib/non-submodules/"
                                               (ido-completing-read "Open: " vemv/emacs-files))))
             "C-*" (argless (insert (gethash (vemv/string-to-keyword (ido-completing-read "Insert header: " '("clj" "web")))
                                             vemv/headers)))

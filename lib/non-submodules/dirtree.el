@@ -188,7 +188,7 @@ With prefix arguement select `dirtree-buffer'"
   "Open file in other window"
   (let ((file (widget-get node :file)))
     (and file
-         (window-number-select 2)
+         (select-window vemv/main_window)
          (vemv/open file))))
 
 (defun dirtree-display ()

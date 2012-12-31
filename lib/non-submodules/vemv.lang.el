@@ -149,8 +149,7 @@ Finally, go back to sender window."
     (if (equal where :emacs)
         (eval (read content))
         (let ((sender (selected-window)))
-          (comm window-number-select (if (equal where :shell) 2 2)) ; 4 3
-          (if (equal where :shell) (select-window vemv/repl2) (select-window vemv/repl1))
+          (if (or (equal where :ielm) (equal where :shell)) (select-window vemv/repl2) (select-window vemv/repl1))
           (switch-to-buffer (case where
                               (:slime "*nrepl*")
                               (:ielm "*ielm*")

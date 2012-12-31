@@ -1,7 +1,11 @@
-(show-paren-mode 1)      
-(cua-mode 1)
-(ido-mode 1)
+(setq lexical-binding t)
 
+(show-paren-mode 1)
+(recentf-mode 1)
+(ido-mode 1)
+(cua-mode 1)
+
+(require 'saveplace)
 (require 'nrepl)
 (require 'popup)
 (require 'auto-complete)
@@ -13,31 +17,85 @@
 (require 'dirtree)
 (require 'paredit)
 (require 'haskell-mode)
+(require 'undo-tree)
 (require 'vemv.lang)
 (require 'vemv.data)
 (require 'vemv.theme)
 (provide 'vemv.init)
 
+(fset 'yes-or-no-p 'y-or-n-p)
+(setq initial-scratch-message "")
 (eval-after-load "auto-complete"
   '(add-to-list 'ac-modes 'nrepl-mode))
 
+(custom-set-variables
+ '(haskell-mode-hook '(turn-on-haskell-indentation))
+ '(tree-widget-image-enable nil)
+ '(nrepl-popup-stacktraces nil)
+ '(ielm-prompt "ielm> "))
+(global-undo-tree-mode)
+
 (add-hook 'clojure-mode-hook 'enable-paredit-mode)
-(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
-(comm add-hook 'clojure-mode-hook 'auto-complete-mode)
+(add-hook 'clojure-mode-hook 'auto-complete-mode)
+(add-hook 'clojure-mode-hook (argless (local-set-key (kbd "RET") 'newline-and-indent)))
+
+(add-hook 'clojure-mode-hook (argless (if-let (ns (clojure-find-ns))
+					      (nrepl-eval-ns-form)
+					      (if (vemv/contains? (buffer-name) ".clj")
+					       (save-excursion
+						 (beginning-of-buffer)
+						 (insert (concat "(ns " ; XXX needs prefixing
+								 (substring (buffer-name)
+									    0
+									    (- (length (buffer-name)) 4)) ; remove the .clj
+								 ")"))
+						 (nrepl-eval-ns-form))))))
+
 (add-hook 'emacs-lisp-mode-hook 'auto-complete-mode)
+(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 
-(comm  
-(add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
-(add-hook 'nrepl-interaction-mode-hook 'ac-nrepl-setup)
-
-   
 (defun set-auto-complete-as-completion-at-point-function ()
   (setq completion-at-point-functions '(auto-complete)))
 (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
-
-(add-hook 'nrepl-mode-hook 'set-auto-complete-as-completion-at-point-function)
+   
+(add-hook 'nrepl-interaction-mode-hook 'ac-nrepl-setup)
 (add-hook 'nrepl-interaction-mode-hook 'set-auto-complete-as-completion-at-point-function)
-)
+(add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
+(add-hook 'nrepl-mode-hook 'set-auto-complete-as-completion-at-point-function)
+(add-hook 'nrepl-connected-hook (argless (delay (argless ; apparently needed only on the first run!
+                                                 (select-window vemv/main_window)
+                                                 (nrepl-eval-ns-form)))))
+
+(add-hook 'kill-buffer-hook (argless (let ((killed (buffer-name (current-buffer))))
+                                       (setq vemv/open_file_buffers
+                                             (filter (lambda (_) (not (equal _ killed)))
+                                                     vemv/open_file_buffers)))))
+
+(set-default 'truncate-lines t)
+(setq-default save-place t)
+
+;(ac-config-default) aarons?
+(ac-flyspell-workaround)
+;(add-to-list 'ac-dictionary-directories (concat (live-pack-lib-dir) "auto-complete/dict"))
+
+(setq ac-auto-show-menu t)
+(setq ac-dwim t)
+(setq ac-use-menu-map t)
+(setq ac-quick-help-delay 1)
+(setq ac-quick-help-height 60)
+
+(set-default 'ac-sources
+             '(ac-source-dictionary
+               ac-source-words-in-buffer
+               ac-source-words-in-same-mode-buffers
+               ac-source-words-in-all-buffer))
+
+(dolist (mode '(magit-log-edit-mode log-edit-mode org-mode text-mode haml-mode
+                sass-mode yaml-mode csv-mode espresso-mode haskell-mode
+                html-mode nxml-mode sh-mode smarty-mode clojure-mode
+                lisp-mode textile-mode markdown-mode tuareg-mode))
+  (add-to-list 'ac-modes mode))
+  
 ;; restart
 ;; load clj namespaces
 ;; indent, del, intro paredit issues
@@ -50,67 +108,39 @@
 ;; popup doc for defvar
 ;; goto fn defs
 
-(add-hook 'nrepl-connected-hook (argless (delay (argless ; apparently needed only on the first run!
-                                                 (delete-window)
-                                                 (let ((w (selected-window)))
-                                                   (select-window vemv/repl1)
-                                                   (switch-to-buffer "*nrepl*")
-                                                   (select-window w))))))
-
-(add-hook 'slime-connected-hook (argless (delay (argless (kill-buffer "*slime-events*"))
-                                                5)))
-
-(add-hook 'clojure-mode-hook (argless (local-set-key (kbd "RET") 'newline-and-indent)))
-
-(add-hook 'kill-buffer-hook (argless (let ((killed (buffer-name (current-buffer))))
-                                       (setq vemv/open_file_buffers
-                                             (filter (lambda (_) (not (equal _ killed)))
-                                                     vemv/open_file_buffers)))))
-
-(custom-set-variables
- '(haskell-mode-hook '(turn-on-haskell-indentation)))
-
-; find-file-hook
-
 (if (window-system) (vemv/maximize))
-
 (setq vemv/launched nil)
-(delay ; XXX no error reporting
- (argless
 
-  "Create a layout and fill it with the corresponding content."
+(split-window-vertically)
+(enlarge-window 8)
 
-  (comm if (window-system) (progn (vemv/maximize) (vemv/maximize))) ; workaround minibuffer size bug.
+(split-window-horizontally)		; two vertical halves actually
+(vemv/render-trees vemv/tree-dirs)
 
-  (comm x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-                         '(2 "_NET_WM_STATE_FULLSCREEN" 0))
+(enlarge-window-horizontally -52) ; Unlike split-window-*, this one does get the naming right.
 
-  (split-window-vertically) ; Actually means "split in two horizontal halves".
-  (enlarge-window 12)
-  (vemv/next-window)
+(beginning-of-buffer)
+(vemv/next-window)
 
-  (comm
-   (vemv/render-trees vemv/tree-dirs)
+(setq vemv/main_window (selected-window))
+(vemv/next-window)
 
-   (enlarge-window-horizontally -84) ; Unlike split-window-*, this one does get the naming right.
-   (beginning-of-buffer)
-   (vemv/next-window) (vemv/next-window))
+(split-window-horizontally)
 
-  (split-window-horizontally)
+(switch-to-buffer "*scratch*")
+(emacs-lisp-mode)
+(setq vemv/repl1 (selected-window))
+(vemv/next-window)
 
-  (switch-to-buffer "*scratch*")
-  (emacs-lisp-mode)
-  (ielm)
-  (paredit-mode) (auto-complete-mode) (toggle-truncate-lines)
-  (setq vemv/repl1 (selected-window))
-  (vemv/next-window)
+(ielm)
+(paredit-mode) (auto-complete-mode)
 
-  (shell)
-  (setq vemv/repl2 (selected-window))
-  (vemv/next-window)
+(setq vemv/repl2 (selected-window))
+(vemv/next-window)
+(vemv/next-window)
 
-  (message "")
-  (setq vemv/launched t)))
+(message "")
+(setq vemv/launched t)
 
 ; (setq debug-on-error t)
 
@@ -119,21 +149,18 @@
 
 (setq visible-bell nil) ; disable flickering
 (setq ido-auto-merge-delay-time 99999) ; prevents annoying folder switching. might be handy: (setq ido-max-directory-size 100000)
-(setq slime-net-coding-system 'utf-8-unix) ;; as for clojure, the issue is best solved at leiningen level: http://stackoverflow.com/questions/10167829/cant-send-funny-chars-to-slime
 
-;; opens the latest file
-(recentf-mode 1)
-(delay
- (argless
-     (switch-to-buffer "*scratch*") (erase-buffer)
-     (if (file-readable-p recentf-save-file)
-              (if (pos? (length recentf-list))
-                  (let ((head (car recentf-list)))
-                    (ignore-errors (vemv/open
-                                    (if (vemv/ends-with head ".ido.last")
-                                        (second recentf-list)
-                                        head)))))))
- 2)
+(delay (argless
+	(select-window vemv/main_window)
+	(if (file-readable-p recentf-save-file)
+	    (if (pos? (length recentf-list))
+		(let ((head (car recentf-list)))
+		  (ignore-errors (vemv/open
+				  (if (vemv/ends-with head ".ido.last")
+				      (second recentf-list)
+				      head)))))))
+       4)
+
 
 ; (cd "~/clj/src/")
 
@@ -145,8 +172,6 @@
   (flet ((yes-or-no-p (&rest args) t)
          (y-or-n-p (&rest args) t))
     ad-do-it))
-
-(comm (delay (argless (slime-connect "localhost" 4005)))) ; XXX lazy load on C-E
 
 (dolist (key vemv/local-key-bindings-to-remove)
   (mapc (lambda (arg)
@@ -175,6 +200,60 @@
           k))
     (third binding)))
 
-; customize-group tree-widget: tree-widget-image-enable
+(delay (nrepl "localhost" 38869))
 
-;(nrepl-jack-in)
+(setq redisplay-dont-pause t
+      column-number-mode t
+      echo-keystrokes 0.02
+      inhibit-startup-message t
+      transient-mark-mode t
+      shift-select-mode nil
+      require-final-newline t
+      truncate-partial-width-windows nil
+      delete-by-moving-to-trash nil
+      confirm-nonexistent-file-or-buffer nil
+      x-select-enable-clipboard t)
+
+(setq locale-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+
+(setq vemv/main_frame (selected-frame))
+
+(defun vemv/make-frame ()
+  (make-frame `((width . ,(frame-width)) (height . ,(frame-height)))))
+
+(defvar vemv/help-frame nil)
+
+(defmacro vemv/get-help-frame ()
+  `(if (and vemv/help-frame (terminal-live-p vemv/help-frame))
+       vemv/help-frame
+       (let ((frame (vemv/make-frame)))
+	 (select-frame frame)
+	 (vemv/maximize)
+	 (setq vemv/help-frame frame))))
+
+(defun vemv/display-help (buffer)
+  (let ((frame (vemv/get-help-frame)))
+    (select-frame frame)
+;    (clojure-mode)
+    ;(switch-to-buffer "*nREPL doc*")
+    ;(when clj?)
+    ;(set-window-buffer (frame-first-window frame) buffer)
+    (delay (argless (select-window (frame-first-window vemv/help-frame))))
+    (raise-frame)))
+
+(defun vemv/display-completion (buffer)
+  (select-window vemv/main_window)
+  (set-window-buffer vemv/main_window buffer))
+
+(comm add-to-list 'special-display-regexps '(".*" vemv/display-help))
+(add-to-list 'special-display-buffer-names '("*Help*" vemv/display-help))
+(add-to-list 'special-display-buffer-names '("*nREPL doc*" vemv/display-help))
+(add-to-list 'special-display-buffer-names '("*Ido Completions*" vemv/display-completion))
+(add-to-list 'special-display-buffer-names '("*nrepl-error*" vemv/display-completion))
+(add-to-list 'special-display-buffer-names '("*Diff*" vemv/display-completion))
+
+
