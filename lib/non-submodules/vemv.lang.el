@@ -127,14 +127,14 @@
 
 Unlike paredit-copy-as-kill, this function will only grab one sexpr (and no more even - if they are contigous), and is side-effect free."
   (interactive)
+  (save-excursion
+    (push-mark)
+    (if backward? (paredit-backward) (paredit-forward))
 
-  (push-mark)
-  (if backward? (paredit-backward) (paredit-forward))
-
-  (let ((result (vemv/selected-region)))
-    (pop-mark)
-    (if backward? (paredit-forward) (paredit-backward))
-    result))
+    (let ((result (vemv/selected-region)))
+      (pop-mark)
+      (if backward? (paredit-forward) (paredit-backward))
+      result)))
 
 (setq cljs-launched nil)
 (defun vemv/send (where &optional backward?) ; XXX can one do polymorphism in emacs? XXX send w/o intro
@@ -214,6 +214,7 @@ Finally, go back to sender window."
 
     ))
 
+; XXX infer whether the user wants to insert newlines
 (defun vemv/duplicate (&optional backward?) ; XXX indentation: stuff gets inserted at the absolute beggining of line TODO backward?, for sexprs
   "Copies the current line (or sexpr, if point is at the beggining of one, or selection, if the region is active), inserting it at a new line."
   (interactive)
@@ -405,10 +406,23 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (interactive)
   (let ((file (buffer-name (or (and filepath (find-file filepath))
                                (ido-find-file)))))
-    (when (not (some (lambda (item) (equal item file)) vemv/open_file_buffers)))
-          (conj! vemv/open_file_buffers file)))
+    (when (not (some (lambda (item) (equal item file)) vemv/open_file_buffers))
+      (conj! vemv/open_file_buffers file))))
 
 ; XXX if scratch is not empty, include it. (?)
+
+(defun vemv/advice-nrepl ()
+  (when (vemv/contains? (buffer-name) ".clj")
+    (let ((name (nrepl-current-ns)))
+      (with-current-buffer "*nrepl*"
+	(if (not (equal name (nrepl-current-ns)))
+	    (nrepl-set-ns name))))))
+
+(defun vemv/message-file-buffers ()
+  (let ((first (car vemv/open_file_buffers))
+	(rest (cdr vemv/open_file_buffers)))
+    (message "%s %s" (propertize first 'face '(:background "#000000")) ; "#161616"
+	     (apply 'concat (cons "| " (-interpose " | " rest))))))
 
 (defun vemv/next-file-buffer ()
   "Switch to the next buffer that contains a file opened by the user."
@@ -417,7 +431,9 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
           (if (equal file (buffer-name (current-buffer)))
               (message "No more file buffers available.")
               (switch-to-buffer file)
-              (setq vemv/open_file_buffers `(,@(cdr vemv/open_file_buffers) ,(car vemv/open_file_buffers))))
+              (setq vemv/open_file_buffers `(,@(cdr vemv/open_file_buffers) ,(car vemv/open_file_buffers)))
+	      (vemv/advice-nrepl)
+	      (vemv/message-file-buffers))
           (message "No more file buffers available.")))
 
 (defun vemv/previous-file-buffer ()
@@ -427,7 +443,9 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
           (if (equal file (buffer-name (current-buffer)))
               (message "No more file buffers available.")
               (switch-to-buffer file)
-              (setq vemv/open_file_buffers `(,file ,@(butlast vemv/open_file_buffers))))
+              (setq vemv/open_file_buffers `(,file ,@(butlast vemv/open_file_buffers)))
+	      (vemv/advice-nrepl)
+	      (vemv/message-file-buffers))
           (message "No more file buffers available.")))
 
 (defun vemv/home ()

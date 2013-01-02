@@ -16,3 +16,6 @@
 [submodule "lib/popup"]
 	path = lib/popup
 	url = https://github.com/auto-complete/popup-el
+[submodule "lib/dash.el"]
+	path = lib/dash.el
+	url = git@github.com:vemv/dash.el.git

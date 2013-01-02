@@ -54,20 +54,20 @@
 (setq vemv/key-bindings-to-dummy '([mouse-6] [mouse-7] [double-mouse-6] [double-mouse-7] [triple-mouse-6] [triple-mouse-7]))
 
 (setq vemv/local-key-bindings
-      (list clojure-mode-map  "C-`" 'nrepl-doc
-            clojure-mode-map  "M-`" 'nrepl-src
+      (list clojure-mode-map  "C-/" 'nrepl-doc
+            clojure-mode-map  "C-?" 'nrepl-src
             clojure-mode-map  "C-e" (argless (vemv/send :slime))
             clojure-mode-map  "M-e" (argless (vemv/send :slime :backward))
-            clojure-mode-map  "C-," 'nrepl-set-ns
-            emacs-lisp-mode-map "C-`" 'vemv/elisp-popup-documentation
-            emacs-lisp-mode-map "M-`" 'vemv/elisp-window-documentation
+            emacs-lisp-mode-map "C-/" 'vemv/elisp-popup-documentation
+            emacs-lisp-mode-map "C-?" 'vemv/elisp-window-documentation
 	    emacs-lisp-mode-map "C-z" 'undo-tree-undo
             haskell-mode-map  "C-e" (argless (vemv/send :shell))
             haskell-mode-map  "M-e" (argless (vemv/send :shell :backward))
             haskell-mode-map "RET" (argless (insert "\n"))
             emacs-lisp-mode-map "RET" (argless (insert "\n"))
             haskell-mode-map "," (argless (insert ", "))
-            ruby-mode-map "RET" 'ruby-reindent-then-newline-and-indent))
+            ruby-mode-map "RET" 'ruby-reindent-then-newline-and-indent
+	    emacs-lisp-mode-map "RET" 'newline-and-indent))
 
 ;XXX M-RET alters the kill-ring.
 (setq vemv/global-key-bindings ; This setup is optimized for a UK keyboard with a Colemak layout, with the number/symbol row switched (e.g. "(" is the default, "9" requires shift).
@@ -94,7 +94,7 @@
             "C-b" 'vemv/duplicate
             "C-w" 'smex ; M-x
             "C-z" 'undo-tree-undo
-            "C-\\" 'undo-tree-redo
+            "C-`" 'undo-tree-redo
             "<backspace>" (argless (if (region-active-p)
                                        (progn (call-interactively 'kill-region)
                                               (pop kill-ring))
@@ -124,12 +124,14 @@
             "C-h" 'replace-string ; search and replace
             "C-f" (argless (ignore-errors (call-interactively 'search-forward)))
             "M-[" 'paredit-backward ; move one sexpr backward
-            "M-+" 'paredit-forward
+            "M-]" 'paredit-forward
             [f6] 'split-window-vertically
             [f7] 'split-window-horizontally
             [f9] (argless (make-frame `((width . ,(window-width)) (height . ,(frame-height))))) ; in order to kill a frame, use the window system's standard exit (e.g. Alt-F4) command. The other frames won't close.
             [f10] 'vemv/ensure-layout
             [f11] 'vemv/maximize
+	    "s-e" (argless (insert "é"))
+	    "s-E" (argless (insert "É"))
             "C-;" 'toggle-truncate-lines
             "C-&" (argless (vemv/open (concat "~/.emacs.d/lib/non-submodules/"
                                               (ido-completing-read "Open: " vemv/emacs-files))))

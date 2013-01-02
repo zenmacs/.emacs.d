@@ -6,6 +6,7 @@
 (cua-mode 1)
 
 (require 'saveplace)
+(require 'dash)
 (require 'nrepl)
 (require 'popup)
 (require 'auto-complete)
@@ -25,7 +26,7 @@
 
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq initial-scratch-message "")
-(eval-after-load "auto-complete"
+(eval-after-load "auto-complete" ; XXX don't show doc in nREPLs AC
   '(add-to-list 'ac-modes 'nrepl-mode))
 
 (custom-set-variables
@@ -41,15 +42,18 @@
 
 (add-hook 'clojure-mode-hook (argless (if-let (ns (clojure-find-ns))
 					      (nrepl-eval-ns-form)
-					      (if (vemv/contains? (buffer-name) ".clj")
-					       (save-excursion
-						 (beginning-of-buffer)
-						 (insert (concat "(ns " ; XXX needs prefixing
-								 (substring (buffer-name)
-									    0
-									    (- (length (buffer-name)) 4)) ; remove the .clj
-								 ")"))
-						 (nrepl-eval-ns-form))))))
+					      (when (vemv/contains? (buffer-name) ".clj")
+						(let ((name (substring (buffer-name) ; XXX needs prefixing
+									     0
+									     (- (length (buffer-name)) 4)))) ; removes the .clj
+						  (save-excursion
+						    (beginning-of-buffer)
+						    (insert (concat "(ns "
+								    name
+								    ")"))
+						    (nrepl-eval-ns-form))
+						  (with-current-buffer "*nrepl*"
+						    (nrpl-set-ns name)))))))
 
 (add-hook 'emacs-lisp-mode-hook 'auto-complete-mode)
 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
@@ -61,8 +65,10 @@
 (add-hook 'nrepl-interaction-mode-hook 'ac-nrepl-setup)
 (add-hook 'nrepl-interaction-mode-hook 'set-auto-complete-as-completion-at-point-function)
 (add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
+(add-hook 'nrepl-mode-hook 'auto-complete-mode)
+(add-hook 'nrepl-mode-hook 'enable-paredit-mode)
 (add-hook 'nrepl-mode-hook 'set-auto-complete-as-completion-at-point-function)
-(add-hook 'nrepl-connected-hook (argless (delay (argless ; apparently needed only on the first run!
+(add-hook 'nrepl-connected-hook (argless (delay (argless ; apparently needed only on the first run! (this comment was placed in the slime era)
                                                  (select-window vemv/main_window)
                                                  (nrepl-eval-ns-form)))))
 
@@ -162,7 +168,7 @@
        4)
 
 
-; (cd "~/clj/src/")
+(cd "~/loudlist/src/loudlist")
 
 (if (window-system) (set-face-attribute 'default nil :font "DejaVu Sans Mono-9"))
 
@@ -253,7 +259,7 @@
 (add-to-list 'special-display-buffer-names '("*Help*" vemv/display-help))
 (add-to-list 'special-display-buffer-names '("*nREPL doc*" vemv/display-help))
 (add-to-list 'special-display-buffer-names '("*Ido Completions*" vemv/display-completion))
-(add-to-list 'special-display-buffer-names '("*nrepl-error*" vemv/display-completion))
+(add-to-list 'special-display-buffer-names '("*nrepl-error*" vemv/display-completion)) ; FIXME yanks the stacktrace to the responsible buffer instead
 (add-to-list 'special-display-buffer-names '("*Diff*" vemv/display-completion))
 
 

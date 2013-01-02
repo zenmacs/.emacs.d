@@ -7,21 +7,6 @@
 
 (deftheme vemv "")
 
-(comm
-
- `(escape-glyph-face ((t (:foreground ,zenburn-red))))
- `(fringe ((t (:foreground ,zenburn-fg :background ,zenburn-bg+1))))
- `(header-line ((t (:foreground ,zenburn-yellow
-				:background ,zenburn-bg-1
-				:box (:line-width -1 :style released-button)))))
- `(highlight ((t (:background ,zenburn-bg-05))))
-
- `(header-line ((t (:foreground "#009900"
-				:background "000000"
-				:box (:line-width -1 :style released-button)))))
-
- )
-
 (custom-theme-set-faces 'vemv
 
 			'(default ((t (:background "#4D575F" :foreground "#F5F5F5"))))
@@ -49,7 +34,7 @@
 			'(font-lock-variable-name-face ((t (:foreground "#F5F5F5" :bold t))))
 			'(font-lock-warning-face ((t (:bold t :foreground "Pink"))))
 
-			'(gui-element ((t (:background "#333333" :foreground "#96CBFE"))))
+			'(gui-element ((t (:background "#484848" :foreground "#96CBFE"))))
 			'(region ((t ( :background "#7A3555"))))
 			'(mode-line ((t (:background "gray10" :foreground "#B6B6B6"))))
 			'(mode-line-inactive ((t (:background "gray10" :foreground "#696969"))))
