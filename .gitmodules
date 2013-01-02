@@ -19,3 +19,12 @@
 [submodule "lib/dash.el"]
 	path = lib/dash.el
 	url = git@github.com:vemv/dash.el.git
+[submodule "lib/haskell-mode"]
+	path = lib/haskell-mode
+	url = https://github.com/haskell/haskell-mode.git
+[submodule "lib/recur"]
+	path = lib/recur
+	url = https://github.com/VincentToups/recur.git
+[submodule "lib/emacs-utils"]
+	path = lib/emacs-utils
+	url = https://github.com/VincentToups/emacs-utils.git
