@@ -10,6 +10,7 @@
 (require 'nrepl)
 (require 'popup)
 (require 'auto-complete)
+(require 'auto-complete-config)
 (require 'ac-nrepl)
 (require 'smex)
 (require 'ruby-mode)
@@ -34,9 +35,9 @@
  '(tree-widget-image-enable nil)
  '(nrepl-popup-stacktraces nil)
  '(ielm-prompt "ielm> "))
-(global-undo-tree-mode)
 
 (add-hook 'clojure-mode-hook 'enable-paredit-mode)
+(add-hook 'clojure-mode-hook 'undo-tree-mode)
 (add-hook 'clojure-mode-hook 'auto-complete-mode)
 (add-hook 'clojure-mode-hook (argless (local-set-key (kbd "RET") 'newline-and-indent)))
 
@@ -53,9 +54,10 @@
 								    ")"))
 						    (nrepl-eval-ns-form))
 						  (with-current-buffer "*nrepl*"
-						    (nrpl-set-ns name)))))))
+						    (nrepl-set-ns name)))))))
 
 (add-hook 'emacs-lisp-mode-hook 'auto-complete-mode)
+(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 
 (defun set-auto-complete-as-completion-at-point-function ()
@@ -80,7 +82,7 @@
 (set-default 'truncate-lines t)
 (setq-default save-place t)
 
-;(ac-config-default) aarons?
+(ac-config-default)
 (ac-flyspell-workaround)
 ;(add-to-list 'ac-dictionary-directories (concat (live-pack-lib-dir) "auto-complete/dict"))
 
@@ -88,7 +90,7 @@
 (setq ac-dwim t)
 (setq ac-use-menu-map t)
 (setq ac-quick-help-delay 1)
-(setq ac-quick-help-height 60)
+;; (setq ac-quick-help-height 60)
 
 (set-default 'ac-sources
              '(ac-source-dictionary
@@ -173,6 +175,8 @@
 (if (window-system) (set-face-attribute 'default nil :font "DejaVu Sans Mono-9"))
 
 (put 'if 'lisp-indent-function nil)
+
+(setq comment-indent-function (argless (save-excursion (forward-line -1) (current-indentation))))
 
 (defadvice save-buffers-kill-emacs (around no-y-or-n activate) ; switches the expected input from "yes no" to "y n" on exit-without-save
   (flet ((yes-or-no-p (&rest args) t)

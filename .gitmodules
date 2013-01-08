@@ -25,3 +25,9 @@
 [submodule "lib/emacs-utils"]
 	path = lib/emacs-utils
 	url = https://github.com/VincentToups/emacs-utils.git
+[submodule "lib/dash"]
+	path = lib/dash
+	url = git@github.com:vemv/dash.el.git
+[submodule "lib/cua-base"]
+	path = lib/cua-base
+	url = https://github.com/emacsmirror/cua-base

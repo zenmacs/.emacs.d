@@ -48,26 +48,28 @@
                                     "\M-\"" "\M-|" "\M-$" "\M-y" "\M-f"))
 
 (setq vemv/local-key-bindings-to-remove
-      (list (list paredit-mode-map "\C-k" "\C-j" "\M-\"" [127]) ; [127] stands for DEL, [27 127] is M-DEL.
-            (list comint-mode-map "\M-p")))
+      (list (list paredit-mode-map "\C-k" "\C-j" "\M-\"" [127] (kbd ";")) ; [127] stands for DEL, [27 127] is M-DEL. 
+            (list comint-mode-map "\M-p")
+	    (list undo-tree-map (kbd "C-/") (kbd "C-?"))))
 
 (setq vemv/key-bindings-to-dummy '([mouse-6] [mouse-7] [double-mouse-6] [double-mouse-7] [triple-mouse-6] [triple-mouse-7]))
 
 (setq vemv/local-key-bindings
       (list clojure-mode-map  "C-/" 'nrepl-doc
             clojure-mode-map  "C-?" 'nrepl-src
+            clojure-mode-map  ";" (argless (paredit-semicolon) (insert " "))
             clojure-mode-map  "C-e" (argless (vemv/send :slime))
             clojure-mode-map  "M-e" (argless (vemv/send :slime :backward))
             emacs-lisp-mode-map "C-/" 'vemv/elisp-popup-documentation
             emacs-lisp-mode-map "C-?" 'vemv/elisp-window-documentation
 	    emacs-lisp-mode-map "C-z" 'undo-tree-undo
+	    emacs-lisp-mode-map "RET" 'newline-and-indent
+            emacs-lisp-mode-map  ";" (argless (paredit-semicolon) (insert " "))
             haskell-mode-map  "C-e" (argless (vemv/send :shell))
             haskell-mode-map  "M-e" (argless (vemv/send :shell :backward))
             haskell-mode-map "RET" (argless (insert "\n"))
-            emacs-lisp-mode-map "RET" (argless (insert "\n"))
             haskell-mode-map "," (argless (insert ", "))
-            ruby-mode-map "RET" 'ruby-reindent-then-newline-and-indent
-	    emacs-lisp-mode-map "RET" 'newline-and-indent))
+            ruby-mode-map "RET" 'ruby-reindent-then-newline-and-indent))
 
 ;XXX M-RET alters the kill-ring.
 (setq vemv/global-key-bindings ; This setup is optimized for a UK keyboard with a Colemak layout, with the number/symbol row switched (e.g. "(" is the default, "9" requires shift).

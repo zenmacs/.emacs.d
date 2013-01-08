@@ -421,7 +421,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 (defun vemv/message-file-buffers ()
   (let ((first (car vemv/open_file_buffers))
 	(rest (cdr vemv/open_file_buffers)))
-    (message "%s %s" (propertize first 'face '(:background "#000000")) ; "#161616"
+    (message  "%s %s" first ; (propertize first 'face '(:background "#000000")) ; "#161616"
 	     (apply 'concat (cons "| " (-interpose " | " rest))))))
 
 (defun vemv/next-file-buffer ()
