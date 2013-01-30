@@ -92,7 +92,7 @@
 
 (defun vemv/hash-map (&rest kvs)
   "Makes and returns a hash table out of its arguments."
-  (let ((result (make-hash-table)))
+  (let ((result (make-hash-table :test 'equal)))
     (dolist (kv (vemv/partition 2 kvs))
       (puthash (first kv) (second kv) result))
     result))
@@ -345,6 +345,13 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
     (if (<= clength (length s))
         (string= (substring s 0 clength) candidate))))
 
+(defun slime-keywordify (symbol)
+   "Make a keyword out of the symbol SYMBOL."
+   (let ((name (downcase (symbol-name symbol))))
+     (intern (if (eq ?: (aref name 0))
+                 name
+               (concat ":" name)))))
+
 (defun vemv/keyword-to-string (arg)
   ":foo -> \"foo\""
   (substring (symbol-name arg) 1))
@@ -394,16 +401,18 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 (defun vemv/indent ()
   "Recursively indents all the sexprs contained by the current sexpr."
   (interactive)
-  (while (not (some (lambda (char) (equal char (vemv/current-char-at-point)))
-                    '("(" "[" "{")))
-    (beginning-of-sexp))
-  (paredit-wrap-round)
-  (paredit-splice-sexp-killing-backward)
-  (comment "XXX move one char to the right."))
+  (save-excursion
+    (while (not (some (lambda (char) (equal char (vemv/current-char-at-point)))
+		      '("(" "[" "{")))
+      (beginning-of-sexp))
+    (paredit-wrap-round)
+    (paredit-splice-sexp-killing-backward)
+    (comment "XXX move one char to the right.")))
 
-(defun vemv/open (&optional filepath) ; FIXME duplicates
+(defun vemv/open (&optional filepath)
   "Opens a file (from FILEPATH or the user input), adding its buffer name to vemv/open_files, thus allowing the functionality of vemv/next-file-buffer and vemv/previous-file-buffer."
   (interactive)
+  (select-window vemv/main_window)
   (let ((file (buffer-name (or (and filepath (find-file filepath))
                                (ido-find-file)))))
     (when (not (some (lambda (item) (equal item file)) vemv/open_file_buffers))
@@ -485,3 +494,42 @@ Comments get ignored, this is, point will only move as long as its position stil
                                        (equal " " (substring rev result (inc result))))
                                       result
                                       (recur (inc result))))))))
+
+(defun vemv/end-of-line-code ()
+  (interactive "^")
+  (save-match-data
+    (let* ((bolpos (progn (beginning-of-line) (point)))
+           (eolpos (progn (end-of-line) (point))))
+      (if (comment-search-backward bolpos t)
+          (search-backward-regexp comment-start-skip bolpos 'noerror))
+      (skip-syntax-backward " " bolpos))))
+
+(defun vemv/end-of-line-or-code ()
+  (interactive "^")
+  (let ((here (point)))
+    (vemv/end-of-line-code)
+    (if (or (= here (point))
+        (bolp))
+        (end-of-line))))
+
+(defun vemv/delete-this-line ()
+  "Deletes the entire current line regardless of its contents, and any preceding empty lines."
+  (interactive)
+  (end-of-line)
+  (cua-set-mark)
+  (previous-line)
+  (end-of-line)
+  (call-interactively 'kill-region)
+  (let ((line (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
+    (if (or (= 0 (length line))
+	    (every (lambda (char) (= char 32)) line))
+	(vemv/delete-this-line))))
+
+(defun vemv/semicolon ()
+  (interactive)
+  (if (or (equal (vemv/current-char-at-point) ";")
+	  (progn "cursor is within string" nil)) ;; XXX
+      (insert ";")
+      (paredit-semicolon)
+      (paredit-semicolon)
+      (insert " "))) ;; (when (and (eolp) COLUMN > 0) (insert " "))

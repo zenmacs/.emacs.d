@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t -*-
 (setq lexical-binding t)
 
 (show-paren-mode 1)
@@ -5,6 +6,7 @@
 (ido-mode 1)
 (cua-mode 1)
 
+(require 'yasnippet)
 (require 'saveplace)
 (require 'dash)
 (require 'nrepl)
@@ -25,6 +27,8 @@
 (require 'vemv.theme)
 (provide 'vemv.init)
 
+(yas-global-mode 1)
+
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq initial-scratch-message "")
 (eval-after-load "auto-complete" ; XXX don't show doc in nREPLs AC
@@ -42,12 +46,15 @@
 (add-hook 'clojure-mode-hook (argless (local-set-key (kbd "RET") 'newline-and-indent)))
 
 (add-hook 'clojure-mode-hook (argless (if-let (ns (clojure-find-ns))
-					      (nrepl-eval-ns-form)
+					      (progn
+						(nrepl-eval-ns-form)
+						(with-current-buffer "*nrepl*"
+						    (nrepl-set-ns ns)))
 					      (when (vemv/contains? (buffer-name) ".clj")
 						(let ((name (substring (buffer-name) ; XXX needs prefixing
 									     0
 									     (- (length (buffer-name)) 4)))) ; removes the .clj
-						  (save-excursion
+						  (save-excursion ;; XXX nrepl-load-current-buffer
 						    (beginning-of-buffer)
 						    (insert (concat "(ns "
 								    name
@@ -90,6 +97,7 @@
 (setq ac-dwim t)
 (setq ac-use-menu-map t)
 (setq ac-quick-help-delay 1)
+(setq ac-delay 0.8)
 ;; (setq ac-quick-help-height 60)
 
 (set-default 'ac-sources
@@ -105,14 +113,8 @@
   (add-to-list 'ac-modes mode))
   
 ;; restart
-;; load clj namespaces
-;; indent, del, intro paredit issues
-;; cross-proj conf <<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ;; tree: refresh on adds
 ;; javadoc
-;; render
-;; semantic home/end keys behavior
-;; setq: Wrong type argument: wholenump, -201
 ;; popup doc for defvar
 ;; goto fn defs
 
@@ -122,7 +124,7 @@
 (split-window-vertically)
 (enlarge-window 8)
 
-(split-window-horizontally)		; two vertical halves actually
+(split-window-horizontally) ;;  two vertical halves actually
 (vemv/render-trees vemv/tree-dirs)
 
 (enlarge-window-horizontally -52) ; Unlike split-window-*, this one does get the naming right.
@@ -170,18 +172,33 @@
        4)
 
 
-(cd "~/loudlist/src/loudlist")
+(cd "~/clj/loudlist/src/loudlist")
 
 (if (window-system) (set-face-attribute 'default nil :font "DejaVu Sans Mono-9"))
 
 (put 'if 'lisp-indent-function nil)
 
-(setq comment-indent-function (argless (save-excursion (forward-line -1) (current-indentation))))
+(comment (setq comment-indent-function (argless (save-excursion (forward-line -1) (current-indentation)))))
 
 (defadvice save-buffers-kill-emacs (around no-y-or-n activate) ; switches the expected input from "yes no" to "y n" on exit-without-save
   (flet ((yes-or-no-p (&rest args) t)
          (y-or-n-p (&rest args) t))
     ad-do-it))
+
+(setq back-to-indentation-state nil)
+
+(defadvice back-to-indentation (around back-to-back)
+  (if (eq last-command this-command)
+      (progn
+	(if back-to-indentation-state
+	    ad-do-it
+	    (beginning-of-line)
+	(send! back-to-indentation-state 'not)))
+      (progn
+	(setq back-to-indentation-state nil)
+	ad-do-it)))
+
+(ad-activate 'back-to-indentation)
 
 (dolist (key vemv/local-key-bindings-to-remove)
   (mapc (lambda (arg)
@@ -194,12 +211,24 @@
 (dolist (key vemv/key-bindings-to-dummy)
   (global-set-key key (argless)))
 
-(dolist (binding (vemv/partition 2 vemv/global-key-bindings))
-  (global-set-key (let ((k (car binding)))
-                    (if (stringp k)
-                        (read-kbd-macro k)
-                        k))
-                  (second binding)))
+(maphash (lambda (key _)
+	   (let* ((keyboard-macro (if (stringp key)
+				      (read-kbd-macro key)
+				      key)))
+	     (global-set-key 
+	      keyboard-macro
+	      (argless (call-interactively (gethash key vemv/global-key-bindings))))))
+  vemv/global-key-bindings)
+
+(comm maphash (lambda (lang_key _)
+	   (maphash (lambda (key _)
+		      (let ((keyboard-macro (if (stringp key) (read-kbd-macro key) key)))
+			(comm (define-key
+				clojure-mode-map
+				keyboard-macro
+				(argless (call-interactively (gethash key (gethash lang_key vemv/local-key-bindings))))))))
+		    vemv/local-key-bindings))
+	 vemv/local-key-bindings)
 
 (dolist (binding (vemv/partition 3 vemv/local-key-bindings))
   (define-key
@@ -210,7 +239,7 @@
           k))
     (third binding)))
 
-(delay (nrepl "localhost" 38869))
+(condition-case ex (nrepl "localhost" 9119) ('error))
 
 (setq redisplay-dont-pause t
       column-number-mode t
@@ -260,10 +289,8 @@
   (set-window-buffer vemv/main_window buffer))
 
 (comm add-to-list 'special-display-regexps '(".*" vemv/display-help))
-(add-to-list 'special-display-buffer-names '("*Help*" vemv/display-help))
+(add-to-list 'special-display-buffer-names '("*Help*" vemv/display-completion))
 (add-to-list 'special-display-buffer-names '("*nREPL doc*" vemv/display-help))
 (add-to-list 'special-display-buffer-names '("*Ido Completions*" vemv/display-completion))
 (add-to-list 'special-display-buffer-names '("*nrepl-error*" vemv/display-completion)) ; FIXME yanks the stacktrace to the responsible buffer instead
 (add-to-list 'special-display-buffer-names '("*Diff*" vemv/display-completion))
-
-

@@ -2,44 +2,33 @@
 (provide 'vemv.data)
 
 ; TODO DEL (translated from <backspace>) runs the command paredit-backward-delete
-; XXX intro w/o moving the comment
+        ;;;;;;;; XXX intro w/o moving the comment
 
 (setq vemv/open_file_buffers ())
 
 (setq vemv/emacs-files '("vemv.init.el" "vemv.lang.el" "vemv.theme.el" "vemv.data.el"))
 
-(setq vemv/tree-dirs
-      '(:clj "~/clj/src"
-        :lib "~/.emacs.d/lib"
-        :non "~/.emacs.d/lib/non-submodules"
-       ;:cljs "~/clj/src-cljs"
-       ;:soundcloud-cljs "~/Development/needleforsoundcloud/frontend/cljs/needle"
-       ;:ellipse "~/Development/ellipse/src/ellipse"
-       ;:emacs "~/.emacs.d/packs/user/user-pack"
-       ;:haskell "~/Development/vemv/src/haskell"
-       :loudlist "~/loudlist"))
-(setq vemv/headers (vemv/hash-map
+(vemv/string-to-keyword "a")
 
-:clj
+(setq vemv/tree-dirs (let ((d (-drop 2 (directory-files "~/clj"))))
+		       (flatten (mapcar (lambda (a) (list (vemv/string-to-keyword a) (concat "~/clj/" a))) d))))
 
-"(ns vemv
-  (:require [clojure.pprint :as pp]
-            [clojure.string :as string]))\n\n"
-:web
+(mapc (lambda (a) (conj! vemv/tree-dirs a))
+      (list 
+       "~/.emacs.d/lib" :lib
+       "~/.emacs.d/lib/non-submodules" :non))
 
-"(ns vemv
-  (:require
-   [ring.adapter.jetty :as jetty]
-   [clojure.pprint :as pretty]
-   [ring.util.response :as response]
-   [net.cgrand.enlive-html :as enlive]
-   [clj-http.client :as http])
-  (:use (compojure handler [core :only (GET POST defroutes)])))\n\n"))
+;; ;:soundcloud-cljs "~/Development/needleforsoundcloud/frontend/cljs/needle"
+;; :ellipse "~/Development/ellipse/src/ellipse"
+;; :emacs "~/.emacs.d/packs/user/user-pack"
+;; :haskell "~/Development/vemv/src/haskell"
 
-; available: C-,, C-., C-escape, C-', C-j, C-y, C/M-f/p.
-; ummodificable: C-m, C-i, C-[
-; ESC acts like alt, but one does not have to hold it pressed.
-; C-click is very handy for switching between arbitrary buffers. Most times vemv/previous-file-buffer and vemv/next-file-buffer will do though.
+;; ---
+
+;; available: C-,, C-., C-escape, C-', C-j, C-y, C/M-f/p.
+;; ummodificable: C-m, C-i, C-[
+;; ESC acts like alt, but one does not have to hold it pressed.
+;; C-click is very handy for switching between arbitrary buffers. Most times vemv/previous-file-buffer and vemv/next-file-buffer will do though.
 
 (setq vemv/key-bindings-to-remove '("\C-a" "\C-b" "\C-e" "\C-f" "\C-s" "\C-w" "\C-j"
                                     "\C-l" "\C-n" "\C-o" "\C-p" "\C-q" "\C-o" "\C-k"
@@ -48,7 +37,7 @@
                                     "\M-\"" "\M-|" "\M-$" "\M-y" "\M-f"))
 
 (setq vemv/local-key-bindings-to-remove
-      (list (list paredit-mode-map "\C-k" "\C-j" "\M-\"" [127] (kbd ";")) ; [127] stands for DEL, [27 127] is M-DEL. 
+      (list (list paredit-mode-map "\C-d" "\C-k" "\C-j" "\M-\"" [127] (kbd ";")) ; [127] stands for DEL, [27 127] is M-DEL. 
             (list comint-mode-map "\M-p")
 	    (list undo-tree-map (kbd "C-/") (kbd "C-?"))))
 
@@ -57,23 +46,45 @@
 (setq vemv/local-key-bindings
       (list clojure-mode-map  "C-/" 'nrepl-doc
             clojure-mode-map  "C-?" 'nrepl-src
-            clojure-mode-map  ";" (argless (paredit-semicolon) (insert " "))
+            clojure-mode-map  ";" 'vemv/semicolon
             clojure-mode-map  "C-e" (argless (vemv/send :slime))
             clojure-mode-map  "M-e" (argless (vemv/send :slime :backward))
             emacs-lisp-mode-map "C-/" 'vemv/elisp-popup-documentation
             emacs-lisp-mode-map "C-?" 'vemv/elisp-window-documentation
 	    emacs-lisp-mode-map "C-z" 'undo-tree-undo
 	    emacs-lisp-mode-map "RET" 'newline-and-indent
-            emacs-lisp-mode-map  ";" (argless (paredit-semicolon) (insert " "))
+            emacs-lisp-mode-map  ";" 'vemv/semicolon
             haskell-mode-map  "C-e" (argless (vemv/send :shell))
             haskell-mode-map  "M-e" (argless (vemv/send :shell :backward))
             haskell-mode-map "RET" (argless (insert "\n"))
             haskell-mode-map "," (argless (insert ", "))
             ruby-mode-map "RET" 'ruby-reindent-then-newline-and-indent))
 
+(comm setq vemv/local-key-bindings
+      (vemv/hash-map
+       clojure-mode-map (vemv/hash-map
+			 "C-/" 'nrepl-doc
+			 "C-?" 'nrepl-src
+			 ";" (argless (paredit-semicolon) (paredit-semicolon) (insert " ")) ;; (when (and (eolp) COLUMN > 0) (insert " "))
+			 "C-e" (argless (vemv/send :slime))
+			 "M-e" (argless (vemv/send :slime :backward)))
+       emacs-lisp-mode-map (vemv/hash-map
+			     "C-/" 'vemv/elisp-popup-documentation
+			     "C-?" 'vemv/elisp-window-documentation
+			     "C-z" 'undo-tree-undo
+			     "RET" 'newline-and-indent
+			     ";" (argless (paredit-semicolon) (paredit-semicolon) (insert " ")))
+       haskell-mode-map (vemv/hash-map
+			   "C-e" (argless (vemv/send :shell))
+			   "M-e" (argless (vemv/send :shell :backward))
+			   "RET" (argless (insert "\n"))
+			   "," (argless (insert ", ")))
+       ruby-mode-map (vemv/hash-map
+		       "RET" 'ruby-reindent-then-newline-and-indent)))
+
 ;XXX M-RET alters the kill-ring.
 (setq vemv/global-key-bindings ; This setup is optimized for a UK keyboard with a Colemak layout, with the number/symbol row switched (e.g. "(" is the default, "9" requires shift).
-      (list "C-<prior>" 'vemv/previous-window
+      (vemv/hash-map "C-<prior>" 'vemv/previous-window
             "C-<next>" 'vemv/next-window
             "M-<prior>" 'vemv/previous-file-buffer
             "M-<next>" 'vemv/next-file-buffer
@@ -96,16 +107,17 @@
             "C-b" 'vemv/duplicate
             "C-w" 'smex ; M-x
             "C-z" 'undo-tree-undo
-            "C-`" 'undo-tree-redo
+            "C-^" 'undo-tree-redo
             "<backspace>" (argless (if (region-active-p)
                                        (progn (call-interactively 'kill-region)
                                               (pop kill-ring))
                                        (paredit-backward-delete)))
+            "<C-backspace>" 'vemv/delete-this-line
             "<S-backspace>" (argless (if (region-active-p)
                                        (progn (call-interactively 'kill-region))
                                        (paredit-backward-delete)))
-            ;"<home>" 'vemv/home
-            ;"<end>" 'vemv/end
+            "<home>" 'back-to-indentation
+            "<end>" 'vemv/end-of-line-or-code
             "C-u" (argless (vemv/delete-backward :cut))
             ;"M-RET" (argless) ; TODO comment-aware intro
 
@@ -126,19 +138,18 @@
             "C-h" 'replace-string ; search and replace
             "C-f" (argless (ignore-errors (call-interactively 'search-forward)))
             "M-[" 'paredit-backward ; move one sexpr backward
-            "M-]" 'paredit-forward
+            "M-{" 'paredit-forward
             [f6] 'split-window-vertically
             [f7] 'split-window-horizontally
             [f9] (argless (make-frame `((width . ,(window-width)) (height . ,(frame-height))))) ; in order to kill a frame, use the window system's standard exit (e.g. Alt-F4) command. The other frames won't close.
             [f10] 'vemv/ensure-layout
+	    
             [f11] 'vemv/maximize
 	    "s-e" (argless (insert "é"))
 	    "s-E" (argless (insert "É"))
             "C-;" 'toggle-truncate-lines
-            "C-&" (argless (vemv/open (concat "~/.emacs.d/lib/non-submodules/"
+            "C-*" (argless (vemv/open (concat "~/.emacs.d/lib/non-submodules/"
                                               (ido-completing-read "Open: " vemv/emacs-files))))
-            "C-*" (argless (insert (gethash (vemv/string-to-keyword (ido-completing-read "Insert header: " '("clj" "web")))
-                                            vemv/headers)))
             "C-#" 'vemv/indent ; XXXXXXX set to TAB instead
             "C-t" (argless (switch-to-buffer "*scratch*"))))
             ; eval-minibuffer: M-:

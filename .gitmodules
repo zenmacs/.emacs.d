@@ -31,3 +31,6 @@
 [submodule "lib/cua-base"]
 	path = lib/cua-base
 	url = https://github.com/emacsmirror/cua-base
+[submodule "lib/yasnippet"]
+	path = lib/yasnippet
+	url = https://github.com/capitaomorte/yasnippet
