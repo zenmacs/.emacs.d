@@ -10,28 +10,27 @@
 (custom-theme-set-faces 'vemv
 
 			'(default ((t (:background "#4D575F" :foreground "#F5F5F5"))))
-			'(cursor ((t (:foreground "#4D575F" :background "#EAEAEA"))))
+			'(cursor ((t (:foreground "#4D575F" :background "#CFCFCF"))))
 			'(blue ((t (:foreground "blue"))))
 			'(bold ((t (:bold t))))
 			'(bold-italic ((t (:bold t :italc t))))
 			'(border-glyph ((t (nil))))
 			'(buffers-tab ((t (:foreground "#F8F8F8"))))
-
-
-			'(font-lock-builtin-face ((t (:foreground "#FFE33B")))) ;; FBDE2D
+			
+			'(font-lock-builtin-face ((t (:foreground "#F5F5F5"))))
 			'(font-lock-comment-face ((t (:italic t :foreground "#FFE33B"))))
-			'(font-lock-constant-face ((t (:italic t :foreground "#C1ED3D"))))
+			'(font-lock-constant-face ((t (:italic t :foreground "#C1ED3D")))) ;; green
 			'(font-lock-doc-string-face ((t (:foreground "#FFE33B" :italic t))))
-			'(font-lock-function-name-face ((t (:foreground "#FBDE2D" :bold t))))
+			'(font-lock-function-name-face ((t (:foreground "#FBDE2D" :bold t)))) ;; yellow
 			'(font-lock-keyword-face ((t (:foreground "#F5F5F5"))))
 			'(font-lock-preprocessor-face ((t (:foreground "#C1ED3D")))) ;; Java
-			'(font-lock-reference-face ((t (:foreground "medium slate blue"))))
-			'(font-lock-reference-face ((t (:foreground "gray"))))
+			;; '(font-lock-reference-face ((t (:foreground "medium slate blue"))))
+			;; '(font-lock-reference-face ((t (:foreground "gray"))))
 			'(font-lock-regexp-grouping-backslash ((t (:foreground "#E9C062"))))
 			'(font-lock-regexp-grouping-construct ((t (:foreground "red"))))
 			'(font-lock-string-face ((t (:foreground "#BFD8FF"))))
 			'(font-lock-type-face ((t (:foreground "#D8FA3C"))))
-			'(font-lock-variable-name-face ((t (:foreground "#F5F5F5" :bold t))))
+			'(font-lock-variable-name-face ((t (:foreground "#F5F5F5"))))
 			'(font-lock-warning-face ((t (:bold t :foreground "Pink"))))
 
 			'(gui-element ((t (:background "#484848" :foreground "#96CBFE"))))
@@ -77,7 +76,7 @@
 
 			'(yas/field-highlight-face ((t (:background "deep pink" :foreground "black"))))
 
-			'(show-paren-match-face ((t (:background "#FF3B88" :foreground "#F5F5F5"))))
+			'(show-paren-match-face ((t (:background "#D93273" :foreground "#F5F5F5"))))
 
 			'(naeu-green-face ((t (:foreground "green" :background "black"))))
 			'(naeu-pink-face ((t (:foreground "deep pink" :background "black"))))
@@ -121,4 +120,3 @@
 
 			'(vhl/default-face ((t (:background "#333333"))))
 			'(undo-tree-visualizer-active-branch-face ((t (:foreground "deep pink" :background "black")))))
-

@@ -1,8 +1,7 @@
 (require 'vemv.lang)
 (provide 'vemv.data)
 
-; TODO DEL (translated from <backspace>) runs the command paredit-backward-delete
-        ;;;;;;;; XXX intro w/o moving the comment
+;; XXX intro w/o moving the comment
 
 (setq vemv/open_file_buffers ())
 
@@ -90,7 +89,7 @@
             "M-<next>" 'vemv/next-file-buffer
             "S-<prior>" 'previous-buffer
             "S-<next>" 'next-buffer
-
+	    "<backtab>" 'auto-complete
             "C-a" (argless (if (region-active-p) ; copy selection or next sexpr
                                (call-interactively 'kill-ring-save)
                                (kill-new (vemv/sexpr-content))))
@@ -151,5 +150,6 @@
             "C-*" (argless (vemv/open (concat "~/.emacs.d/lib/non-submodules/"
                                               (ido-completing-read "Open: " vemv/emacs-files))))
             "C-#" 'vemv/indent ; XXXXXXX set to TAB instead
-            "C-t" (argless (switch-to-buffer "*scratch*"))))
+            "C-t" (argless (switch-to-buffer "*scratch*"))
+	    "C-." 'vemv/ns-form))
             ; eval-minibuffer: M-:

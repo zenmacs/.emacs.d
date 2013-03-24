@@ -137,15 +137,16 @@ Unlike paredit-copy-as-kill, this function will only grab one sexpr (and no more
       result)))
 
 (setq cljs-launched nil)
-(defun vemv/send (where &optional backward?) ; XXX can one do polymorphism in emacs? XXX send w/o intro
-  "Copy the next sexp (or on non-nil backward? arg, the previous sexp) and its character trailer, switch to the window that is assigned for REPL purposes, then it switch to the corresponding buffer (different REPLs have different buffers), paste and simulate an intro press.
-
-Finally, go back to sender window."
+(defun vemv/send (where &optional backward? content) ; XXX can one do polymorphism in emacs? XXX send w/o intro
+  "Copy the next sexp (or on non-nil backward? arg, the previous sexp) and its character trailer,
+switch to the window that is assigned for REPL purposes, then it switch to the corresponding buffer (different REPLs have different buffers),
+paste and simulate an intro press. Finally, go back to sender window."
   (interactive)
 
-  (let ((content (if (region-active-p)
-                     (vemv/selected-region)
-                     (vemv/sexpr-content backward?))))
+  (let ((content (or content
+		     (if (region-active-p)
+		      (vemv/selected-region)
+		      (vemv/sexpr-content backward?)))))
     (if (equal where :emacs)
         (eval (read content))
         (let ((sender (selected-window)))
@@ -512,24 +513,35 @@ Comments get ignored, this is, point will only move as long as its position stil
         (bolp))
         (end-of-line))))
 
+(defun vemv/line-empty? (line)
+  (or (= 0 (length line))
+	    (every (lambda (char) (= char 32)) line)))
+
 (defun vemv/delete-this-line ()
   "Deletes the entire current line regardless of its contents, and any preceding empty lines."
   (interactive)
-  (end-of-line)
   (cua-set-mark)
   (previous-line)
   (end-of-line)
   (call-interactively 'kill-region)
   (let ((line (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
-    (if (or (= 0 (length line))
-	    (every (lambda (char) (= char 32)) line))
-	(vemv/delete-this-line))))
+    (if (vemv/line-empty? line)
+	(vemv/delete-this-line)
+	(progn
+	  (next-line)
+	  (back-to-indentation)))))
 
 (defun vemv/semicolon ()
   (interactive)
   (if (or (equal (vemv/current-char-at-point) ";")
 	  (progn "cursor is within string" nil)) ;; XXX
       (insert ";")
-      (paredit-semicolon)
-      (paredit-semicolon)
-      (insert " "))) ;; (when (and (eolp) COLUMN > 0) (insert " "))
+      (insert ";; "))) ;; (when (and (eolp) COLUMN > 0) (insert " "))
+
+(defun vemv/ns-form ()
+  (interactive)
+  (nrepl-eval-ns-form)
+  (save-excursion
+    (if (not (vemv/line-empty? (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
+	(forward-paragraph))
+    (vemv/send :slime :backward)))

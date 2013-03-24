@@ -5,7 +5,10 @@
 (recentf-mode 1)
 (ido-mode 1)
 (cua-mode 1)
+(blink-cursor-mode -1)
 
+;; XXX detect nrepl's project, open the latest file within that proj.
+;; XXX add send hook to ns-eval-form
 (require 'yasnippet)
 (require 'saveplace)
 (require 'dash)
@@ -89,15 +92,19 @@
 (set-default 'truncate-lines t)
 (setq-default save-place t)
 
+(setq backup-directory-alist
+  `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+  `((".*" ,temporary-file-directory t)))
+          
 (ac-config-default)
 (ac-flyspell-workaround)
 ;(add-to-list 'ac-dictionary-directories (concat (live-pack-lib-dir) "auto-complete/dict"))
-
-(setq ac-auto-show-menu t)
+(setq ac-auto-show-menu nil)
 (setq ac-dwim t)
 (setq ac-use-menu-map t)
 (setq ac-quick-help-delay 1)
-(setq ac-delay 0.8)
+(setq ac-delay 100)
 ;; (setq ac-quick-help-height 60)
 
 (set-default 'ac-sources
@@ -127,7 +134,7 @@
 (split-window-horizontally) ;;  two vertical halves actually
 (vemv/render-trees vemv/tree-dirs)
 
-(enlarge-window-horizontally -52) ; Unlike split-window-*, this one does get the naming right.
+(enlarge-window-horizontally -53) ; Unlike split-window-*, this one does get the naming right.
 
 (beginning-of-buffer)
 (vemv/next-window)
@@ -172,7 +179,7 @@
        4)
 
 
-(cd "~/clj/loudlist/src/loudlist")
+; (cd "~/clj/loudlist/src/loudlist")
 
 (if (window-system) (set-face-attribute 'default nil :font "DejaVu Sans Mono-9"))
 
@@ -184,6 +191,15 @@
   (flet ((yes-or-no-p (&rest args) t)
          (y-or-n-p (&rest args) t))
     ad-do-it))
+
+(defadvice eval-ns-form (around nrepl-eval-ns-form)
+  (save-excursion
+    (when (clojure-find-ns)
+      (goto-char (match-beginning 0))
+      (vemv/send :slime)))
+  ad-do-it)
+
+(ad-activate 'eval-ns-form)
 
 (setq back-to-indentation-state nil)
 
@@ -240,6 +256,7 @@
     (third binding)))
 
 (condition-case ex (nrepl "localhost" 9119) ('error))
+(condition-case ex (nrepl "localhost" 9120) ('error))
 
 (setq redisplay-dont-pause t
       column-number-mode t
@@ -294,3 +311,6 @@
 (add-to-list 'special-display-buffer-names '("*Ido Completions*" vemv/display-completion))
 (add-to-list 'special-display-buffer-names '("*nrepl-error*" vemv/display-completion)) ; FIXME yanks the stacktrace to the responsible buffer instead
 (add-to-list 'special-display-buffer-names '("*Diff*" vemv/display-completion))
+
+(x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+		       '(2 "_NET_WM_STATE_FULLSCREEN" 0))
