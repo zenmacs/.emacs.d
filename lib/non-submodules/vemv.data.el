@@ -24,10 +24,10 @@
 
 ;; ---
 
-;; available: C-,, C-., C-escape, C-', C-j, C-y, C/M-f/p.
-;; ummodificable: C-m, C-i, C-[
+;; available: C-escape, C-', C-j, C-y, (C/M f/p)
+;; ummodificable: C-m, C-i, C-[f
 ;; ESC acts like alt, but one does not have to hold it pressed.
-;; C-click is very handy for switching between arbitrary buffers. Most times vemv/previous-file-buffer and vemv/next-file-buffer will do though.
+;; C-click is very handy for switching between arbitrary buffers.
 
 (setq vemv/key-bindings-to-remove '("\C-a" "\C-b" "\C-e" "\C-f" "\C-s" "\C-w" "\C-j"
                                     "\C-l" "\C-n" "\C-o" "\C-p" "\C-q" "\C-o" "\C-k"
@@ -141,15 +141,15 @@
             [f6] 'split-window-vertically
             [f7] 'split-window-horizontally
             [f9] (argless (make-frame `((width . ,(window-width)) (height . ,(frame-height))))) ; in order to kill a frame, use the window system's standard exit (e.g. Alt-F4) command. The other frames won't close.
-            [f10] 'vemv/ensure-layout
-	    
+            [f10] 'vemv/ensure-layout	    
             [f11] 'vemv/maximize
 	    "s-e" (argless (insert "é"))
 	    "s-E" (argless (insert "É"))
             "C-;" 'toggle-truncate-lines
             "C-*" (argless (vemv/open (concat "~/.emacs.d/lib/non-submodules/"
                                               (ido-completing-read "Open: " vemv/emacs-files))))
-            "C-#" 'vemv/indent ; XXXXXXX set to TAB instead
+	    "C-#" 'vemv/indent
             "C-t" (argless (switch-to-buffer "*scratch*"))
-	    "C-." 'vemv/ns-form))
+	    "C-." 'vemv/ns-form
+	    "C-," 'nrepl-load-current-buffer))
             ; eval-minibuffer: M-:

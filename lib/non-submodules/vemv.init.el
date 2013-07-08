@@ -80,8 +80,11 @@
 (add-hook 'nrepl-mode-hook 'auto-complete-mode)
 (add-hook 'nrepl-mode-hook 'enable-paredit-mode)
 (add-hook 'nrepl-mode-hook 'set-auto-complete-as-completion-at-point-function)
-(add-hook 'nrepl-connected-hook (argless (delay (argless ; apparently needed only on the first run! (this comment was placed in the slime era)
-                                                 (select-window vemv/main_window)
+(add-hook 'nrepl-connected-hook (argless (delay (argless
+						 (delete-window)
+						 (vemv/next-window)
+						 (switch-to-buffer "*nrepl*")
+						 (select-window vemv/main_window) ;; apparently needed only on the first run! (this comment was placed in the slime era)
                                                  (nrepl-eval-ns-form)))))
 
 (add-hook 'kill-buffer-hook (argless (let ((killed (buffer-name (current-buffer))))
@@ -106,6 +109,11 @@
 (setq ac-quick-help-delay 1)
 (setq ac-delay 100)
 ;; (setq ac-quick-help-height 60)
+
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+(setq scroll-step 1)
 
 (set-default 'ac-sources
              '(ac-source-dictionary
@@ -143,6 +151,7 @@
 (vemv/next-window)
 
 (split-window-horizontally)
+(enlarge-window-horizontally 10)
 
 (switch-to-buffer "*scratch*")
 (emacs-lisp-mode)

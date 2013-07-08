@@ -540,8 +540,8 @@ Comments get ignored, this is, point will only move as long as its position stil
 
 (defun vemv/ns-form ()
   (interactive)
-  (nrepl-eval-ns-form)
-  (save-excursion
-    (if (not (vemv/line-empty? (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
-	(forward-paragraph))
-    (vemv/send :slime :backward)))
+  (if-let (ns (clojure-find-ns))	  
+	  (progn
+	    (nrepl-eval-ns-form)
+	    (with-current-buffer "*nrepl*"
+	      (nrepl-set-ns ns)))))
