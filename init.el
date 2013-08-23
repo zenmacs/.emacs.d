@@ -9,5 +9,8 @@
 (let ((default-directory "~/.emacs.d/lib"))
       (normal-top-level-add-subdirs-to-load-path))
 
-;;(if (window-system) (set-face-attribute 'default nil :font "DejaVu Sans Mono-9"))
+(when (eq system-type 'darwin)
+  (setq mac-option-modifier 'meta)
+  (setq mac-command-modifier 'control))
+
 (require 'vemv.init)

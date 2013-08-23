@@ -86,9 +86,7 @@
 
 (defun vemv/maximize ()
   "Maximize the current frame. Presumes an X-window environment."
-  (interactive)
-  (x-send-client-message nil 0 nil "_NET_WM_STATE" 32 '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
-  (x-send-client-message nil 0 nil "_NET_WM_STATE" 32 '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
+  (interactive))
 
 (defun vemv/hash-map (&rest kvs)
   "Makes and returns a hash table out of its arguments."

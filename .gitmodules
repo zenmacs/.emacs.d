@@ -34,3 +34,6 @@
 [submodule "lib/yasnippet"]
 	path = lib/yasnippet
 	url = https://github.com/capitaomorte/yasnippet
+[submodule "lib/nyan-mode"]
+	path = lib/nyan-mode
+	url = https://github.com/TeMPOraL/nyan-mode

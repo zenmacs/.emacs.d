@@ -25,6 +25,7 @@
 (require 'paredit)
 (require 'haskell-mode)
 (require 'undo-tree)
+(require 'nyan-mode)
 (require 'vemv.lang)
 (require 'vemv.data)
 (require 'vemv.theme)
@@ -154,7 +155,7 @@
 (enlarge-window-horizontally 10)
 
 (switch-to-buffer "*scratch*")
-(emacs-lisp-mode)
+(shell)
 (setq vemv/repl1 (selected-window))
 (vemv/next-window)
 
@@ -190,7 +191,7 @@
 
 ; (cd "~/clj/loudlist/src/loudlist")
 
-(if (window-system) (set-face-attribute 'default nil :font "DejaVu Sans Mono-9"))
+(delay (argless (if (window-system) (set-face-attribute 'default nil :font "DejaVu Sans Mono-12"))) 5)
 
 (put 'if 'lisp-indent-function nil)
 
@@ -321,5 +322,12 @@
 (add-to-list 'special-display-buffer-names '("*nrepl-error*" vemv/display-completion)) ; FIXME yanks the stacktrace to the responsible buffer instead
 (add-to-list 'special-display-buffer-names '("*Diff*" vemv/display-completion))
 
-(x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-		       '(2 "_NET_WM_STATE_FULLSCREEN" 0))
+(defun undo (&rest args)
+  (interactive)
+  (apply 'undo-tree-undo args))
+
+(delay (argless (set-frame-size (selected-frame) 270 82))
+       5)
+
+(global-set-key [kp-delete] 'delete-char) ;; OS X
+

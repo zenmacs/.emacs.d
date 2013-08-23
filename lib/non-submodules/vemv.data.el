@@ -15,7 +15,8 @@
 (mapc (lambda (a) (conj! vemv/tree-dirs a))
       (list 
        "~/.emacs.d/lib" :lib
-       "~/.emacs.d/lib/non-submodules" :non))
+       "~/.emacs.d/lib/non-submodules" :non
+       "~/comunidades" :comunidades))
 
 ;; ;:soundcloud-cljs "~/Development/needleforsoundcloud/frontend/cljs/needle"
 ;; :ellipse "~/Development/ellipse/src/ellipse"
@@ -57,7 +58,7 @@
             haskell-mode-map  "M-e" (argless (vemv/send :shell :backward))
             haskell-mode-map "RET" (argless (insert "\n"))
             haskell-mode-map "," (argless (insert ", "))
-            ruby-mode-map "RET" 'ruby-reindent-then-newline-and-indent))
+            ruby-mode-map "RET" 'newline-and-indent)) ;; 'ruby-reindent-then-newline-and-indent
 
 (comm setq vemv/local-key-bindings
       (vemv/hash-map
@@ -85,6 +86,7 @@
 (setq vemv/global-key-bindings ; This setup is optimized for a UK keyboard with a Colemak layout, with the number/symbol row switched (e.g. "(" is the default, "9" requires shift).
       (vemv/hash-map "C-<prior>" 'vemv/previous-window
             "C-<next>" 'vemv/next-window
+	    "§" 'hippie-expand
             "M-<prior>" 'vemv/previous-file-buffer
             "M-<next>" 'vemv/next-file-buffer
             "S-<prior>" 'previous-buffer
@@ -106,7 +108,7 @@
             "C-b" 'vemv/duplicate
             "C-w" 'smex ; M-x
             "C-z" 'undo-tree-undo
-            "C-^" 'undo-tree-redo
+            "C-`" 'undo-tree-redo
             "<backspace>" (argless (if (region-active-p)
                                        (progn (call-interactively 'kill-region)
                                               (pop kill-ring))
@@ -137,7 +139,7 @@
             "C-h" 'replace-string ; search and replace
             "C-f" (argless (ignore-errors (call-interactively 'search-forward)))
             "M-[" 'paredit-backward ; move one sexpr backward
-            "M-{" 'paredit-forward
+            "M-]" 'paredit-forward
             [f6] 'split-window-vertically
             [f7] 'split-window-horizontally
             [f9] (argless (make-frame `((width . ,(window-width)) (height . ,(frame-height))))) ; in order to kill a frame, use the window system's standard exit (e.g. Alt-F4) command. The other frames won't close.
@@ -151,5 +153,7 @@
 	    "C-#" 'vemv/indent
             "C-t" (argless (switch-to-buffer "*scratch*"))
 	    "C-." 'vemv/ns-form
-	    "C-," 'nrepl-load-current-buffer))
+	    "C-," 'nrepl-load-current-buffer
+	    "RET" 'newline
+	    "C-q" 'save-buffers-kill-terminal))
             ; eval-minibuffer: M-:
