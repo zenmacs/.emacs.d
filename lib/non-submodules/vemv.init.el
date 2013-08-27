@@ -31,6 +31,16 @@
 (require 'vemv.theme)
 (provide 'vemv.init)
 
+(require 'package)
+
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/") t) ;; installed: ecb
+
+;(require 'ecb)
+;(require 'ecb-autoloads)
+
+(package-initialize)
+
 (yas-global-mode 1)
 
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -66,6 +76,8 @@
 						    (nrepl-eval-ns-form))
 						  (with-current-buffer "*nrepl*"
 						    (nrepl-set-ns name)))))))
+
+(add-hook 'ruby-mode-hook 'electric-pair-mode)
 
 (add-hook 'emacs-lisp-mode-hook 'auto-complete-mode)
 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
@@ -127,7 +139,9 @@
                 html-mode nxml-mode sh-mode smarty-mode clojure-mode
                 lisp-mode textile-mode markdown-mode tuareg-mode))
   (add-to-list 'ac-modes mode))
-  
+
+(setenv "PATH" (concat (getenv "PATH") ":/Users/vemualim/bin"))
+
 ;; restart
 ;; tree: refresh on adds
 ;; javadoc
@@ -155,7 +169,7 @@
 (enlarge-window-horizontally 10)
 
 (switch-to-buffer "*scratch*")
-(shell)
+(sh)
 (setq vemv/repl1 (selected-window))
 (vemv/next-window)
 
@@ -186,12 +200,12 @@
 				  (if (vemv/ends-with head ".ido.last")
 				      (second recentf-list)
 				      head)))))))
-       4)
+       1)
 
 
 ; (cd "~/clj/loudlist/src/loudlist")
 
-(delay (argless (if (window-system) (set-face-attribute 'default nil :font "DejaVu Sans Mono-12"))) 5)
+(delay (argless (if (window-system) (set-face-attribute 'default nil :font "DejaVu Sans Mono-12"))) 1)
 
 (put 'if 'lisp-indent-function nil)
 
@@ -327,7 +341,6 @@
   (apply 'undo-tree-undo args))
 
 (delay (argless (set-frame-size (selected-frame) 270 82))
-       5)
+       1)
 
 (global-set-key [kp-delete] 'delete-char) ;; OS X
-

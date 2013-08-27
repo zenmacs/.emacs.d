@@ -16,6 +16,9 @@
       (list 
        "~/.emacs.d/lib" :lib
        "~/.emacs.d/lib/non-submodules" :non
+       "/Users/vemualim/.rbenv/versions/1.9.3-p194/lib/ruby/gems/1.9.1/gems/rubycas-client-2.2.1/lib/casclient/" :casclient
+       "/Users/vemualim/.rbenv/versions/1.9.3-p194/lib/ruby/gems/1.9.1/gems/rubycas-client-rails-0.1.0" :casrails
+       "~/rubycas-server/lib" :casserver
        "~/comunidades" :comunidades))
 
 ;; ;:soundcloud-cljs "~/Development/needleforsoundcloud/frontend/cljs/needle"
@@ -84,13 +87,16 @@
 
 ;XXX M-RET alters the kill-ring.
 (setq vemv/global-key-bindings ; This setup is optimized for a UK keyboard with a Colemak layout, with the number/symbol row switched (e.g. "(" is the default, "9" requires shift).
-      (vemv/hash-map "C-<prior>" 'vemv/previous-window
+      (vemv/hash-map
+            "C-<prior>" 'vemv/previous-window
             "C-<next>" 'vemv/next-window
 	    "§" 'hippie-expand
-            "M-<prior>" 'vemv/previous-file-buffer
-            "M-<next>" 'vemv/next-file-buffer
-            "S-<prior>" 'previous-buffer
-            "S-<next>" 'next-buffer
+            "S-<prior>" 'vemv/previous-file-buffer
+            "S-<next>" 'vemv/next-file-buffer
+            "M-<prior>" 'previous-buffer
+            "M-<next>" 'next-buffer
+	    "M-<begin>" nil
+	    "M-<end>" nil
 	    "<backtab>" 'auto-complete
             "C-a" (argless (if (region-active-p) ; copy selection or next sexpr
                                (call-interactively 'kill-ring-save)

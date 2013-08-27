@@ -543,3 +543,9 @@ Comments get ignored, this is, point will only move as long as its position stil
 	    (nrepl-eval-ns-form)
 	    (with-current-buffer "*nrepl*"
 	      (nrepl-set-ns ns)))))
+
+(setq vemv/shell-id 0)
+
+(defun sh ()
+  (interactive)
+  (shell (concat "*shell-" (number-to-string (send! vemv/shell-id (lambda (a) (inc a)))) "*")))

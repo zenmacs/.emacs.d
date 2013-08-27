@@ -24,4 +24,5 @@ tramp
 \#*
 tmp/*
 ac-comphist.dat
+elpa
 init.aaron.el
