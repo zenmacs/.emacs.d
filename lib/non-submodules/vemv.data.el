@@ -7,8 +7,6 @@
 
 (setq vemv/emacs-files '("vemv.init.el" "vemv.lang.el" "vemv.theme.el" "vemv.data.el"))
 
-(vemv/string-to-keyword "a")
-
 (setq vemv/tree-dirs (let ((d (-drop 2 (directory-files "~/clj"))))
 		       (flatten (mapcar (lambda (a) (list (vemv/string-to-keyword a) (concat "~/clj/" a))) d))))
 
@@ -16,10 +14,9 @@
       (list 
        "~/.emacs.d/lib" :lib
        "~/.emacs.d/lib/non-submodules" :non
-       "/Users/vemualim/.rbenv/versions/1.9.3-p194/lib/ruby/gems/1.9.1/gems/rubycas-client-2.2.1/lib/casclient/" :casclient
-       "/Users/vemualim/.rbenv/versions/1.9.3-p194/lib/ruby/gems/1.9.1/gems/rubycas-client-rails-0.1.0" :casrails
-       "~/rubycas-server/lib" :casserver
-       "~/comunidades" :comunidades))
+       "~/comu" :comunidades
+       "~/sub" :subastas
+       ))
 
 ;; ;:soundcloud-cljs "~/Development/needleforsoundcloud/frontend/cljs/needle"
 ;; :ellipse "~/Development/ellipse/src/ellipse"
@@ -88,11 +85,11 @@
 ;XXX M-RET alters the kill-ring.
 (setq vemv/global-key-bindings ; This setup is optimized for a UK keyboard with a Colemak layout, with the number/symbol row switched (e.g. "(" is the default, "9" requires shift).
       (vemv/hash-map
-            "C-<prior>" 'vemv/previous-window
-            "C-<next>" 'vemv/next-window
+            "S-<prior>" 'vemv/previous-window
+            "S-<next>" 'vemv/next-window
 	    "§" 'hippie-expand
-            "S-<prior>" 'vemv/previous-file-buffer
-            "S-<next>" 'vemv/next-file-buffer
+            "C-<prior>" 'vemv/previous-file-buffer
+            "C-<next>" 'vemv/next-file-buffer
             "M-<prior>" 'previous-buffer
             "M-<next>" 'next-buffer
 	    "M-<begin>" nil
@@ -128,17 +125,17 @@
             "C-u" (argless (vemv/delete-backward :cut))
             ;"M-RET" (argless) ; TODO comment-aware intro
 
-            "C-!" (argless (vemv/send :cljs))
-            "C-\"" (argless (vemv/send :ielm))
+            ;; "C-!" (argless (vemv/send :cljs))
+            "C-'" (argless (vemv/send :ielm))
             "C-|" (argless (vemv/send :emacs))
-            "C-$" (argless (vemv/send :shell))
-            "M-!" (argless (vemv/send :cljs :backward))
-            "M-\"" (argless (vemv/send :ielm :backward))
+            ;; "C-$" (argless (vemv/send :shell))
+            ;; "M-!" (argless (vemv/send :cljs :backward))
+            "M-'" (argless (vemv/send :ielm :backward))
             "M-|" (argless (vemv/send :emacs :backward))
-            "M-$" (argless (vemv/send :shell :backward))
+            ;; "M-$" (argless (vemv/send :shell :backward))
 
             "C-l" (argless (kill-buffer (current-buffer))) ; XXX and switch to the next file buffer
-            "M-L" (argless (kill-buffer (current-buffer))) ; XXX don't ask
+            ;; "C-L" (argless (let (kill-buffer-query-functions) (kill-buffer)))
             "M-l" (argless (save-buffer)
                            (kill-buffer (current-buffer)))
             "C-n" (argless (kill-buffer-and-window) (vemv/previous-window))
@@ -161,5 +158,7 @@
 	    "C-." 'vemv/ns-form
 	    "C-," 'nrepl-load-current-buffer
 	    "RET" 'newline
+	    "C-\\" 'sgml-close-tag
+	    "C-=" 'mark-whole-buffer
 	    "C-q" 'save-buffers-kill-terminal))
             ; eval-minibuffer: M-:

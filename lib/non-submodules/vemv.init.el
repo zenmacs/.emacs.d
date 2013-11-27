@@ -1,12 +1,12 @@
 ;;; -*- lexical-binding: t -*-
 (setq lexical-binding t)
-
+(setq-default indent-tabs-mode nil)
 (show-paren-mode 1)
 (recentf-mode 1)
 (ido-mode 1)
 (cua-mode 1)
 (blink-cursor-mode -1)
-
+;; (setq yas-use-menu nil)
 ;; XXX detect nrepl's project, open the latest file within that proj.
 ;; XXX add send hook to ns-eval-form
 (require 'yasnippet)
@@ -19,9 +19,12 @@
 (require 'ac-nrepl)
 (require 'smex)
 (require 'ruby-mode)
+(require 'ruby-end)
 (require 'clojure-mode)
 (require 'comint)
 (require 'dirtree)
+(require 'es-lib)
+(require 'project-explorer)
 (require 'paredit)
 (require 'haskell-mode)
 (require 'undo-tree)
@@ -34,19 +37,26 @@
 (require 'package)
 
 (add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/") t) ;; installed: ecb
-
-;(require 'ecb)
-;(require 'ecb-autoloads)
+             '("marmalade" . "http://marmalade-repo.org/packages/") t) ;; installed: ecb, rainbow-mode
 
 (package-initialize)
 
+(add-hook 'ruby-mode-hook 'robe-mode)
+(add-hook 'css-mode-hook (lambda () (rainbow-mode 1)))
+
+(yas-reload-all)
+(menu-bar-mode)
 (yas-global-mode 1)
+(global-auto-revert-mode t) ;; refresh buffers on external changes to the underlying files
 
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq initial-scratch-message "")
 (eval-after-load "auto-complete" ; XXX don't show doc in nREPLs AC
   '(add-to-list 'ac-modes 'nrepl-mode))
+(setq yas-use-menu nil)
+
+(setq require-final-newline 't)
+(global-hl-line-mode t)
 
 (custom-set-variables
  '(haskell-mode-hook '(turn-on-haskell-indentation))
@@ -68,7 +78,7 @@
 						(let ((name (substring (buffer-name) ; XXX needs prefixing
 									     0
 									     (- (length (buffer-name)) 4)))) ; removes the .clj
-						  (save-excursion ;; XXX nrepl-load-current-buffer
+						  (comm save-excursion ;; XXX nrepl-load-current-buffer
 						    (beginning-of-buffer)
 						    (insert (concat "(ns "
 								    name
@@ -77,7 +87,10 @@
 						  (with-current-buffer "*nrepl*"
 						    (nrepl-set-ns name)))))))
 
+(add-hook 'ruby-mode-hook 'enable-paredit-mode)
 (add-hook 'ruby-mode-hook 'electric-pair-mode)
+
+(add-hook 'html-mode-hook 'electric-pair-mode)
 
 (add-hook 'emacs-lisp-mode-hook 'auto-complete-mode)
 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
@@ -94,16 +107,22 @@
 (add-hook 'nrepl-mode-hook 'enable-paredit-mode)
 (add-hook 'nrepl-mode-hook 'set-auto-complete-as-completion-at-point-function)
 (add-hook 'nrepl-connected-hook (argless (delay (argless
-						 (delete-window)
+						 ;;(delete-window)
 						 (vemv/next-window)
 						 (switch-to-buffer "*nrepl*")
+						 (vemv/next-window)
+						 (switch-to-buffer "*ielm*")
 						 (select-window vemv/main_window) ;; apparently needed only on the first run! (this comment was placed in the slime era)
-                                                 (nrepl-eval-ns-form)))))
+                                                 (nrepl-eval-ns-form)) 2)))
 
 (add-hook 'kill-buffer-hook (argless (let ((killed (buffer-name (current-buffer))))
                                        (setq vemv/open_file_buffers
                                              (filter (lambda (_) (not (equal _ killed)))
                                                      vemv/open_file_buffers)))))
+(add-hook 'html-mode-hook
+          (lambda()
+            (setq sgml-basic-offset 2)
+            (setq indent-tabs-mode nil)))
 
 (set-default 'truncate-lines t)
 (setq-default save-place t)
@@ -123,7 +142,7 @@
 (setq ac-delay 100)
 ;; (setq ac-quick-help-height 60)
 
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+(setq mouse-wheel-scroll-amount '(4 ((shift) . 4)))
 (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 (setq scroll-step 1)
@@ -147,19 +166,22 @@
 ;; javadoc
 ;; popup doc for defvar
 ;; goto fn defs
+(setq vemv/launched nil)
 
 (if (window-system) (vemv/maximize))
-(setq vemv/launched nil)
 
 (split-window-vertically)
 (enlarge-window 8)
 
 (split-window-horizontally) ;;  two vertical halves actually
-(vemv/render-trees vemv/tree-dirs)
 
 (enlarge-window-horizontally -53) ; Unlike split-window-*, this one does get the naming right.
+;; (setq default-directory "/Users/vemualim/projects")
+(let ((default-directory "/Users/vemualim/projects/")) ;; trailing slash required
+  (call-interactively 'project-explorer-open))
+;(call-interactively (argless ))
 
-(beginning-of-buffer)
+
 (vemv/next-window)
 
 (setq vemv/main_window (selected-window))
@@ -169,6 +191,7 @@
 (enlarge-window-horizontally 10)
 
 (switch-to-buffer "*scratch*")
+
 (sh)
 (setq vemv/repl1 (selected-window))
 (vemv/next-window)
@@ -202,8 +225,6 @@
 				      head)))))))
        1)
 
-
-; (cd "~/clj/loudlist/src/loudlist")
 
 (delay (argless (if (window-system) (set-face-attribute 'default nil :font "DejaVu Sans Mono-12"))) 1)
 
@@ -318,7 +339,7 @@
 (defun vemv/display-help (buffer)
   (let ((frame (vemv/get-help-frame)))
     (select-frame frame)
-;    (clojure-mode)
+    ;; (clojure-mode)
     ;(switch-to-buffer "*nREPL doc*")
     ;(when clj?)
     ;(set-window-buffer (frame-first-window frame) buffer)
@@ -340,7 +361,35 @@
   (interactive)
   (apply 'undo-tree-undo args))
 
-(delay (argless (set-frame-size (selected-frame) 270 82))
-       1)
+(if window-system
+ (delay (argless (set-frame-size (selected-frame) 270 82))
+        1))
 
 (global-set-key [kp-delete] 'delete-char) ;; OS X
+
+(setq ;; http://www.emacswiki.org/emacs/BackupDirectory
+   backup-by-copying t      ; don't clobber symlinks
+   delete-old-versions t
+   kept-new-versions 6
+   kept-old-versions 2
+   version-control t)
+
+(setq backup-directory-alist
+          `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+          `((".*" ,temporary-file-directory t)))
+
+(add-to-list 'auto-mode-alist '("Gemfile" . ruby-mode))
+
+(dolist (command '(yank yank-pop))
+  (eval `(defadvice ,command (after indent-region activate)
+	   (and (not current-prefix-arg)
+		(member major-mode '(emacs-lisp-mode lisp-mode
+						     clojure-mode    scheme-mode
+						     haskell-mode    ruby-mode
+						     rspec-mode      python-mode
+						     c-mode          c++-mode
+						     objc-mode       latex-mode
+						     plain-tex-mode))
+		(let ((mark-even-if-inactive transient-mark-mode))
+		  (indent-region (region-beginning) (region-end) nil))))))

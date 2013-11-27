@@ -37,3 +37,12 @@
 [submodule "lib/nyan-mode"]
 	path = lib/nyan-mode
 	url = https://github.com/TeMPOraL/nyan-mode
+[submodule "lib/ruby-end"]
+	path = lib/ruby-end
+	url = https://github.com/rejeep/ruby-end
+[submodule "lib/project-explorer"]
+	path = lib/project-explorer
+	url = https://github.com/sabof/project-explorer
+[submodule "lib/es-lib"]
+	path = lib/es-lib
+	url = https://github.com/sabof/es-lib

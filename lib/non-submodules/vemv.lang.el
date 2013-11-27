@@ -435,14 +435,15 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 (defun vemv/next-file-buffer ()
   "Switch to the next buffer that contains a file opened by the user."
   (interactive)
-  (if-let (file (second vemv/open_file_buffers))
-          (if (equal file (buffer-name (current-buffer)))
-              (message "No more file buffers available.")
-              (switch-to-buffer file)
-              (setq vemv/open_file_buffers `(,@(cdr vemv/open_file_buffers) ,(car vemv/open_file_buffers)))
-	      (vemv/advice-nrepl)
-	      (vemv/message-file-buffers))
-          (message "No more file buffers available.")))
+  (if (<= 2 (length vemv/open_file_buffers))
+      (progn
+	(if (equal (second vemv/open_file_buffers) (buffer-name (current-buffer)))
+	    (setq vemv/open_file_buffers `(,@(cdr vemv/open_file_buffers) ,(car vemv/open_file_buffers))))
+	(switch-to-buffer (second vemv/open_file_buffers))
+	(setq vemv/open_file_buffers `(,@(cdr vemv/open_file_buffers) ,(car vemv/open_file_buffers)))
+	(vemv/advice-nrepl)
+	(vemv/message-file-buffers))
+      (message "No more file buffers available.")))
 
 (defun vemv/previous-file-buffer ()
   "Switch to the previous buffer that contains a file opened by the user."
