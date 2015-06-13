@@ -86,7 +86,7 @@
 
 (defun vemv/maximize ()
   "Maximize the current frame. Presumes an X-window environment."
-  (interactive))
+  (toggle-frame-maximized))
 
 (defun vemv/hash-map (&rest kvs)
   "Makes and returns a hash table out of its arguments."
