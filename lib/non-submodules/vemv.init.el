@@ -159,7 +159,7 @@
                 lisp-mode textile-mode markdown-mode tuareg-mode))
   (add-to-list 'ac-modes mode))
 
-(setenv "PATH" (concat (getenv "PATH") ":/Users/vemualim/bin"))
+(setenv "PATH" (concat (getenv "PATH") ":/Users/vemv/bin"))
 
 ;; restart
 ;; tree: refresh on adds
@@ -176,8 +176,8 @@
 (split-window-horizontally) ;;  two vertical halves actually
 
 (enlarge-window-horizontally -53) ; Unlike split-window-*, this one does get the naming right.
-;; (setq default-directory "/Users/vemualim/projects")
-(let ((default-directory "/Users/vemualim/projects/")) ;; trailing slash required
+;; (setq default-directory "/Users/vemv/projects")
+(let ((default-directory "/Users/vemv/projects/")) ;; trailing slash required
   (call-interactively 'project-explorer-open))
 ;(call-interactively (argless ))
 
