@@ -220,7 +220,7 @@
 	    (if (pos? (length recentf-list))
 		(let ((head (car recentf-list)))
 		  (ignore-errors (vemv/open
-				  (if (vemv/ends-with head ".ido.last")
+				  (if (vemv/ends-with head "ido.last")
 				      (second recentf-list)
 				      head)))))))
        1)
