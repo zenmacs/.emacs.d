@@ -14,12 +14,8 @@
       (list 
        "~/.emacs.d/lib" :lib
        "~/.emacs.d/lib/non-submodules" :non
-       "~/comu" :comunidades
-       "~/sub" :subastas
        ))
 
-;; ;:soundcloud-cljs "~/Development/needleforsoundcloud/frontend/cljs/needle"
-;; :ellipse "~/Development/ellipse/src/ellipse"
 ;; :emacs "~/.emacs.d/packs/user/user-pack"
 ;; :haskell "~/Development/vemv/src/haskell"
 
@@ -82,6 +78,12 @@
        ruby-mode-map (vemv/hash-map
 		       "RET" 'ruby-reindent-then-newline-and-indent)))
 
+; basics reminder:
+; c-space - set the mark
+; M-: - eval lisp
+; C-g - cancel command
+; M-x - interactive command
+
 ;XXX M-RET alters the kill-ring.
 (setq vemv/global-key-bindings ; This setup is optimized for a UK keyboard with a Colemak layout, with the number/symbol row switched (e.g. "(" is the default, "9" requires shift).
       (vemv/hash-map
@@ -106,6 +108,7 @@
             "C-k" 'vemv/kill
             "C-K" (argless (kill-new (vemv/kill))) ; cut
             "M-k" (argless (vemv/kill :backward))
+            "M-<up>" 'paredit-splice-sexp-killing-backward
             "M-K" (argless (kill-new (vemv/kill :backward)))
 
             "C-b" 'vemv/duplicate

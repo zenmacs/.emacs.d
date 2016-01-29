@@ -26,3 +26,5 @@ tmp/*
 ac-comphist.dat
 elpa
 init.aaron.el
+recentf
+ido.last

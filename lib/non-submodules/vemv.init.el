@@ -173,12 +173,13 @@
 (split-window-vertically)
 (enlarge-window 8)
 
-(split-window-horizontally) ;;  two vertical halves actually
+;; (split-window-horizontally) ;;  two vertical halves actually
 
 (enlarge-window-horizontally -53) ; Unlike split-window-*, this one does get the naming right.
 ;; (setq default-directory "/Users/vemv/projects")
-(let ((default-directory "/Users/vemv/projects/")) ;; trailing slash required
-  (call-interactively 'project-explorer-open))
+(let ((default-directory "/Users/vemv/roc/")) ;; trailing slash required
+  (call-interactively 'project-explorer-open)
+  (enlarge-window-horizontally -200))
 ;(call-interactively (argless ))
 
 
