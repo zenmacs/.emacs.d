@@ -83,11 +83,13 @@
 ; M-: - eval lisp
 ; C-g - cancel command
 ; M-x - interactive command
+; C-x 0 - kill window without killing buffer
+; M-x describe-key - resolve a key binding
 
 ;XXX M-RET alters the kill-ring.
 (setq vemv/global-key-bindings ; This setup is optimized for a UK keyboard with a Colemak layout, with the number/symbol row switched (e.g. "(" is the default, "9" requires shift).
       (vemv/hash-map
-            "S-<prior>" 'vemv/previous-window
+            "S-<prior>" 'vemv/previous-window ; on OSX: shift-fn-down
             "S-<next>" 'vemv/next-window
 	    "§" 'hippie-expand
             "C-<prior>" 'vemv/previous-file-buffer

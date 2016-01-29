@@ -1,3 +1,7 @@
+#### Clojure setup
+
+* It's presumed that the following process is running before starting emacs: `lein repl :headless :port 9119`
+
 #### On scrolling
 
 Scrolling might be broken in fresh installations. I don't know what fixed it, but this seemed to work:
