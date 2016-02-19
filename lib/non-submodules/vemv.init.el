@@ -1,4 +1,14 @@
 ;;; -*- lexical-binding: t -*-
+
+(require 'package)
+(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+(package-initialize)
+(package-refresh-contents)
+
+(unless (package-installed-p 'cider)
+  (package-install 'cider))
+
 (setq lexical-binding t)
 (setq-default indent-tabs-mode nil)
 (show-paren-mode 1)
@@ -19,11 +29,13 @@
 (require 'ruby-mode)
 (require 'ruby-end)
 (require 'clojure-mode)
+(require 'epl)
 (require 'pkg-info)
-(require 'cider)
+(require 'spinner)
 (require 'comint)
 (require 'dirtree)
 (require 'es-lib)
+(require 'es-windows)
 (require 'project-explorer)
 (require 'paredit)
 (require 'haskell-mode)

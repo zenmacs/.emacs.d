@@ -22,9 +22,6 @@
 [submodule "lib/dash"]
 	path = lib/dash
 	url = git@github.com:magnars/dash.el.git
-[submodule "lib/pkg-info"]
-	path = lib/pkg-info
-	url = git@github.com:lunaryorn/pkg-info.el.git
 [submodule "lib/yasnippet"]
 	path = lib/yasnippet
 	url = https://github.com/capitaomorte/yasnippet
@@ -40,3 +37,21 @@
 [submodule "lib/es-lib"]
 	path = lib/es-lib
 	url = https://github.com/sabof/es-lib
+[submodule "lib/pkg-info"]
+	path = lib/pkg-info
+	url = git@github.com:lunaryorn/pkg-info.el.git
+[submodule "lib/cider"]
+	path = lib/cider
+	url = git@github.com:clojure-emacs/cider.git
+[submodule "lib/epl"]
+	path = lib/epl
+	url = git@github.com:cask/epl.git
+[submodule "lib/spinner"]
+	path = lib/spinner
+	url = git@github.com:Malabarba/spinner.el.git
+[submodule "lib/seq"]
+	path = lib/seq
+	url = git@github.com:NicolasPetton/seq.el.git
+[submodule "lib/es-windows"]
+	path = lib/es-windows
+	url = git@github.com:sabof/es-windows
