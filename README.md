@@ -10,3 +10,5 @@ Scrolling might be broken in fresh installations. I don't know what fixed it, bu
 * run it once, opening a large file, scrolling through it
 * `mv .emacs.d .emacs.d.other`
 * clone this repo, pull submodules, run normally.
+
+**Easier fix: ** resize the main window.

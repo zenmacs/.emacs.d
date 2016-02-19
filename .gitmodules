@@ -4,12 +4,6 @@
 [submodule "lib/smex"]
 	path = lib/smex
 	url = https://github.com/nonsequitur/smex
-[submodule "lib/ac-nrepl"]
-	path = lib/ac-nrepl
-	url = https://github.com/purcell/ac-nrepl
-[submodule "lib/nrepl"]
-	path = lib/nrepl
-	url = https://github.com/kingtim/nrepl.el
 [submodule "lib/auto-complete"]
 	path = lib/auto-complete
 	url = https://github.com/auto-complete/auto-complete
@@ -27,7 +21,10 @@
 	url = https://github.com/VincentToups/emacs-utils.git
 [submodule "lib/dash"]
 	path = lib/dash
-	url = git@github.com:vemv/dash.el.git
+	url = git@github.com:magnars/dash.el.git
+[submodule "lib/pkg-info"]
+	path = lib/pkg-info
+	url = git@github.com:lunaryorn/pkg-info.el.git
 [submodule "lib/yasnippet"]
 	path = lib/yasnippet
 	url = https://github.com/capitaomorte/yasnippet

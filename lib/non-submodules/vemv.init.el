@@ -12,15 +12,15 @@
 (require 'yasnippet)
 (require 'saveplace)
 (require 'dash)
-(require 'nrepl)
 (require 'popup)
 (require 'auto-complete)
 (require 'auto-complete-config)
-(require 'ac-nrepl)
 (require 'smex)
 (require 'ruby-mode)
 (require 'ruby-end)
 (require 'clojure-mode)
+(require 'pkg-info)
+(require 'cider)
 (require 'comint)
 (require 'dirtree)
 (require 'es-lib)
@@ -179,7 +179,7 @@
 ;; (setq default-directory "/Users/vemv/projects")
 (let ((default-directory "/Users/vemv/roc/")) ;; trailing slash required
   (call-interactively 'project-explorer-open)
-  (enlarge-window-horizontally -200))
+  (enlarge-window-horizontally -50))
 ;(call-interactively (argless ))
 
 

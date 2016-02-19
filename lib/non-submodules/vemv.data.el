@@ -158,7 +158,7 @@
             "C-;" 'toggle-truncate-lines
             "C-*" (argless (vemv/open (concat "~/.emacs.d/lib/non-submodules/"
                                               (ido-completing-read "Open: " vemv/emacs-files))))
-	    "C-#" 'vemv/indent
+	    "C-3" 'vemv/indent
             "C-t" (argless (switch-to-buffer "*scratch*"))
 	    "C-." 'vemv/ns-form
 	    "C-," 'nrepl-load-current-buffer
