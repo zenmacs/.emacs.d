@@ -40,11 +40,11 @@
 (setq vemv/key-bindings-to-dummy '([mouse-6] [mouse-7] [double-mouse-6] [double-mouse-7] [triple-mouse-6] [triple-mouse-7]))
 
 (setq vemv/local-key-bindings
-      (list clojure-mode-map  "C-/" 'nrepl-doc
-            clojure-mode-map  "C-?" 'nrepl-src
+      (list ; clojure-mode-map  "C-/" 'nrepl-doc
+            ; clojure-mode-map  "C-?" 'nrepl-src
             clojure-mode-map  ";" 'vemv/semicolon
-            clojure-mode-map  "C-e" (argless (vemv/send :slime))
-            clojure-mode-map  "M-e" (argless (vemv/send :slime :backward))
+            clojure-mode-map  "C-e" (argless (vemv/send :cider))
+            clojure-mode-map  "M-e" (argless (vemv/send :cider :backward))
             emacs-lisp-mode-map "C-/" 'vemv/elisp-popup-documentation
             emacs-lisp-mode-map "C-?" 'vemv/elisp-window-documentation
 	    emacs-lisp-mode-map "C-z" 'undo-tree-undo
@@ -59,11 +59,12 @@
 (comm setq vemv/local-key-bindings
       (vemv/hash-map
        clojure-mode-map (vemv/hash-map
-			 "C-/" 'nrepl-doc
-			 "C-?" 'nrepl-src
-			 ";" (argless (paredit-semicolon) (paredit-semicolon) (insert " ")) ;; (when (and (eolp) COLUMN > 0) (insert " "))
-			 "C-e" (argless (vemv/send :slime))
-			 "M-e" (argless (vemv/send :slime :backward)))
+			 ; "C-/" ;  'nrepl-doc
+			 ; "C-?" ; 'nrepl-src
+			 ; ";" (argless (paredit-semicolon) (paredit-semicolon) (insert " ")) ;; (when (and (eolp) COLUMN > 0) (insert " "))
+			 ; "C-e" (argless (vemv/send :slime))
+			 ; "M-e" (argless (vemv/send :slime :backward))
+			 )
        emacs-lisp-mode-map (vemv/hash-map
 			     "C-/" 'vemv/elisp-popup-documentation
 			     "C-?" 'vemv/elisp-window-documentation
@@ -115,6 +116,7 @@
 
             "C-b" 'vemv/duplicate
             "C-w" 'smex ; M-x
+						"C-j" 'cider-jack-in
             "C-z" 'undo-tree-undo
             "C-`" 'undo-tree-redo
             "<backspace>" (argless (if (region-active-p)
@@ -161,7 +163,7 @@
 	    "C-3" 'vemv/indent
             "C-t" (argless (switch-to-buffer "*scratch*"))
 	    "C-." 'vemv/ns-form
-	    "C-," 'nrepl-load-current-buffer
+	    ; "C-," 'nrepl-load-current-buffer
 	    "RET" 'newline
 	    "C-\\" 'sgml-close-tag
 	    "C-=" 'mark-whole-buffer

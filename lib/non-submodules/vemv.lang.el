@@ -151,6 +151,7 @@ paste and simulate an intro press. Finally, go back to sender window."
           (if (or (equal where :ielm) (equal where :shell)) (select-window vemv/repl2) (select-window vemv/repl1))
           (switch-to-buffer (case where
                               (:slime "*nrepl*")
+                              (:cider the-cider-buffer-name)
                               (:ielm "*ielm*")
                               (:shell "*shell*")
                               (:cljs (if cljs-launched
@@ -180,6 +181,7 @@ paste and simulate an intro press. Finally, go back to sender window."
 
           (case where
             (:slime (nrepl-return))
+            (:cider (cider-repl-return))
             (:ielm (ielm-return))
             (:shell (comint-send-input))
             (:cljs (if cljs-launched (comint-send-input))))
@@ -414,8 +416,11 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (select-window vemv/main_window)
   (let ((file (buffer-name (or (and filepath (find-file filepath))
                                (ido-find-file)))))
-    (when (not (some (lambda (item) (equal item file)) vemv/open_file_buffers))
-      (conj! vemv/open_file_buffers file))))
+    ; (when (not (some (lambda (item) (equal item file)) vemv/open_file_buffers))
+      (conj! vemv/open_file_buffers file)
+      ;)
+      )
+      )
 
 ; XXX if scratch is not empty, include it. (?)
 

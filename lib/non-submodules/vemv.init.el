@@ -1,5 +1,7 @@
 ;;; -*- lexical-binding: t -*-
 
+(setq the-cider-buffer-name "*cider-repl roc*")
+
 (require 'package)
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
@@ -129,6 +131,14 @@
   						 (select-window vemv/main_window) ;; apparently needed only on the first run! (this comment was placed in the slime era)
                                                    (nrepl-eval-ns-form)) 2)))
 )
+
+(add-hook 'cider-connected-hook (argless
+  (vemv/next-window)
+  (switch-to-buffer the-cider-buffer-name)
+  (select-window vemv/main_window)
+  (cider-eval-ns-form)
+  (cider-repl-set-ns (with-current-buffer (current-buffer) (cider-current-ns)))
+  ))
 
 (add-hook 'kill-buffer-hook (argless (let ((killed (buffer-name (current-buffer))))
                                        (setq vemv/open_file_buffers
