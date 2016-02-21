@@ -3,11 +3,15 @@
 (require 'package)
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t) ;; installed: ecb, rainbow-mode
 (package-initialize)
-(package-refresh-contents)
+;; (package-refresh-contents)
 
 (unless (package-installed-p 'cider)
   (package-install 'cider))
+
+(unless (package-installed-p 'company)
+  (package-install 'company))
 
 (setq lexical-binding t)
 (setq-default indent-tabs-mode nil)
@@ -28,7 +32,8 @@
 (require 'smex)
 (require 'ruby-mode)
 (require 'ruby-end)
-(require 'clojure-mode)
+;; (require 'clojure-mode)
+(require 'cider)
 (require 'epl)
 (require 'pkg-info)
 (require 'spinner)
@@ -46,15 +51,12 @@
 (require 'vemv.theme)
 (provide 'vemv.init)
 
-(require 'package)
-
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/") t) ;; installed: ecb, rainbow-mode
-
-(package-initialize)
+(global-company-mode)
 
 (add-hook 'ruby-mode-hook 'robe-mode)
 (add-hook 'css-mode-hook (lambda () (rainbow-mode 1)))
+
+(add-to-list 'exec-path "/Users/vemv/bin")
 
 (yas-reload-all)
 (menu-bar-mode)
@@ -63,7 +65,7 @@
 
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq initial-scratch-message "")
-(eval-after-load "auto-complete" ; XXX don't show doc in nREPLs AC
+(comm eval-after-load "auto-complete" ; XXX don't show doc in nREPLs AC
   '(add-to-list 'ac-modes 'nrepl-mode))
 (setq yas-use-menu nil)
 
@@ -78,10 +80,10 @@
 
 (add-hook 'clojure-mode-hook 'enable-paredit-mode)
 (add-hook 'clojure-mode-hook 'undo-tree-mode)
-(add-hook 'clojure-mode-hook 'auto-complete-mode)
+;; (add-hook 'clojure-mode-hook 'auto-complete-mode)
 (add-hook 'clojure-mode-hook (argless (local-set-key (kbd "RET") 'newline-and-indent)))
 
-(add-hook 'clojure-mode-hook (argless (if-let (ns (clojure-find-ns))
+(comm add-hook 'clojure-mode-hook (argless (if-let (ns (clojure-find-ns))
 					      (progn
 						(nrepl-eval-ns-form)
 						(with-current-buffer "*nrepl*"
@@ -111,21 +113,22 @@
 (defun set-auto-complete-as-completion-at-point-function ()
   (setq completion-at-point-functions '(auto-complete)))
 (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
-   
-(add-hook 'nrepl-interaction-mode-hook 'ac-nrepl-setup)
-(add-hook 'nrepl-interaction-mode-hook 'set-auto-complete-as-completion-at-point-function)
-(add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
-(add-hook 'nrepl-mode-hook 'auto-complete-mode)
-(add-hook 'nrepl-mode-hook 'enable-paredit-mode)
-(add-hook 'nrepl-mode-hook 'set-auto-complete-as-completion-at-point-function)
-(add-hook 'nrepl-connected-hook (argless (delay (argless
-						 ;;(delete-window)
-						 (vemv/next-window)
-						 (switch-to-buffer "*nrepl*")
-						 (vemv/next-window)
-						 (switch-to-buffer "*ielm*")
-						 (select-window vemv/main_window) ;; apparently needed only on the first run! (this comment was placed in the slime era)
-                                                 (nrepl-eval-ns-form)) 2)))
+(comm   
+  (add-hook 'nrepl-interaction-mode-hook 'ac-nrepl-setup)
+  (add-hook 'nrepl-interaction-mode-hook 'set-auto-complete-as-completion-at-point-function)
+  (add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
+  (add-hook 'nrepl-mode-hook 'auto-complete-mode)
+  (add-hook 'nrepl-mode-hook 'enable-paredit-mode)
+  (add-hook 'nrepl-mode-hook 'set-auto-complete-as-completion-at-point-function)
+  (comm add-hook 'nrepl-connected-hook (argless (delay (argless
+  						 ;;(delete-window)
+  						 (vemv/next-window)
+  						 (switch-to-buffer "*nrepl*")
+  						 (vemv/next-window)
+  						 (switch-to-buffer "*ielm*")
+  						 (select-window vemv/main_window) ;; apparently needed only on the first run! (this comment was placed in the slime era)
+                                                   (nrepl-eval-ns-form)) 2)))
+)
 
 (add-hook 'kill-buffer-hook (argless (let ((killed (buffer-name (current-buffer))))
                                        (setq vemv/open_file_buffers
@@ -159,6 +162,11 @@
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 (setq scroll-step 1)
 
+(setq nrepl-hide-special-buffers t)
+(setq cider-repl-pop-to-buffer-on-connect nil)
+(setq cider-show-error-buffer nil)
+(add-hook 'cider-repl-mode-hook #'paredit-mode)
+
 (set-default 'ac-sources
              '(ac-source-dictionary
                ac-source-words-in-buffer
@@ -167,7 +175,7 @@
 
 (dolist (mode '(magit-log-edit-mode log-edit-mode org-mode text-mode haml-mode
                 sass-mode yaml-mode csv-mode espresso-mode haskell-mode
-                html-mode nxml-mode sh-mode smarty-mode clojure-mode
+                html-mode nxml-mode sh-mode smarty-mode ;; clojure-mode
                 lisp-mode textile-mode markdown-mode tuareg-mode))
   (add-to-list 'ac-modes mode))
 
@@ -250,14 +258,14 @@
          (y-or-n-p (&rest args) t))
     ad-do-it))
 
-(defadvice eval-ns-form (around nrepl-eval-ns-form)
+(comm defadvice eval-ns-form (around nrepl-eval-ns-form)
   (save-excursion
     (when (clojure-find-ns)
       (goto-char (match-beginning 0))
       (vemv/send :slime)))
   ad-do-it)
 
-(ad-activate 'eval-ns-form)
+(comm ad-activate 'eval-ns-form)
 
 (setq back-to-indentation-state nil)
 
@@ -312,10 +320,10 @@
           (read-kbd-macro k)
           k))
     (third binding)))
-
+(comm
 (condition-case ex (nrepl "localhost" 9119) ('error))
 (condition-case ex (nrepl "localhost" 9120) ('error))
-
+)
 (setq redisplay-dont-pause t
       column-number-mode t
       echo-keystrokes 0.02
@@ -365,9 +373,9 @@
 
 (comm add-to-list 'special-display-regexps '(".*" vemv/display-help))
 (add-to-list 'special-display-buffer-names '("*Help*" vemv/display-completion))
-(add-to-list 'special-display-buffer-names '("*nREPL doc*" vemv/display-help))
+(comm add-to-list 'special-display-buffer-names '("*nREPL doc*" vemv/display-help))
 (add-to-list 'special-display-buffer-names '("*Ido Completions*" vemv/display-completion))
-(add-to-list 'special-display-buffer-names '("*nrepl-error*" vemv/display-completion)) ; FIXME yanks the stacktrace to the responsible buffer instead
+(comm add-to-list 'special-display-buffer-names '("*nrepl-error*" vemv/display-completion)) ; FIXME yanks the stacktrace to the responsible buffer instead
 (add-to-list 'special-display-buffer-names '("*Diff*" vemv/display-completion))
 
 (defun undo (&rest args)

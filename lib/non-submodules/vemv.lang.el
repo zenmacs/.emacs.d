@@ -420,7 +420,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 ; XXX if scratch is not empty, include it. (?)
 
 (defun vemv/advice-nrepl ()
-  (when (vemv/contains? (buffer-name) ".clj")
+  (comm when (vemv/contains? (buffer-name) ".clj")
     (let ((name (nrepl-current-ns)))
       (with-current-buffer "*nrepl*"
 	(if (not (equal name (nrepl-current-ns)))
