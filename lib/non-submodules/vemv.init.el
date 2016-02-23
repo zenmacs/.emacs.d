@@ -135,9 +135,11 @@
 (add-hook 'cider-connected-hook (argless
   (vemv/next-window)
   (switch-to-buffer the-cider-buffer-name)
-  (select-window vemv/main_window)
-  (cider-eval-ns-form)
-  (cider-repl-set-ns (with-current-buffer (current-buffer) (cider-current-ns)))
+  (delay (argless
+      (insert "(dev)(reset)")
+      (cider-repl-return)
+      (select-window vemv/main_window)
+    ) 1)
   ))
 
 (add-hook 'kill-buffer-hook (argless (let ((killed (buffer-name (current-buffer))))

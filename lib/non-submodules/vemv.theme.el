@@ -7,6 +7,8 @@
 
 (deftheme vemv "")
 
+(setq vemv-colors/keyword-green "#C1ED3D")
+
 (custom-theme-set-faces 'vemv
 
 			'(default ((t (:background "#4D575F" :foreground "#F5F5F5"))))
@@ -19,7 +21,7 @@
 			
 			'(font-lock-builtin-face ((t (:foreground "#F5F5F5"))))
 			'(font-lock-comment-face ((t (:italic t :foreground "#FFE33B"))))
-			'(font-lock-constant-face ((t (:italic t :foreground "#C1ED3D")))) ;; green
+			`(font-lock-constant-face ((t (:italic t :foreground ,vemv-colors/keyword-green))))
 			'(font-lock-doc-string-face ((t (:foreground "#FFE33B" :italic t))))
 			'(font-lock-function-name-face ((t (:foreground "#FBDE2D" :bold t)))) ;; yellow
 			'(font-lock-keyword-face ((t (:foreground "#F5F5F5"))))
@@ -67,6 +69,22 @@
 			'(ac-completion-face ((t (:foreground "darkgray" :underline t :slant normal :weight normal))))
 			'(ac-candidate-face ((t (:background "#A2A2A2" :foreground "black" :slant normal :weight normal))))
 			'(ac-selection-face ((t (:background "deep pink" :foreground "black" :slant normal :weight normal))))
+			
+			'(company-tooltip ((t (:background "#A2A2A2" :foreground "#333333" :slant normal :weight normal)))) ; main
+			'(company-tooltip-search ((t (:background "#A2A2A2" :foreground "#333333" :slant normal :weight normal)))) ; the 'match' so far
+			'(company-tooltip-annotation ((t (:background "#A2A2A2" :foreground "#333333" :slant normal :weight normal))))
+			'(company-tooltip-annotation-selection ((t (:background "#A2A2A2" :foreground "#333333" :slant normal :weight normal))))
+			'(company-tooltip-common-selection ((t (:background "deep pink" :foreground "#333333" :slant normal :weight normal))))
+			'(company-tooltip-common ((t (:background "#A2A2A2" :foreground "#333333" :slant normal :weight normal))))
+			'(company-tooltip-selection ((t (:background "deep pink" :foreground "#333333" :slant normal :weight normal)))) ; the completion that one is currently choosing
+			'(company-preview-common ((t (:background "deep pink" :foreground "#333333" :slant normal :weight normal)))) ; the completion that one is currently choosing
+			'(company-preview-search ((t (:background "deep pink" :foreground "#333333" :slant normal :weight normal)))) ; the completion that one is currently choosing
+			'(company-preview ((t (:background "deep pink" :foreground "#333333" :slant normal :weight normal)))) ; the completion that one is currently choosing
+			'(company-scrollbar-fg ((t (:background "#696969"))))
+			'(company-scrollbar-bg ((t (:background "#B6B6B6"))))
+			
+			
+			
 			'(popup-isearch-match ((t (:background "black" :foreground "deep pink" :slant normal :weight normal))))
 			'(popup-tip-face ((t (:background "#333333" :foreground "whitepnpnn" :slant normal :weight normal))))
 			'(popup-scroll-bar-foreground-face ((t (:background "#0A0A0A"))))

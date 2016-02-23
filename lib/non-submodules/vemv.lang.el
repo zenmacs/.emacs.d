@@ -120,6 +120,14 @@
     (pop kill-ring)
     result))
 
+(defun vemv/current-frame-buffers ()
+  (mapcar #'buffer-name (mapcar #'window-buffer (window-list))))
+
+(defun vemv/switch-to-buffer-in-any-frame (buffer-name)
+  (if (seq-contains (vemv/current-frame-buffers) buffer-name)
+    (switch-to-buffer buffer-name)
+    (switch-to-buffer-other-frame buffer-name)))
+
 (defun vemv/sexpr-content (&optional backward?)
   "Returns the content of the next (or previous, on non-nil values of BACKWARD?) sexpr, as a string.
 
@@ -134,7 +142,9 @@ Unlike paredit-copy-as-kill, this function will only grab one sexpr (and no more
       (if backward? (paredit-forward) (paredit-backward))
       result)))
 
+(setq cider-launched nil)
 (setq cljs-launched nil)
+
 (defun vemv/send (where &optional backward? content) ; XXX can one do polymorphism in emacs? XXX send w/o intro
   "Copy the next sexp (or on non-nil backward? arg, the previous sexp) and its character trailer,
 switch to the window that is assigned for REPL purposes, then it switch to the corresponding buffer (different REPLs have different buffers),
@@ -149,7 +159,7 @@ paste and simulate an intro press. Finally, go back to sender window."
         (eval (read content))
         (let ((sender (selected-window)))
           (if (or (equal where :ielm) (equal where :shell)) (select-window vemv/repl2) (select-window vemv/repl1))
-          (switch-to-buffer (case where
+          (vemv/switch-to-buffer-in-any-frame (case where
                               (:slime "*nrepl*")
                               (:cider the-cider-buffer-name)
                               (:ielm "*ielm*")

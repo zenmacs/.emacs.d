@@ -99,7 +99,7 @@
             "M-<next>" 'next-buffer
 	    "M-<begin>" nil
 	    "M-<end>" nil
-	    "<backtab>" 'auto-complete
+	    ; "<backtab>" 'auto-complete
             "C-a" (argless (if (region-active-p) ; copy selection or next sexpr
                                (call-interactively 'kill-ring-save)
                                (kill-new (vemv/sexpr-content))))
@@ -115,10 +115,10 @@
             "M-K" (argless (kill-new (vemv/kill :backward)))
 
             "C-b" 'vemv/duplicate
-            "C-w" 'smex ; M-x
-						"C-j" 'cider-jack-in
+            ; "C-w" 'smex ; M-x
+						"C-j" (argless (unless cider-launched (setq cider-launched t) (cider-jack-in)))
             "C-z" 'undo-tree-undo
-            "C-`" 'undo-tree-redo
+            "C-`" 'other-frame
             "<backspace>" (argless (if (region-active-p)
                                        (progn (call-interactively 'kill-region)
                                               (pop kill-ring))
@@ -145,14 +145,16 @@
             ;; "C-L" (argless (let (kill-buffer-query-functions) (kill-buffer)))
             "M-l" (argless (save-buffer)
                            (kill-buffer (current-buffer)))
-            "C-n" (argless (kill-buffer-and-window) (vemv/previous-window))
+						"C-w" (argless (if (< (length (vemv/current-frame-buffers)) 2)
+													   (delete-frame (selected-frame) t) ; close an auxiliary frame
+														 (kill-buffer-and-window) (vemv/previous-window))) ; close annoying popup windows
             "C-h" 'replace-string ; search and replace
             "C-f" (argless (ignore-errors (call-interactively 'search-forward)))
             "M-[" 'paredit-backward ; move one sexpr backward
             "M-]" 'paredit-forward
             [f6] 'split-window-vertically
             [f7] 'split-window-horizontally
-            [f9] (argless (make-frame `((width . ,(window-width)) (height . ,(frame-height))))) ; in order to kill a frame, use the window system's standard exit (e.g. Alt-F4) command. The other frames won't close.
+            "C-n" (argless (make-frame `((width . ,(frame-width)) (height . ,(frame-height))))) ; in order to kill a frame, use the window system's standard exit (e.g. Alt-F4) command. The other frames won't close.
             [f10] 'vemv/ensure-layout	    
             [f11] 'vemv/maximize
 	    "s-e" (argless (insert "é"))
