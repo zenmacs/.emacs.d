@@ -143,7 +143,6 @@ Unlike paredit-copy-as-kill, this function will only grab one sexpr (and no more
       result)))
 
 (setq cider-launched nil)
-(setq cljs-launched nil)
 
 (defun vemv/send (where &optional backward? content) ; XXX can one do polymorphism in emacs? XXX send w/o intro
   "Copy the next sexp (or on non-nil backward? arg, the previous sexp) and its character trailer,
@@ -158,45 +157,20 @@ paste and simulate an intro press. Finally, go back to sender window."
     (if (equal where :emacs)
         (eval (read content))
         (let ((sender (selected-window)))
-          (if (or (equal where :ielm) (equal where :shell)) (select-window vemv/repl2) (select-window vemv/repl1))
+          (if (or (equal where :ielm) (equal where :shell) (equal where :cljs)) (select-window vemv/repl2) (select-window vemv/repl1))
           (vemv/switch-to-buffer-in-any-frame (case where
-                              (:slime "*nrepl*")
                               (:cider the-cider-buffer-name)
                               (:ielm "*ielm*")
-                              (:shell "*shell*")
-                              (:cljs (if cljs-launched
-                                         "cljs"
-                                         (current-buffer)))))
-          (if (not (and (equal where :cljs) (not cljs-launched)))
-              (end-of-buffer))
-
-          (when (and (equal where :cljs) (not cljs-launched))
-
-            (shell "cljs")
-            (paredit-mode)
-            ; (delete-window)      ; (shell) pops up a window
-            ;(switch-to-buffer "cljs")
-            (insert "cljs")
-            (ignore-errors (comint-send-input))
-            (vemv/next-window)
-            (shell "cljsbuild auto")
-            ;(delete-window)
-            ;(window-number-select 4)
-            ;(switch-to-buffer "cljsbuild auto")
-            (insert "cd ~/Development/needleforsoundcloud ; lein trampoline cljsbuild auto")
-            (ignore-errors (comint-send-input))
-            (vemv/previous-window))
+                              (:shell "*shell-1*")
+                              (:cljs "*shell-1*")))
 
           (insert content)
 
           (case where
-            (:slime (nrepl-return))
             (:cider (cider-repl-return))
             (:ielm (ielm-return))
             (:shell (comint-send-input))
-            (:cljs (if cljs-launched (comint-send-input))))
-
-          (if (equal where :cljs) (setq cljs-launched t)) ; XXX set for all
+            (:cljs (comint-send-input)))
 
           (pop kill-ring)
           (end-of-buffer)

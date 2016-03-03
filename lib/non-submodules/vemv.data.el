@@ -45,6 +45,8 @@
             clojure-mode-map  ";" 'vemv/semicolon
             clojure-mode-map  "C-e" (argless (vemv/send :cider))
             clojure-mode-map  "M-e" (argless (vemv/send :cider :backward))
+            clojurescript-mode-map  "C-e" (argless (vemv/send :cljs))
+            clojurescript-mode-map  "M-e" (argless (vemv/send :cljs :backward))
             emacs-lisp-mode-map "C-/" 'vemv/elisp-popup-documentation
             emacs-lisp-mode-map "C-?" 'vemv/elisp-window-documentation
 				    ; emacs-lisp-mode-map "C-z" 'undo-tree-undo
@@ -62,8 +64,6 @@
 			 ; "C-/" ;  'nrepl-doc
 			 ; "C-?" ; 'nrepl-src
 			 ; ";" (argless (paredit-semicolon) (paredit-semicolon) (insert " ")) ;; (when (and (eolp) COLUMN > 0) (insert " "))
-			 ; "C-e" (argless (vemv/send :slime))
-			 ; "M-e" (argless (vemv/send :slime :backward))
 			 )
        emacs-lisp-mode-map (vemv/hash-map
 			     "C-/" 'vemv/elisp-popup-documentation
@@ -120,6 +120,10 @@
 							(unless cider-launched
 								(setq cider-launched t)
 								(shell-command-to-string "cd ~/roc; lein clean")
+								(select-window vemv/repl2)
+								(insert "lein figwheel")
+								(comint-send-input)
+								(select-window vemv/main_window)
 								(cider-jack-in)))
             "C-z" 'undo-tree-undo
             "C-S-z" 'undo-tree-redo
