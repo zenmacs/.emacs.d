@@ -28,7 +28,7 @@
 
 (setq vemv/key-bindings-to-remove '("\C-a" "\C-b" "\C-e" "\C-f" "\C-s" "\C-w" "\C-j"
                                     "\C-l" "\C-n" "\C-o" "\C-p" "\C-q" "\C-o" "\C-k"
-                                    "\C-t" "\C-u" "\C-v" "\C-z" "\C-d" "\C-y"
+                                    "\C-t" "\C-u" "\C-v" "\C-z" "\C-d" "\C-y" "\C-S-z"
                                     "\C-m" "\C-\\" "\C-h" "\C-r" [f10] "\M-e" "\M-!"
                                     "\M-\"" "\M-|" "\M-$" "\M-y" "\M-f"))
 
@@ -47,8 +47,8 @@
             clojure-mode-map  "M-e" (argless (vemv/send :cider :backward))
             emacs-lisp-mode-map "C-/" 'vemv/elisp-popup-documentation
             emacs-lisp-mode-map "C-?" 'vemv/elisp-window-documentation
-	    emacs-lisp-mode-map "C-z" 'undo-tree-undo
-	    emacs-lisp-mode-map "RET" 'newline-and-indent
+				    ; emacs-lisp-mode-map "C-z" 'undo-tree-undo
+				    emacs-lisp-mode-map "RET" 'newline-and-indent
             emacs-lisp-mode-map  ";" 'vemv/semicolon
             haskell-mode-map  "C-e" (argless (vemv/send :shell))
             haskell-mode-map  "M-e" (argless (vemv/send :shell :backward))
@@ -68,7 +68,7 @@
        emacs-lisp-mode-map (vemv/hash-map
 			     "C-/" 'vemv/elisp-popup-documentation
 			     "C-?" 'vemv/elisp-window-documentation
-			     "C-z" 'undo-tree-undo
+			     ; "C-z" 'undo-tree-undo
 			     "RET" 'newline-and-indent
 			     ";" (argless (paredit-semicolon) (paredit-semicolon) (insert " ")))
        haskell-mode-map (vemv/hash-map
@@ -90,13 +90,13 @@
 ;XXX M-RET alters the kill-ring.
 (setq vemv/global-key-bindings ; This setup is optimized for a UK keyboard with a Colemak layout, with the number/symbol row switched (e.g. "(" is the default, "9" requires shift).
       (vemv/hash-map
-            "S-<prior>" 'vemv/previous-window ; on OSX: shift-fn-down
-            "S-<next>" 'vemv/next-window
+            "S-<next>" 'vemv/previous-window ; on OSX: shift-fn-up
+            "S-<prior>" 'vemv/next-window
 	    "§" 'hippie-expand
-            "C-<prior>" 'vemv/previous-file-buffer
-            "C-<next>" 'vemv/next-file-buffer
-            "M-<prior>" 'previous-buffer
-            "M-<next>" 'next-buffer
+            "C-<next>" 'vemv/previous-file-buffer
+            "C-<prior>" 'vemv/next-file-buffer
+            "M-<next>" 'previous-buffer
+            "M-<prior>" 'next-buffer
 	    "M-<begin>" nil
 	    "M-<end>" nil
 	    ; "<backtab>" 'auto-complete
@@ -116,8 +116,13 @@
 
             "C-b" 'vemv/duplicate
             ; "C-w" 'smex ; M-x
-						"C-j" (argless (unless cider-launched (setq cider-launched t) (cider-jack-in)))
+						"C-j" (argless
+							(unless cider-launched
+								(setq cider-launched t)
+								(shell-command-to-string "cd ~/roc; lein clean")
+								(cider-jack-in)))
             "C-z" 'undo-tree-undo
+            "C-S-z" 'undo-tree-redo
             "C-`" 'other-frame
             "<backspace>" (argless (if (region-active-p)
                                        (progn (call-interactively 'kill-region)

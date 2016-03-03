@@ -34,7 +34,6 @@
 (require 'smex)
 (require 'ruby-mode)
 (require 'ruby-end)
-;; (require 'clojure-mode)
 (require 'cider)
 (require 'epl)
 (require 'pkg-info)
@@ -75,10 +74,13 @@
 (global-hl-line-mode t)
 
 (custom-set-variables
+ '(cider-connection-message-fn nil)
  '(haskell-mode-hook '(turn-on-haskell-indentation))
  '(tree-widget-image-enable nil)
  '(nrepl-popup-stacktraces nil)
  '(ielm-prompt "ielm> "))
+
+(setq clojure-indent-style ':align-arguments)
 
 (add-hook 'clojure-mode-hook 'enable-paredit-mode)
 (add-hook 'clojure-mode-hook 'undo-tree-mode)
@@ -192,6 +194,8 @@
   (add-to-list 'ac-modes mode))
 
 (setenv "PATH" (concat (getenv "PATH") ":/Users/vemv/bin"))
+(setenv "ROC_SILENT_INIT" "true")
+;; (setenv "USE_YOURKIT_AGENT" "true")
 
 ;; restart
 ;; tree: refresh on adds
@@ -205,15 +209,10 @@
 (split-window-vertically)
 (enlarge-window 8)
 
-;; (split-window-horizontally) ;;  two vertical halves actually
-
-(enlarge-window-horizontally -53) ; Unlike split-window-*, this one does get the naming right.
-;; (setq default-directory "/Users/vemv/projects")
+(setq default-directory "/Users/vemv/")
 (let ((default-directory "/Users/vemv/roc/")) ;; trailing slash required
   (call-interactively 'project-explorer-open)
   (enlarge-window-horizontally -50))
-;(call-interactively (argless ))
-
 
 (vemv/next-window)
 
@@ -221,15 +220,15 @@
 (vemv/next-window)
 
 (split-window-horizontally)
-(enlarge-window-horizontally 10)
 
 (switch-to-buffer "*scratch*")
 
-(sh)
+(ielm)
 (setq vemv/repl1 (selected-window))
 (vemv/next-window)
 
-(ielm)
+(let ((default-directory "/Users/vemv/roc/"))
+(sh))
 (paredit-mode) (auto-complete-mode)
 
 (setq vemv/repl2 (selected-window))
@@ -393,10 +392,6 @@
 (defun undo (&rest args)
   (interactive)
   (apply 'undo-tree-undo args))
-
-(if window-system
- (delay (argless (set-frame-size (selected-frame) 270 82))
-        1))
 
 (global-set-key [kp-delete] 'delete-char) ;; OS X
 
