@@ -135,14 +135,21 @@
 )
 
 (add-hook 'cider-connected-hook (argless
-  (vemv/next-window)
-  (switch-to-buffer the-cider-buffer-name)
   (delay (argless
-      (insert "(dev)(reset)")
-      (cider-repl-return)
-      (select-window vemv/main_window)
-    ) 1)
-  ))
+          (select-window vemv/main_window)
+          (vemv/next-window)
+          (switch-to-buffer the-cider-buffer-name)
+          (insert "(dev)(reset)")
+          (cider-repl-return)
+          (delay (argless
+            (select-window vemv/repl2)
+            (insert "lein figwheel")
+            (comint-send-input)
+            (select-window vemv/main_window)
+          ) 150)
+      )
+    ) 2)
+  )
 
 (add-hook 'kill-buffer-hook (argless (let ((killed (buffer-name (current-buffer))))
                                        (setq vemv/open_file_buffers

@@ -120,9 +120,6 @@
 							(unless cider-launched
 								(setq cider-launched t)
 								(shell-command-to-string "cd ~/roc; lein clean")
-								(select-window vemv/repl2)
-								(insert "lein figwheel")
-								(comint-send-input)
 								(select-window vemv/main_window)
 								(cider-jack-in)))
             "C-z" 'undo-tree-undo
