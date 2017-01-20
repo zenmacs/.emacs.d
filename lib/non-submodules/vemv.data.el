@@ -119,7 +119,9 @@
 						"C-j" (argless
 							(unless cider-launched
 								(setq cider-launched t)
-								(shell-command-to-string "cd ~/roc; lein clean")
+								(message "Connecting...")
+								; (shell-command-to-string "sudo /usr/local/bin/nginx -s stop") ; nginx from rails projects interfers with jvm servers
+								; (shell-command-to-string "setopt nullglob; cd ~/gpm; rm -rf logs/*; lein clean")
 								(select-window vemv/main_window)
 								(cider-jack-in)))
             "C-z" 'undo-tree-undo

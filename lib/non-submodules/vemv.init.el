@@ -1,6 +1,6 @@
 ;;; -*- lexical-binding: t -*-
 
-(setq the-cider-buffer-name "*cider-repl roc*")
+(setq the-cider-buffer-name "*cider-repl gpm*")
 
 (require 'package)
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
@@ -139,14 +139,14 @@
           (select-window vemv/main_window)
           (vemv/next-window)
           (switch-to-buffer the-cider-buffer-name)
-          (insert "(dev)(reset)")
+          ; (insert "(dev) (migrate-and-seed :local) (reset)")
           (cider-repl-return)
           (delay (argless
-            (select-window vemv/repl2)
-            (insert "lein figwheel")
-            (comint-send-input)
+            (comm (select-window vemv/repl2)
+            ; (insert "lein figwheel")
+            (comint-send-input))
             (select-window vemv/main_window)
-          ) 150)
+          ) 65)
       )
     ) 2)
   )
@@ -201,7 +201,6 @@
   (add-to-list 'ac-modes mode))
 
 (setenv "PATH" (concat (getenv "PATH") ":/Users/vemv/bin"))
-(setenv "ROC_SILENT_INIT" "true")
 ;; (setenv "USE_YOURKIT_AGENT" "true")
 
 ;; restart
@@ -217,7 +216,7 @@
 (enlarge-window 8)
 
 (setq default-directory "/Users/vemv/")
-(let ((default-directory "/Users/vemv/roc/")) ;; trailing slash required
+(let ((default-directory "/Users/vemv/gpm/")) ;; trailing slash required
   (call-interactively 'project-explorer-open)
   (enlarge-window-horizontally -50))
 
@@ -234,7 +233,7 @@
 (setq vemv/repl1 (selected-window))
 (vemv/next-window)
 
-(let ((default-directory "/Users/vemv/roc/"))
+(let ((default-directory "/Users/vemv/gpm/"))
 (sh))
 (paredit-mode) (auto-complete-mode)
 
