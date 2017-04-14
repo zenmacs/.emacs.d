@@ -57,7 +57,7 @@
 (add-hook 'ruby-mode-hook 'robe-mode)
 (add-hook 'css-mode-hook (lambda () (rainbow-mode 1)))
 
-(add-to-list 'exec-path "/Users/vemv/bin")
+(add-to-list 'exec-path "/home/vemv/bin")
 
 (yas-reload-all)
 (menu-bar-mode)
@@ -72,6 +72,8 @@
 
 (setq require-final-newline 't)
 (global-hl-line-mode t)
+
+(setq ido-show-dot-for-dired t)
 
 (custom-set-variables
  '(cider-connection-message-fn nil)
@@ -117,7 +119,7 @@
 (defun set-auto-complete-as-completion-at-point-function ()
   (setq completion-at-point-functions '(auto-complete)))
 (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
-(comm   
+(comm
   (add-hook 'nrepl-interaction-mode-hook 'ac-nrepl-setup)
   (add-hook 'nrepl-interaction-mode-hook 'set-auto-complete-as-completion-at-point-function)
   (add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
@@ -134,7 +136,12 @@
                                                    (nrepl-eval-ns-form)) 2)))
 )
 
-(add-hook 'cider-connected-hook (argless
+(setq cider-cljs-lein-repl
+      "(do (require 'figwheel-sidecar.repl-api)
+           (figwheel-sidecar.repl-api/start-figwheel!)
+           (figwheel-sidecar.repl-api/cljs-repl))")
+
+(comm add-hook 'cider-connected-hook (argless
   (delay (argless
           (select-window vemv/main_window)
           (vemv/next-window)
@@ -167,7 +174,7 @@
   `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
   `((".*" ,temporary-file-directory t)))
-          
+
 (ac-config-default)
 (ac-flyspell-workaround)
 ;(add-to-list 'ac-dictionary-directories (concat (live-pack-lib-dir) "auto-complete/dict"))
@@ -200,7 +207,7 @@
                 lisp-mode textile-mode markdown-mode tuareg-mode))
   (add-to-list 'ac-modes mode))
 
-(setenv "PATH" (concat (getenv "PATH") ":/Users/vemv/bin"))
+(setenv "PATH" (concat (getenv "PATH") ":/home/vemv/bin"))
 ;; (setenv "USE_YOURKIT_AGENT" "true")
 
 ;; restart
@@ -215,25 +222,26 @@
 (split-window-vertically)
 (enlarge-window 8)
 
-(setq default-directory "/Users/vemv/")
-(let ((default-directory "/Users/vemv/gpm/")) ;; trailing slash required
+(setq default-directory "/home/vemv/")
+(let ((default-directory "/home/vemv/gpm/src/")) ;; trailing slash required
   (call-interactively 'project-explorer-open)
-  (enlarge-window-horizontally -50))
+  (enlarge-window-horizontally -20))
 
 (vemv/next-window)
 
 (setq vemv/main_window (selected-window))
 (vemv/next-window)
 
-(split-window-horizontally)
+(comm
+  (split-window-horizontally)
 
-(switch-to-buffer "*scratch*")
+  (switch-to-buffer "*scratch*")
 
-(ielm)
-(setq vemv/repl1 (selected-window))
-(vemv/next-window)
+  (ielm)
+  (setq vemv/repl1 (selected-window))
+  (vemv/next-window))
 
-(let ((default-directory "/Users/vemv/gpm/"))
+(let ((default-directory "/home/vemv/gpm/src"))
 (sh))
 (paredit-mode) (auto-complete-mode)
 
@@ -264,7 +272,8 @@
        1)
 
 
-(delay (argless (if (window-system) (set-face-attribute 'default nil :font "DejaVu Sans Mono-12"))) 1)
+;; FONT SIZE -> 13 for laptop, 11 for desktop
+(delay (argless (if (window-system) (set-face-attribute 'default nil :font "DejaVu Sans Mono-13"))) 1)
 
 (put 'if 'lisp-indent-function nil)
 
@@ -314,7 +323,7 @@
 	   (let* ((keyboard-macro (if (stringp key)
 				      (read-kbd-macro key)
 				      key)))
-	     (global-set-key 
+	     (global-set-key
 	      keyboard-macro
 	      (argless (call-interactively (gethash key vemv/global-key-bindings))))))
   vemv/global-key-bindings)

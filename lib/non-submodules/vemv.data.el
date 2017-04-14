@@ -107,6 +107,7 @@
             "C-s" 'save-buffer ; save
             "C-v" 'cua-paste ; paste
             "C-o" 'vemv/open
+            "C-O" (argless (vemv/open-project))
 
             "C-k" 'vemv/kill
             "C-K" (argless (kill-new (vemv/kill))) ; cut
@@ -143,11 +144,11 @@
             ;; "C-!" (argless (vemv/send :cljs))
             "C-'" (argless (vemv/send :ielm))
             "C-|" (argless (vemv/send :emacs))
-            ;; "C-$" (argless (vemv/send :shell))
+            "C-$" (argless (vemv/send :shell))
             ;; "M-!" (argless (vemv/send :cljs :backward))
             "M-'" (argless (vemv/send :ielm :backward))
             "M-|" (argless (vemv/send :emacs :backward))
-            ;; "M-$" (argless (vemv/send :shell :backward))
+            "M-$" (argless (vemv/send :shell :backward))
 
             "C-l" (argless (kill-buffer (current-buffer))) ; XXX and switch to the next file buffer
             ;; "C-L" (argless (let (kill-buffer-query-functions) (kill-buffer)))
@@ -171,7 +172,8 @@
             "C-*" (argless (vemv/open (concat "~/.emacs.d/lib/non-submodules/"
                                               (ido-completing-read "Open: " vemv/emacs-files))))
 	    "C-3" 'vemv/indent
-            "C-t" (argless (switch-to-buffer "*scratch*"))
+      "C-t" 'fiplr-find-file
+      ; "C-T" (argless (switch-to-buffer "*scratch*"))
 	    "C-." 'vemv/ns-form
 	    ; "C-," 'nrepl-load-current-buffer
 	    "RET" 'newline

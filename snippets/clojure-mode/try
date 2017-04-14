@@ -1,0 +1,3 @@
+#name: pr
+# --
+(try (catch js/Object e))

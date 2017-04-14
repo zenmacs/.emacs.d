@@ -406,6 +406,10 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
       )
       )
 
+(defun vemv/open-project ()
+  (let ((default-directory (replace-regexp-in-string "\\.$" "" (ido-read-file-name ()))))
+    (call-interactively 'project-explorer-open)))
+
 ; XXX if scratch is not empty, include it. (?)
 
 (defun vemv/advice-nrepl ()
@@ -528,7 +532,7 @@ Comments get ignored, this is, point will only move as long as its position stil
 
 (defun vemv/ns-form ()
   (interactive)
-  (if-let (ns (clojure-find-ns))	  
+  (if-let (ns (clojure-find-ns))
 	  (progn
 	    (nrepl-eval-ns-form)
 	    (with-current-buffer "*nrepl*"
