@@ -157,12 +157,13 @@ paste and simulate an intro press. Finally, go back to sender window."
     (if (equal where :emacs)
         (eval (read content))
         (let ((sender (selected-window)))
-          (if (or (equal where :ielm) (equal where :shell) (equal where :cljs)) (select-window vemv/repl2) (select-window vemv/repl1))
+          (comm if (or (equal where :ielm) (equal where :shell) (equal where :cljs)) (select-window vemv/repl2) (select-window vemv/repl1))
+          (select-window vemv/repl2)
           (vemv/switch-to-buffer-in-any-frame (case where
                               (:cider the-cider-buffer-name)
                               (:ielm "*ielm*")
                               (:shell "*shell-1*")
-                              (:cljs "*shell-1*")))
+                              (:cljs "*cider-repl CLJS horizon.desktop*")))
 
           (insert content)
 
@@ -170,7 +171,7 @@ paste and simulate an intro press. Finally, go back to sender window."
             (:cider (cider-repl-return))
             (:ielm (ielm-return))
             (:shell (comint-send-input))
-            (:cljs (comint-send-input)))
+            (:cljs (cider-repl-return)))
 
           (pop kill-ring)
           (end-of-buffer)

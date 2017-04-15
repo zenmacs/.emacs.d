@@ -1,7 +1,5 @@
 ;;; -*- lexical-binding: t -*-
 
-(setq the-cider-buffer-name "*cider-repl gpm*")
-
 (require 'package)
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
@@ -141,21 +139,13 @@
            (figwheel-sidecar.repl-api/start-figwheel!)
            (figwheel-sidecar.repl-api/cljs-repl))")
 
-(comm add-hook 'cider-connected-hook (argless
+(add-hook 'cider-connected-hook (argless
   (delay (argless
           (select-window vemv/main_window)
           (vemv/next-window)
-          (switch-to-buffer the-cider-buffer-name)
-          ; (insert "(dev) (migrate-and-seed :local) (reset)")
-          (cider-repl-return)
-          (delay (argless
-            (comm (select-window vemv/repl2)
-            ; (insert "lein figwheel")
-            (comint-send-input))
-            (select-window vemv/main_window)
-          ) 65)
-      )
-    ) 2)
+          (switch-to-buffer "*cider-repl CLJS horizon.desktop*")))
+          (select-window vemv/main_window)
+         2)
   )
 
 (add-hook 'kill-buffer-hook (argless (let ((killed (buffer-name (current-buffer))))

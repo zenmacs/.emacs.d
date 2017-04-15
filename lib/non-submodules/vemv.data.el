@@ -11,7 +11,7 @@
 		       (flatten (mapcar (lambda (a) (list (vemv/string-to-keyword a) (concat "~/clj/" a))) d))))
 
 (mapc (lambda (a) (conj! vemv/tree-dirs a))
-      (list 
+      (list
        "~/.emacs.d/lib" :lib
        "~/.emacs.d/lib/non-submodules" :non
        ))
@@ -33,7 +33,7 @@
                                     "\M-\"" "\M-|" "\M-$" "\M-y" "\M-f"))
 
 (setq vemv/local-key-bindings-to-remove
-      (list (list paredit-mode-map "\C-d" "\C-k" "\C-j" "\M-\"" [127] (kbd ";")) ; [127] stands for DEL, [27 127] is M-DEL. 
+      (list (list paredit-mode-map "\C-d" "\C-k" "\C-j" "\M-\"" [127] (kbd ";")) ; [127] stands for DEL, [27 127] is M-DEL.
             (list comint-mode-map "\M-p")
 	    (list undo-tree-map (kbd "C-/") (kbd "C-?"))))
 
@@ -124,7 +124,7 @@
 								; (shell-command-to-string "sudo /usr/local/bin/nginx -s stop") ; nginx from rails projects interfers with jvm servers
 								; (shell-command-to-string "setopt nullglob; cd ~/gpm; rm -rf logs/*; lein clean")
 								(select-window vemv/main_window)
-								(cider-jack-in)))
+								(cider-jack-in-clojurescript)))
             "C-z" 'undo-tree-undo
             "C-S-z" 'undo-tree-redo
             "C-`" 'other-frame
@@ -144,11 +144,11 @@
             ;; "C-!" (argless (vemv/send :cljs))
             "C-'" (argless (vemv/send :ielm))
             "C-|" (argless (vemv/send :emacs))
-            "C-$" (argless (vemv/send :shell))
+            "C-$" (argless (vemv/send :cljs))
             ;; "M-!" (argless (vemv/send :cljs :backward))
             "M-'" (argless (vemv/send :ielm :backward))
             "M-|" (argless (vemv/send :emacs :backward))
-            "M-$" (argless (vemv/send :shell :backward))
+            "M-$" (argless (vemv/send :cljs :backward))
 
             "C-l" (argless (kill-buffer (current-buffer))) ; XXX and switch to the next file buffer
             ;; "C-L" (argless (let (kill-buffer-query-functions) (kill-buffer)))
@@ -164,7 +164,7 @@
             [f6] 'split-window-vertically
             [f7] 'split-window-horizontally
             "C-n" (argless (make-frame `((width . ,(frame-width)) (height . ,(frame-height))))) ; in order to kill a frame, use the window system's standard exit (e.g. Alt-F4) command. The other frames won't close.
-            [f10] 'vemv/ensure-layout	    
+            [f10] 'vemv/ensure-layout
             [f11] 'vemv/maximize
 	    "s-e" (argless (insert "é"))
 	    "s-E" (argless (insert "É"))
