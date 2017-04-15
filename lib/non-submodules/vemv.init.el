@@ -426,3 +426,6 @@
 						     plain-tex-mode))
 		(let ((mark-even-if-inactive transient-mark-mode))
 		  (indent-region (region-beginning) (region-end) nil))))))
+
+; ensure nrepl opens desktop project
+(find-file "/home/vemv/gpm/src/horizon.desktop/src/horizon/desktop/core.cljs")

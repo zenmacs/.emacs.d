@@ -533,11 +533,8 @@ Comments get ignored, this is, point will only move as long as its position stil
 
 (defun vemv/ns-form ()
   (interactive)
-  (if-let (ns (clojure-find-ns))
-	  (progn
-	    (nrepl-eval-ns-form)
-	    (with-current-buffer "*nrepl*"
-	      (nrepl-set-ns ns)))))
+  (cider-insert-ns-form-in-repl)
+  (vemv/send :cljs ""))
 
 (setq vemv/shell-id 0)
 
