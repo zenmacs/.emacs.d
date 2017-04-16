@@ -123,6 +123,7 @@
 								(message "Connecting...")
 								; (shell-command-to-string "sudo /usr/local/bin/nginx -s stop") ; nginx from rails projects interfers with jvm servers
 								; (shell-command-to-string "setopt nullglob; cd ~/gpm; rm -rf logs/*; lein clean")
+								(shell-command-to-string "source ~/.zshrc; checkouts")
 								(select-window vemv/main_window)
 								(cider-jack-in-clojurescript)))
             "C-z" 'undo-tree-undo
