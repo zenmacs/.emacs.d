@@ -1,5 +1,7 @@
 ;;; -*- lexical-binding: t -*-
 
+;; NOTE: we don't use ac/auto-complete anymore. company now, since feb 2016
+
 (require 'package)
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
@@ -7,8 +9,8 @@
 (package-initialize)
 ;; (package-refresh-contents)
 
-(unless (package-installed-p 'cider)
-  (package-install 'cider))
+;(unless (package-installed-p 'cider) ; package temporarily don't work on ubuntu 16 (TLS)
+;  (package-install 'cider))
 
 (unless (package-installed-p 'company)
   (package-install 'company))
@@ -27,8 +29,6 @@
 (require 'saveplace)
 (require 'dash)
 (require 'popup)
-(require 'auto-complete)
-(require 'auto-complete-config)
 (require 'smex)
 (require 'ruby-mode)
 (require 'ruby-end)
@@ -64,13 +64,12 @@
 
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq initial-scratch-message "")
-(comm eval-after-load "auto-complete" ; XXX don't show doc in nREPLs AC
-  '(add-to-list 'ac-modes 'nrepl-mode))
 (setq yas-use-menu nil)
 
 (setq require-final-newline 't)
 (global-hl-line-mode t)
 
+(setq cider-repl-display-help-banner' nil)
 (setq ido-show-dot-for-dired t)
 
 (custom-set-variables
@@ -84,7 +83,6 @@
 
 (add-hook 'clojure-mode-hook 'enable-paredit-mode)
 (add-hook 'clojure-mode-hook 'undo-tree-mode)
-;; (add-hook 'clojure-mode-hook 'auto-complete-mode)
 (add-hook 'clojure-mode-hook (argless (local-set-key (kbd "RET") 'newline-and-indent)))
 
 (comm add-hook 'clojure-mode-hook (argless (if-let (ns (clojure-find-ns))
@@ -110,20 +108,11 @@
 
 (add-hook 'html-mode-hook 'electric-pair-mode)
 
-(add-hook 'emacs-lisp-mode-hook 'auto-complete-mode)
 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 
-(defun set-auto-complete-as-completion-at-point-function ()
-  (setq completion-at-point-functions '(auto-complete)))
-(add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
 (comm
-  (add-hook 'nrepl-interaction-mode-hook 'ac-nrepl-setup)
-  (add-hook 'nrepl-interaction-mode-hook 'set-auto-complete-as-completion-at-point-function)
-  (add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
-  (add-hook 'nrepl-mode-hook 'auto-complete-mode)
   (add-hook 'nrepl-mode-hook 'enable-paredit-mode)
-  (add-hook 'nrepl-mode-hook 'set-auto-complete-as-completion-at-point-function)
   (comm add-hook 'nrepl-connected-hook (argless (delay (argless
   						 ;;(delete-window)
   						 (vemv/next-window)
@@ -165,16 +154,6 @@
 (setq auto-save-file-name-transforms
   `((".*" ,temporary-file-directory t)))
 
-(ac-config-default)
-(ac-flyspell-workaround)
-;(add-to-list 'ac-dictionary-directories (concat (live-pack-lib-dir) "auto-complete/dict"))
-(setq ac-auto-show-menu nil)
-(setq ac-dwim t)
-(setq ac-use-menu-map t)
-(setq ac-quick-help-delay 1)
-(setq ac-delay 100)
-;; (setq ac-quick-help-height 60)
-
 (setq mouse-wheel-scroll-amount '(4 ((shift) . 4)))
 (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
@@ -184,18 +163,6 @@
 (setq cider-repl-pop-to-buffer-on-connect nil)
 (setq cider-show-error-buffer nil)
 (add-hook 'cider-repl-mode-hook #'paredit-mode)
-
-(set-default 'ac-sources
-             '(ac-source-dictionary
-               ac-source-words-in-buffer
-               ac-source-words-in-same-mode-buffers
-               ac-source-words-in-all-buffer))
-
-(dolist (mode '(magit-log-edit-mode log-edit-mode org-mode text-mode haml-mode
-                sass-mode yaml-mode csv-mode espresso-mode haskell-mode
-                html-mode nxml-mode sh-mode smarty-mode ;; clojure-mode
-                lisp-mode textile-mode markdown-mode tuareg-mode))
-  (add-to-list 'ac-modes mode))
 
 (setenv "PATH" (concat (getenv "PATH") ":/home/vemv/bin"))
 ;; (setenv "USE_YOURKIT_AGENT" "true")
@@ -232,8 +199,9 @@
   (vemv/next-window))
 
 (let ((default-directory "/home/vemv/gpm/src"))
-(sh))
-(paredit-mode) (auto-complete-mode)
+  (sh))
+(paredit-mode)
+;(auto-complete-mode)
 
 (setq vemv/repl2 (selected-window))
 (vemv/next-window)
