@@ -124,8 +124,8 @@
 								; (shell-command-to-string "sudo /usr/local/bin/nginx -s stop") ; nginx from rails projects interfers with jvm servers
 								; (shell-command-to-string "setopt nullglob; cd ~/gpm; rm -rf logs/*; lein clean")
 								(message "Running make clean...")
-								(shell-command-to-string "cd ~/gpm/src; make clean")
-								(shell-command-to-string "cd ~/gpm/src; make sass &")
+								(shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make clean")
+								(shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make sass")
 								(select-window vemv/main_window)
 								(cider-jack-in-clojurescript)))
             "C-z" 'undo-tree-undo
