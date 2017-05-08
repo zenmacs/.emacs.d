@@ -15,4 +15,6 @@
 
 (if (window-system) (set-face-attribute 'default nil :font "DejaVu Sans Mono-13"))
 
+(setq gpm-using-nrepl nil)
+
 (require 'vemv.init)

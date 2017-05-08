@@ -118,12 +118,13 @@
             "C-b" 'vemv/duplicate
             ; "C-w" 'smex ; M-x
 						"C-j" (argless
-							(unless cider-launched
+							(when (and (not cider-launched) gpm-using-nrepl)
 								(setq cider-launched t)
 								(message "Connecting...")
 								; (shell-command-to-string "sudo /usr/local/bin/nginx -s stop") ; nginx from rails projects interfers with jvm servers
 								; (shell-command-to-string "setopt nullglob; cd ~/gpm; rm -rf logs/*; lein clean")
-								(shell-command-to-string "source ~/.zshrc; checkouts")
+								(message "Running make clean...")
+								(shell-command-to-string "cd ~/gpm/src; make clean")
 								(select-window vemv/main_window)
 								(cider-jack-in-clojurescript)))
             "C-z" 'undo-tree-undo
@@ -145,11 +146,11 @@
             ;; "C-!" (argless (vemv/send :cljs))
             "C-'" (argless (vemv/send :ielm))
             "C-|" (argless (vemv/send :emacs))
-            "C-$" (argless (vemv/send :cljs))
+            "C-$" (argless (if gpm-using-nrepl (vemv/send :cljs) (vemv/send :shell)))
             ;; "M-!" (argless (vemv/send :cljs :backward))
             "M-'" (argless (vemv/send :ielm :backward))
             "M-|" (argless (vemv/send :emacs :backward))
-            "M-$" (argless (vemv/send :cljs :backward))
+            "M-$" (argless (if gpm-using-nrepl (vemv/send :cljs :backward) (vemv/send :shell :backward)))
 
             "C-l" (argless (kill-buffer (current-buffer))) ; XXX and switch to the next file buffer
             ;; "C-L" (argless (let (kill-buffer-query-functions) (kill-buffer)))

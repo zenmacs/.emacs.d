@@ -124,15 +124,17 @@
 )
 
 (setq cider-cljs-lein-repl
+  (if gpm-using-nrepl
       "(do (require 'figwheel-sidecar.repl-api)
            (figwheel-sidecar.repl-api/start-figwheel!)
-           (figwheel-sidecar.repl-api/cljs-repl))")
+           (figwheel-sidecar.repl-api/cljs-repl))"
+      ""))
 
 (add-hook 'cider-connected-hook (argless
   (delay (argless
           (select-window vemv/main_window)
           (vemv/next-window)
-          (switch-to-buffer "*cider-repl CLJS horizon.desktop*")))
+          (switch-to-buffer "*cider-repl CLJS horizon*")))
           (select-window vemv/main_window)
          2)
   )
@@ -398,5 +400,5 @@
 		(let ((mark-even-if-inactive transient-mark-mode))
 		  (indent-region (region-beginning) (region-end) nil))))))
 
-; ensure nrepl opens desktop project
+; ensure nrepl opens horizon project
 (find-file "/home/vemv/gpm/src/horizon/src/horizon/desktop/core.cljs")
