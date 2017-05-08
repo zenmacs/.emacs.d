@@ -165,7 +165,6 @@
 (add-hook 'cider-repl-mode-hook #'paredit-mode)
 
 (setenv "PATH" (concat (getenv "PATH") ":/home/vemv/bin"))
-(setenv "HORIZON_SOURCE_PATHS" "[\"src\" \"checkouts/horizon.common/src\" \"checkouts/horizon.domain/src\" \"checkouts/horizon.controls/src\"]")
 (setenv "HORIZON_FG_HARD_RELOAD" "true")
 (setenv "HORIZON_FIGWHEEL_NO_NREPL" "true")
 (setenv "HORIZON_FIGWHEEL_IP" "0.0.0.0")
@@ -400,4 +399,4 @@
 		  (indent-region (region-beginning) (region-end) nil))))))
 
 ; ensure nrepl opens desktop project
-(find-file "/home/vemv/gpm/src/horizon.desktop/src/horizon/desktop/core.cljs")
+(find-file "/home/vemv/gpm/src/horizon/src/horizon/desktop/core.cljs")
