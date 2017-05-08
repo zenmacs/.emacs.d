@@ -55,7 +55,7 @@
 (add-hook 'ruby-mode-hook 'robe-mode)
 (add-hook 'css-mode-hook (lambda () (rainbow-mode 1)))
 
-(add-to-list 'exec-path "/home/vemv/bin")
+(add-to-list 'exec-path (concat vemv-home "/bin"))
 
 (yas-reload-all)
 (menu-bar-mode)
@@ -166,7 +166,7 @@
 (setq cider-show-error-buffer nil)
 (add-hook 'cider-repl-mode-hook #'paredit-mode)
 
-(setenv "PATH" (concat (getenv "PATH") ":/home/vemv/bin"))
+(setenv "PATH" (concat (getenv "PATH") ":" vemv-home "/bin"))
 (setenv "HORIZON_FG_HARD_RELOAD" "true")
 (setenv "HORIZON_FIGWHEEL_NO_NREPL" "true")
 (setenv "HORIZON_FIGWHEEL_IP" "0.0.0.0")
@@ -184,8 +184,8 @@
 (split-window-vertically)
 (enlarge-window 8)
 
-(setq default-directory "/home/vemv/")
-(let ((default-directory "/home/vemv/gpm/src/")) ;; trailing slash required
+(setq default-directory vemv-home)
+(let ((default-directory (concat vemv-home "/gpm/src/"))) ;; trailing slash required
   (call-interactively 'project-explorer-open)
   (enlarge-window-horizontally -20))
 
@@ -203,7 +203,7 @@
   (setq vemv/repl1 (selected-window))
   (vemv/next-window))
 
-(let ((default-directory "/home/vemv/gpm/src"))
+(let ((default-directory (concat vemv-home "/gpm/src")))
   (sh))
 (paredit-mode)
 ;(auto-complete-mode)
@@ -401,4 +401,4 @@
 		  (indent-region (region-beginning) (region-end) nil))))))
 
 ; ensure nrepl opens horizon project
-(find-file "/home/vemv/gpm/src/horizon/src/horizon/desktop/core.cljs")
+(find-file (concat vemv-home "/gpm/src/horizon/src/horizon/desktop/core.cljs"))
