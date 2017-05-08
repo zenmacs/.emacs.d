@@ -236,7 +236,7 @@
 
 
 ;; FONT SIZE -> 13 for laptop, 11 for desktop
-(delay (argless (if (window-system) (set-face-attribute 'default nil :font "DejaVu Sans Mono-13"))) 1)
+(delay (argless (if (window-system) (set-face-attribute 'default nil :font vemv-font))) 1)
 
 (put 'if 'lisp-indent-function nil)
 

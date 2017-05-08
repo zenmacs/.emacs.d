@@ -13,7 +13,9 @@
   (setq mac-option-modifier 'meta)
   (setq mac-command-modifier 'control))
 
-(if (window-system) (set-face-attribute 'default nil :font "DejaVu Sans Mono-13"))
+(setq vemv-font (if (eq system-type 'darwin) "Monaco-12" "DejaVu Sans Mono-13"))
+
+(if (window-system) (set-face-attribute 'default nil :font vemv-font))
 
 (setq gpm-using-nrepl t)
 (setq vemv-home (if (eq system-type 'darwin) "/Users/vemv" "/home/vemv"))
