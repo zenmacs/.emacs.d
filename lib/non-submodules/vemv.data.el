@@ -125,6 +125,7 @@
 								; (shell-command-to-string "setopt nullglob; cd ~/gpm; rm -rf logs/*; lein clean")
 								(message "Running make clean...")
 								(shell-command-to-string "cd ~/gpm/src; make clean")
+								(shell-command-to-string "cd ~/gpm/src; make sass &")
 								(select-window vemv/main_window)
 								(cider-jack-in-clojurescript)))
             "C-z" 'undo-tree-undo
