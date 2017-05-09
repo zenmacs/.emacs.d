@@ -15,6 +15,9 @@
 (unless (package-installed-p 'company)
   (package-install 'company))
 
+(unless (package-installed-p 'queue)
+  (package-install 'queue))
+
 (setq lexical-binding t)
 (setq-default indent-tabs-mode nil)
 (show-paren-mode 1)
