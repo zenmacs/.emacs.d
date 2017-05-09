@@ -5,17 +5,19 @@
 (require 'package)
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/") t) ;; installed: ecb, rainbow-mode
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
-;; (package-refresh-contents)
 
 ;(unless (package-installed-p 'cider) ; package temporarily don't work on ubuntu 16 (TLS)
+;  (package-refresh-contents)
 ;  (package-install 'cider))
 
 (unless (package-installed-p 'company)
+  (package-refresh-contents)
   (package-install 'company))
 
 (unless (package-installed-p 'queue)
+  (package-refresh-contents)
   (package-install 'queue))
 
 (setq lexical-binding t)
