@@ -18,6 +18,6 @@
 (if (window-system) (set-face-attribute 'default nil :font vemv-font))
 
 (setq gpm-using-nrepl t)
-(setq vemv-home (if (eq system-type 'darwin) "/Users/vemv" "/home/vemv"))
+(setq vemv-home (getenv "HOME"))
 
 (require 'vemv.init)
