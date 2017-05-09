@@ -5,7 +5,7 @@
 (require 'package)
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t) ;; installed: ecb, rainbow-mode
+(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/") t) ;; installed: ecb, rainbow-mode
 (package-initialize)
 ;; (package-refresh-contents)
 
