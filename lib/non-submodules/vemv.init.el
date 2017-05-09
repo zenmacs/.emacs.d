@@ -172,9 +172,8 @@
 (add-hook 'cider-repl-mode-hook #'paredit-mode)
 
 (setenv "PATH" (concat (getenv "PATH") ":" vemv-home "/bin"))
-(setenv "HORIZON_FG_HARD_RELOAD" "true")
-(setenv "HORIZON_FIGWHEEL_NO_NREPL" "true")
-(setenv "HORIZON_FIGWHEEL_IP" "0.0.0.0")
+(setenv "FIGW_ADDR" "0.0.0.0")
+;; (setenv "HORIZON_FG_HARD_RELOAD" "true")
 ;; (setenv "USE_YOURKIT_AGENT" "true")
 
 ;; restart
