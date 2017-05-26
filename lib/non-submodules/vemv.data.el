@@ -3,8 +3,6 @@
 
 ;; XXX intro w/o moving the comment
 
-(setq vemv/open_file_buffers ())
-
 (setq vemv/emacs-files '("vemv.init.el" "vemv.lang.el" "vemv.theme.el" "vemv.data.el"))
 
 (setq vemv/tree-dirs (let ((d (-drop 2 (directory-files "~/clj"))))
@@ -93,8 +91,11 @@
             "S-<next>" 'vemv/previous-window ; on OSX: shift-fn-up
             "S-<prior>" 'vemv/next-window
 	    "§" 'hippie-expand
-            "C-<next>" 'vemv/previous-file-buffer
-            "C-<prior>" 'vemv/next-file-buffer
+            ; "C-<next>" 'vemv/previous-file-buffer
+            ; "C-<prior>" 'vemv/next-file-buffer
+            [f7] 'vemv/previous-file-buffer
+            [f8] 'vemv/message-file-buffers
+            [f9] 'vemv/next-file-buffer
             "M-<next>" 'previous-buffer
             "M-<prior>" 'next-buffer
 	    "M-<begin>" nil
@@ -164,8 +165,8 @@
             "C-f" (argless (ignore-errors (call-interactively 'search-forward)))
             "M-[" 'paredit-backward ; move one sexpr backward
             "M-]" 'paredit-forward
-            [f6] 'split-window-vertically
-            [f7] 'split-window-horizontally
+            ; [f6] 'split-window-vertically
+            ; [f7] 'split-window-horizontally
             "C-n" (argless (make-frame `((width . ,(frame-width)) (height . ,(frame-height))))) ; in order to kill a frame, use the window system's standard exit (e.g. Alt-F4) command. The other frames won't close.
             [f10] 'vemv/ensure-layout
             [f11] 'vemv/maximize

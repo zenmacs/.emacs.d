@@ -4,13 +4,13 @@
 
 (require 'package)
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
-(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 
-;(unless (package-installed-p 'cider) ; package temporarily don't work on ubuntu 16 (TLS)
-;  (package-refresh-contents)
-;  (package-install 'cider))
+(unless (package-installed-p 'cider)
+  (package-refresh-contents)
+  (package-install 'cider))
 
 (unless (package-installed-p 'company)
   (package-refresh-contents)
@@ -19,6 +19,14 @@
 (unless (package-installed-p 'queue)
   (package-refresh-contents)
   (package-install 'queue))
+  
+(unless (package-installed-p 'fiplr)
+  (package-refresh-contents)
+  (package-install 'fiplr))
+  
+(unless (package-installed-p 'clojure-mode)
+  (package-refresh-contents)
+  (package-install 'clojure-mode))
 
 (setq lexical-binding t)
 (setq-default indent-tabs-mode nil)
@@ -37,6 +45,7 @@
 (require 'smex)
 (require 'ruby-mode)
 (require 'ruby-end)
+;; (require 'clj-refactor)
 (require 'cider)
 (require 'epl)
 (require 'pkg-info)
@@ -77,12 +86,17 @@
 (setq cider-repl-display-help-banner' nil)
 (setq ido-show-dot-for-dired t)
 
+(setq inhibit-message t)
+
 (custom-set-variables
  '(cider-connection-message-fn nil)
  '(haskell-mode-hook '(turn-on-haskell-indentation))
+ '(cider-repl-display-help-banner nil)
  '(tree-widget-image-enable nil)
  '(nrepl-popup-stacktraces nil)
  '(ielm-prompt "ielm> "))
+
+(defun cider-repl--banner () "")
 
 (setq clojure-indent-style ':align-arguments)
 
@@ -144,10 +158,6 @@
          2)
   )
 
-(add-hook 'kill-buffer-hook (argless (let ((killed (buffer-name (current-buffer))))
-                                       (setq vemv/open_file_buffers
-                                             (filter (lambda (_) (not (equal _ killed)))
-                                                     vemv/open_file_buffers)))))
 (add-hook 'html-mode-hook
           (lambda()
             (setq sgml-basic-offset 2)
@@ -173,6 +183,7 @@
 
 (setenv "PATH" (concat (getenv "PATH") ":" vemv-home "/bin"))
 (setenv "FIGW_ADDR" "0.0.0.0")
+(setenv "EXTEND_IPERSISTENTVECTOR" "true")
 ;; (setenv "HORIZON_FG_HARD_RELOAD" "true")
 ;; (setenv "USE_YOURKIT_AGENT" "true")
 
@@ -209,11 +220,18 @@
 
 (let ((default-directory (concat vemv-home "/gpm/src")))
   (sh))
-(paredit-mode)
-;(auto-complete-mode)
+
+(vemv/next-window)
 
 (setq vemv/repl2 (selected-window))
-(vemv/next-window)
+
+(delay (argless 
+        (select-window vemv/repl2)
+        (switch-to-buffer "*shell-1*")
+        (enable-paredit-mode)
+        (select-window vemv/main_window))
+       1)
+       
 (vemv/next-window)
 
 (message "")

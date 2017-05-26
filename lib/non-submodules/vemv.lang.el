@@ -400,12 +400,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (interactive)
   (select-window vemv/main_window)
   (let ((file (buffer-name (or (and filepath (find-file filepath))
-                               (ido-find-file)))))
-    ; (when (not (some (lambda (item) (equal item file)) vemv/open_file_buffers))
-      (conj! vemv/open_file_buffers file)
-      ;)
-      )
-      )
+                               (ido-find-file)))))))
 
 (defun vemv/open-project ()
   (let ((default-directory (replace-regexp-in-string "\\.$" "" (ido-read-file-name ()))))
@@ -414,41 +409,64 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 ; XXX if scratch is not empty, include it. (?)
 
 (defun vemv/advice-nrepl ()
-  (comm when (vemv/contains? (buffer-name) ".clj")
-    (let ((name (nrepl-current-ns)))
-      (with-current-buffer "*nrepl*"
-	(if (not (equal name (nrepl-current-ns)))
-	    (nrepl-set-ns name))))))
+  (interactive)
+  (when (and (vemv/contains? (buffer-name) ".clj") (cider-connected-p))
+    (cider-repl-set-ns (with-current-buffer (buffer-name) (cider-current-ns)))))
 
-(defun vemv/message-file-buffers ()
-  (let ((first (car vemv/open_file_buffers))
-	(rest (cdr vemv/open_file_buffers)))
-    (message  "%s %s" first ; (propertize first 'face '(:background "#000000")) ; "#161616"
-	     (apply 'concat (cons "| " (-interpose " | " rest))))))
+(defun vemv/open_file_buffers ()
+  (let ((c (mapcar (lambda (x) (buffer-name x)) (buffer-list))))
+    (filter (lambda (filename) (vemv/contains? filename ".clj")) c)))
+
+(setq vemv/chosen-file-buffer-order nil) ; a list
+
+(defun vemv/clean-chosen-file-buffer-order ()
+    (let* (
+      (curr (buffer-name (current-buffer)))
+      (c (vemv/open_file_buffers))
+      (all (-distinct (-concat vemv/chosen-file-buffer-order c)))
+      (without-curr (-remove (lambda (x) (string-equal x curr)) all))
+      (final (cons curr without-curr)))
+        (setq vemv/chosen-file-buffer-order (filter (lambda (x)
+                                                      (member x c))
+                                                    final))))
+
+(defun vemv/message-file-buffers-impl ()
+  (vemv/clean-chosen-file-buffer-order)
+    (let* ((first (car vemv/chosen-file-buffer-order))
+        	(rest (cdr vemv/chosen-file-buffer-order))
+          (all (cons first rest)))
+            (apply 'concat (-interpose " | " all))))
+
+(add-hook 'clojure-mode-hook
+	          (lambda ()
+            (setq-local mode-line-format
+              (list
+                "  "
+                '(:eval (when (buffer-modified-p) "*"))
+                '(:eval (vemv/message-file-buffers-impl))
+                ))))
 
 (defun vemv/next-file-buffer ()
   "Switch to the next buffer that contains a file opened by the user."
   (interactive)
-  (if (<= 2 (length vemv/open_file_buffers))
+  (vemv/clean-chosen-file-buffer-order)
+  (if (<= 2 (length vemv/chosen-file-buffer-order))
       (progn
-	(if (equal (second vemv/open_file_buffers) (buffer-name (current-buffer)))
-	    (setq vemv/open_file_buffers `(,@(cdr vemv/open_file_buffers) ,(car vemv/open_file_buffers))))
-	(switch-to-buffer (second vemv/open_file_buffers))
-	(setq vemv/open_file_buffers `(,@(cdr vemv/open_file_buffers) ,(car vemv/open_file_buffers)))
-	(vemv/advice-nrepl)
-	(vemv/message-file-buffers))
+      	(switch-to-buffer (second vemv/chosen-file-buffer-order))
+      	(setq vemv/chosen-file-buffer-order `(,@(cdr vemv/chosen-file-buffer-order) ,(car vemv/chosen-file-buffer-order)))
+      	(vemv/advice-nrepl))
       (message "No more file buffers available.")))
 
 (defun vemv/previous-file-buffer ()
   "Switch to the previous buffer that contains a file opened by the user."
   (interactive)
-  (if-let (file (car (last vemv/open_file_buffers)))
+  (vemv/clean-chosen-file-buffer-order)
+  (if-let (file (car (last vemv/chosen-file-buffer-order)))
           (if (equal file (buffer-name (current-buffer)))
               (message "No more file buffers available.")
               (switch-to-buffer file)
-              (setq vemv/open_file_buffers `(,file ,@(butlast vemv/open_file_buffers)))
-	      (vemv/advice-nrepl)
-	      (vemv/message-file-buffers))
+              (setq vemv/chosen-file-buffer-order`(,file ,@(butlast vemv/chosen-file-buffer-order)))
+      	      (vemv/advice-nrepl))
           (message "No more file buffers available.")))
 
 (defun vemv/home ()
