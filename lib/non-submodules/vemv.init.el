@@ -59,6 +59,7 @@
 (require 'haskell-mode)
 (require 'undo-tree)
 (require 'nyan-mode)
+(require 's)
 (require 'vemv.lang)
 (require 'vemv.data)
 (require 'vemv.theme)
