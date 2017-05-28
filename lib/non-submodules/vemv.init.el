@@ -93,6 +93,7 @@
  '(cider-connection-message-fn nil)
  '(haskell-mode-hook '(turn-on-haskell-indentation))
  '(cider-repl-display-help-banner nil)
+ '(pe/inline-folders nil)
  '(tree-widget-image-enable nil)
  '(nrepl-popup-stacktraces nil)
  '(ielm-prompt "ielm> "))
@@ -203,7 +204,8 @@
 (setq default-directory vemv-home)
 (let ((default-directory (concat vemv-home "/gpm/src/"))) ;; trailing slash required
   (call-interactively 'project-explorer-open)
-  (enlarge-window-horizontally -20))
+  (enlarge-window-horizontally -20)
+  (setq vemv/project-explorer-window (selected-window)))
 
 (vemv/next-window)
 

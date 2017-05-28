@@ -94,7 +94,7 @@
             ; "C-<next>" 'vemv/previous-file-buffer
             ; "C-<prior>" 'vemv/next-file-buffer
             [f7] 'vemv/previous-file-buffer
-            [f8] 'vemv/message-file-buffers
+            [f8] 'vemv/show-current-file-in-project-explorer
             [f9] 'vemv/next-file-buffer
             "M-<next>" 'previous-buffer
             "M-<prior>" 'next-buffer
