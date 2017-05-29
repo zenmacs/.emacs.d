@@ -441,22 +441,18 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   "Switch to the next buffer that contains a file opened by the user."
   (interactive)
   (vemv/clean-chosen-file-buffer-order)
-  (if (<= 2 (length vemv/chosen-file-buffer-order))
-      (progn
-      	(switch-to-buffer (second vemv/chosen-file-buffer-order))
-      	(setq vemv/chosen-file-buffer-order `(,@(cdr vemv/chosen-file-buffer-order) ,(car vemv/chosen-file-buffer-order)))
-      	(vemv/advice-nrepl))
-      (message "No more file buffers available.")))
+  (switch-to-buffer (or (second vemv/chosen-file-buffer-order) (first vemv/chosen-file-buffer-order)))
+  (setq vemv/chosen-file-buffer-order `(,@(cdr vemv/chosen-file-buffer-order) ,(car vemv/chosen-file-buffer-order)))
+  (vemv/advice-nrepl))
 
 (defun vemv/previous-file-buffer ()
   "Switch to the previous buffer that contains a file opened by the user."
   (interactive)
   (vemv/clean-chosen-file-buffer-order)
-  (if-let (file (car (last vemv/chosen-file-buffer-order)))
-          (if (equal file (buffer-name (current-buffer)))
-              (message "No more file buffers available.")
+  (if-let (file (or (car (last vemv/chosen-file-buffer-order)) (first vemv/chosen-file-buffer-order)))
+            (progn
               (switch-to-buffer file)
-              (setq vemv/chosen-file-buffer-order`(,file ,@(butlast vemv/chosen-file-buffer-order)))
+              (setq vemv/chosen-file-buffer-order `(,file ,@(butlast vemv/chosen-file-buffer-order)))
       	      (vemv/advice-nrepl))
           (message "No more file buffers available.")))
 
