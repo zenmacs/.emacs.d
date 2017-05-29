@@ -569,3 +569,23 @@ Comments get ignored, this is, point will only move as long as its position stil
             (next-line))
           
           (end-of-line)))
+
+(defun vemv/copy-selection-or-next-sexpr ()
+  (if (region-active-p)
+     (call-interactively 'kill-ring-save)
+     (kill-new (vemv/sexpr-content))))
+
+(defun vemv/open-namespace-at-point ()
+  (let* ((ns (s-replace "." "" (vemv/copy-selection-or-next-sexpr)))
+         (ns2 (s-replace "-" "" ns))
+         (ns3 (concat "src/horizon/src/" ns2 ".cljs")))
+    (run-with-timer 2 nil 'insert ns3)
+    (vemv/fiplr)
+    ))
+  
+(defun vemv/fiplr ()
+  (unless (string-equal vemv-home (if (buffer-file-name)
+                                     (directory-file-name
+                                       (file-name-directory (buffer-file-name)))
+                                     (file-truename ".")))
+    (fiplr-find-file)))

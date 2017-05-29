@@ -19,7 +19,7 @@
 
 ;; ---
 
-;; available: C-escape, C-', C-j, C-y, (C/M f/p)
+;; available: C-escape, C-', C-j, (C/M f/p)
 ;; ummodificable: C-m, C-i, C-[f
 ;; ESC acts like alt, but one does not have to hold it pressed.
 ;; C-click is very handy for switching between arbitrary buffers.
@@ -101,9 +101,8 @@
 	    "M-<begin>" nil
 	    "M-<end>" nil
 	    ; "<backtab>" 'auto-complete
-            "C-a" (argless (if (region-active-p) ; copy selection or next sexpr
-                               (call-interactively 'kill-ring-save)
-                               (kill-new (vemv/sexpr-content))))
+            "C-a" (argless (vemv/copy-selection-or-next-sexpr))
+            "C-y" (argless (vemv/open-namespace-at-point))
             "M-a" (argless (kill-new (vemv/sexpr-content :backward)))
             "C-s" 'save-buffer ; save
             "C-v" 'cua-paste ; paste
@@ -176,7 +175,7 @@
             "C-*" (argless (vemv/open (concat "~/.emacs.d/lib/non-submodules/"
                                               (ido-completing-read "Open: " vemv/emacs-files))))
 	    "C-3" 'vemv/indent
-      "C-t" 'fiplr-find-file
+      "C-t" 'vemv/fiplr
       ; "C-T" (argless (switch-to-buffer "*scratch*"))
 	    "C-." 'vemv/ns-form
 	    ; "C-," 'nrepl-load-current-buffer
