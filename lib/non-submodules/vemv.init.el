@@ -106,24 +106,6 @@
 (add-hook 'clojure-mode-hook 'undo-tree-mode)
 (add-hook 'clojure-mode-hook (argless (local-set-key (kbd "RET") 'newline-and-indent)))
 
-(comm add-hook 'clojure-mode-hook (argless (if-let (ns (clojure-find-ns))
-					      (progn
-						(nrepl-eval-ns-form)
-						(with-current-buffer "*nrepl*"
-						    (nrepl-set-ns ns)))
-					      (when (vemv/contains? (buffer-name) ".clj")
-						(let ((name (substring (buffer-name) ; XXX needs prefixing
-									     0
-									     (- (length (buffer-name)) 4)))) ; removes the .clj
-						  (comm save-excursion ;; XXX nrepl-load-current-buffer
-						    (beginning-of-buffer)
-						    (insert (concat "(ns "
-								    name
-								    ")"))
-						    (nrepl-eval-ns-form))
-						  (with-current-buffer "*nrepl*"
-						    (nrepl-set-ns name)))))))
-
 (add-hook 'ruby-mode-hook 'enable-paredit-mode)
 (add-hook 'ruby-mode-hook 'electric-pair-mode)
 
@@ -132,17 +114,6 @@
 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 
-(comm
-  (add-hook 'nrepl-mode-hook 'enable-paredit-mode)
-  (comm add-hook 'nrepl-connected-hook (argless (delay (argless
-  						 ;;(delete-window)
-  						 (vemv/next-window)
-  						 (switch-to-buffer "*nrepl*")
-  						 (vemv/next-window)
-  						 (switch-to-buffer "*ielm*")
-  						 (select-window vemv/main_window) ;; apparently needed only on the first run! (this comment was placed in the slime era)
-                                                   (nrepl-eval-ns-form)) 2)))
-)
 
 (setq cider-cljs-lein-repl
   (if gpm-using-nrepl
@@ -272,15 +243,6 @@
          (y-or-n-p (&rest args) t))
     ad-do-it))
 
-(comm defadvice eval-ns-form (around nrepl-eval-ns-form)
-  (save-excursion
-    (when (clojure-find-ns)
-      (goto-char (match-beginning 0))
-      (vemv/send :slime)))
-  ad-do-it)
-
-(comm ad-activate 'eval-ns-form)
-
 (setq back-to-indentation-state nil)
 
 (defadvice back-to-indentation (around back-to-back)
@@ -334,10 +296,7 @@
           (read-kbd-macro k)
           k))
     (third binding)))
-(comm
-(condition-case ex (nrepl "localhost" 9119) ('error))
-(condition-case ex (nrepl "localhost" 9120) ('error))
-)
+
 (setq redisplay-dont-pause t
       column-number-mode t
       echo-keystrokes 0.02
