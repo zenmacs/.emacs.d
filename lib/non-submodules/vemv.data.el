@@ -161,7 +161,10 @@
 													   (delete-frame (selected-frame) t) ; close an auxiliary frame
 														 (kill-buffer-and-window) (vemv/previous-window))) ; close annoying popup windows
             "C-h" 'replace-string ; search and replace
-            "C-f" (argless (ignore-errors (call-interactively 'search-forward)))
+            "C-f" (argless (ignore-errors
+                              (call-interactively 'search-forward)
+                              (setq vemv-last-search (first minibuffer-history))))
+            "C-p" (argless (ignore-errors (search-forward vemv-last-search)))
             "M-[" 'paredit-backward ; move one sexpr backward
             "M-]" 'paredit-forward
             ; [f6] 'split-window-vertically
