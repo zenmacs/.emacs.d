@@ -94,6 +94,26 @@
 
 (setq inhibit-message t)
 
+(setq pe/mode-line-format
+  `(:eval (concat (propertize
+                   (concat "  "
+                           (file-name-nondirectory
+                            (directory-file-name
+                             default-directory)))
+                   'face 'font-lock-function-name-face
+                   'help-echo default-directory)
+                  (when (or pe/reverting pe/filter-regex)
+                    (format " (%s)"
+                            (concat
+                             (when pe/filter-regex
+                               "Filtered")
+                             (and pe/filter-regex
+                                  pe/reverting
+                                  ", ")
+                             (when pe/reverting
+                               "Indexing"))))
+                  )))
+
 (custom-set-variables
  '(cider-connection-message-fn nil)
  '(haskell-mode-hook '(turn-on-haskell-indentation))
