@@ -437,15 +437,6 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
           (all (cons first rest)))
             (apply 'concat (-interpose " | " all))))
 
-(add-hook 'clojure-mode-hook
-	          (lambda ()
-            (setq-local mode-line-format
-              (list
-                "  "
-                '(:eval (when (buffer-modified-p) "*"))
-                '(:eval (vemv/message-file-buffers-impl))
-                ))))
-
 (defun vemv/next-file-buffer ()
   "Switch to the next buffer that contains a file opened by the user."
   (interactive)

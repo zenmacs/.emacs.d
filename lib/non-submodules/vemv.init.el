@@ -28,6 +28,10 @@
   (package-refresh-contents)
   (package-install 'clojure-mode))
 
+(unless (package-installed-p 'clj-refactor)
+  (package-refresh-contents)
+  (package-install 'clj-refactor))
+
 (setq lexical-binding t)
 (setq-default indent-tabs-mode nil)
 (show-paren-mode 1)
@@ -60,6 +64,7 @@
 (require 'undo-tree)
 (require 'nyan-mode)
 (require 's)
+(require 'clj-refactor)
 (require 'vemv.lang)
 (require 'vemv.data)
 (require 'vemv.theme)
@@ -105,6 +110,13 @@
 (add-hook 'clojure-mode-hook 'enable-paredit-mode)
 (add-hook 'clojure-mode-hook 'undo-tree-mode)
 (add-hook 'clojure-mode-hook (argless (local-set-key (kbd "RET") 'newline-and-indent)))
+(add-hook 'clojure-mode-hook (argless (clj-refactor-mode 1)
+                                      (cljr-add-keybindings-with-prefix "<f5>")
+                                      (setq-local mode-line-format
+                                        (list
+                                          "  "
+                                          '(:eval (when (buffer-modified-p) "*"))
+                                          '(:eval (vemv/message-file-buffers-impl))))))
 
 (add-hook 'ruby-mode-hook 'enable-paredit-mode)
 (add-hook 'ruby-mode-hook 'electric-pair-mode)
