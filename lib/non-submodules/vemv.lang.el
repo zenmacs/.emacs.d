@@ -434,8 +434,10 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (vemv/clean-chosen-file-buffer-order)
     (let* ((first (car vemv/chosen-file-buffer-order))
         	(rest (cdr vemv/chosen-file-buffer-order))
-          (all (cons first rest)))
-            (apply 'concat (-interpose " | " all))))
+          (p (propertize first 'face 'font-lock-function-name-face))
+          (sep (propertize " | " 'face 'font-lock-line-and-column-face))
+          (all (cons p rest)))
+            (apply 'concat (-interpose sep all))))
 
 (defun vemv/next-file-buffer ()
   "Switch to the next buffer that contains a file opened by the user."

@@ -127,6 +127,12 @@
 
 (setq clojure-indent-style ':align-arguments)
 
+(setq-default mode-line-format (list "  "
+                             '(:eval (when (and (buffer-file-name) (buffer-modified-p)) "*"))
+                             '(:eval (buffer-name))
+                             " "
+                             '(:eval (when (buffer-file-name) (propertize "%l:%c" 'face 'font-lock-line-and-column-face)))))
+
 (add-hook 'clojure-mode-hook 'enable-paredit-mode)
 (add-hook 'clojure-mode-hook 'undo-tree-mode)
 (add-hook 'clojure-mode-hook (argless (local-set-key (kbd "RET") 'newline-and-indent)))
@@ -135,8 +141,9 @@
                                       (setq-local mode-line-format
                                         (list
                                           "  "
-                                          '(:eval (when (buffer-modified-p) "*"))
-                                          '(:eval (vemv/message-file-buffers-impl))))))
+                                          '(:eval (when (buffer-modified-p) (propertize "*" 'face 'font-lock-function-name-face)))
+                                          '(:eval (vemv/message-file-buffers-impl))
+                                          '(:eval (propertize " %l:%c" 'face 'font-lock-line-and-column-face))))))
 
 (add-hook 'ruby-mode-hook 'enable-paredit-mode)
 (add-hook 'ruby-mode-hook 'electric-pair-mode)
