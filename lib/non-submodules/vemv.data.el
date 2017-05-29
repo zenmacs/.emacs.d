@@ -178,7 +178,7 @@
             "C-*" (argless (vemv/open (concat "~/.emacs.d/lib/non-submodules/"
                                               (ido-completing-read "Open: " vemv/emacs-files))))
 	    "C-3" 'vemv/indent
-      "C-t" 'vemv/fiplr
+      "C-t" (argless (vemv/fiplr))
       ; "C-T" (argless (switch-to-buffer "*scratch*"))
 	    "C-." 'vemv/ns-form
 	    ; "C-," 'nrepl-load-current-buffer
