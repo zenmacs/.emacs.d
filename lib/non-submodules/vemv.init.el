@@ -114,6 +114,7 @@
 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 
+(add-hook 'ielm-mode-hook 'enable-paredit-mode)
 
 (setq cider-cljs-lein-repl
   (if gpm-using-nrepl
