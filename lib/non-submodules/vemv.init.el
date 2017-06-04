@@ -197,6 +197,8 @@
 (setenv "PATH" (concat (getenv "PATH") ":" vemv-home "/bin"))
 (setenv "FIGW_ADDR" "0.0.0.0")
 (setenv "EXTEND_IPERSISTENTVECTOR" "true")
+(setenv "FIGWHEEL_DESKTOP_NOTIFICATIONS" "true")
+(setenv "HORIZON_DISABLE_SPINNERS_ANIMATION" "true")
 ;; (setenv "HORIZON_FG_HARD_RELOAD" "true")
 ;; (setenv "USE_YOURKIT_AGENT" "true")
 
