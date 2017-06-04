@@ -155,7 +155,8 @@
             "M-|" (argless (vemv/send :emacs :backward))
             "M-$" (argless (if gpm-using-nrepl (vemv/send :cljs :backward) (vemv/send :shell :backward)))
 
-            "C-l" (argless (kill-buffer (current-buffer))) ; XXX and switch to the next file buffer
+            "C-l" (argless (kill-buffer (current-buffer))
+                           (vemv/next-file-buffer))
             ;; "C-L" (argless (let (kill-buffer-query-functions) (kill-buffer)))
             "M-l" (argless (save-buffer)
                            (kill-buffer (current-buffer)))
