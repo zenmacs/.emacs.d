@@ -402,9 +402,18 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
        (apply-partially 'pe/set-tree (current-buffer) 'refresh))
   (select-window vemv/main_window))
 
+(setq vemv/refreshing-caches
+  nil)
+  
+(setq vemv/project-explorer-initialized
+  nil)
+
 (defun vemv/refresh-file-caches ()
-  (vemv/refresh-pe-cache)
-  (fiplr-clear-cache))
+  (unless (or vemv/refreshing-caches (not vemv/project-explorer-initialized))
+    (setq vemv/refreshing-caches t)
+    (vemv/refresh-pe-cache)
+    (fiplr-clear-cache)
+    (setq vemv/refreshing-caches nil)))
 
 (defun vemv/open (&optional filepath)
   "Opens a file (from FILEPATH or the user input)."
