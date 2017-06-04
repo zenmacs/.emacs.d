@@ -426,3 +426,5 @@
 
 ; ensure nrepl opens horizon project
 (find-file (concat vemv-home "/gpm/src/horizon/src/horizon/desktop/core.cljs"))
+
+(run-with-timer 0 10 'vemv/refresh-file-caches) ; every 10 seconds

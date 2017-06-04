@@ -395,12 +395,25 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
     (paredit-splice-sexp-killing-backward)
     (comment "XXX move one char to the right.")))
 
+(defun vemv/refresh-pe-cache ()
+  (select-window vemv/project-explorer-window)
+  (funcall pe/directory-tree-function
+       default-directory
+       (apply-partially 'pe/set-tree (current-buffer) 'refresh))
+  (select-window vemv/main_window))
+
+(defun vemv/refresh-file-caches ()
+  (vemv/refresh-pe-cache)
+  (fiplr-clear-cache))
+
 (defun vemv/open (&optional filepath)
-  "Opens a file (from FILEPATH or the user input), adding its buffer name to vemv/open_files, thus allowing the functionality of vemv/next-file-buffer and vemv/previous-file-buffer."
+  "Opens a file (from FILEPATH or the user input)."
   (interactive)
   (select-window vemv/main_window)
-  (let ((file (buffer-name (or (and filepath (find-file filepath))
-                               (ido-find-file)))))))
+  (let ((file (buffer-name (or (and filepath (find-file filepath)) (ido-find-file)))))) ; magical let - do not unwrap!
+  (save-buffer)
+  (vemv/refresh-file-caches)
+  (select-window vemv/main_window))
 
 (defun vemv/open-project ()
   (let ((default-directory (replace-regexp-in-string "\\.$" "" (ido-read-file-name ()))))
@@ -551,6 +564,7 @@ Comments get ignored, this is, point will only move as long as its position stil
 
 (defun vemv/show-current-file-in-project-explorer ()
   (interactive)
+  (vemv/refresh-file-caches)
   (let* ((buffer-fragments (-remove (lambda (x) (string-equal x "")) (split-string (buffer-file-name) "/")))
          (projname (pe/project-root-function-default)) ; "/Users/vemv/gpm"
          (project-fragments (-remove (lambda (x) (string-equal x "")) (split-string projname "/")))
@@ -570,7 +584,8 @@ Comments get ignored, this is, point will only move as long as its position stil
           (while (not (string-equal (s-chop-suffix "/" (first (last final-fragments))) (pe/get-filename)))
             (next-line))
           
-          (end-of-line)))
+          (end-of-line))
+  (select-window vemv/main_window))
 
 (defun vemv/copy-selection-or-next-sexpr ()
   (if (region-active-p)
@@ -581,9 +596,9 @@ Comments get ignored, this is, point will only move as long as its position stil
   (let* ((ns (s-replace "." "" (vemv/copy-selection-or-next-sexpr)))
          (ns2 (s-replace "-" "" ns))
          (ns3 (concat "src/horizon/src/" ns2 ".cljs")))
-    (run-with-timer 2 nil 'insert ns3)
-    (vemv/fiplr)
-    ))
+    (delay (argless (insert ns3))
+           2)
+    (vemv/fiplr)))
   
 (defun vemv/fiplr ()
   (unless (string-equal vemv-home (if (buffer-file-name)

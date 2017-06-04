@@ -106,8 +106,8 @@
             "M-a" (argless (kill-new (vemv/sexpr-content :backward)))
             "C-s" 'save-buffer ; save
             "C-v" 'cua-paste ; paste
-            "C-o" 'vemv/open
-            "C-O" (argless (vemv/open-project))
+            "C-o" (argless (vemv/open))
+            ; "C-O" (argless (vemv/open-project)) ; NOTE: this build of emacs OSX interprets C-o as C-O, making it unusable
 
             "C-k" 'vemv/kill
             "C-K" (argless (kill-new (vemv/kill))) ; cut
@@ -127,7 +127,9 @@
 								(shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make clean")
 								(shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make sass")
 								(select-window vemv/main_window)
-								(cider-jack-in-clojurescript)))
+								(cider-jack-in-clojurescript)
+                (vemv/show-current-file-in-project-explorer)
+                ))
             "C-z" 'undo-tree-undo
             "C-S-z" 'undo-tree-redo
             "C-`" 'other-frame
