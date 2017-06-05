@@ -129,9 +129,7 @@
                 (shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make clean")
                 (shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make sass")
                 (select-window vemv/main_window)
-                (cider-jack-in-clojurescript)
-                (vemv/show-current-file-in-project-explorer)
-                ))
+                (cider-jack-in-clojurescript)))
             "C-z" 'undo-tree-undo
             "C-S-z" 'undo-tree-redo
             "C-`" 'other-frame
