@@ -579,6 +579,7 @@ Comments get ignored, this is, point will only move as long as its position stil
 (defun vemv/show-current-file-in-project-explorer ()
   (interactive)
   (vemv/refresh-file-caches)
+  (select-window vemv/main_window)
   (let* ((buffer-fragments (-remove (lambda (x) (string-equal x "")) (split-string (buffer-file-name) "/")))
          (projname (pe/project-root-function-default)) ; "/Users/vemv/gpm"
          (project-fragments (-remove (lambda (x) (string-equal x "")) (split-string projname "/")))
@@ -587,7 +588,7 @@ Comments get ignored, this is, point will only move as long as its position stil
          (final-fragments (mapcar (lambda (x) (concat (s-join "" (cons projname (-interpose "/" x))) "/")) expanded-fragments)))
          
           (select-window vemv/project-explorer-window)
-          (pe/fold-all)
+          ; (pe/fold-all) ; necessary in principle, skip it for performance. seems to work fine.
           (beginning-of-buffer)
          
          (seq-doseq (f (butlast final-fragments))
