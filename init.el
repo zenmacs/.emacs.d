@@ -17,6 +17,7 @@
       (normal-top-level-add-subdirs-to-load-path))
 
 (when (eq system-type 'darwin)
+  (setq mac-control-modifier 'super)
   (setq mac-option-modifier 'meta)
   (setq mac-command-modifier 'control))
 
