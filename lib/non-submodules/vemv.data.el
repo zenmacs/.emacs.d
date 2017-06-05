@@ -6,7 +6,7 @@
 (setq vemv/emacs-files '("vemv.init.el" "vemv.lang.el" "vemv.theme.el" "vemv.data.el"))
 
 (setq vemv/tree-dirs (let ((d (-drop 2 (directory-files "~/clj"))))
-		       (flatten (mapcar (lambda (a) (list (vemv/string-to-keyword a) (concat "~/clj/" a))) d))))
+           (flatten (mapcar (lambda (a) (list (vemv/string-to-keyword a) (concat "~/clj/" a))) d))))
 
 (mapc (lambda (a) (conj! vemv/tree-dirs a))
       (list
@@ -33,7 +33,7 @@
 (setq vemv/local-key-bindings-to-remove
       (list (list paredit-mode-map "\C-d" "\C-k" "\C-j" "\M-\"" [127] (kbd ";")) ; [127] stands for DEL, [27 127] is M-DEL.
             (list comint-mode-map "\M-p")
-	    (list undo-tree-map (kbd "C-/") (kbd "C-?"))))
+      (list undo-tree-map (kbd "C-/") (kbd "C-?"))))
 
 (setq vemv/key-bindings-to-dummy '([mouse-6] [mouse-7] [double-mouse-6] [double-mouse-7] [triple-mouse-6] [triple-mouse-7]))
 
@@ -47,8 +47,8 @@
             clojurescript-mode-map  "M-e" (argless (vemv/send :cljs :backward))
             emacs-lisp-mode-map "C-/" 'vemv/elisp-popup-documentation
             emacs-lisp-mode-map "C-?" 'vemv/elisp-window-documentation
-				    ; emacs-lisp-mode-map "C-z" 'undo-tree-undo
-				    emacs-lisp-mode-map "RET" 'newline-and-indent
+            ; emacs-lisp-mode-map "C-z" 'undo-tree-undo
+            emacs-lisp-mode-map "RET" 'newline-and-indent
             emacs-lisp-mode-map  ";" 'vemv/semicolon
             haskell-mode-map  "C-e" (argless (vemv/send :shell))
             haskell-mode-map  "M-e" (argless (vemv/send :shell :backward))
@@ -59,23 +59,23 @@
 (comm setq vemv/local-key-bindings
       (vemv/hash-map
        clojure-mode-map (vemv/hash-map
-			 ; "C-/" ;  'nrepl-doc
-			 ; "C-?" ; 'nrepl-src
-			 ; ";" (argless (paredit-semicolon) (paredit-semicolon) (insert " ")) ;; (when (and (eolp) COLUMN > 0) (insert " "))
-			 )
+       ; "C-/" ;  'nrepl-doc
+       ; "C-?" ; 'nrepl-src
+       ; ";" (argless (paredit-semicolon) (paredit-semicolon) (insert " ")) ;; (when (and (eolp) COLUMN > 0) (insert " "))
+       )
        emacs-lisp-mode-map (vemv/hash-map
-			     "C-/" 'vemv/elisp-popup-documentation
-			     "C-?" 'vemv/elisp-window-documentation
-			     ; "C-z" 'undo-tree-undo
-			     "RET" 'newline-and-indent
-			     ";" (argless (paredit-semicolon) (paredit-semicolon) (insert " ")))
+           "C-/" 'vemv/elisp-popup-documentation
+           "C-?" 'vemv/elisp-window-documentation
+           ; "C-z" 'undo-tree-undo
+           "RET" 'newline-and-indent
+           ";" (argless (paredit-semicolon) (paredit-semicolon) (insert " ")))
        haskell-mode-map (vemv/hash-map
-			   "C-e" (argless (vemv/send :shell))
-			   "M-e" (argless (vemv/send :shell :backward))
-			   "RET" (argless (insert "\n"))
-			   "," (argless (insert ", ")))
+         "C-e" (argless (vemv/send :shell))
+         "M-e" (argless (vemv/send :shell :backward))
+         "RET" (argless (insert "\n"))
+         "," (argless (insert ", ")))
        ruby-mode-map (vemv/hash-map
-		       "RET" 'ruby-reindent-then-newline-and-indent)))
+           "RET" 'ruby-reindent-then-newline-and-indent)))
 
 ; basics reminder:
 ; c-space - set the mark
@@ -86,11 +86,11 @@
 ; M-x describe-key - resolve a key binding
 
 ;XXX M-RET alters the kill-ring.
+;; NOTE - don't use C-o / C-O distinction - doesn't work in this emacs build
+;; NOTE ; `s-` (meta) must be in lowercase
 (setq vemv/global-key-bindings ; This setup is optimized for a UK keyboard with a Colemak layout, with the number/symbol row switched (e.g. "(" is the default, "9" requires shift).
       (vemv/hash-map
-            "S-<next>" 'vemv/previous-window ; on OSX: shift-fn-up
-            "S-<prior>" 'vemv/next-window
-	    "§" 'hippie-expand
+            "§" 'hippie-expand
             ; "C-<next>" 'vemv/previous-file-buffer
             ; "C-<prior>" 'vemv/next-file-buffer
             [f7] 'vemv/previous-file-buffer
@@ -98,36 +98,38 @@
             [f9] 'vemv/next-file-buffer
             "M-<next>" 'previous-buffer
             "M-<prior>" 'next-buffer
-	    "M-<begin>" nil
-	    "M-<end>" nil
-	    ; "<backtab>" 'auto-complete
+            "M-<begin>" nil
+            "M-<end>" nil
+            ; "<backtab>" 'auto-complete
             "C-a" (argless (vemv/copy-selection-or-next-sexpr))
             "C-y" (argless (vemv/open-namespace-at-point))
             "M-a" (argless (kill-new (vemv/sexpr-content :backward)))
             "C-s" 'save-buffer ; save
             "C-v" 'cua-paste ; paste
             "C-o" (argless (vemv/open))
-            ; "C-O" (argless (vemv/open-project)) ; NOTE: this build of emacs OSX interprets C-o as C-O, making it unusable
+            "s-<home>" 'beginning-of-buffer ; alias of c-home
+            "s-<end>" 'end-of-buffer ; alias of c-end
+            "s-o" (argless (vemv/open-project))
 
             "C-k" 'vemv/kill
-            "C-K" (argless (kill-new (vemv/kill))) ; cut
+            "s-k" (argless (kill-new (vemv/kill))) ; cut
             "M-k" (argless (vemv/kill :backward))
             "M-<up>" 'paredit-splice-sexp-killing-backward
             "M-K" (argless (kill-new (vemv/kill :backward)))
 
             "C-b" 'vemv/duplicate
             ; "C-w" 'smex ; M-x
-						"C-j" (argless
-							(when (and (not cider-launched) gpm-using-nrepl)
-								(setq cider-launched t)
-								(message "Connecting...")
-								; (shell-command-to-string "sudo /usr/local/bin/nginx -s stop") ; nginx from rails projects interfers with jvm servers
-								; (shell-command-to-string "setopt nullglob; cd ~/gpm; rm -rf logs/*; lein clean")
-								(message "Running make clean...")
-								(shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make clean")
-								(shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make sass")
-								(select-window vemv/main_window)
-								(cider-jack-in-clojurescript)
+            "C-j" (argless
+              (when (and (not cider-launched) gpm-using-nrepl)
+                (setq cider-launched t)
+                (message "Connecting...")
+                ; (shell-command-to-string "sudo /usr/local/bin/nginx -s stop") ; nginx from rails projects interfers with jvm servers
+                ; (shell-command-to-string "setopt nullglob; cd ~/gpm; rm -rf logs/*; lein clean")
+                (message "Running make clean...")
+                (shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make clean")
+                (shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make sass")
+                (select-window vemv/main_window)
+                (cider-jack-in-clojurescript)
                 (vemv/show-current-file-in-project-explorer)
                 ))
             "C-z" 'undo-tree-undo
@@ -160,9 +162,9 @@
             ;; "C-L" (argless (let (kill-buffer-query-functions) (kill-buffer)))
             "M-l" (argless (save-buffer)
                            (kill-buffer (current-buffer)))
-						"C-w" (argless (if (< (length (vemv/current-frame-buffers)) 2)
-													   (delete-frame (selected-frame) t) ; close an auxiliary frame
-														 (kill-buffer-and-window) (vemv/previous-window))) ; close annoying popup windows
+            "C-w" (argless (if (< (length (vemv/current-frame-buffers)) 2)
+                             (delete-frame (selected-frame) t) ; close an auxiliary frame
+                             (kill-buffer-and-window) (vemv/previous-window))) ; close annoying popup windows
             "C-h" 'replace-string ; search and replace
             "C-f" (argless (ignore-errors
                               (call-interactively 'search-forward)
@@ -175,18 +177,19 @@
             "C-n" (argless (make-frame `((width . ,(frame-width)) (height . ,(frame-height))))) ; in order to kill a frame, use the window system's standard exit (e.g. Alt-F4) command. The other frames won't close.
             [f10] 'vemv/ensure-layout
             [f11] 'vemv/maximize
-	    "s-e" (argless (insert "é"))
-	    "s-E" (argless (insert "É"))
+      "s-e" (argless (insert "é"))
+      "s-E" (argless (insert "É"))
             "C-;" 'toggle-truncate-lines
             "C-*" (argless (vemv/open (concat "~/.emacs.d/lib/non-submodules/"
                                               (ido-completing-read "Open: " vemv/emacs-files))))
-	    "C-3" 'vemv/indent
+      "C-3" 'vemv/indent
       "C-t" (argless (vemv/fiplr))
       ; "C-T" (argless (switch-to-buffer "*scratch*"))
-	    "C-." 'vemv/ns-form
-	    ; "C-," 'nrepl-load-current-buffer
-	    "RET" 'newline
-	    "C-\\" 'sgml-close-tag
-	    "C-=" 'mark-whole-buffer
-	    "C-q" 'save-buffers-kill-terminal))
+      "C-." 'vemv/ns-form
+      ; "C-," 'nrepl-load-current-buffer
+      "s-<mouse-1>" 'mc/add-cursor-on-click
+      "RET" 'newline
+      "C-\\" 'sgml-close-tag
+      "C-=" 'mark-whole-buffer
+      "C-q" 'save-buffers-kill-terminal))
             ; eval-minibuffer: M-:

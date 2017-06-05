@@ -151,9 +151,9 @@ paste and simulate an intro press. Finally, go back to sender window."
   (interactive)
 
   (let ((content (or content
-		     (if (region-active-p)
-		      (vemv/selected-region)
-		      (vemv/sexpr-content backward?)))))
+         (if (region-active-p)
+          (vemv/selected-region)
+          (vemv/sexpr-content backward?)))))
     (if (equal where :emacs)
         (eval (read content))
         (let ((sender (selected-window)))
@@ -389,7 +389,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (interactive)
   (save-excursion
     (while (not (some (lambda (char) (equal char (vemv/current-char-at-point)))
-		      '("(" "[" "{")))
+          '("(" "[" "{")))
       (beginning-of-sexp))
     (paredit-wrap-round)
     (paredit-splice-sexp-killing-backward)
@@ -460,7 +460,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 (defun vemv/message-file-buffers-impl ()
   (vemv/clean-chosen-file-buffer-order)
     (let* ((first (car vemv/chosen-file-buffer-order))
-        	(rest (cdr vemv/chosen-file-buffer-order))
+          (rest (cdr vemv/chosen-file-buffer-order))
           (p (propertize first 'face 'font-lock-function-name-face))
           (sep (propertize " | " 'face 'font-lock-line-and-column-face))
           (all (cons p rest)))
@@ -482,7 +482,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
             (progn
               (switch-to-buffer file)
               (setq vemv/chosen-file-buffer-order `(,file ,@(butlast vemv/chosen-file-buffer-order)))
-      	      (vemv/advice-nrepl))
+              (vemv/advice-nrepl))
           (message "No more file buffers available.")))
 
 (defun vemv/home ()
@@ -542,7 +542,7 @@ Comments get ignored, this is, point will only move as long as its position stil
 
 (defun vemv/line-empty? (line)
   (or (= 0 (length line))
-	    (every (lambda (char) (= char 32)) line)))
+      (every (lambda (char) (= char 32)) line)))
 
 (defun vemv/delete-this-line ()
   "Deletes the entire current line regardless of its contents, and any preceding empty lines."
@@ -553,15 +553,15 @@ Comments get ignored, this is, point will only move as long as its position stil
   (call-interactively 'kill-region)
   (let ((line (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
     (if (vemv/line-empty? line)
-	(vemv/delete-this-line)
-	(progn
-	  (next-line)
-	  (back-to-indentation)))))
+  (vemv/delete-this-line)
+  (progn
+    (next-line)
+    (back-to-indentation)))))
 
 (defun vemv/semicolon ()
   (interactive)
   (if (or (equal (vemv/current-char-at-point) ";")
-	  (progn "cursor is within string" nil)) ;; XXX
+    (progn "cursor is within string" nil)) ;; XXX
       (insert ";")
       (insert ";; "))) ;; (when (and (eolp) COLUMN > 0) (insert " "))
 

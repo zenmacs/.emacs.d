@@ -302,14 +302,14 @@
 (setq ido-auto-merge-delay-time 99999) ; prevents annoying folder switching. might be handy: (setq ido-max-directory-size 100000)
 
 (delay (argless
-	(select-window vemv/main_window)
-	(if (file-readable-p recentf-save-file)
-	    (if (pos? (length recentf-list))
-		(let ((head (car recentf-list)))
-		  (ignore-errors (vemv/open
-				  (if (vemv/ends-with head "ido.last")
-				      (second recentf-list)
-				      head)))))))
+  (select-window vemv/main_window)
+  (if (file-readable-p recentf-save-file)
+      (if (pos? (length recentf-list))
+    (let ((head (car recentf-list)))
+      (ignore-errors (vemv/open
+          (if (vemv/ends-with head "ido.last")
+              (second recentf-list)
+              head)))))))
        1)
 
 
@@ -330,13 +330,13 @@
 (defadvice back-to-indentation (around back-to-back)
   (if (eq last-command this-command)
       (progn
-	(if back-to-indentation-state
-	    ad-do-it
-	    (beginning-of-line)
-	(send! back-to-indentation-state 'not)))
+  (if back-to-indentation-state
+      ad-do-it
+      (beginning-of-line)
+  (send! back-to-indentation-state 'not)))
       (progn
-	(setq back-to-indentation-state nil)
-	ad-do-it)))
+  (setq back-to-indentation-state nil)
+  ad-do-it)))
 
 (ad-activate 'back-to-indentation)
 
@@ -352,23 +352,23 @@
   (global-set-key key (argless)))
 
 (maphash (lambda (key _)
-	   (let* ((keyboard-macro (if (stringp key)
-				      (read-kbd-macro key)
-				      key)))
-	     (global-set-key
-	      keyboard-macro
-	      (argless (call-interactively (gethash key vemv/global-key-bindings))))))
+     (let* ((keyboard-macro (if (stringp key)
+              (read-kbd-macro key)
+              key)))
+       (global-set-key
+        keyboard-macro
+        (argless (call-interactively (gethash key vemv/global-key-bindings))))))
   vemv/global-key-bindings)
 
 (comm maphash (lambda (lang_key _)
-	   (maphash (lambda (key _)
-		      (let ((keyboard-macro (if (stringp key) (read-kbd-macro key) key)))
-			(comm (define-key
-				clojure-mode-map
-				keyboard-macro
-				(argless (call-interactively (gethash key (gethash lang_key vemv/local-key-bindings))))))))
-		    vemv/local-key-bindings))
-	 vemv/local-key-bindings)
+     (maphash (lambda (key _)
+          (let ((keyboard-macro (if (stringp key) (read-kbd-macro key) key)))
+      (comm (define-key
+        clojure-mode-map
+        keyboard-macro
+        (argless (call-interactively (gethash key (gethash lang_key vemv/local-key-bindings))))))))
+        vemv/local-key-bindings))
+   vemv/local-key-bindings)
 
 (dolist (binding (vemv/partition 3 vemv/local-key-bindings))
   (define-key
@@ -408,9 +408,9 @@
   `(if (and vemv/help-frame (terminal-live-p vemv/help-frame))
        vemv/help-frame
        (let ((frame (vemv/make-frame)))
-	 (select-frame frame)
-	 (vemv/maximize)
-	 (setq vemv/help-frame frame))))
+   (select-frame frame)
+   (vemv/maximize)
+   (setq vemv/help-frame frame))))
 
 (defun vemv/display-help (buffer)
   (let ((frame (vemv/get-help-frame)))
@@ -455,16 +455,16 @@
 
 (dolist (command '(yank yank-pop))
   (eval `(defadvice ,command (after indent-region activate)
-	   (and (not current-prefix-arg)
-		(member major-mode '(emacs-lisp-mode lisp-mode
-						     clojure-mode    scheme-mode
-						     haskell-mode    ruby-mode
-						     rspec-mode      python-mode
-						     c-mode          c++-mode
-						     objc-mode       latex-mode
-						     plain-tex-mode))
-		(let ((mark-even-if-inactive transient-mark-mode))
-		  (indent-region (region-beginning) (region-end) nil))))))
+     (and (not current-prefix-arg)
+    (member major-mode '(emacs-lisp-mode lisp-mode
+                 clojure-mode    scheme-mode
+                 haskell-mode    ruby-mode
+                 rspec-mode      python-mode
+                 c-mode          c++-mode
+                 objc-mode       latex-mode
+                 plain-tex-mode))
+    (let ((mark-even-if-inactive transient-mark-mode))
+      (indent-region (region-beginning) (region-end) nil))))))
 
 ; ensure nrepl opens horizon project
 (find-file (concat vemv-home "/gpm/src/horizon/src/horizon/desktop/core.cljs"))
