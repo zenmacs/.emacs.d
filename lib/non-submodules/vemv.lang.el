@@ -395,6 +395,9 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
     (paredit-splice-sexp-killing-backward)
     (comment "XXX move one char to the right.")))
 
+(defun vemv/timestamp ()
+ (truncate (float-time)))
+
 (defun vemv/refresh-pe-cache ()
   (select-window vemv/project-explorer-window)
   (funcall pe/directory-tree-function
@@ -408,12 +411,14 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 (setq vemv/project-explorer-initialized
   nil)
 
+(defun vemv/timestamp-lock-acquired? (timestamp)
+  (and timestamp (< (- (vemv/timestamp) timestamp) 30)))
+
 (defun vemv/refresh-file-caches ()
-  (unless (or vemv/refreshing-caches (not vemv/project-explorer-initialized))
-    (setq vemv/refreshing-caches t)
+  (unless (or (vemv/timestamp-lock-acquired? vemv/refreshing-caches) (not vemv/project-explorer-initialized))
+    (setq vemv/refreshing-caches (vemv/timestamp))
     (vemv/refresh-pe-cache)
-    (fiplr-clear-cache)
-    (setq vemv/refreshing-caches nil)))
+    (fiplr-clear-cache)))
 
 (defun vemv/open (&optional filepath)
   "Opens a file (from FILEPATH or the user input)."

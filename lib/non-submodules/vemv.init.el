@@ -476,5 +476,5 @@
   
 (delay
   (argless
-    (run-with-timer 0 1 'vemv/refresh-file-caches) ; every second
+    (run-with-timer 0 1 'vemv/refresh-file-caches) ; every second. in practice, not so often b/c `vemv/refreshing-caches` (timestamp lock)
   60))
