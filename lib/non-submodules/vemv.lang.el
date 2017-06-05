@@ -534,11 +534,11 @@ Comments get ignored, this is, point will only move as long as its position stil
 
 (defun vemv/end-of-line-or-code ()
   (interactive "^")
-  (let ((here (point)))
+  (ignore-errors (let ((here (point)))
     (vemv/end-of-line-code)
     (if (or (= here (point))
         (bolp))
-        (end-of-line))))
+        (end-of-line)))))
 
 (defun vemv/line-empty? (line)
   (or (= 0 (length line))
