@@ -138,6 +138,7 @@
     ("config" . "horizon.common.config")
     ("log" . "horizon.common.logging")
     ("c" . "horizon.common.config")
+    ("env" . "horizon.common.env")
     ("constants" . "horizon.common.config-constants")
     ("dispatcher" . "horizon.common.dispatcher")
     ("i18n" . "horizon.common.i18n.core")
