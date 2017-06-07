@@ -144,7 +144,7 @@ Unlike paredit-copy-as-kill, this function will only grab one sexpr (and no more
 
 (setq cider-launched nil)
 
-(defun vemv/send (where &optional backward? content) ; XXX can one do polymorphism in emacs? XXX send w/o intro
+(defun vemv/send (where &optional backward? content)
   "Copy the next sexp (or on non-nil backward? arg, the previous sexp) and its character trailer,
 switch to the window that is assigned for REPL purposes, then it switch to the corresponding buffer (different REPLs have different buffers),
 paste and simulate an intro press. Finally, go back to sender window."
@@ -163,8 +163,9 @@ paste and simulate an intro press. Finally, go back to sender window."
                               (:cider the-cider-buffer-name)
                               (:ielm "*ielm*")
                               (:shell "*shell-1*")
-                              (:cljs "*cider-repl CLJS horizon.desktop*")))
-
+                              (:cljs "*cider-repl CLJS horizon*")))
+          
+          (end-of-buffer)
           (insert content)
 
           (case where
