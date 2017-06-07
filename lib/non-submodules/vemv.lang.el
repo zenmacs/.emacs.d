@@ -416,7 +416,10 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (and timestamp (< (- (vemv/timestamp) timestamp) 30)))
 
 (defun vemv/refresh-file-caches ()
-  (unless (or (vemv/timestamp-lock-acquired? vemv/refreshing-caches) (not vemv/project-explorer-initialized))
+  (unless (or (vemv/timestamp-lock-acquired? vemv/refreshing-caches)
+              (not vemv/project-explorer-initialized)
+              (minibuffer-prompt)
+              (not (vemv/contains? (buffer-name (current-buffer)) ".clj")))
     (setq vemv/refreshing-caches (vemv/timestamp))
     (vemv/refresh-pe-cache)
     (fiplr-clear-cache)))
