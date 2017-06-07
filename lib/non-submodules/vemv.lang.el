@@ -237,17 +237,17 @@ paste and simulate an intro press. Finally, go back to sender window."
 
 Unlike paredit-kill, this function will only grab one sexpr (and no more, if they are contigous), and it doesn't alter the kill-ring."
   (interactive)
+  (ignore-errors
+    (push-mark)
+    (if backward? (paredit-backward) (paredit-forward))
 
-  (push-mark)
-  (if backward? (paredit-backward) (paredit-forward))
-
-  (let ((result (vemv/selected-region)))
-    (delete-region (mark) (point))
-    (while (and
-            (equal " " (vemv/current-char-at-point))
-            (not (equal "\n" (vemv/current-char-at-point))))
-      (paredit-forward-delete))
-    result))
+    (let ((result (vemv/selected-region)))
+      (delete-region (mark) (point))
+      (while (and
+              (equal " " (vemv/current-char-at-point))
+              (not (equal "\n" (vemv/current-char-at-point))))
+        (paredit-forward-delete))
+      result)))
 
 (defun vemv/delete-backward (&optional cut?)
   "Performs a paredit-backward-delete unless the region is active, in which case the selection gets unconditionally removed.
