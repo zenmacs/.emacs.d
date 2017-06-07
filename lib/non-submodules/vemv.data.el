@@ -19,7 +19,7 @@
 
 ;; ---
 
-;; available: C-escape, C-', C-j, (C/M f/p)
+;; available: C-escape, C-', (C/M f/p), M-`
 ;; ummodificable: C-m, C-i, C-[f
 ;; ESC acts like alt, but one does not have to hold it pressed.
 ;; C-click is very handy for switching between arbitrary buffers.
@@ -86,7 +86,7 @@
 ; M-x describe-key - resolve a key binding
 
 ;XXX M-RET alters the kill-ring.
-;; NOTE - don't use C-o / C-O distinction - doesn't work in this emacs build
+;; NOTE - don't use C-o / C-O distinction - doesn't work in this emacs build. use C-S-o instead.
 ;; NOTE ; `s-` (meta) must be in lowercase
 (setq vemv/global-key-bindings ; This setup is optimized for a UK keyboard with a Colemak layout, with the number/symbol row switched (e.g. "(" is the default, "9" requires shift).
       (vemv/hash-map
@@ -121,17 +121,25 @@
 
             "C-b" 'vemv/duplicate
             ; "C-w" 'smex ; M-x
+            "s-`" (argless
+                      (let* ((old cider-prompt-for-symbol))
+                        (setq cider-prompt-for-symbol nil)
+                        (cider-find-var)
+                        (setq cider-prompt-for-symbol old)))
+            "C-S-j" 'cider-eval-sexp-at-point
             "C-j" (argless
-              (when (and (not cider-launched) gpm-using-nrepl)
-                (setq cider-launched t)
-                (message "Connecting...")
-                ; (shell-command-to-string "sudo /usr/local/bin/nginx -s stop") ; nginx from rails projects interfers with jvm servers
-                ; (shell-command-to-string "setopt nullglob; cd ~/gpm; rm -rf logs/*; lein clean")
-                (message "Running make clean...")
-                (shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make clean")
-                (shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make sass")
-                (select-window vemv/main_window)
-                (cider-jack-in-clojurescript)))
+              (if (and (not cider-launched) gpm-using-nrepl)
+                (progn
+                  (setq cider-launched t)
+                  (message "Connecting...")
+                  ; (shell-command-to-string "sudo /usr/local/bin/nginx -s stop") ; nginx from rails projects interfers with jvm servers
+                  ; (shell-command-to-string "setopt nullglob; cd ~/gpm; rm -rf logs/*; lein clean")
+                  (message "Running make clean...")
+                  (shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make clean")
+                  (shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make sass")
+                  (select-window vemv/main_window)
+                  (cider-jack-in-clojurescript))
+                (if gpm-using-nrepl (vemv/send :cljs) (vemv/send :shell))))
             "C-z" 'undo-tree-undo
             "C-S-z" 'undo-tree-redo
             "C-`" 'other-frame
