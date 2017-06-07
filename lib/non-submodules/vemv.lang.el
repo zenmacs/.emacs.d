@@ -470,21 +470,29 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 (defun vemv/next-file-buffer ()
   "Switch to the next buffer that contains a file opened by the user."
   (interactive)
+  (select-window vemv/main_window)
   (vemv/clean-chosen-file-buffer-order)
   (switch-to-buffer (or (second vemv/chosen-file-buffer-order) (first vemv/chosen-file-buffer-order)))
   (setq vemv/chosen-file-buffer-order `(,@(cdr vemv/chosen-file-buffer-order) ,(car vemv/chosen-file-buffer-order)))
-  (vemv/advice-nrepl))
+  (vemv/advice-nrepl)
+  (select-window vemv/repl2)
+  (switch-to-buffer "*cider-repl CLJS horizon*")
+  (select-window vemv/main_window))
 
 (defun vemv/previous-file-buffer ()
   "Switch to the previous buffer that contains a file opened by the user."
   (interactive)
+  (select-window vemv/main_window)
   (vemv/clean-chosen-file-buffer-order)
   (if-let (file (or (car (last vemv/chosen-file-buffer-order)) (first vemv/chosen-file-buffer-order)))
             (progn
               (switch-to-buffer file)
               (setq vemv/chosen-file-buffer-order `(,file ,@(butlast vemv/chosen-file-buffer-order)))
               (vemv/advice-nrepl))
-          (message "No more file buffers available.")))
+          (message "No more file buffers available."))
+  (select-window vemv/repl2)
+  (switch-to-buffer "*cider-repl CLJS horizon*")
+  (select-window vemv/main_window))
 
 (defun vemv/home ()
   "Moves the point to leftmost non-empty character in the current line."
