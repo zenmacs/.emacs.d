@@ -106,7 +106,7 @@
             "C-a" (argless (vemv/copy-selection-or-next-sexpr))
             "C-y" (argless (vemv/open-namespace-at-point))
             "M-a" (argless (kill-new (vemv/sexpr-content :backward)))
-            "C-s" 'save-buffer ; save
+            "C-s" 'vemv/save
             "C-v" 'cua-paste ; paste
             "C-o" (argless (vemv/open))
             "s-<home>" 'beginning-of-buffer ; alias of c-home

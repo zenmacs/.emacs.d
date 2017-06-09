@@ -27,6 +27,11 @@
 
 (defmacro when-not (test &rest forms))
 
+(defun vemv/echo (x)
+  (setq inhibit-message nil)
+  (message x)
+  (setq inhibit-message t))
+
 (defun delay (f &optional seconds)
   "Calls f in one or SECONDS seconds."
   (run-at-time (concat (int-to-string (or seconds 1)) " seconds") nil f))
@@ -633,3 +638,11 @@ Comments get ignored, this is, point will only move as long as its position stil
                                        (file-name-directory (buffer-file-name)))
                                      (file-truename ".")))
     (fiplr-find-file)))
+
+(defun vemv/save ()
+  (interactive)
+  (save-buffer)
+  (when (vemv/contains? (buffer-name (current-buffer)) ".clj"))
+    (save-excursion (cider-format-buffer))
+    (when (buffer-modified-p)
+      (vemv/echo "Formatted!")))
