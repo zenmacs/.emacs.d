@@ -104,7 +104,8 @@
             "M-<end>" nil
             ; "<backtab>" 'auto-complete
             "C-a" (argless (vemv/copy-selection-or-next-sexpr))
-            "C-y" (argless (vemv/open-namespace-at-point))
+            "C-y" nil
+            "s-j" 'cider-eval-sexp-at-point
             "M-a" (argless (kill-new (vemv/sexpr-content :backward)))
             "C-s" 'vemv/save
             "C-v" 'cua-paste ; paste
@@ -126,7 +127,7 @@
                         (setq cider-prompt-for-symbol nil)
                         (cider-find-var)
                         (setq cider-prompt-for-symbol old)))
-            "C-S-j" 'cider-eval-sexp-at-point
+            "C-S-j" nil
             "C-j" (argless
               (if (and (not cider-launched) gpm-using-nrepl)
                 (progn

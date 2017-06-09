@@ -624,6 +624,7 @@ Comments get ignored, this is, point will only move as long as its position stil
      (call-interactively 'kill-ring-save)
      (kill-new (vemv/sexpr-content))))
 
+;; not needed anymore - cider-find-var does the trick!
 (defun vemv/open-namespace-at-point ()
   (let* ((ns (s-replace "." "" (vemv/copy-selection-or-next-sexpr)))
          (ns2 (s-replace "-" "" ns))

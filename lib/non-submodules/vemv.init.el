@@ -92,6 +92,7 @@
 (setq cider-repl-display-help-banner' nil)
 (setq ido-show-dot-for-dired t)
 
+;; Silence minibuffer
 (setq inhibit-message t)
 
 (setq pe/mode-line-format
