@@ -488,3 +488,5 @@
   (argless
     (run-with-timer 0 5 'vemv/refresh-file-caches) ; every 5 seconds. in practice, not so often b/c `vemv/refreshing-caches` (timestamp lock)
   60))
+
+(setq company-dabbrev-char-regexp "\\sw\\|-")

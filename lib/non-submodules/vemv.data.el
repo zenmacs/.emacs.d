@@ -102,7 +102,7 @@
             "M-<prior>" 'next-buffer
             "M-<begin>" nil
             "M-<end>" nil
-            ; "<backtab>" 'auto-complete
+            "s-<tab>" (argless (call-interactively 'company-dabbrev))
             "C-a" (argless (vemv/copy-selection-or-next-sexpr))
             "C-y" nil
             "s-j" 'cider-eval-sexp-at-point
