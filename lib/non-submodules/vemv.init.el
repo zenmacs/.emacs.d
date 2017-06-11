@@ -153,7 +153,11 @@
     
     ("utils.css-transitions-group" . "horizon.controls.utils.css-transitions-group")
     ("utils.reactive" . "horizon.controls.utils.reactive")
-    
+    ("widgets.combobox" . "horizon.controls.widgets.combobox")
+    ("widgets.comboboxes.status" . "horizon.controls.widgets.comboboxes.status")
+    ("widgets.data-input" . "horizon.controls.widgets.data-input")
+    ("widgets.timestamp" . "horizon.controls.widgets.timestamp")
+
     ("domain.routing" . "horizon.domain.routing")
     ("service-helpers" . "horizon.domain.service-helpers")
     
