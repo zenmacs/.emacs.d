@@ -173,9 +173,12 @@
             ;; "C-L" (argless (let (kill-buffer-query-functions) (kill-buffer)))
             "M-l" (argless (save-buffer)
                            (kill-buffer (current-buffer)))
-            "C-w" (argless (if (< (length (vemv/current-frame-buffers)) 2)
-                             (delete-frame (selected-frame) t) ; close an auxiliary frame
-                             (kill-buffer-and-window) (vemv/previous-window))) ; close annoying popup windows
+            "C-w" (argless (unless (or (eq (selected-window) vemv/main_window)
+                                       (eq (selected-window) vemv/repl2)
+                                       (eq (selected-window) vemv/project-explorer-window))
+                              (if (< (length (vemv/current-frame-buffers)) 2)
+                               (delete-frame (selected-frame) t) ; close an auxiliary frame
+                               (kill-buffer-and-window) (vemv/previous-window)))) ; close annoying popup windows
             "C-h" 'replace-string ; search and replace
             "C-f" (argless (ignore-errors
                               (call-interactively 'search-forward)
