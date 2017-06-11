@@ -41,7 +41,6 @@
 (blink-cursor-mode -1)
 ;; (setq yas-use-menu nil)
 ;; XXX detect nrepl's project, open the latest file within that proj.
-;; XXX add send hook to ns-eval-form
 (require 'yasnippet)
 (require 'saveplace)
 (require 'dash)
@@ -49,7 +48,6 @@
 (require 'smex)
 (require 'ruby-mode)
 (require 'ruby-end)
-;; (require 'clj-refactor)
 (require 'cider)
 (require 'epl)
 (require 'pkg-info)

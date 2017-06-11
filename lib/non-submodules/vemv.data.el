@@ -126,7 +126,8 @@
                       (let* ((old cider-prompt-for-symbol))
                         (setq cider-prompt-for-symbol nil)
                         (cider-find-var)
-                        (setq cider-prompt-for-symbol old)))
+                        (setq cider-prompt-for-symbol old)
+                        (vemv/advice-nrepl)))
             "C-S-j" nil
             "C-j" (argless
               (if (and (not cider-launched) gpm-using-nrepl)
@@ -167,7 +168,8 @@
             "M-$" (argless (if gpm-using-nrepl (vemv/send :cljs :backward) (vemv/send :shell :backward)))
 
             "C-l" (argless (kill-buffer (current-buffer))
-                           (vemv/next-file-buffer))
+                           (unless (vemv/contains? (buffer-name (current-buffer)) ".clj")
+                             (vemv/next-file-buffer)))
             ;; "C-L" (argless (let (kill-buffer-query-functions) (kill-buffer)))
             "M-l" (argless (save-buffer)
                            (kill-buffer (current-buffer)))
