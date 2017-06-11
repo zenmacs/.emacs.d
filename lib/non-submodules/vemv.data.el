@@ -207,3 +207,5 @@
       "C-=" 'mark-whole-buffer
       "C-q" 'save-buffers-kill-terminal))
             ; eval-minibuffer: M-:
+
+(global-set-key [mode-line mouse-3] 'nil) ; prevent close-on-right-click
