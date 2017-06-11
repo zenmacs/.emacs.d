@@ -466,6 +466,12 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
                                                       (member x c))
                                                     final))))
 
+(defun vemv/close-this-buffer ()
+  (interactive)
+  (kill-buffer (current-buffer))
+   (unless (vemv/contains? (buffer-name (current-buffer)) ".clj")
+     (vemv/next-file-buffer)))
+
 (defun vemv/abbreviate-ns (namespace)
   (let* ((split (s-split "\\." namespace))
          (name (car (last split)))
@@ -485,6 +491,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
         (the-rest (mapcar (lambda (x)
                               (let* ((buf (get-buffer x))
                                      (sym (intern (buffer-file-name buf)))
+                                     (close-sym (intern (concat (buffer-file-name buf) "-close")))
                                      (namespace (with-current-buffer x (or (ignore-errors (cider-current-ns)) x)))
                                      (is-modified (with-current-buffer x (buffer-modified-p)))
                                      (shortname (concat (if is-modified "*" "") (vemv/abbreviate-ns namespace))))
@@ -492,7 +499,15 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
                                          (interactive)
                                          (switch-to-buffer ,x)
                                          (vemv/advice-nrepl)))
-                                (propertize shortname 'local-map (make-mode-line-mouse-map 'mouse-1 sym))
+                                (eval `(defun ,close-sym ()
+                                         (interactive)
+                                         (kill-buffer ,x)
+                                         (vemv/clean-chosen-file-buffer-order)))
+                                (propertize shortname 'local-map `(keymap
+                                                                   (mode-line keymap
+                                                                              (mouse-1 . ,sym)
+                                                                              (mouse-3 . ,close-sym)
+                                                                              )))
                               ) )
                           rest)
                           )
