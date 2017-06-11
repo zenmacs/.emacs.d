@@ -114,6 +114,7 @@
                   )))
 
 (custom-set-variables
+ '(mac-mouse-wheel-smooth-scroll nil)
  '(cider-connection-message-fn nil)
  '(haskell-mode-hook '(turn-on-haskell-indentation))
  '(cider-repl-display-help-banner nil)
