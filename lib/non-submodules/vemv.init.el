@@ -92,8 +92,8 @@
 (setq cider-repl-display-help-banner' nil)
 (setq ido-show-dot-for-dired t)
 
-;; Silence minibuffer
-(setq inhibit-message t)
+;; for clojure-factor c n
+(setq whitespace-line-column 240)
 
 (setq pe/mode-line-format
   `(:eval (concat (propertize
