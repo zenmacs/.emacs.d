@@ -485,6 +485,12 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
         (all (cons p the-rest)))
           (apply 'concat (-interpose sep all))))
 
+(defun vemv/ensure-repl-visible ()
+  (when (cider-connected-p)
+    (select-window vemv/repl2)
+    (switch-to-buffer "*cider-repl CLJS horizon*")
+    (select-window vemv/main_window)))
+
 (defun vemv/next-file-buffer ()
   "Switch to the next buffer that contains a file opened by the user."
   (interactive)
@@ -493,9 +499,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (switch-to-buffer (or (second vemv/chosen-file-buffer-order) (first vemv/chosen-file-buffer-order)))
   (setq vemv/chosen-file-buffer-order `(,@(cdr vemv/chosen-file-buffer-order) ,(car vemv/chosen-file-buffer-order)))
   (vemv/advice-nrepl)
-  (select-window vemv/repl2)
-  (switch-to-buffer "*cider-repl CLJS horizon*")
-  (select-window vemv/main_window))
+  (vemv/ensure-repl-visible))
 
 (defun vemv/previous-file-buffer ()
   "Switch to the previous buffer that contains a file opened by the user."
@@ -508,9 +512,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
               (setq vemv/chosen-file-buffer-order `(,file ,@(butlast vemv/chosen-file-buffer-order)))
               (vemv/advice-nrepl))
           (message "No more file buffers available."))
-  (select-window vemv/repl2)
-  (switch-to-buffer "*cider-repl CLJS horizon*")
-  (select-window vemv/main_window))
+  (vemv/ensure-repl-visible))
 
 (defun vemv/home ()
   "Moves the point to leftmost non-empty character in the current line."
