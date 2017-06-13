@@ -472,6 +472,13 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
    (unless (vemv/contains? (buffer-name) ".clj")
      (vemv/next-file-buffer)))
 
+(defun vemv.abbreviate-ns/format-intermediate-fragment (x)
+  (condition-case
+    nil (let* ((split (s-split "-" x))
+               (y (mapcar (lambda (f) (substring f 0 1)) split)))
+              (s-join "-" y))
+    (error "")))
+
 (defun vemv/abbreviate-ns (namespace)
   (let* ((split (s-split "\\." namespace))
          (name (car (last split)))
@@ -479,10 +486,9 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
          (fname (car bbase))
          (base (rest bbase))
          (onechars (mapcar (lambda (x)
-                            (condition-case nil (substring x 0 1)
-                                            (error "")))
+                             (vemv.abbreviate-ns/format-intermediate-fragment x))
                             base)))
-    (concat fname "." (s-join "." onechars) "." name)))
+    (concat fname "." (s-join "." onechars) (if (> (length onechars) 0) "." "") name)))
 
 (defun vemv/message-file-buffers-impl ()
   (vemv/clean-chosen-file-buffer-order)
