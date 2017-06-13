@@ -469,7 +469,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 (defun vemv/close-this-buffer ()
   (interactive)
   (kill-buffer (current-buffer))
-   (unless (vemv/contains? (buffer-name (current-buffer)) ".clj")
+   (unless (vemv/contains? (buffer-name) ".clj")
      (vemv/next-file-buffer)))
 
 (defun vemv/abbreviate-ns (namespace)
@@ -690,3 +690,23 @@ Comments get ignored, this is, point will only move as long as its position stil
     (save-excursion (cider-format-buffer))
     (when (buffer-modified-p)
       (vemv/echo "Formatted!")))
+
+(setq vemv/ns-hidden nil)
+
+(defun vemv/hide-ns ()
+  (interactive)
+  (setq-local vemv/ns-hidden (not vemv/ns-hidden))
+  (if vemv/ns-hidden
+    (let* ((hs-block-start-regexp "(ns")
+           (hs-block-end-regexp ")")
+           (hs-hide-comments-when-hiding-all nil)
+           (hs-adjust-block-beginning (lambda (initial)
+                                              (save-excursion
+                                                (point)))))
+      (apply #'hs-hide-all ()))
+    (hs-show-all)))
+
+(defun vemv/hide-current-buffer-ns (&rest ignore)
+  (select-window vemv/main_window)
+  (when (vemv/contains? (buffer-name) ".clj")
+    (vemv/hide-ns)))

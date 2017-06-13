@@ -184,7 +184,7 @@
             "C-p" (argless (ignore-errors (search-forward vemv-last-search)))
             "M-[" 'paredit-backward ; move one sexpr backward
             "M-]" 'paredit-forward
-            ; [f6] 'split-window-vertically
+            [f6] 'vemv/hide-ns
             ; [f7] 'split-window-horizontally
             "C-n" (argless (make-frame `((width . ,(frame-width)) (height . ,(frame-height))))) ; in order to kill a frame, use the window system's standard exit (e.g. Alt-F4) command. The other frames won't close.
             [f10] 'vemv/ensure-layout

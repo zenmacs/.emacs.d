@@ -179,6 +179,7 @@
                              '(:eval (when (buffer-file-name) (propertize "%l:%c" 'face 'font-lock-line-and-column-face)))))
 
 (add-hook 'clojure-mode-hook 'enable-paredit-mode)
+(add-hook 'clojure-mode-hook 'hs-minor-mode)
 (add-hook 'clojure-mode-hook 'undo-tree-mode)
 (add-hook 'clojure-mode-hook (argless (local-set-key (kbd "RET") 'newline-and-indent)))
 (add-hook 'clojure-mode-hook (argless (clj-refactor-mode 1)
@@ -331,6 +332,10 @@
 (put 'if 'lisp-indent-function nil)
 
 (comment (setq comment-indent-function (argless (save-excursion (forward-line -1) (current-indentation)))))
+
+(advice-add 'pe/show-buffer :after 'vemv/hide-current-buffer-ns)
+(advice-add 'vemv/fiplr :after 'vemv/hide-current-buffer-ns)
+(advice-add 'vemv/open :after 'vemv/hide-current-buffer-ns)
 
 (defadvice save-buffers-kill-emacs (around no-y-or-n activate) ; switches the expected input from "yes no" to "y n" on exit-without-save
   (flet ((yes-or-no-p (&rest args) t)
