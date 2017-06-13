@@ -677,10 +677,11 @@ Comments get ignored, this is, point will only move as long as its position stil
     (vemv/fiplr)))
   
 (defun vemv/fiplr ()
-  (unless (string-equal vemv-home (if (buffer-file-name)
-                                     (directory-file-name
-                                       (file-name-directory (buffer-file-name)))
-                                     (file-truename ".")))
+  (when (vemv/contains? (if (buffer-file-name)
+                             (directory-file-name
+                               (file-name-directory (buffer-file-name)))
+                             "")
+                        "/Users/vemv/gpm")
     (fiplr-find-file)))
 
 (defun vemv/save ()
