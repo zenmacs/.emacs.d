@@ -464,12 +464,6 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
                                                       (member x c))
                                                     final))))
 
-(defun vemv/close-this-buffer ()
-  (interactive)
-  (kill-buffer (current-buffer))
-   (unless (vemv/contains? (buffer-name) ".clj")
-     (vemv/next-file-buffer)))
-
 (defun vemv.abbreviate-ns/format-intermediate-fragment (x)
   (condition-case
     nil (let* ((split (s-split "-" x))
@@ -715,3 +709,10 @@ Comments get ignored, this is, point will only move as long as its position stil
   (select-window vemv/main_window)
   (when (vemv/contains? (buffer-name) ".clj")
     (vemv/hide-ns)))
+
+(defun vemv/close-this-buffer ()
+  (interactive)
+  (setq-local vemv/ns-hidden nil)
+  (kill-buffer (current-buffer))
+   (unless (vemv/contains? (buffer-name) ".clj")
+     (vemv/next-file-buffer)))
