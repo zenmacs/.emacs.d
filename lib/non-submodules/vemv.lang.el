@@ -391,16 +391,14 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
     result))
 
 (defun vemv/indent ()
-  "Recursively indents all the sexprs contained by the current sexpr."
+  "Indents the next sexpr."
   (interactive)
-  (save-excursion
-    (while (not (some (lambda (char) (equal char (vemv/current-char-at-point)))
-          '("(" "[" "{")))
-      (beginning-of-sexp))
-    (paredit-wrap-round)
-    (paredit-splice-sexp-killing-backward)
-    (comment "XXX move one char to the right.")))
-
+  (push-mark)
+  (paredit-forward)
+  (call-interactively 'cider-format-region)
+  (pop-mark)
+  (paredit-backward))
+      
 (defun vemv/timestamp ()
  (truncate (float-time)))
 
