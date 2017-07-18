@@ -348,6 +348,7 @@
 (advice-add 'pe/show-buffer :after 'vemv/hide-current-buffer-ns)
 (advice-add 'vemv/fiplr :after 'vemv/hide-current-buffer-ns)
 (advice-add 'vemv/open :after 'vemv/hide-current-buffer-ns)
+(advice-add 'vemv/close-this-buffer :after 'vemv/advice-nrepl)
 
 (defadvice save-buffers-kill-emacs (around no-y-or-n activate) ; switches the expected input from "yes no" to "y n" on exit-without-save
   (flet ((yes-or-no-p (&rest args) t)
