@@ -165,7 +165,7 @@
   '(cljr-project-clean-prompt nil)
   '(cljr-favor-private-function nil)
   '(cljr-auto-clean-ns nil)
-  '(cljr-libspec-whitelist '("^cljsns" "^slingshot.test" "^monger.joda-time" "^monger.json" "^cljsjs" "^horizon.controls.devcards" "^goog" ".*card.*" ".*asDatepicker.*" "horizon.desktop.core" "leongersen.*"))
+  '(cljr-libspec-whitelist '("^cljsns" "^slingshot.test" "^monger.joda-time" "^monger.json" "^cljsjs" "^horizon.controls.devcards" "^goog" ".*card.*" ".*asDatepicker.*" "horizon.desktop.core" "horizon.controls.bootstrap" "leongersen.*"))
   '(cljr-warn-on-eval nil)
  )
 
@@ -225,6 +225,8 @@
           (select-window vemv/main_window)
           (setq vemv-cider-connecting nil)
           (setq vemv-cider-connected t)
+          (when (not vemv-cleaning-namespaces)
+            (vemv/advice-nrepl))
          2)
   )
 
