@@ -178,6 +178,9 @@
                              " "
                              '(:eval (when (buffer-file-name) (propertize "%l:%c" 'face 'font-lock-line-and-column-face)))))
 
+(setq vemv-cider-connecting nil)
+(setq vemv-cider-connected nil)
+
 (add-hook 'clojure-mode-hook 'enable-paredit-mode)
 (add-hook 'clojure-mode-hook 'hs-minor-mode)
 (add-hook 'clojure-mode-hook 'undo-tree-mode)
@@ -189,7 +192,10 @@
                                           "  "
                                           '(:eval (when (buffer-modified-p) (propertize "*" 'face 'font-lock-function-name-face)))
                                           '(:eval (vemv/message-file-buffers-impl))
-                                          '(:eval (propertize " %l:%c" 'face 'font-lock-line-and-column-face))))))
+                                          '(:eval (propertize " %l:%c" 'face 'font-lock-line-and-column-face))
+                                          '(:eval (when (and (not vemv-cider-connecting) (not vemv-cider-connected)) (propertize " Disconnected" 'face 'font-lock-line-and-column-face)))
+                                          '(:eval (when vemv-cider-connecting (propertize " Connecting..." 'face 'vemv-cider-connection-face)))
+                                          ))))
 
 (add-hook 'ruby-mode-hook 'enable-paredit-mode)
 (add-hook 'ruby-mode-hook 'electric-pair-mode)
@@ -214,6 +220,8 @@
           (vemv/next-window)
           (switch-to-buffer "*cider-repl CLJS horizon*")))
           (select-window vemv/main_window)
+          (setq vemv-cider-connecting nil)
+          (setq vemv-cider-connected t)
          2)
   )
 

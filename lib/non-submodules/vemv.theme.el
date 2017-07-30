@@ -14,6 +14,11 @@
   '((t :foreground "#696969"))
   "."
   :group 'vemv)
+  
+(defface vemv-cider-connection-face
+  '((t :foreground "#CFCFCF"))
+  "."
+  :group 'vemv)
 
 (custom-theme-set-faces 'vemv
 
