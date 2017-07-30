@@ -30,4 +30,6 @@
 (setq gpm-using-nrepl t)
 (setq vemv-home (getenv "HOME"))
 
+(setq vemv-cleaning-namespaces nil)
+
 (require 'vemv.init)

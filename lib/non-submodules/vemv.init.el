@@ -162,9 +162,10 @@
     
     ("expectations" . "horizon.test-helpers.expectations")
     ))
-  ; '(cljr-project-clean-prompt nil)
+  '(cljr-project-clean-prompt nil)
   '(cljr-favor-private-function nil)
   '(cljr-auto-clean-ns nil)
+  '(cljr-libspec-whitelist '("^cljsns" "^slingshot.test" "^monger.joda-time" "^monger.json" "^cljsjs" "^horizon.controls.devcards" "^goog" ".*card.*" ".*asDatepicker.*" "horizon.desktop.core" "leongersen.*"))
   '(cljr-warn-on-eval nil)
  )
 
@@ -182,7 +183,8 @@
 (setq vemv-cider-connected nil)
 
 (add-hook 'clojure-mode-hook 'enable-paredit-mode)
-(add-hook 'clojure-mode-hook 'hs-minor-mode)
+(when (not vemv-cleaning-namespaces)
+  (add-hook 'clojure-mode-hook 'hs-minor-mode))
 (add-hook 'clojure-mode-hook 'undo-tree-mode)
 (add-hook 'clojure-mode-hook (argless (local-set-key (kbd "RET") 'newline-and-indent)))
 (add-hook 'clojure-mode-hook (argless (clj-refactor-mode 1)
@@ -207,12 +209,13 @@
 
 (add-hook 'ielm-mode-hook 'enable-paredit-mode)
 
-(setq cider-cljs-lein-repl
-  (if gpm-using-nrepl
-      "(do (require 'figwheel-sidecar.repl-api)
-           (figwheel-sidecar.repl-api/start-figwheel!)
-           (figwheel-sidecar.repl-api/cljs-repl))"
-      ""))
+(when (not vemv-cleaning-namespaces)
+  (setq cider-cljs-lein-repl
+    (if gpm-using-nrepl
+        "(do (require 'figwheel-sidecar.repl-api)
+             (figwheel-sidecar.repl-api/start-figwheel!)
+             (figwheel-sidecar.repl-api/cljs-repl))"
+        "")))
 
 (add-hook 'cider-connected-hook (argless
   (delay (argless

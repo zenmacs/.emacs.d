@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t; -*-
+
 (require 'recur)
 (require 'multi-methods)
 (provide 'vemv.lang)
@@ -694,16 +696,17 @@ Comments get ignored, this is, point will only move as long as its position stil
 
 (defun vemv/hide-ns ()
   (interactive)
-  (setq-local vemv/ns-hidden (not vemv/ns-hidden))
-  (if vemv/ns-hidden
-    (let* ((hs-block-start-regexp "(ns")
-           (hs-block-end-regexp ")")
-           (hs-hide-comments-when-hiding-all nil)
-           (hs-adjust-block-beginning (lambda (initial)
-                                              (save-excursion
-                                                (point)))))
-      (apply #'hs-hide-all ()))
-    (hs-show-all)))
+  (when (not vemv-cleaning-namespaces)
+    (setq-local vemv/ns-hidden (not vemv/ns-hidden))
+    (if vemv/ns-hidden
+      (let* ((hs-block-start-regexp "(ns")
+             (hs-block-end-regexp ")")
+             (hs-hide-comments-when-hiding-all nil)
+             (hs-adjust-block-beginning (lambda (initial)
+                                                (save-excursion
+                                                  (point)))))
+        (apply #'hs-hide-all ()))
+      (hs-show-all))))
 
 (defun vemv/hide-current-buffer-ns (&rest ignore)
   (select-window vemv/main_window)
@@ -716,3 +719,34 @@ Comments get ignored, this is, point will only move as long as its position stil
   (kill-buffer (current-buffer))
    (unless (vemv/contains? (buffer-name) ".clj")
      (vemv/next-file-buffer)))
+
+(defun cljr--maybe-wrap-form ()) ;; void it
+
+(defun vemv/clean-project-namespaces ()
+ (if (not vemv-cleaning-namespaces)
+  (vemv/echo "vemv-cleaning-namespaces set to false!")
+  (let* ((files (filter (lambda (x) (vemv/ends-with x ".cljs")) (directory-files-recursively "/Users/vemv/gpm/src/horizon/src/" ".cljs"))))
+    (select-window vemv/repl2)
+    (switch-to-buffer "*Messages*")
+    (select-window vemv/main_window)
+    (vemv/open "/Users/vemv/gpm/src/horizon/project.clj")
+      (seq-doseq (filename files)
+            (select-window vemv/main_window)
+            (vemv/open filename)
+            (setq lexical-binding t)
+            (setq whitespace-line-column 240)
+            (cljr-clean-ns)
+            (beginning-of-buffer)
+            (while (re-search-forward "[^:]:require[^\-]" nil t)
+               (replace-match ":require\n"))
+            (while (re-search-forward "[^:]:require\-macros" nil t)
+               (replace-match ":require\-macros\n"))
+            (while (re-search-forward "[^:]:import[^\-]" nil t)
+               (replace-match ":import\n"))
+            (while (re-search-forward "[^:]:use\-macros" nil t)
+               (replace-match ":use\-macros\n"))
+            (vemv/save)
+            (vemv/save)
+            (sleep-for 1) ;; give nREPL a rest
+            (vemv/close-this-buffer)))
+  nil))
