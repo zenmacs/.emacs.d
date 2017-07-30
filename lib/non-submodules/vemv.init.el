@@ -257,6 +257,7 @@
 (setenv "EXTEND_IPERSISTENTVECTOR" "true")
 (setenv "FIGWHEEL_DESKTOP_NOTIFICATIONS" "true")
 (setenv "HORIZON_DISABLE_SPINNERS_ANIMATION" "true")
+(setenv "ENABLE_DEVCARDS_IN_DEV" "true")
 ;; (setenv "HORIZON_FG_HARD_RELOAD" "true")
 ;; (setenv "USE_YOURKIT_AGENT" "true")
 
