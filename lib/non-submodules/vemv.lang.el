@@ -751,4 +751,5 @@ Comments get ignored, this is, point will only move as long as its position stil
             (vemv/save)
             (vemv/save)
             (vemv/close-this-buffer)))
-  nil))
+  (vemv/echo "clean-project-namespaces done!")
+  (vemv/echo "Remember: goog* libspec can be spuriously removed.")))
