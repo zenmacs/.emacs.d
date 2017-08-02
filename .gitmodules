@@ -1,12 +1,6 @@
-[submodule "lib/clojure-mode"]
-	path = lib/clojure-mode
-	url = https://github.com/technomancy/clojure-mode
 [submodule "lib/smex"]
 	path = lib/smex
 	url = https://github.com/nonsequitur/smex
-[submodule "lib/auto-complete"]
-	path = lib/auto-complete
-	url = https://github.com/auto-complete/auto-complete
 [submodule "lib/popup"]
 	path = lib/popup
 	url = https://github.com/auto-complete/popup-el
@@ -40,9 +34,6 @@
 [submodule "lib/pkg-info"]
 	path = lib/pkg-info
 	url = git@github.com:lunaryorn/pkg-info.el.git
-[submodule "lib/cider"]
-	path = lib/cider
-	url = git@github.com:clojure-emacs/cider.git
 [submodule "lib/epl"]
 	path = lib/epl
 	url = git@github.com:cask/epl.git
