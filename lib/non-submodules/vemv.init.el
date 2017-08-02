@@ -225,7 +225,8 @@
           (select-window vemv/main_window)
           (setq vemv-cider-connecting nil)
           (setq vemv-cider-connected t)
-          (when (not vemv-cleaning-namespaces)
+          (comment ;; XXX breaks cljs repl
+            when (not vemv-cleaning-namespaces)
             (vemv/advice-nrepl))
          2)
   )
