@@ -334,23 +334,22 @@
 (setq visible-bell nil) ; disable flickering
 (setq ido-auto-merge-delay-time 99999) ; prevents annoying folder switching. might be handy: (setq ido-max-directory-size 100000)
 
-
 (delay (argless
-  (select-window vemv/main_window)
-  (if (file-readable-p recentf-save-file)
-      (if (pos? (length recentf-list))
-        (let* ((head (car recentf-list))
-               (the-file (ignore-errors
-                           (if (vemv/ends-with head "ido.last")
-                               (second recentf-list)
-                               head))))
-                               (when the-file
-               (vemv/open
-                 (if (vemv/contains? the-file "/gpm/src/horizon") ; ensure nrepl opens horizon project
-                   the-file
-                   "/gpm/src/horizon/src/horizon/desktop/core.cljs"))
-               (delay 'vemv/show-current-file-in-project-explorer 3))))))
-           1)
+        (select-window vemv/main_window)
+        (if (file-readable-p recentf-save-file)
+            (if (pos? (length recentf-list))
+              (let* ((head (car recentf-list))
+                     (the-file (ignore-errors
+                                 (if (vemv/ends-with head "ido.last")
+                                     (second recentf-list)
+                                     head))))
+                     (when the-file
+                       (vemv/open
+                         (if (vemv/contains? the-file "/gpm/src/horizon") ; ensure nrepl opens horizon project
+                           the-file
+                           "/gpm/src/horizon/src/horizon/desktop/core.cljs"))
+                       (delay 'vemv/show-current-file-in-project-explorer 3))))))
+         1)
 
 
 ;; FONT SIZE -> 13 for laptop, 11 for desktop
