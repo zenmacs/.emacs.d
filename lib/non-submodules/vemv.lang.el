@@ -442,8 +442,6 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (let ((default-directory (replace-regexp-in-string "\\.$" "" (ido-read-file-name ()))))
     (call-interactively 'project-explorer-open)))
 
-; XXX if scratch is not empty, include it. (?)
-
 (defun vemv/advice-nrepl ()
   (interactive)
   (when (and (vemv/contains? (buffer-name) ".clj") (cider-connected-p))
@@ -497,6 +495,8 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
                                      (shortname (concat (if is-modified "*" "") (vemv/abbreviate-ns namespace))))
                                 (eval `(defun ,sym ()
                                          (interactive)
+                                         ()
+                                         (select-window vemv/main_window)
                                          (switch-to-buffer ,x)
                                          (vemv/advice-nrepl)))
                                 (eval `(defun ,close-sym ()

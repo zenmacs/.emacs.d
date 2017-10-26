@@ -165,6 +165,7 @@
     
     ("utils.css-transitions-group" . "horizon.controls.utils.css-transitions-group")
     ("utils.reactive" . "horizon.controls.utils.reactive")
+    ("utils.time" . "horizon.controls.utils.time-core")
     ("widgets.combobox" . "horizon.controls.widgets.combobox")
     ("widgets.comboboxes.status" . "horizon.controls.widgets.comboboxes.status")
     ("widgets.data-input" . "horizon.controls.widgets.data-input")
@@ -285,6 +286,7 @@
 (vemv-source "/Users/vemv/.ldap")
 
 (setenv "PATH" (concat (getenv "PATH") ":" vemv-home "/bin"))
+(setenv "GPM_SRC" "/Users/vemv/gpm/src")
 (setenv "FIGW_ADDR" "0.0.0.0")
 (setenv "EXTEND_IPERSISTENTVECTOR" "true")
 (setenv "FIGWHEEL_DESKTOP_NOTIFICATIONS" "true")
@@ -365,7 +367,7 @@
                        (vemv/open
                          (if (vemv/contains? the-file "/gpm/src/horizon") ; ensure nrepl opens horizon project
                            the-file
-                           "/gpm/src/horizon/src/horizon/desktop/core.cljs"))
+                           "/Users/vemv/gpm/src/horizon/src/horizon/desktop/core.cljs"))
                        (delay 'vemv/show-current-file-in-project-explorer 3))))))
          1)
 
