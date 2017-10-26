@@ -638,29 +638,32 @@ Comments get ignored, this is, point will only move as long as its position stil
 
 (defun vemv/show-current-file-in-project-explorer ()
   (interactive)
-  (vemv/refresh-file-caches)
-  (select-window vemv/main_window)
-  (let* ((buffer-fragments (-remove (lambda (x) (string-equal x "")) (split-string (buffer-file-name) "/")))
-         (projname (pe/project-root-function-default)) ; "/Users/vemv/gpm"
-         (project-fragments (-remove (lambda (x) (string-equal x "")) (split-string projname "/")))
-         (fragments (-drop (length project-fragments) buffer-fragments))
-         (expanded-fragments (mapcar* (lambda (x y) (-take x y)) (number-sequence 1 (length fragments)) (-repeat (length fragments) fragments)))
-         (final-fragments (mapcar (lambda (x) (concat (s-join "" (cons projname (-interpose "/" x))) "/")) expanded-fragments)))
-         
-          (select-window vemv/project-explorer-window)
-          ; (pe/fold-all) ; necessary in principle, skip it for performance. seems to work fine.
-          (beginning-of-buffer)
-         
-         (seq-doseq (f (butlast final-fragments))
-           (while (not (string-equal f (pe/current-directory)))
-             (next-line))
-           (pe/return))
-          
-          (while (not (string-equal (s-chop-suffix "/" (first (last final-fragments))) (pe/get-filename)))
-            (next-line))
-          
-          (end-of-line))
-  (select-window vemv/main_window))
+  (if (minibuffer-prompt)
+    (delay 'vemv/show-current-file-in-project-explorer 1)
+    
+    (vemv/refresh-file-caches)
+    (select-window vemv/main_window)
+    (let* ((buffer-fragments (-remove (lambda (x) (string-equal x "")) (split-string (buffer-file-name) "/")))
+           (projname (pe/project-root-function-default)) ; "/Users/vemv/gpm"
+           (project-fragments (-remove (lambda (x) (string-equal x "")) (split-string projname "/")))
+           (fragments (-drop (length project-fragments) buffer-fragments))
+           (expanded-fragments (mapcar* (lambda (x y) (-take x y)) (number-sequence 1 (length fragments)) (-repeat (length fragments) fragments)))
+           (final-fragments (mapcar (lambda (x) (concat (s-join "" (cons projname (-interpose "/" x))) "/")) expanded-fragments)))
+           
+            (select-window vemv/project-explorer-window)
+            ; (pe/fold-all) ; necessary in principle, skip it for performance. seems to work fine.
+            (beginning-of-buffer)
+           
+           (seq-doseq (f (butlast final-fragments))
+             (while (not (string-equal f (pe/current-directory)))
+               (next-line))
+             (pe/return))
+            
+            (while (not (string-equal (s-chop-suffix "/" (first (last final-fragments))) (pe/get-filename)))
+              (next-line))
+            
+            (end-of-line))
+    (select-window vemv/main_window)))
 
 (defun vemv/copy-selection-or-next-sexpr ()
   (if (region-active-p)
