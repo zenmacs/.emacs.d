@@ -53,7 +53,6 @@
 (require 'pkg-info)
 (require 'spinner)
 (require 'comint)
-(require 'dirtree)
 (require 'es-lib)
 (require 'es-windows)
 (require 'project-explorer)

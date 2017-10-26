@@ -354,28 +354,6 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   "\"foo\" -> :foo"
   (slime-keywordify (intern arg)))
 
-(defun vemv/render-trees (dir-trees)
-  (interactive)
-
-  (let* ((p (vemv/partition 2 dir-trees))
-         (head (car p))
-         (rem (cdr p))
-         (but_tail (butlast rem))
-         (tail (car (last rem))))
-
-    (dirtree-in-buffer (second head) "." (vemv/keyword-to-string (first head)))
-    (beginning-of-buffer)
-    (tree-mode-toggle-expand)
-    (next-line)
-
-    (dolist (each but_tail)
-      (dirtree (second each) "." (vemv/keyword-to-string (first each)))
-      (tree-mode-toggle-expand)
-      (next-line))
-
-    (dirtree (second tail) "." (vemv/keyword-to-string (first tail)))
-    (tree-mode-toggle-expand)))
-
 (defun vemv/current-line-content ()
   "Returns the content of the line at which the point is currently located. Side effects free."
   (interactive)
