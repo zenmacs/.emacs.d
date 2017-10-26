@@ -665,6 +665,18 @@ Comments get ignored, this is, point will only move as long as its position stil
             (end-of-line))
     (select-window vemv/main_window)))
 
+(defun vemv/safe-show-current-file-in-project-explorer ()
+  (condition-case nil
+                  (vemv/show-current-file-in-project-explorer)
+                  (error (ignore-errors (vemv/show-current-file-in-project-explorer)))))
+
+(defun vemv/after-file-open (&rest ignore)
+  (select-window vemv/main_window)
+  (vemv/safe-show-current-file-in-project-explorer)
+  (when (vemv/contains? (buffer-name) ".clj")
+    (vemv/hide-ns))
+  (vemv/advice-nrepl))
+
 (defun vemv/copy-selection-or-next-sexpr ()
   (if (region-active-p)
      (call-interactively 'kill-ring-save)
@@ -710,11 +722,6 @@ Comments get ignored, this is, point will only move as long as its position stil
                                                   (point)))))
         (apply #'hs-hide-all ()))
       (hs-show-all))))
-
-(defun vemv/hide-current-buffer-ns (&rest ignore)
-  (select-window vemv/main_window)
-  (when (vemv/contains? (buffer-name) ".clj")
-    (vemv/hide-ns)))
 
 (defun vemv/close-this-buffer ()
   (interactive)

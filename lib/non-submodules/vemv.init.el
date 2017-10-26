@@ -368,8 +368,15 @@
                          (if (vemv/contains? the-file "/gpm/src/horizon") ; ensure nrepl opens horizon project
                            the-file
                            "/Users/vemv/gpm/src/horizon/src/horizon/desktop/core.cljs"))
-                       (delay 'vemv/show-current-file-in-project-explorer 3))))))
-         1)
+                       (delay 'vemv/show-current-file-in-project-explorer 3)))))
+         
+         (advice-add 'pe/show-buffer :after 'vemv/after-file-open)
+         (advice-add 'vemv/fiplr :after 'vemv/after-file-open)
+         (advice-add 'vemv/open :after 'vemv/after-file-open)
+         (advice-add 'vemv/next-file-buffer :after 'vemv/after-file-open)
+         (advice-add 'vemv/previous-file-buffer :after 'vemv/after-file-open)
+         (advice-add 'vemv/close-this-buffer :after 'vemv/after-file-open)
+         1))
 
 
 ;; FONT SIZE -> 13 for laptop, 11 for desktop
@@ -378,11 +385,6 @@
 (put 'if 'lisp-indent-function nil)
 
 (comment (setq comment-indent-function (argless (save-excursion (forward-line -1) (current-indentation)))))
-
-(advice-add 'pe/show-buffer :after 'vemv/hide-current-buffer-ns)
-(advice-add 'vemv/fiplr :after 'vemv/hide-current-buffer-ns)
-(advice-add 'vemv/open :after 'vemv/hide-current-buffer-ns)
-(advice-add 'vemv/close-this-buffer :after 'vemv/advice-nrepl)
 
 (defadvice save-buffers-kill-emacs (around no-y-or-n activate) ; switches the expected input from "yes no" to "y n" on exit-without-save
   (flet ((yes-or-no-p (&rest args) t)
