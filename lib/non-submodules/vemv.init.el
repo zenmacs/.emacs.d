@@ -267,17 +267,22 @@
 (setq cider-show-error-buffer nil)
 (add-hook 'cider-repl-mode-hook #'paredit-mode)
 
-(mapcar
-  (lambda (x)
-    (let* ((xy (s-split "=" (s-chop-prefix "+" x)))
-           (x (car xy))
-           (y (car (last xy))))
-           (setenv x y)))
-  (-filter
-    (lambda (x) (vemv/starts-with x "+"))
-    (s-split
-      "\n"
-      (shell-command-to-string "diff -u  <(true; export) <(source /Users/vemv/gpm/src/environment.sh; export) | tail -n +4"))))
+(defun vemv-source (filename)
+  (mapcar
+    (lambda (x)
+      (let* ((xy (s-split "=" (s-chop-prefix "+" x)))
+             (x (car xy))
+             (y (car (last xy))))
+             (setenv x y)))
+    (-filter
+      (lambda (x) (vemv/starts-with x "+"))
+      (s-split
+        "\n"
+        (shell-command-to-string (concat "diff -u  <(true; export) <(source " filename "; export) | tail -n +4"))))))
+
+(vemv-source "/Users/vemv/gpm/src/environment.sh")
+(vemv-source "/Users/vemv/gpm/src/custom-environment.sh")
+(vemv-source "/Users/vemv/.ldap")
 
 (setenv "PATH" (concat (getenv "PATH") ":" vemv-home "/bin"))
 (setenv "FIGW_ADDR" "0.0.0.0")
