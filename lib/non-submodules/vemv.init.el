@@ -113,6 +113,19 @@
                                "Indexing"))))
                   )))
 
+(setq fiplr-ignored-globs
+      ;; `directories` is semi-useless. do not alter but also do not bother adding entries
+      '((directories (".git" ".svn" ".hg" ".bzr" "tools" "res-vagrant" ".paket" "doc" "src/horizon/resources/public/js" "src/.sass-cache" "src/horizon/node_modules"  "src/horizon/node_modules/*" "src/horizon/node_modules*" "src/horizon/node_modules/**" "src/utils" "src/integration-testing" "src/integration-testing/spec/features" "src/integration-testing/spec" "src/integration\-testing/public"))
+        (files (".#*" "*~" "*.so" "*.jpg" "*.png" "*.gif" "*.pdf" "*.gz" "*.zip" "*.js" "*.DS_Store"
+                "*.md" "*.gitgnore" "*.scssc" "*.keep" "*.json" "LICENSE" "LICENCE" "license" "*.patch"
+                "flask-server" "Makefile" "makefile" "*.txt" "*.yml" "*.html" "*ignore" "*.rb" "*.*rc" "*.map"
+                "*.ico" "*.css" "*.erb" "Gemfile" "Rakefile" ".rspec" "*integration-testing*" "*node_modules*"
+                "*.workerjs" "*.MIT" "acorn" "AUTHORS" "*.APACHE2" "JSONStream" "babylon" "*.iml" "*.BSD" "*.log" "*.rake" "*.ru"
+                "*.ls" "loose-envify" "errno" "*.flow" "*.properties" "*.extract-native-dependencies" "*.targets"
+                "*.sh" "*.ps1" "*.arcconfig" "Vagrantfile" "*.template" "*.nuspec" "*.emz" "1" "2" "*.svg"
+                 "*.ttf" ".lein-repl-history" "*.scss" "*.cur" "profile" ".figwheel-compile-stamp" "*.woff" "*.eor"
+                "*.xml" "*.coffee" "*.lock" "*.markdown" "*.opts" "module-deps"))))
+
 (custom-set-variables
  '(mac-mouse-wheel-smooth-scroll nil)
  '(cider-connection-message-fn nil)
