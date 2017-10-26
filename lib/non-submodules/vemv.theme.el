@@ -21,7 +21,14 @@
   :group 'vemv)
 
 (custom-theme-set-faces 'vemv
-
+      
+      '(grizzl-selection-face
+       ((((class color) (background light))
+         (:foreground "#C1ED3D"))
+        (((class color) (background dark))
+         (:foreground "#C1ED3D"))
+        (t (:foreground "#C1ED3D"))))
+      
       '(default ((t (:background "#4D575F" :foreground "#F5F5F5"))))
       '(cursor ((t (:foreground "#4D575F" :background "#CFCFCF"))))
       '(blue ((t (:foreground "blue"))))
