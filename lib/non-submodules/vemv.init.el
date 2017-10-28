@@ -123,7 +123,7 @@
                 "*.ls" "loose-envify" "errno" "*.flow" "*.properties" "*.extract-native-dependencies" "*.targets"
                 "*.sh" "*.ps1" "*.arcconfig" "Vagrantfile" "*.template" "*.nuspec" "*.emz" "1" "2" "*.svg"
                  "*.ttf" ".lein-repl-history" "*.scss" "*.cur" "profile" ".figwheel-compile-stamp" "*.woff" "*.eor"
-                "*.xml" "*.coffee" "*.lock" "*.markdown" "*.opts" "module-deps"))))
+                "*.xml" "*.coffee" "*.lock" "*.markdown" "*.opts" "module-deps" ".nrepl-port" "repl-port"))))
 
 (custom-set-variables
  '(mac-mouse-wheel-smooth-scroll nil)
