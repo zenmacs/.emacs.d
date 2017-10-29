@@ -4,9 +4,6 @@
 [submodule "lib/popup"]
 	path = lib/popup
 	url = https://github.com/auto-complete/popup-el
-[submodule "lib/haskell-mode"]
-	path = lib/haskell-mode
-	url = https://github.com/haskell/haskell-mode.git
 [submodule "lib/recur"]
 	path = lib/recur
 	url = https://github.com/VincentToups/recur.git
@@ -19,12 +16,6 @@
 [submodule "lib/yasnippet"]
 	path = lib/yasnippet
 	url = https://github.com/capitaomorte/yasnippet
-[submodule "lib/nyan-mode"]
-	path = lib/nyan-mode
-	url = https://github.com/TeMPOraL/nyan-mode
-[submodule "lib/ruby-end"]
-	path = lib/ruby-end
-	url = https://github.com/rejeep/ruby-end
 [submodule "lib/project-explorer"]
 	path = lib/project-explorer
 	url = https://github.com/sabof/project-explorer
