@@ -1,18 +1,7 @@
 (require 'vemv.lang)
 (provide 'vemv.data)
 
-;; XXX intro w/o moving the comment
-
 (setq vemv/emacs-files '("vemv.init.el" "vemv.lang.el" "vemv.theme.el" "vemv.data.el"))
-
-(setq vemv/tree-dirs (let ((d (-drop 2 (directory-files "~/clj"))))
-           (flatten (mapcar (lambda (a) (list (vemv/string-to-keyword a) (concat "~/clj/" a))) d))))
-
-(mapc (lambda (a) (conj! vemv/tree-dirs a))
-      (list
-       "~/.emacs.d/lib" :lib
-       "~/.emacs.d/lib/non-submodules" :non
-       ))
 
 ;; :emacs "~/.emacs.d/packs/user/user-pack"
 ;; :haskell "~/Development/vemv/src/haskell"
@@ -22,60 +11,28 @@
 ;; available: C-escape, C-', (C/M f/p), M-`
 ;; ummodificable: C-m, C-i, C-[f
 ;; ESC acts like alt, but one does not have to hold it pressed.
-;; C-click is very handy for switching between arbitrary buffers.
 
+;; XXX remove everything, and programatically
 (setq vemv/key-bindings-to-remove '("\C-a" "\C-b" "\C-e" "\C-f" "\C-s" "\C-w" "\C-j"
                                     "\C-l" "\C-n" "\C-o" "\C-p" "\C-q" "\C-o" "\C-k"
                                     "\C-t" "\C-u" "\C-v" "\C-z" "\C-d" "\C-y" "\C-S-z"
                                     "\C-m" "\C-\\" "\C-h" "\C-r" [f10] "\M-e" "\M-!"
                                     "\M-\"" "\M-|" "\M-$" "\M-y" "\M-f"))
 
+;; XXX remove everything, and programatically
 (setq vemv/local-key-bindings-to-remove
-      (list (list paredit-mode-map "\C-d" "\C-k" "\C-j" "\M-\"" [127] (kbd ";")) ; [127] stands for DEL, [27 127] is M-DEL.
+      (list (list paredit-mode-map "\C-d" "\C-k" "\C-j" "\M-\"" [127] (kbd ";")) ;; [127] stands for DEL, [27 127] is M-DEL.
             (list comint-mode-map "\M-p")
       (list undo-tree-map (kbd "C-/") (kbd "C-?"))))
 
 (setq vemv/key-bindings-to-dummy '([mouse-6] [mouse-7] [double-mouse-6] [double-mouse-7] [triple-mouse-6] [triple-mouse-7]))
 
 (setq vemv/local-key-bindings
-      (list ; clojure-mode-map  "C-/" 'nrepl-doc
-            ; clojure-mode-map  "C-?" 'nrepl-src
-            clojure-mode-map  ";" 'vemv/semicolon
-            clojure-mode-map  "C-e" (argless (vemv/send :cider))
-            clojure-mode-map  "M-e" (argless (vemv/send :cider :backward))
-            ; clojurescript-mode-map  "C-e" (argless (vemv/send :cljs))
-            ; clojurescript-mode-map  "M-e" (argless (vemv/send :cljs :backward))
-            emacs-lisp-mode-map "C-/" 'vemv/elisp-popup-documentation
-            emacs-lisp-mode-map "C-?" 'vemv/elisp-window-documentation
-            ; emacs-lisp-mode-map "C-z" 'undo-tree-undo
-            emacs-lisp-mode-map "RET" 'newline-and-indent
+      (list clojure-mode-map  ";" 'vemv/semicolon
             emacs-lisp-mode-map  ";" 'vemv/semicolon
-            haskell-mode-map  "C-e" (argless (vemv/send :shell))
-            haskell-mode-map  "M-e" (argless (vemv/send :shell :backward))
-            haskell-mode-map "RET" (argless (insert "\n"))
-            haskell-mode-map "," (argless (insert ", "))
-            ruby-mode-map "RET" 'newline-and-indent)) ;; 'ruby-reindent-then-newline-and-indent
-
-(comm setq vemv/local-key-bindings
-      (vemv/hash-map
-       clojure-mode-map (vemv/hash-map
-       ; "C-/" ;  'nrepl-doc
-       ; "C-?" ; 'nrepl-src
-       ; ";" (argless (paredit-semicolon) (paredit-semicolon) (insert " ")) ;; (when (and (eolp) COLUMN > 0) (insert " "))
-       )
-       emacs-lisp-mode-map (vemv/hash-map
-           "C-/" 'vemv/elisp-popup-documentation
-           "C-?" 'vemv/elisp-window-documentation
-           ; "C-z" 'undo-tree-undo
-           "RET" 'newline-and-indent
-           ";" (argless (paredit-semicolon) (paredit-semicolon) (insert " ")))
-       haskell-mode-map (vemv/hash-map
-         "C-e" (argless (vemv/send :shell))
-         "M-e" (argless (vemv/send :shell :backward))
-         "RET" (argless (insert "\n"))
-         "," (argless (insert ", ")))
-       ruby-mode-map (vemv/hash-map
-           "RET" 'ruby-reindent-then-newline-and-indent)))
+            emacs-lisp-mode-map "RET" 'newline-and-indent
+            emacs-lisp-mode-map "C-/" 'vemv/elisp-popup-documentation
+            emacs-lisp-mode-map "C-?" 'vemv/elisp-window-documentation))
 
 ; basics reminder:
 ; c-space - set the mark
@@ -85,130 +42,108 @@
 ; C-x 0 - kill window without killing buffer
 ; M-x describe-key - resolve a key binding
 
-;XXX M-RET alters the kill-ring.
+;; XXX M-RET alters the kill-ring.
 ;; NOTE - don't use C-o / C-O distinction - doesn't work in this emacs build. use C-S-o instead.
-;; NOTE ; `s-` (meta) must be in lowercase
+;; NOTE ;; `s-` (meta) must be in lowercase
 ;; This setup was optimized for a UK keyboard with a Colemak layout, with the number/symbol row switched (e.g. "(" is the default, "9" requires shift).
 (setq vemv/global-key-bindings
-      (vemv/hash-map
-            "§" 'hippie-expand
-            ; "C-<next>" 'vemv/previous-file-buffer
-            ; "C-<prior>" 'vemv/next-file-buffer
-            [f7] 'vemv/previous-file-buffer
-            [f8] 'vemv/after-file-open
-            [f9] 'vemv/next-file-buffer
-            "M-<next>" 'previous-buffer
-            "M-<prior>" 'next-buffer
-            "M-<begin>" nil
-            "M-<end>" nil
-            "s-<tab>" (argless (call-interactively 'company-dabbrev))
-            "C-a" (argless (vemv/copy-selection-or-next-sexpr))
-            "C-y" nil
-            "s-j" 'cider-eval-sexp-at-point
-            "M-a" (argless (kill-new (vemv/sexpr-content :backward)))
-            "C-s" 'vemv/save
-            "C-v" 'cua-paste ; paste
-            "C-o" (argless (vemv/open))
-            "s-<home>" 'beginning-of-buffer ; alias of c-home
-            "s-<end>" 'end-of-buffer ; alias of c-end
-            "s-o" (argless (vemv/open-project))
-
-            "C-k" 'vemv/kill
-            "s-k" (argless (kill-new (vemv/kill))) ; cut
-            "M-k" (argless (vemv/kill :backward))
-            "M-<up>" 'paredit-splice-sexp-killing-backward
-            "M-K" (argless (kill-new (vemv/kill :backward)))
-
-            "C-b" 'vemv/duplicate
-            ; "C-w" 'smex ; M-x
-            "s-`" (argless
-                      (let* ((old cider-prompt-for-symbol))
-                        (setq cider-prompt-for-symbol nil)
-                        (cider-find-var)
-                        (setq cider-prompt-for-symbol old)
-                        (vemv/advice-nrepl)))
-            "C-S-j" nil
-            "C-j" (argless
-              (if (and (not cider-launched) gpm-using-nrepl)
-                (progn
-                  (setq cider-launched t)
-                  (setq vemv-cider-connecting t)
-                  (delay
-                   (argless
-                     (shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make clean")
-                     (shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make sass")
-                     (select-window vemv/main_window)
-                     (cider-jack-in-clojurescript))
-                   1))
-                (if gpm-using-nrepl
-                   (if (cider-connected-p)
-                       (if (vemv/current-main-buffer-is-cljs)
-                         (vemv/send :cljs)
-                         (vemv/send :clj)))
-                  (vemv/send :shell))))
-            "C-z" 'undo-tree-undo
-            "C-S-z" 'undo-tree-redo
-            "C-`" 'other-frame
-            "<backspace>" (argless (if (region-active-p)
-                                       (progn (call-interactively 'kill-region)
-                                              (pop kill-ring))
-                                       (paredit-backward-delete)))
-            "<C-backspace>" 'vemv/delete-this-line
-            "<S-backspace>" (argless (if (region-active-p)
-                                       (progn (call-interactively 'kill-region))
-                                       (paredit-backward-delete)))
-            "<home>" 'back-to-indentation
-            "<end>" 'vemv/end-of-line-or-code
-            "C-u" (argless (vemv/delete-backward :cut))
-            ;"M-RET" (argless) ; TODO comment-aware intro
-
-            ;; "C-!" (argless (vemv/send :cljs))
-            "C-'" (argless (vemv/send :ielm))
-            "C-|" (argless (vemv/send :emacs))
-            ; "C-$" (argless (if gpm-using-nrepl (vemv/send :cljs) (vemv/send :shell)))
-            ;; "M-!" (argless (vemv/send :cljs :backward))
-            "M-'" (argless (vemv/send :ielm :backward))
-            "M-|" (argless (vemv/send :emacs :backward))
-            ; "M-$" (argless (if gpm-using-nrepl (vemv/send :cljs :backward) (vemv/send :shell :backward)))
-
-            "C-l" 'vemv/close-this-buffer
-            ;; "C-L" (argless (let (kill-buffer-query-functions) (kill-buffer)))
-            "M-l" (argless (save-buffer)
-                           (kill-buffer (current-buffer)))
-            "C-w" (argless (unless (or (eq (selected-window) vemv/main_window)
-                                       (eq (selected-window) vemv/repl2)
-                                       (eq (selected-window) vemv/project-explorer-window))
-                              (if (< (length (vemv/current-frame-buffers)) 2)
-                               (delete-frame (selected-frame) t) ; close an auxiliary frame
-                               (kill-buffer-and-window) (vemv/previous-window)))) ; close annoying popup windows
-            "C-h" 'replace-string ; search and replace
-            "C-f" (argless (ignore-errors
-                              (call-interactively 'search-forward)
-                              (setq vemv-last-search (first minibuffer-history))))
-            "C-p" (argless (ignore-errors (search-forward vemv-last-search)))
-            "M-[" 'paredit-backward ; move one sexpr backward
-            "M-]" 'paredit-forward
-            [f6] 'vemv/hide-ns
-            ; [f7] 'split-window-horizontally
-            "C-n" (argless (make-frame `((width . ,(frame-width)) (height . ,(frame-height))))) ; in order to kill a frame, use the window system's standard exit (e.g. Alt-F4) command. The other frames won't close.
-            [f10] 'vemv/ensure-layout
-            [f11] 'vemv/maximize
-      "s-e" (argless (insert "é"))
-      "s-E" (argless (insert "É"))
-            "C-;" 'toggle-truncate-lines
-            "C-*" (argless (vemv/open (concat "~/.emacs.d/lib/non-submodules/"
-                                              (ido-completing-read "Open: " vemv/emacs-files))))
-      "C-3" 'vemv/indent
-      "C-t" (argless (vemv/fiplr))
-      ; "C-T" (argless (switch-to-buffer "*scratch*"))
-      "s-<return>" 'vemv/load-clojure-buffer
-      ; "C-," 'nrepl-load-current-buffer
-      "s-<mouse-1>" 'mc/add-cursor-on-click
-      "RET" 'newline
-      "C-\\" 'sgml-close-tag
-      "C-=" 'mark-whole-buffer
-      "C-q" 'save-buffers-kill-terminal))
+    (vemv/hash-map
+        "C-j" (argless
+                (if (and (not cider-launched) gpm-using-nrepl)
+                  (progn
+                    (setq cider-launched t)
+                    (setq vemv-cider-connecting t)
+                    (delay
+                     (argless
+                       (shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make clean")
+                       (shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make sass")
+                       (select-window vemv/main_window)
+                       (cider-jack-in-clojurescript))
+                     1))
+                  (if gpm-using-nrepl
+                     (if (cider-connected-p)
+                         (if (vemv/current-main-buffer-is-cljs)
+                           (vemv/send :cljs)
+                           (vemv/send :clj)))
+                    (vemv/send :shell))))
+        "s-`" (argless
+                  (let* ((old cider-prompt-for-symbol))
+                    (setq cider-prompt-for-symbol nil)
+                    (cider-find-var)
+                    (setq cider-prompt-for-symbol old)
+                    (vemv/advice-nrepl)))
+       "C-w" (argless (unless (or (eq (selected-window) vemv/main_window)
+                                  (eq (selected-window) vemv/repl2)
+                                  (eq (selected-window) vemv/project-explorer-window))
+                         (if (< (length (vemv/current-frame-buffers)) 2)
+                          (delete-frame (selected-frame) t) ;; close an auxiliary frame
+                          (kill-buffer-and-window) (vemv/previous-window)))) ;; close annoying popup windows
+        "C-f" (argless (ignore-errors
+                          (call-interactively 'search-forward)
+                          (setq vemv-last-search (first minibuffer-history))))
+        "M-l" (argless (save-buffer)
+                       (kill-buffer (current-buffer)))
+        "<backspace>" (argless (if (region-active-p)
+                                   (progn (call-interactively 'kill-region)
+                                          (pop kill-ring))
+                                   (paredit-backward-delete)))
+        "<S-backspace>" (argless (if (region-active-p)
+                                   (progn (call-interactively 'kill-region))
+                                   (paredit-backward-delete)))
+        "<C-backspace>" 'vemv/delete-this-line
+        "<end>" 'vemv/end-of-line-or-code
+        "<home>" 'back-to-indentation
+        "C-;" 'toggle-truncate-lines
+        "C-'" (argless (vemv/send :ielm))
+        "C-`" 'other-frame
+        "C-=" 'mark-whole-buffer
+        "C-|" (argless (vemv/send :emacs))
+        "C-3" 'vemv/indent
+        "C-a" (argless (vemv/copy-selection-or-next-sexpr))
+        "C-b" 'vemv/duplicate
+        "C-h" 'replace-string ;; search and replace
+        "C-k" 'vemv/kill
+        "C-l" 'vemv/close-this-buffer
+        "C-n" (argless (make-frame `((width . ,(frame-width)) (height . ,(frame-height))))) ;; in order to kill a frame, use the window system's standard exit (e.g. Alt-F4) command. The other frames won't close.
+        "C-o" (argless (vemv/open))
+        "C-p" (argless (ignore-errors (search-forward vemv-last-search)))
+        "C-q" 'save-buffers-kill-terminal
+        "C-S-j" nil
+        "C-S-z" 'undo-tree-redo
+        "C-s" 'vemv/save
+        "C-t" (argless (vemv/fiplr))
+        "C-u" (argless (vemv/delete-backward :cut))
+        "C-v" 'cua-paste ;; paste
+        "C-y" nil
+        "C-z" 'undo-tree-undo
+        "M-'" (argless (vemv/send :ielm :backward))
+        "M-[" 'paredit-backward ;; move one sexpr backward
+        "M-]" 'paredit-forward
+        "M-<begin>" nil
+        "M-<end>" nil
+        "M-<next>" 'previous-buffer
+        "M-<prior>" 'next-buffer
+        "M-<up>" 'paredit-splice-sexp-killing-backward
+        "M-|" (argless (vemv/send :emacs :backward))
+        "M-a" (argless (kill-new (vemv/sexpr-content :backward)))
+        "M-K" (argless (kill-new (vemv/kill :backward)))
+        "M-k" (argless (vemv/kill :backward))
+        "RET" 'newline
+        "s-<end>" 'end-of-buffer ;; alias of c-end
+        "s-<home>" 'beginning-of-buffer ;; alias of c-home
+        "s-<mouse-1>" 'mc/add-cursor-on-click
+        "s-<return>" 'vemv/load-clojure-buffer
+        "s-<tab>" (argless (call-interactively 'company-dabbrev))
+        "s-e" (argless (insert "é"))
+        "s-E" (argless (insert "É"))
+        "s-j" 'cider-eval-sexp-at-point
+        "s-k" (argless (kill-new (vemv/kill))) ;; cut
+        "s-o" (argless (vemv/open-project))
+        [f10] 'vemv/ensure-layout
+        [f11] 'vemv/maximize
+        [f6] 'vemv/hide-ns
+        [f7] 'vemv/previous-file-buffer
+        [f8] 'vemv/after-file-open
+        [f9] 'vemv/next-file-buffer))
         
-; eval-minibuffer: M-:
-
-(global-set-key [mode-line mouse-3] 'nil) ; prevent close-on-right-click
+(global-set-key [mode-line mouse-3] 'nil) ;; prevent close-on-right-click

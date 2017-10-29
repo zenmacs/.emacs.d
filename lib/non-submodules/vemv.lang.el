@@ -40,10 +40,10 @@
   "Calls f in one or SECONDS seconds."
   (run-at-time (concat (int-to-string (or seconds 1)) " seconds") nil f))
 
-(defmacro conj! (seq item) ; Functionality doesn't require a macro - setq does as it is a special form.
+(defmacro conj! (seq item) ;; Functionality doesn't require a macro - setq does as it is a special form.
   `(setq ,seq (cons ,item ,seq)))
 
-(defmacro send! (x f &rest args)  ; Same here: functionality doesn't require a macro - setq does as it is a special form.
+(defmacro send! (x f &rest args) ;; Same here: functionality doesn't require a macro - setq does as it is a special form.
   "Sets x to the result of (f x args)"
   `(setq ,x (apply ,f (cons ,x (list ,@args)))))
 
@@ -76,12 +76,10 @@
 
 (recur-defun* vemv/partition (n seq &optional step acc)
   "Divides SEQ in a list of lists of N items each, at offsets STEP or N apart. ACC is an implementation detail - do not pass this parameter!"
-  ;(mapc (lambda (a) (message (prin1-to-string a))) (list 'n n 'seq seq 'step step 'acc acc))
       (if seq
-          (recur n (vemv/drop (or step n) seq) (if-let (taken (vemv/take n seq)) ; XXX <<<<<<<<<<< recur takes the args in mistaken order. wut!
+          (recur n (vemv/drop (or step n) seq) (if-let (taken (vemv/take n seq)) ;; XXX <<<<<<<<<<< recur takes the args in mistaken order. wut
                          (cons taken acc)
-                         acc) (or step n)
-                 )
+                         acc) (or step n))
         (reverse acc)))
 
 (defun vemv/contains? (a b)
@@ -192,7 +190,7 @@ paste and simulate an intro press. Finally, go back to sender window."
           (select-window sender)))))
 
 ; XXX infer whether the user wants to insert newlines
-(defun vemv/duplicate (&optional backward?) ; XXX indentation: stuff gets inserted at the absolute beggining of line TODO backward?, for sexprs
+(defun vemv/duplicate (&optional backward?) ;; XXX indentation: stuff gets inserted at the absolute beggining of line TODO backward?, for sexprs
   "Copies the current line (or sexpr, if point is at the beggining of one, or selection, if the region is active), inserting it at a new line."
   (interactive)
 
@@ -210,7 +208,7 @@ paste and simulate an intro press. Finally, go back to sender window."
                   (whitespace (progn (comm let N the num of chars until beggining-of-line, N*" ") "")))
               (paredit-forward)
               (insert (concat "\n\n" whitespace content))
-              (call-interactively 'move-end-of-line) ; XXX end of sexpr instead
+              (call-interactively 'move-end-of-line) ;; XXX end of sexpr instead
               (paredit-backward)))
 
           (progn
@@ -222,7 +220,7 @@ paste and simulate an intro press. Finally, go back to sender window."
             (yank)
             (pop kill-ring)))))
 
-(defun vemv/kill (&optional backward?) ; XXX kill comments FIXME can leave sexprs unmatched
+(defun vemv/kill (&optional backward?) ;; XXX kill comments FIXME can leave sexprs unmatched
   "Deletes the next (or previous, on non-nil values of BACKWARD?) sexpr or comment (if there is one).
 
 Unlike paredit-kill, this function will only grab one sexpr (and no more, if they are contigous), and it doesn't alter the kill-ring."
@@ -273,21 +271,6 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (interactive)
   (select-window (previous-window)))
 
-(defun vemv/slime-popup-documentation (symbol-name) ; XXX connect if not already
-  "Pops up the documentation for the symbol that is currently hovered by the point. Presumes an SLIME environment."
-  (interactive (list (slime-read-symbol-name "Documentation for symbol: ")))
-  (slime-eval-async `(swank:documentation-symbol ,symbol-name)
-                    (lambda (result)
-                      (popup-tip result :height ac-quick-help-height))))
-
-(defun vemv/slime-window-documentation (symbol-name)
-  "Displays the documentation for the symbol that is currently hovered by the point in a new window. Presumes an SLIME environment."
-  (interactive (list (slime-read-symbol-name "Documentation for symbol: ")))
-  (slime-documentation symbol-name)
-  (delay
-   (argless (vemv/next-window)
-            (message "Press 'q' to close this window."))))
-
 (defun vemv/elisp-popup-documentation ()
   "Pops up the documentation for the symbol that is currently hovered by the point. Presumes emacs-lisp-mode."
   (interactive)
@@ -322,26 +305,15 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
     (if (<= clength (length s))
         (string= (substring s 0 clength) candidate))))
 
-(defun slime-keywordify (symbol)
-   "Make a keyword out of the symbol SYMBOL."
-   (let ((name (downcase (symbol-name symbol))))
-     (intern (if (eq ?: (aref name 0))
-                 name
-               (concat ":" name)))))
-
 (defun vemv/keyword-to-string (arg)
   ":foo -> \"foo\""
   (substring (symbol-name arg) 1))
-
-(defun vemv/string-to-keyword (arg)
-  "\"foo\" -> :foo"
-  (slime-keywordify (intern arg)))
 
 (defun vemv/current-line-content ()
   "Returns the content of the line at which the point is currently located. Side effects free."
   (interactive)
   (let ((result (buffer-substring-no-properties (line-beginning-position 1) (line-beginning-position 2))))
-    (if (equal result "") ; abstact away EOFs
+    (if (equal result "") ;; abstact away EOFs
         "\n"
         result)))
 
@@ -394,7 +366,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   "Opens a file (from FILEPATH or the user input)."
   (interactive)
   (select-window vemv/main_window)
-  (let ((file (buffer-name (or (and filepath (find-file filepath)) (ido-find-file)))))) ; magical let - do not unwrap!
+  (let ((file (buffer-name (or (and filepath (find-file filepath)) (ido-find-file)))))) ;; magical let - do not unwrap!
   (save-buffer)
   (vemv/refresh-file-caches)
   (select-window vemv/main_window))
@@ -411,14 +383,14 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
     (vemv/refresh-file-caches)
     (select-window vemv/main_window)
     (let* ((buffer-fragments (-remove (lambda (x) (string-equal x "")) (split-string (buffer-file-name) "/")))
-           (projname (pe/project-root-function-default)) ; "/Users/vemv/gpm"
+           (projname (pe/project-root-function-default)) ;; "/Users/vemv/gpm"
            (project-fragments (-remove (lambda (x) (string-equal x "")) (split-string projname "/")))
            (fragments (-drop (length project-fragments) buffer-fragments))
            (expanded-fragments (mapcar* (lambda (x y) (-take x y)) (number-sequence 1 (length fragments)) (-repeat (length fragments) fragments)))
            (final-fragments (mapcar (lambda (x) (concat (s-join "" (cons projname (-interpose "/" x))) "/")) expanded-fragments)))
            
             (select-window vemv/project-explorer-window)
-            ; (pe/fold-all) ; necessary in principle, skip it for performance. seems to work fine.
+            ;; (pe/fold-all) ;; necessary in principle, skip it for performance. seems to work fine.
             (beginning-of-buffer)
            
            (seq-doseq (f (butlast final-fragments))
@@ -491,7 +463,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (let ((c (mapcar (lambda (x) (buffer-name x)) (buffer-list))))
     (filter (lambda (filename) (vemv/contains? filename ".clj")) c)))
 
-(setq vemv/chosen-file-buffer-order nil) ; a list
+(setq vemv/chosen-file-buffer-order nil) ;; a list
 
 (defun vemv/clean-chosen-file-buffer-order ()
     (let* (
@@ -588,7 +560,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
                    '(" " "\t"))
         (forward-char))))
 
-(defun vemv/end () ; XXX doesn't honor region, breaks minibuffer.
+(defun vemv/end () ;; XXX doesn't honor region
   "Moves the point to rightmost non-empty character in the current line.
 
 Comments get ignored, this is, point will only move as long as its position still belongs to the code - unless this command has been fired for the second time."
@@ -605,7 +577,7 @@ Comments get ignored, this is, point will only move as long as its position stil
                                      (recur (inc result))))))
         (move-beginning-of-line 1)
         (forward-char movement)
-        ; there may exist empty space between code and comment:
+        ;; there may exist empty space between code and comment:
         (if (pos? movement)
             (while (not (some (lambda (char) (equal char (vemv/current-char-at-point)))
                               '(" ")))

@@ -2,6 +2,8 @@
 
 ;; NOTE: we don't use ac/auto-complete anymore. company now, since feb 2016
 
+;; (setq debug-on-error t)
+
 (require 'package)
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
@@ -39,15 +41,12 @@
 (ido-mode 1)
 (cua-mode 1)
 (blink-cursor-mode -1)
-;; (setq yas-use-menu nil)
-;; XXX detect nrepl's project, open the latest file within that proj.
+
 (require 'yasnippet)
 (require 'saveplace)
 (require 'dash)
 (require 'popup)
 (require 'smex)
-(require 'ruby-mode)
-(require 'ruby-end)
 (require 'cider)
 (require 'epl)
 (require 'pkg-info)
@@ -57,9 +56,7 @@
 (require 'es-windows)
 (require 'project-explorer)
 (require 'paredit)
-(require 'haskell-mode)
 (require 'undo-tree)
-(require 'nyan-mode)
 (require 's)
 (require 'clj-refactor)
 (require 'vemv.lang)
@@ -69,7 +66,6 @@
 
 (global-company-mode)
 
-(add-hook 'ruby-mode-hook 'robe-mode)
 (add-hook 'css-mode-hook (lambda () (rainbow-mode 1)))
 
 (add-to-list 'exec-path (concat vemv-home "/bin"))
@@ -131,7 +127,6 @@
 (custom-set-variables
  '(mac-mouse-wheel-smooth-scroll nil)
  '(cider-connection-message-fn nil)
- '(haskell-mode-hook '(turn-on-haskell-indentation))
  '(cider-repl-display-help-banner nil)
  '(pe/inline-folders nil)
  '(tree-widget-image-enable nil)
@@ -200,7 +195,7 @@
 
 (add-hook 'clojure-mode-hook 'enable-paredit-mode)
 (when (not vemv-cleaning-namespaces)
-  (add-hook 'clojure-mode-hook 'hs-minor-mode))
+(add-hook 'clojure-mode-hook 'hs-minor-mode))
 (add-hook 'clojure-mode-hook 'undo-tree-mode)
 (add-hook 'clojure-mode-hook (argless (local-set-key (kbd "RET") 'newline-and-indent)))
 (add-hook 'clojure-mode-hook (argless (clj-refactor-mode 1)
@@ -215,12 +210,6 @@
                                           '(:eval (when vemv-cider-connecting (propertize " Connecting..." 'face 'vemv-cider-connection-face)))
                                           ))))
 
-(add-hook 'ruby-mode-hook 'enable-paredit-mode)
-(add-hook 'ruby-mode-hook 'electric-pair-mode)
-
-(add-hook 'html-mode-hook 'electric-pair-mode)
-
-(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 
 (add-hook 'ielm-mode-hook 'enable-paredit-mode)
@@ -233,20 +222,16 @@
              (figwheel-sidecar.repl-api/cljs-repl))"
         "")))
 
-(add-hook 'cider-connected-hook (argless
-  (delay (argless
-           (vemv/show-clj-or-cljs-repl)
-           (setq vemv-cider-connecting nil)
-           (setq vemv-cider-connected t)
-           (comment ;; XXX breaks cljs repl
-              (when (not vemv-cleaning-namespaces)
-                (vemv/advice-nrepl))))
-          2)))
-
-(add-hook 'html-mode-hook
-          (lambda()
-            (setq sgml-basic-offset 2)
-            (setq indent-tabs-mode nil)))
+(add-hook 'cider-connected-hook
+  (argless
+    (delay (argless
+             (vemv/show-clj-or-cljs-repl)
+             (setq vemv-cider-connecting nil)
+             (setq vemv-cider-connected t)
+             (comment ;; XXX breaks cljs repl, because cider-connected-hook is not aware of when figwheel connects.
+                (when (not vemv-cleaning-namespaces)
+                  (vemv/advice-nrepl))))
+            2)))
 
 (set-default 'truncate-lines t)
 (setq-default save-place t)
@@ -293,11 +278,6 @@
 ;; (setenv "HORIZON_FG_HARD_RELOAD" "true")
 ;; (setenv "USE_YOURKIT_AGENT" "true")
 
-;; restart
-;; tree: refresh on adds
-;; javadoc
-;; popup doc for defvar
-;; goto fn defs
 (setq vemv/launched nil)
 
 (if (window-system) (vemv/maximize))
@@ -315,15 +295,6 @@
 
 (setq vemv/main_window (selected-window))
 (vemv/next-window)
-
-(comm
-  (split-window-horizontally)
-
-  (switch-to-buffer "*scratch*")
-
-  (ielm)
-  (setq vemv/repl1 (selected-window))
-  (vemv/next-window))
 
 (let ((default-directory (concat vemv-home "/gpm/src")))
   (sh))
@@ -344,36 +315,34 @@
 (message "")
 (setq vemv/launched t)
 
-; (setq debug-on-error t)
-
-(setq custom-file "~/.emacs.d/custom.el") ; touch on install!
+(setq custom-file "~/.emacs.d/custom.el") ;; touch on install!
 (load custom-file)
 
-(setq visible-bell nil) ; disable flickering
-(setq ido-auto-merge-delay-time 99999) ; prevents annoying folder switching. might be handy: (setq ido-max-directory-size 100000)
+(setq visible-bell nil) ;; disable flickering
+(setq ido-auto-merge-delay-time 99999) ;; prevents annoying folder switching. might be handy: (setq ido-max-directory-size 100000)
 
 (delay (argless
-        (select-window vemv/main_window)
-        (if (file-readable-p recentf-save-file)
-            (if (pos? (length recentf-list))
-              (let* ((head (car recentf-list))
-                     (the-file (ignore-errors
-                                 (if (vemv/ends-with head "ido.last")
-                                     (second recentf-list)
-                                     head))))
-                     (when the-file
-                       (vemv/open
-                         (if (vemv/contains? the-file "/gpm/src/horizon") ; ensure nrepl opens horizon project
-                           the-file
-                           "/Users/vemv/gpm/src/horizon/src/horizon/desktop/core.cljs"))
-                       (delay 'vemv/show-current-file-in-project-explorer 3)))))
-         
-         (advice-add 'pe/show-buffer :after 'vemv/after-file-open)
-         (advice-add 'vemv/fiplr :after 'vemv/after-file-open)
-         (advice-add 'vemv/open :after 'vemv/after-file-open)
-         (advice-add 'vemv/next-file-buffer :after 'vemv/after-file-open)
-         (advice-add 'vemv/previous-file-buffer :after 'vemv/after-file-open)
-         (advice-add 'vemv/close-this-buffer :after 'vemv/after-file-open)
+          (select-window vemv/main_window)
+          (if (file-readable-p recentf-save-file)
+              (if (pos? (length recentf-list))
+                (let* ((head (car recentf-list))
+                       (the-file (ignore-errors
+                                   (if (vemv/ends-with head "ido.last")
+                                       (second recentf-list)
+                                       head))))
+                       (when the-file
+                         (vemv/open
+                           (if (vemv/contains? the-file "/gpm/src/horizon") ;; ensure nrepl opens horizon project
+                             the-file
+                             "/Users/vemv/gpm/src/horizon/src/horizon/desktop/core.cljs"))
+                         (delay 'vemv/show-current-file-in-project-explorer 3)))))
+           
+           (advice-add 'pe/show-buffer :after 'vemv/after-file-open)
+           (advice-add 'vemv/fiplr :after 'vemv/after-file-open)
+           (advice-add 'vemv/open :after 'vemv/after-file-open)
+           (advice-add 'vemv/next-file-buffer :after 'vemv/after-file-open)
+           (advice-add 'vemv/previous-file-buffer :after 'vemv/after-file-open)
+           (advice-add 'vemv/close-this-buffer :after 'vemv/after-file-open)
          1))
 
 
@@ -382,11 +351,9 @@
 
 (put 'if 'lisp-indent-function nil)
 
-(comment (setq comment-indent-function (argless (save-excursion (forward-line -1) (current-indentation)))))
-
-(defadvice save-buffers-kill-emacs (around no-y-or-n activate) ; switches the expected input from "yes no" to "y n" on exit-without-save
-  (flet ((yes-or-no-p (&rest args) t)
-         (y-or-n-p (&rest args) t))
+(defadvice save-buffers-kill-emacs (around no-y-or-n activate) ;; switches the expected input from "yes no" to "y n" on exit-without-save
+  (cl-flet ((yes-or-no-p (&rest args) t)
+            (y-or-n-p (&rest args) t))
     ad-do-it))
 
 (setq back-to-indentation-state nil)
@@ -423,16 +390,6 @@
         keyboard-macro
         (argless (call-interactively (gethash key vemv/global-key-bindings))))))
   vemv/global-key-bindings)
-
-(comm maphash (lambda (lang_key _)
-     (maphash (lambda (key _)
-          (let ((keyboard-macro (if (stringp key) (read-kbd-macro key) key)))
-      (comm (define-key
-        clojure-mode-map
-        keyboard-macro
-        (argless (call-interactively (gethash key (gethash lang_key vemv/local-key-bindings))))))))
-        vemv/local-key-bindings))
-   vemv/local-key-bindings)
 
 (dolist (binding (vemv/partition 3 vemv/local-key-bindings))
   (define-key
@@ -476,35 +433,23 @@
    (vemv/maximize)
    (setq vemv/help-frame frame))))
 
-(defun vemv/display-help (buffer)
-  (let ((frame (vemv/get-help-frame)))
-    (select-frame frame)
-    ;; (clojure-mode)
-    ;(switch-to-buffer "*nREPL doc*")
-    ;(when clj?)
-    ;(set-window-buffer (frame-first-window frame) buffer)
-    (delay (argless (select-window (frame-first-window vemv/help-frame))))
-    (raise-frame)))
-
 (defun vemv/display-completion (buffer)
   (select-window vemv/main_window)
   (set-window-buffer vemv/main_window buffer))
 
-(comm add-to-list 'special-display-regexps '(".*" vemv/display-help))
+;; Prevents annoying popups
 (add-to-list 'special-display-buffer-names '("*Help*" vemv/display-completion))
-(comm add-to-list 'special-display-buffer-names '("*nREPL doc*" vemv/display-help))
 (add-to-list 'special-display-buffer-names '("*Ido Completions*" vemv/display-completion))
-(comm add-to-list 'special-display-buffer-names '("*nrepl-error*" vemv/display-completion)) ; FIXME yanks the stacktrace to the responsible buffer instead
 (add-to-list 'special-display-buffer-names '("*Diff*" vemv/display-completion))
 
 (defun undo (&rest args)
   (interactive)
   (apply 'undo-tree-undo args))
 
-(global-set-key [kp-delete] 'delete-char) ;; OS X
+(global-set-key [kp-delete] 'delete-char) ;; OSX
 
 (setq ;; http://www.emacswiki.org/emacs/BackupDirectory
-   backup-by-copying t      ; don't clobber symlinks
+   backup-by-copying t ;; don't clobber symlinks
    delete-old-versions t
    kept-new-versions 6
    kept-old-versions 2
@@ -512,21 +457,14 @@
 
 (setq backup-directory-alist
           `((".*" . ,temporary-file-directory)))
+
 (setq auto-save-file-name-transforms
           `((".*" ,temporary-file-directory t)))
-
-(add-to-list 'auto-mode-alist '("Gemfile" . ruby-mode))
 
 (dolist (command '(yank yank-pop))
   (eval `(defadvice ,command (after indent-region activate)
      (and (not current-prefix-arg)
-    (member major-mode '(emacs-lisp-mode lisp-mode
-                 clojure-mode    scheme-mode
-                 haskell-mode    ruby-mode
-                 rspec-mode      python-mode
-                 c-mode          c++-mode
-                 objc-mode       latex-mode
-                 plain-tex-mode))
+    (member major-mode '(emacs-lisp-mode lisp-mode clojure-mode))
     (let ((mark-even-if-inactive transient-mark-mode))
       (indent-region (region-beginning) (region-end) nil))))))
 
@@ -537,7 +475,7 @@
   
 (delay
   (argless
-    (run-with-timer 0 5 'vemv/refresh-file-caches) ; every 5 seconds. in practice, not so often b/c `vemv/refreshing-caches` (timestamp lock)
+    (run-with-timer 0 5 'vemv/refresh-file-caches) ;; every 5 seconds. in practice, not so often b/c `vemv/refreshing-caches` (timestamp lock)
   60))
 
 (setq company-dabbrev-char-regexp "\\sw\\|-")
