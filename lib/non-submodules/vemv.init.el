@@ -64,6 +64,9 @@
 (require 'vemv.theme)
 (provide 'vemv.init)
 
+(smex-initialize)
+(global-set-key (kbd "M-x") 'smex)
+
 (global-company-mode)
 
 (add-hook 'css-mode-hook (lambda () (rainbow-mode 1)))
