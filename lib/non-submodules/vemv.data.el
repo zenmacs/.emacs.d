@@ -201,7 +201,7 @@
       "C-3" 'vemv/indent
       "C-t" (argless (vemv/fiplr))
       ; "C-T" (argless (switch-to-buffer "*scratch*"))
-      ;; "C-." 
+      "s-<return>" 'vemv/load-clojure-buffer
       ; "C-," 'nrepl-load-current-buffer
       "s-<mouse-1>" 'mc/add-cursor-on-click
       "RET" 'newline

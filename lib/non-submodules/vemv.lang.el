@@ -738,3 +738,10 @@ Comments get ignored, this is, point will only move as long as its position stil
             (vemv/close-this-buffer)))
   (vemv/echo "clean-project-namespaces done!")
   (vemv/echo "Remember: goog* libspec can be spuriously removed.")))
+
+(defun vemv/load-clojure-buffer ()
+  (interactive)
+  (vemv/save)
+  (vemv/save) ;; save autoformatting
+  (vemv/advice-nrepl)
+  (cider-load-buffer))
