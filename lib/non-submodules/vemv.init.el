@@ -92,6 +92,9 @@
 ;; for clojure-factor c n
 (setq whitespace-line-column 240)
 
+;; no .#filenames
+(setq create-lockfiles nil)
+
 (setq pe/mode-line-format
   `(:eval (concat (propertize
                    (concat "  "
