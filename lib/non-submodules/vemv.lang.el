@@ -29,10 +29,12 @@
 
 (defmacro when-not (test &rest forms))
 
-(defun vemv/echo (x)
-  (setq inhibit-message nil)
-  (message x)
-  (setq inhibit-message t))
+(defun vemv/echo (&rest xs)
+  (let ((what (apply 'concat xs)))
+    (setq inhibit-message nil)
+    (message what)
+    (setq inhibit-message t)
+    what))
 
 (defun delay (f &optional seconds)
   "Calls f in one or SECONDS seconds."
@@ -401,10 +403,89 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (let ((default-directory (replace-regexp-in-string "\\.$" "" (ido-read-file-name ()))))
     (call-interactively 'project-explorer-open)))
 
+(defun vemv/show-current-file-in-project-explorer ()
+  (interactive)
+  (if (minibuffer-prompt)
+    (delay 'vemv/show-current-file-in-project-explorer 1)
+    
+    (vemv/refresh-file-caches)
+    (select-window vemv/main_window)
+    (let* ((buffer-fragments (-remove (lambda (x) (string-equal x "")) (split-string (buffer-file-name) "/")))
+           (projname (pe/project-root-function-default)) ; "/Users/vemv/gpm"
+           (project-fragments (-remove (lambda (x) (string-equal x "")) (split-string projname "/")))
+           (fragments (-drop (length project-fragments) buffer-fragments))
+           (expanded-fragments (mapcar* (lambda (x y) (-take x y)) (number-sequence 1 (length fragments)) (-repeat (length fragments) fragments)))
+           (final-fragments (mapcar (lambda (x) (concat (s-join "" (cons projname (-interpose "/" x))) "/")) expanded-fragments)))
+           
+            (select-window vemv/project-explorer-window)
+            ; (pe/fold-all) ; necessary in principle, skip it for performance. seems to work fine.
+            (beginning-of-buffer)
+           
+           (seq-doseq (f (butlast final-fragments))
+             (while (not (string-equal f (pe/current-directory)))
+               (next-line))
+             (pe/return))
+            
+            (while (not (string-equal (s-chop-suffix "/" (first (last final-fragments))) (pe/get-filename)))
+              (next-line))
+            
+            (end-of-line))
+    (select-window vemv/main_window)))
+
+(defun vemv/safe-show-current-file-in-project-explorer ()
+  (condition-case nil
+                  (vemv/show-current-file-in-project-explorer)
+                  (error (ignore-errors (vemv/show-current-file-in-project-explorer)))))
+
+(defun vemv/current-ns (&optional which-buffer)
+  (with-current-buffer (buffer-name which-buffer)
+    (cider-current-ns)))
+
 (defun vemv/advice-nrepl ()
   (interactive)
-  (when (and (vemv/contains? (buffer-name) ".clj") (cider-connected-p))
-    (cider-repl-set-ns (with-current-buffer (buffer-name) (cider-current-ns)))))
+  (delay
+    (argless
+      (when (and (vemv/contains? (buffer-name) ".clj")
+                 (cider-connected-p)
+                 (not (string-equal (vemv/current-ns)
+                                    (vemv/current-ns (window-buffer vemv/repl2)))))
+        (cider-repl-set-ns (vemv/current-ns))))
+    1))
+
+(defun vemv/hide-ns ()
+  (interactive)
+  (when (not vemv-cleaning-namespaces)
+    (setq-local vemv/ns-hidden (not vemv/ns-hidden))
+    (if vemv/ns-hidden
+      (let* ((hs-block-start-regexp "(ns")
+             (hs-block-end-regexp ")")
+             (hs-hide-comments-when-hiding-all nil)
+             (hs-adjust-block-beginning (lambda (initial)
+                                                (save-excursion
+                                                  (point)))))
+        (apply #'hs-hide-all ()))
+      (hs-show-all))))
+
+(defun vemv/show-clj-or-cljs-repl ()
+  (select-window vemv/main_window)
+  (setq was (vemv/current-main-buffer-is-cljs))
+  (select-window vemv/repl2)
+  (if was
+    (switch-to-buffer vemv/cljs-repl-name)
+    (switch-to-buffer vemv/clj-repl-name))
+  (select-window vemv/main_window))
+
+(defun vemv/ensure-repl-visible ()
+  (when (cider-connected-p)
+    (vemv/show-clj-or-cljs-repl)))
+
+(defun vemv/after-file-open (&rest ignore)
+  (select-window vemv/main_window)
+  (when (vemv/contains? (buffer-name) ".clj")
+    (vemv/hide-ns))
+  (vemv/advice-nrepl)
+  (vemv/ensure-repl-visible)
+  (delay 'vemv/safe-show-current-file-in-project-explorer 0.1))
 
 (defun vemv/open_file_buffers ()
   (let ((c (mapcar (lambda (x) (buffer-name x)) (buffer-list))))
@@ -457,7 +538,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
                                          ()
                                          (select-window vemv/main_window)
                                          (switch-to-buffer ,x)
-                                         (vemv/advice-nrepl)))
+                                         (vemv/after-file-open)))
                                 (eval `(defun ,close-sym ()
                                          (interactive)
                                          (kill-buffer ,x)
@@ -479,28 +560,13 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (or (vemv/contains? (buffer-name) ".cljs")
       (vemv/contains? (buffer-name) ".cljc")))
 
-(defun vemv/show-clj-or-cljs-repl ()
-  (select-window vemv/main_window)
-  (setq was (vemv/current-main-buffer-is-cljs))
-  (select-window vemv/repl2)
-  (if was
-    (switch-to-buffer vemv/cljs-repl-name)
-    (switch-to-buffer vemv/clj-repl-name))
-  (select-window vemv/main_window))
-
-(defun vemv/ensure-repl-visible ()
-  (when (cider-connected-p)
-    (vemv/show-clj-or-cljs-repl)))
-
 (defun vemv/next-file-buffer ()
   "Switch to the next buffer that contains a file opened by the user."
   (interactive)
   (select-window vemv/main_window)
   (vemv/clean-chosen-file-buffer-order)
   (switch-to-buffer (or (second vemv/chosen-file-buffer-order) (first vemv/chosen-file-buffer-order)))
-  (setq vemv/chosen-file-buffer-order `(,@(cdr vemv/chosen-file-buffer-order) ,(car vemv/chosen-file-buffer-order)))
-  (vemv/advice-nrepl)
-  (vemv/ensure-repl-visible))
+  (setq vemv/chosen-file-buffer-order `(,@(cdr vemv/chosen-file-buffer-order) ,(car vemv/chosen-file-buffer-order))))
 
 (defun vemv/previous-file-buffer ()
   "Switch to the previous buffer that contains a file opened by the user."
@@ -510,10 +576,8 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (if-let (file (or (car (last vemv/chosen-file-buffer-order)) (first vemv/chosen-file-buffer-order)))
             (progn
               (switch-to-buffer file)
-              (setq vemv/chosen-file-buffer-order `(,file ,@(butlast vemv/chosen-file-buffer-order)))
-              (vemv/advice-nrepl))
-          (message "No more file buffers available."))
-  (vemv/ensure-repl-visible))
+              (setq vemv/chosen-file-buffer-order `(,file ,@(butlast vemv/chosen-file-buffer-order))))
+          (message "No more file buffers available.")))
 
 (defun vemv/home ()
   "Moves the point to leftmost non-empty character in the current line."
@@ -601,47 +665,6 @@ Comments get ignored, this is, point will only move as long as its position stil
   (interactive)
   (shell (concat "*shell-" (number-to-string (send! vemv/shell-id (lambda (a) (inc a)))) "*")))
 
-(defun vemv/show-current-file-in-project-explorer ()
-  (interactive)
-  (if (minibuffer-prompt)
-    (delay 'vemv/show-current-file-in-project-explorer 1)
-    
-    (vemv/refresh-file-caches)
-    (select-window vemv/main_window)
-    (let* ((buffer-fragments (-remove (lambda (x) (string-equal x "")) (split-string (buffer-file-name) "/")))
-           (projname (pe/project-root-function-default)) ; "/Users/vemv/gpm"
-           (project-fragments (-remove (lambda (x) (string-equal x "")) (split-string projname "/")))
-           (fragments (-drop (length project-fragments) buffer-fragments))
-           (expanded-fragments (mapcar* (lambda (x y) (-take x y)) (number-sequence 1 (length fragments)) (-repeat (length fragments) fragments)))
-           (final-fragments (mapcar (lambda (x) (concat (s-join "" (cons projname (-interpose "/" x))) "/")) expanded-fragments)))
-           
-            (select-window vemv/project-explorer-window)
-            ; (pe/fold-all) ; necessary in principle, skip it for performance. seems to work fine.
-            (beginning-of-buffer)
-           
-           (seq-doseq (f (butlast final-fragments))
-             (while (not (string-equal f (pe/current-directory)))
-               (next-line))
-             (pe/return))
-            
-            (while (not (string-equal (s-chop-suffix "/" (first (last final-fragments))) (pe/get-filename)))
-              (next-line))
-            
-            (end-of-line))
-    (select-window vemv/main_window)))
-
-(defun vemv/safe-show-current-file-in-project-explorer ()
-  (condition-case nil
-                  (vemv/show-current-file-in-project-explorer)
-                  (error (ignore-errors (vemv/show-current-file-in-project-explorer)))))
-
-(defun vemv/after-file-open (&rest ignore)
-  (select-window vemv/main_window)
-  (when (vemv/contains? (buffer-name) ".clj")
-    (vemv/hide-ns))
-  (vemv/advice-nrepl)
-  (delay 'vemv/safe-show-current-file-in-project-explorer 0.1))
-
 (defun vemv/copy-selection-or-next-sexpr ()
   (if (region-active-p)
      (call-interactively 'kill-ring-save)
@@ -673,20 +696,6 @@ Comments get ignored, this is, point will only move as long as its position stil
       (vemv/echo "Formatted!")))
 
 (setq vemv/ns-hidden nil)
-
-(defun vemv/hide-ns ()
-  (interactive)
-  (when (not vemv-cleaning-namespaces)
-    (setq-local vemv/ns-hidden (not vemv/ns-hidden))
-    (if vemv/ns-hidden
-      (let* ((hs-block-start-regexp "(ns")
-             (hs-block-end-regexp ")")
-             (hs-hide-comments-when-hiding-all nil)
-             (hs-adjust-block-beginning (lambda (initial)
-                                                (save-excursion
-                                                  (point)))))
-        (apply #'hs-hide-all ()))
-      (hs-show-all))))
 
 (defun vemv/close-this-buffer ()
   (interactive)
