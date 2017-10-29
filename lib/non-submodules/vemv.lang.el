@@ -637,10 +637,10 @@ Comments get ignored, this is, point will only move as long as its position stil
 
 (defun vemv/after-file-open (&rest ignore)
   (select-window vemv/main_window)
-  (vemv/safe-show-current-file-in-project-explorer)
   (when (vemv/contains? (buffer-name) ".clj")
     (vemv/hide-ns))
-  (vemv/advice-nrepl))
+  (vemv/advice-nrepl)
+  (delay 'vemv/safe-show-current-file-in-project-explorer 0.1))
 
 (defun vemv/copy-selection-or-next-sexpr ()
   (if (region-active-p)
