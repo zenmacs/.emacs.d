@@ -88,14 +88,14 @@
 ;XXX M-RET alters the kill-ring.
 ;; NOTE - don't use C-o / C-O distinction - doesn't work in this emacs build. use C-S-o instead.
 ;; NOTE ; `s-` (meta) must be in lowercase
-(setq vemv/global-key-bindings ; This setup is optimized for a UK keyboard with a Colemak layout, with the number/symbol row switched (e.g. "(" is the default, "9" requires shift).
+;; This setup was optimized for a UK keyboard with a Colemak layout, with the number/symbol row switched (e.g. "(" is the default, "9" requires shift).
+(setq vemv/global-key-bindings
       (vemv/hash-map
             "§" 'hippie-expand
             ; "C-<next>" 'vemv/previous-file-buffer
             ; "C-<prior>" 'vemv/next-file-buffer
             [f7] 'vemv/previous-file-buffer
-            [f8] (argless (vemv/safe-show-current-file-in-project-explorer)
-                          (vemv/advice-nrepl))
+            [f8] 'vemv/after-file-open
             [f9] 'vemv/next-file-buffer
             "M-<next>" 'previous-buffer
             "M-<prior>" 'next-buffer
@@ -208,6 +208,7 @@
       "C-\\" 'sgml-close-tag
       "C-=" 'mark-whole-buffer
       "C-q" 'save-buffers-kill-terminal))
-            ; eval-minibuffer: M-:
+        
+; eval-minibuffer: M-:
 
 (global-set-key [mode-line mouse-3] 'nil) ; prevent close-on-right-click
