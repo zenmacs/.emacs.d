@@ -171,11 +171,11 @@ paste and simulate an intro press. Finally, go back to sender window."
           (comm if (or (equal where :ielm) (equal where :shell) (equal where :cljs)) (select-window vemv/repl2) (select-window vemv/repl1))
           (select-window vemv/repl2)
           (vemv/switch-to-buffer-in-any-frame (case where
-                              (:cider the-cider-buffer-name)
-                              (:ielm "*ielm*")
-                              (:shell "*shell-1*")
-                              (:clj vemv/clj-repl-name)
-                              (:cljs vemv/cljs-repl-name)))
+                                                (:cider the-cider-buffer-name)
+                                                (:ielm "*ielm*")
+                                                (:shell "*shell-1*")
+                                                (:clj vemv/clj-repl-name)
+                                                (:cljs vemv/cljs-repl-name)))
           
           (end-of-buffer)
           (insert content)
@@ -184,7 +184,7 @@ paste and simulate an intro press. Finally, go back to sender window."
             (:cider (cider-repl-return))
             (:ielm (ielm-return))
             (:shell (comint-send-input))
-            (:clj) (cider-repl-return)
+            (:clj (cider-repl-return))
             (:cljs (cider-repl-return)))
 
           (pop kill-ring)
