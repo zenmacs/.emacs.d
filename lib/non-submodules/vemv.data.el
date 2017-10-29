@@ -17,7 +17,7 @@
                                     "\C-l" "\C-n" "\C-o" "\C-p" "\C-q" "\C-o" "\C-k"
                                     "\C-t" "\C-u" "\C-v" "\C-z" "\C-d" "\C-y" "\C-S-z"
                                     "\C-m" "\C-\\" "\C-h" "\C-r" [f10] "\M-e" "\M-!"
-                                    "\M-\"" "\M-|" "\M-$" "\M-y" "\M-f"))
+                                    "\M-\"" "\M-|" "\M-$" "\M-y" "\M-f" "\M-T" "\M-t"))
 
 ;; XXX remove everything, and programatically
 (setq vemv/local-key-bindings-to-remove
@@ -90,6 +90,12 @@
         "<S-backspace>" (argless (if (region-active-p)
                                    (progn (call-interactively 'kill-region))
                                    (paredit-backward-delete)))
+       "M-t" (argless
+               (setq vemv/previous-buffer (current-buffer))
+               (vemv/fiplr (lambda (filename)
+                             (find-file filename)
+                               (when (not (eq vemv/previous-buffer (current-buffer)))
+                                 (kill-buffer vemv/previous-buffer)))))
         "<C-backspace>" 'vemv/delete-this-line
         "<end>" 'vemv/end-of-line-or-code
         "<home>" 'back-to-indentation

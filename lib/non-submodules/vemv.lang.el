@@ -5,8 +5,6 @@
 (provide 'vemv.lang)
 
 ; elisp gotchas: let vs. let* · last returns a list · "Wrong type argument: commandp" -> forgot interactive
-; fboundp is handy.
-;(setq lexical-binding t). buffer-local.
 
 (defmacro comm (&rest forms)
   "Comment. Doesn't evaluate its arguments, returns nil.")
@@ -651,13 +649,13 @@ Comments get ignored, this is, point will only move as long as its position stil
            2)
     (vemv/fiplr)))
   
-(defun vemv/fiplr ()
+(defun vemv/fiplr (&optional opener)
   (when (vemv/contains? (if (buffer-file-name)
                              (directory-file-name
                                (file-name-directory (buffer-file-name)))
                              "")
                         "/Users/vemv/gpm")
-    (fiplr-find-file)))
+    (fiplr-find-file-in-directory (fiplr-root) fiplr-ignored-globs (or opener #'find-file))))
 
 (defun vemv/save ()
   (interactive)

@@ -59,6 +59,7 @@
 (require 'undo-tree)
 (require 's)
 (require 'clj-refactor)
+(require 'fiplr)
 (require 'vemv.lang)
 (require 'vemv.data)
 (require 'vemv.theme)
