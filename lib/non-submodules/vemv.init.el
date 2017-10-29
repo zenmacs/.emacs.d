@@ -354,9 +354,10 @@
 
 (put 'if 'lisp-indent-function nil)
 
-(defadvice save-buffers-kill-emacs (around no-y-or-n activate) ;; switches the expected input from "yes no" to "y n" on exit-without-save
-  (cl-flet ((yes-or-no-p (&rest args) t)
-            (y-or-n-p (&rest args) t))
+;; switches the expected input from "yes no" to "y n" on exit-without-save
+(defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
+  "Prevent annoying \"Active processes exist\" query when you quit Emacs."
+  (cl-letf (((symbol-function #'process-list) (lambda ())))
     ad-do-it))
 
 (setq back-to-indentation-state nil)
