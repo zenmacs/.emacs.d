@@ -43,8 +43,8 @@
             clojure-mode-map  ";" 'vemv/semicolon
             clojure-mode-map  "C-e" (argless (vemv/send :cider))
             clojure-mode-map  "M-e" (argless (vemv/send :cider :backward))
-            clojurescript-mode-map  "C-e" (argless (vemv/send :cljs))
-            clojurescript-mode-map  "M-e" (argless (vemv/send :cljs :backward))
+            ; clojurescript-mode-map  "C-e" (argless (vemv/send :cljs))
+            ; clojurescript-mode-map  "M-e" (argless (vemv/send :cljs :backward))
             emacs-lisp-mode-map "C-/" 'vemv/elisp-popup-documentation
             emacs-lisp-mode-map "C-?" 'vemv/elisp-window-documentation
             ; emacs-lisp-mode-map "C-z" 'undo-tree-undo
@@ -140,7 +140,12 @@
                      (select-window vemv/main_window)
                      (cider-jack-in-clojurescript))
                    1))
-                (if gpm-using-nrepl (if (cider-connected-p) (vemv/send :cljs)) (vemv/send :shell))))
+                (if gpm-using-nrepl
+                   (if (cider-connected-p)
+                       (if (vemv/current-main-buffer-is-cljs)
+                         (vemv/send :cljs)
+                         (vemv/send :clj)))
+                  (vemv/send :shell))))
             "C-z" 'undo-tree-undo
             "C-S-z" 'undo-tree-redo
             "C-`" 'other-frame
@@ -160,11 +165,11 @@
             ;; "C-!" (argless (vemv/send :cljs))
             "C-'" (argless (vemv/send :ielm))
             "C-|" (argless (vemv/send :emacs))
-            "C-$" (argless (if gpm-using-nrepl (vemv/send :cljs) (vemv/send :shell)))
+            ; "C-$" (argless (if gpm-using-nrepl (vemv/send :cljs) (vemv/send :shell)))
             ;; "M-!" (argless (vemv/send :cljs :backward))
             "M-'" (argless (vemv/send :ielm :backward))
             "M-|" (argless (vemv/send :emacs :backward))
-            "M-$" (argless (if gpm-using-nrepl (vemv/send :cljs :backward) (vemv/send :shell :backward)))
+            ; "M-$" (argless (if gpm-using-nrepl (vemv/send :cljs :backward) (vemv/send :shell :backward)))
 
             "C-l" 'vemv/close-this-buffer
             ;; "C-L" (argless (let (kill-buffer-query-functions) (kill-buffer)))
@@ -196,7 +201,7 @@
       "C-3" 'vemv/indent
       "C-t" (argless (vemv/fiplr))
       ; "C-T" (argless (switch-to-buffer "*scratch*"))
-      "C-." 'vemv/ns-form
+      ;; "C-." 
       ; "C-," 'nrepl-load-current-buffer
       "s-<mouse-1>" 'mc/add-cursor-on-click
       "RET" 'newline

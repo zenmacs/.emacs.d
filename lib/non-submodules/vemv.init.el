@@ -235,17 +235,13 @@
 
 (add-hook 'cider-connected-hook (argless
   (delay (argless
-          (select-window vemv/main_window)
-          (vemv/next-window)
-          (switch-to-buffer "*cider-repl CLJS horizon*")))
-          (select-window vemv/main_window)
-          (setq vemv-cider-connecting nil)
-          (setq vemv-cider-connected t)
-          (comment ;; XXX breaks cljs repl
-            when (not vemv-cleaning-namespaces)
-            (vemv/advice-nrepl))
-         2)
-  )
+           (vemv/show-clj-or-cljs-repl)
+           (setq vemv-cider-connecting nil)
+           (setq vemv-cider-connected t)
+           (comment ;; XXX breaks cljs repl
+              (when (not vemv-cleaning-namespaces)
+                (vemv/advice-nrepl))))
+          2)))
 
 (add-hook 'html-mode-hook
           (lambda()

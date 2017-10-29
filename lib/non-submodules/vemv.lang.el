@@ -149,6 +149,8 @@ Unlike paredit-copy-as-kill, this function will only grab one sexpr (and no more
       (if backward? (paredit-forward) (paredit-backward))
       result)))
 
+(setq vemv/clj-repl-name "*cider-repl horizon*")
+(setq vemv/cljs-repl-name "*cider-repl CLJS horizon*")
 (setq cider-launched nil)
 
 (defun vemv/send (where &optional backward? content)
@@ -170,7 +172,8 @@ paste and simulate an intro press. Finally, go back to sender window."
                               (:cider the-cider-buffer-name)
                               (:ielm "*ielm*")
                               (:shell "*shell-1*")
-                              (:cljs "*cider-repl CLJS horizon*")))
+                              (:clj vemv/clj-repl-name)
+                              (:cljs vemv/cljs-repl-name)))
           
           (end-of-buffer)
           (insert content)
@@ -179,34 +182,12 @@ paste and simulate an intro press. Finally, go back to sender window."
             (:cider (cider-repl-return))
             (:ielm (ielm-return))
             (:shell (comint-send-input))
+            (:clj) (cider-repl-return)
             (:cljs (cider-repl-return)))
 
           (pop kill-ring)
           (end-of-buffer)
           (select-window sender)))))
-
-(defun vemv/exit-cljs () ; XXX coupled to layout
-  "Closes the ClojureScript processes. Meant to be called interactively."
-  (interactive)
-  (let ((sender (vemv/selected-window-number)))
-
-    (window-number-select 3)
-    (switch-to-buffer "cljs")
-    (comint-interrupt-subjob)
-
-    (window-number-select 4)
-    (switch-to-buffer "cljsbuild auto")
-    (comint-interrupt-subjob)
-
-    (delay (argless (kill-buffer "cljs") (kill-buffer "cljsbuild auto")
-
-                    (window-number-select 3) (switch-to-buffer (slime-output-buffer))
-                    (window-number-select 4) (switch-to-buffer "*shell*")
-
-                    (window-number-select sender))
-           3)
-
-    ))
 
 ; XXX infer whether the user wants to insert newlines
 (defun vemv/duplicate (&optional backward?) ; XXX indentation: stuff gets inserted at the absolute beggining of line TODO backward?, for sexprs
@@ -458,7 +439,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
          (onechars (mapcar (lambda (x)
                              (vemv.abbreviate-ns/format-intermediate-fragment x))
                             base)))
-    (concat fname "." (s-join "." onechars) (if (> (length onechars) 0) "." "") name)))
+    (concat fname (if fname "." "") (s-join "." onechars) (if (> (length onechars) 0) "." "") name)))
 
 (defun vemv/message-file-buffers-impl ()
   (vemv/clean-chosen-file-buffer-order)
@@ -494,11 +475,22 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
         (all (cons p the-rest)))
           (apply 'concat (-interpose sep all))))
 
+(defun vemv/current-main-buffer-is-cljs ()
+  (or (vemv/contains? (buffer-name) ".cljs")
+      (vemv/contains? (buffer-name) ".cljc")))
+
+(defun vemv/show-clj-or-cljs-repl ()
+  (select-window vemv/main_window)
+  (setq was (vemv/current-main-buffer-is-cljs))
+  (select-window vemv/repl2)
+  (if was
+    (switch-to-buffer vemv/cljs-repl-name)
+    (switch-to-buffer vemv/clj-repl-name))
+  (select-window vemv/main_window))
+
 (defun vemv/ensure-repl-visible ()
   (when (cider-connected-p)
-    (select-window vemv/repl2)
-    (switch-to-buffer "*cider-repl CLJS horizon*")
-    (select-window vemv/main_window)))
+    (vemv/show-clj-or-cljs-repl)))
 
 (defun vemv/next-file-buffer ()
   "Switch to the next buffer that contains a file opened by the user."
@@ -603,11 +595,6 @@ Comments get ignored, this is, point will only move as long as its position stil
       (insert ";")
       (insert ";; "))) ;; (when (and (eolp) COLUMN > 0) (insert " "))
 
-(defun vemv/ns-form ()
-  (interactive)
-  (cider-insert-ns-form-in-repl)
-  (vemv/send :cljs ""))
-
 (setq vemv/shell-id 0)
 
 (defun sh ()
@@ -710,6 +697,7 @@ Comments get ignored, this is, point will only move as long as its position stil
 
 (defun cljr--maybe-wrap-form ()) ;; void it
 
+;; we can use this in horizon when ns's properly use initialization patterns
 (defun vemv/clean-project-namespaces ()
  (if (not vemv-cleaning-namespaces)
   (vemv/echo "vemv-cleaning-namespaces set to false!")
