@@ -220,7 +220,7 @@
 
 (when (not vemv-cleaning-namespaces)
   (setq cider-cljs-lein-repl
-    (if gpm-using-nrepl
+    (if vemv/using-nrepl
         "(do (require 'figwheel-sidecar.repl-api)
              (figwheel-sidecar.repl-api/start-figwheel!)
              (figwheel-sidecar.repl-api/cljs-repl))"
@@ -290,7 +290,7 @@
 (enlarge-window 8)
 
 (setq default-directory vemv-home)
-(let ((default-directory (concat vemv-home "/gpm/src/"))) ;; trailing slash required
+(let ((default-directory vemv/project-root-dir))
   (call-interactively 'project-explorer-open)
   (enlarge-window-horizontally -20)
   (setq vemv/project-explorer-window (selected-window)))
@@ -300,7 +300,7 @@
 (setq vemv/main_window (selected-window))
 (vemv/next-window)
 
-(let ((default-directory (concat vemv-home "/gpm/src")))
+(let ((default-directory vemv/project-root-dir))
   (sh))
 
 (vemv/next-window)
@@ -336,9 +336,9 @@
                                        head))))
                        (when the-file
                          (vemv/open
-                           (if (vemv/contains? the-file "/gpm/src/horizon") ;; ensure nrepl opens horizon project
+                           (if (vemv/contains? the-file vemv/project-clojure-dir) ;; ensure nrepl opens a clojure context
                              the-file
-                             "/Users/vemv/gpm/src/horizon/src/horizon/desktop/core.cljs"))
+                             vemv/default-clojure-file))
                          (delay 'vemv/show-current-file-in-project-explorer 3)))))
            
            (advice-add 'pe/show-buffer :after 'vemv/after-file-open)

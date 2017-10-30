@@ -49,18 +49,17 @@
 (setq vemv/global-key-bindings
     (vemv/hash-map
         "C-j" (argless
-                (if (and (not cider-launched) gpm-using-nrepl)
+                (if (and (not cider-launched) vemv/using-nrepl)
                   (progn
                     (setq cider-launched t)
                     (setq vemv-cider-connecting t)
                     (delay
                      (argless
-                       (shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make clean")
-                       (shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make sass")
+                       (funcall (vemv/project-initializers))
                        (select-window vemv/main_window)
                        (cider-jack-in-clojurescript))
                      1))
-                  (if gpm-using-nrepl
+                  (if vemv/using-nrepl
                      (if (cider-connected-p)
                          (if (vemv/current-main-buffer-is-cljs)
                            (vemv/send :cljs)

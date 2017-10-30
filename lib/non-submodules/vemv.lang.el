@@ -147,8 +147,8 @@ Unlike paredit-copy-as-kill, this function will only grab one sexpr (and no more
       (if backward? (paredit-forward) (paredit-backward))
       result)))
 
-(setq vemv/clj-repl-name "*cider-repl horizon*")
-(setq vemv/cljs-repl-name "*cider-repl CLJS horizon*")
+(setq vemv/clj-repl-name (concat "*cider-repl " vemv/project-ns-prefix "*"))
+(setq vemv/cljs-repl-name (concat "*cider-repl CLJS " vemv/project-ns-prefix "*"))
 (setq cider-launched nil)
 
 (defun vemv/send (where &optional backward? content)
@@ -164,7 +164,6 @@ paste and simulate an intro press. Finally, go back to sender window."
     (if (equal where :emacs)
         (eval (read content))
         (let ((sender (selected-window)))
-          (comm if (or (equal where :ielm) (equal where :shell) (equal where :cljs)) (select-window vemv/repl2) (select-window vemv/repl1))
           (select-window vemv/repl2)
           (vemv/switch-to-buffer-in-any-frame (case where
                                                 (:cider the-cider-buffer-name)
@@ -450,6 +449,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
     (vemv/show-clj-or-cljs-repl)))
 
 (defun vemv/after-file-open (&rest ignore)
+  (interactive)
   (select-window vemv/main_window)
   (when (vemv/contains? (buffer-name) ".clj")
     (vemv/hide-ns))
@@ -484,7 +484,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 (defun vemv/abbreviate-ns (namespace)
   (let* ((split (s-split "\\." namespace))
          (name (car (last split)))
-         (bbase (-remove (lambda (x) (string-equal x "horizon")) (butlast split)))
+         (bbase (-remove (lambda (x) (string-equal x vemv/project-ns-prefix)) (butlast split)))
          (fname (car bbase))
          (base (rest bbase))
          (onechars (mapcar (lambda (x)
@@ -654,8 +654,8 @@ Comments get ignored, this is, point will only move as long as its position stil
                              (directory-file-name
                                (file-name-directory (buffer-file-name)))
                              "")
-                        "/Users/vemv/gpm")
-    (fiplr-find-file-in-directory (fiplr-root) fiplr-ignored-globs (or opener #'find-file))))
+                        vemv/project-fiplr-dir)
+    (fiplr-find-file-in-directory vemv/project-fiplr-dir fiplr-ignored-globs (or opener #'find-file))))
 
 (defun vemv/save ()
   (interactive)
