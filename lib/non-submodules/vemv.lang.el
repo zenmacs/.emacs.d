@@ -654,7 +654,7 @@ Comments get ignored, this is, point will only move as long as its position stil
                              (directory-file-name
                                (file-name-directory (buffer-file-name)))
                              "")
-                        vemv/project-fiplr-dir)
+                        vemv/project-clojure-dir)
     (fiplr-find-file-in-directory vemv/project-fiplr-dir fiplr-ignored-globs (or opener #'find-file))))
 
 (defun vemv/save ()

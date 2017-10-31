@@ -2,8 +2,6 @@
 
 ;; NOTE: we don't use ac/auto-complete anymore. company now, since feb 2016
 
-;; (setq debug-on-error t)
-
 (require 'package)
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
@@ -199,7 +197,7 @@
 
 (add-hook 'clojure-mode-hook 'enable-paredit-mode)
 (when (not vemv-cleaning-namespaces)
-(add-hook 'clojure-mode-hook 'hs-minor-mode))
+  (add-hook 'clojure-mode-hook 'hs-minor-mode))
 (add-hook 'clojure-mode-hook 'undo-tree-mode)
 (add-hook 'clojure-mode-hook (argless (local-set-key (kbd "RET") 'newline-and-indent)))
 (add-hook 'clojure-mode-hook (argless (clj-refactor-mode 1)
@@ -279,6 +277,7 @@
 (setenv "FIGWHEEL_DESKTOP_NOTIFICATIONS" "true")
 (setenv "HORIZON_DISABLE_SPINNERS_ANIMATION" "true")
 (setenv "ENABLE_DEVCARDS_IN_DEV" "true")
+(setenv "HORIZON_ENABLE_REPL_TESTING" "true")
 ;; (setenv "HORIZON_FG_HARD_RELOAD" "true")
 ;; (setenv "USE_YOURKIT_AGENT" "true")
 
