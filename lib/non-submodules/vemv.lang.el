@@ -530,12 +530,16 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (or (vemv/contains? (buffer-name) ".cljs")
       (vemv/contains? (buffer-name) ".cljc")))
 
+(setq vemv/file-buffer-fallback "*scratch*")
+
 (defun vemv/next-file-buffer ()
   "Switch to the next buffer that contains a file opened by the user."
   (interactive)
   (select-window vemv/main_window)
   (vemv/clean-chosen-file-buffer-order)
-  (switch-to-buffer (or (second vemv/chosen-file-buffer-order) (first vemv/chosen-file-buffer-order)))
+  (switch-to-buffer (or (second vemv/chosen-file-buffer-order)
+                        (first vemv/chosen-file-buffer-order)
+                        vemv/file-buffer-fallback))
   (setq vemv/chosen-file-buffer-order `(,@(cdr vemv/chosen-file-buffer-order) ,(car vemv/chosen-file-buffer-order))))
 
 (defun vemv/previous-file-buffer ()
@@ -547,7 +551,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
             (progn
               (switch-to-buffer file)
               (setq vemv/chosen-file-buffer-order `(,file ,@(butlast vemv/chosen-file-buffer-order))))
-          (message "No more file buffers available.")))
+          (switch-to-buffer vemv/file-buffer-fallback)))
 
 (defun vemv/home ()
   "Moves the point to leftmost non-empty character in the current line."
