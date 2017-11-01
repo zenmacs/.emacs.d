@@ -720,3 +720,9 @@ Comments get ignored, this is, point will only move as long as its position stil
 
 (defun vemv/at-end-of-line-p ()
   (eq (point) (save-excursion (end-of-line) (point))))
+
+(defmacro vemv/measure-time (&rest body)
+  "Measure the time it takes to evaluate BODY."
+  `(let ((time (current-time)))
+     ,@body
+     (message "%.06f" (float-time (time-since time)))))
