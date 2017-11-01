@@ -8,29 +8,10 @@
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 
-(unless (package-installed-p 'cider)
-  (package-refresh-contents)
-  (package-install 'cider))
-
-(unless (package-installed-p 'company)
-  (package-refresh-contents)
-  (package-install 'company))
-
-(unless (package-installed-p 'queue)
-  (package-refresh-contents)
-  (package-install 'queue))
-  
-(unless (package-installed-p 'fiplr)
-  (package-refresh-contents)
-  (package-install 'fiplr))
-  
-(unless (package-installed-p 'clojure-mode)
-  (package-refresh-contents)
-  (package-install 'clojure-mode))
-
-(unless (package-installed-p 'clj-refactor)
-  (package-refresh-contents)
-  (package-install 'clj-refactor))
+(dolist (package (list 'cider 'company 'queue 'fiplr 'clojure-mode 'clj-refactor 'company-quickhelp))
+  (unless (package-installed-p package)
+          (package-refresh-contents)
+          (package-install package)))
 
 (setq lexical-binding t)
 (setq-default indent-tabs-mode nil)
@@ -67,6 +48,7 @@
 (global-set-key (kbd "M-x") 'smex)
 
 (global-company-mode)
+(company-quickhelp-mode 1)
 
 (add-hook 'css-mode-hook (lambda () (rainbow-mode 1)))
 
