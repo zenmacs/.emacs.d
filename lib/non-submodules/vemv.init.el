@@ -126,6 +126,8 @@
                  "*.ttf" ".lein-repl-history" "*.scss" "*.cur" "profile" ".figwheel-compile-stamp" "*.woff" "*.eor"
                 "*.xml" "*.coffee" "*.lock" "*.markdown" "*.opts" "module-deps" ".nrepl-port" "repl-port"))))
 
+(setq company-idle-delay nil) ;; no autopopup
+
 (custom-set-variables
  '(mac-mouse-wheel-smooth-scroll nil)
  '(cider-connection-message-fn nil)
@@ -277,6 +279,7 @@
 (setenv "FIGWHEEL_DESKTOP_NOTIFICATIONS" "true")
 (setenv "HORIZON_DISABLE_SPINNERS_ANIMATION" "true")
 (setenv "ENABLE_DEVCARDS_IN_DEV" "true")
+(setenv "ENABLE_DEVCARDS_IN_DEV_WITH_TESTS" "true")
 (setenv "HORIZON_ENABLE_REPL_TESTING" "true")
 ;; (setenv "HORIZON_FG_HARD_RELOAD" "true")
 ;; (setenv "USE_YOURKIT_AGENT" "true")

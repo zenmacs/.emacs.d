@@ -98,6 +98,15 @@
         "<C-backspace>" 'vemv/delete-this-line
         "<end>" 'vemv/end-of-line-or-code
         "<home>" 'back-to-indentation
+        "<tab>" (argless (or (and (or (not (eq (selected-window) vemv/main_window))
+                                      (or (vemv/at-beginning-of-line-p)
+                                          (and (not (vemv/at-end-of-line-p))
+                                               (not (eq " " (vemv/current-char-at-point)))
+                                               (not (eq "\n" (vemv/current-char-at-point))))))
+                                  (or (call-interactively 'indent-for-tab-command)
+                                      t))
+                              (call-interactively 'company-complete)
+                              (call-interactively 'company-dabbrev)))
         "C-;" 'toggle-truncate-lines
         "C-'" (argless (vemv/send :ielm))
         "C-`" 'other-frame
@@ -138,7 +147,6 @@
         "s-<home>" 'beginning-of-buffer ;; alias of c-home
         "s-<mouse-1>" 'mc/add-cursor-on-click
         "s-<return>" 'vemv/load-clojure-buffer
-        "s-<tab>" (argless (call-interactively 'company-dabbrev))
         "s-e" (argless (insert "é"))
         "s-E" (argless (insert "É"))
         "s-j" 'cider-eval-sexp-at-point

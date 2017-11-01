@@ -714,3 +714,9 @@ Comments get ignored, this is, point will only move as long as its position stil
   (vemv/save) ;; save autoformatting
   (vemv/advice-nrepl)
   (cider-load-buffer))
+
+(defun vemv/at-beginning-of-line-p ()
+  (eq (point) (save-excursion (beginning-of-line) (point))))
+
+(defun vemv/at-end-of-line-p ()
+  (eq (point) (save-excursion (end-of-line) (point))))
