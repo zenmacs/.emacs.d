@@ -14,6 +14,7 @@
           (package-install package)))
 
 (setq lexical-binding t)
+(setq vc-follow-symlinks t)
 (setq-default indent-tabs-mode nil)
 (show-paren-mode 1)
 (recentf-mode 1)
