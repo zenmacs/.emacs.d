@@ -667,13 +667,6 @@ Comments get ignored, this is, point will only move as long as its position stil
 
 (setq vemv/ns-hidden nil)
 
-(defun vemv/close-this-buffer ()
-  (interactive)
-  (setq-local vemv/ns-hidden nil)
-  (kill-buffer (current-buffer))
-  (unless (vemv/contains? (buffer-name) ".clj")
-          (vemv/next-file-buffer)))
-
 (defun cljr--maybe-wrap-form ()) ;; void it
 
 ;; we can use this in horizon when ns's properly use initialization patterns
@@ -784,3 +777,52 @@ Comments get ignored, this is, point will only move as long as its position stil
       (lambda (x)
         (string-equal x current-char))
       (list "(" "[" "{" "}" "]" ")" ";" "#" "\""))))
+
+(defun vemv/close-this-buffer ()
+  (interactive)
+  (setq-local vemv/ns-hidden nil)
+  (kill-buffer (current-buffer))
+  (unless (vemv/contains? (buffer-name) ".clj")
+          (vemv/next-file-buffer)))
+
+(defun vemv/good-buffer-p ()
+  (-any? (lambda (x) (vemv/contains? (buffer-name) x))
+         (list ".clj"
+               vemv/clj-repl-name
+               vemv/cljs-repl-name
+               "project-explorer"
+               "shell-1"
+               "scratch")))
+
+(defun vemv/good-window-p ()
+  (or (eq (selected-window) vemv/main_window)
+      (eq (selected-window) vemv/repl2)
+      (eq (selected-window) vemv/project-explorer-window)))
+
+(setq vemv/main_frame (selected-frame))
+
+(defun vemv/good-frame-p ()
+  (eq vemv/main_frame (selected-frame)))
+
+(defun vemv/close-this-buffer ()
+  (setq-local vemv/ns-hidden nil)
+  (kill-buffer (current-buffer))
+  (when (and (eq (selected-window) vemv/main_window)
+             (not (vemv/contains? (buffer-name) ".clj")))
+        (vemv/next-file-buffer)))
+
+(defun vemv/close-this-window ()
+  (delete-window))
+
+(defun vemv/close-this-frame ()
+  (delete-frame (selected-frame) t))
+
+(defun vemv/close-this ()
+  (interactive)
+  (unless (vemv/good-buffer-p)
+    (vemv/close-this-buffer))
+  (unless (< (length (vemv/current-frame-buffers)) 2)
+    (unless (vemv/good-window-p)
+      (vemv/close-this-window)))
+  (unless (vemv/good-frame-p)
+    (vemv/close-this-frame)))

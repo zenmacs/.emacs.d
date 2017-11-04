@@ -71,12 +71,7 @@
                     (cider-find-var)
                     (setq cider-prompt-for-symbol old)
                     (vemv/advice-nrepl)))
-       "C-w" (argless (unless (or (eq (selected-window) vemv/main_window)
-                                  (eq (selected-window) vemv/repl2)
-                                  (eq (selected-window) vemv/project-explorer-window))
-                              (if (< (length (vemv/current-frame-buffers)) 2)
-                                (delete-frame (selected-frame) t) ;; close an auxiliary frame
-                                (kill-buffer-and-window) (vemv/previous-window)))) ;; close annoying popup windows
+       "C-w" 'vemv/close-this
        "C-f" (argless (ignore-errors
                        (call-interactively 'search-forward)
                        (setq vemv-last-search (first minibuffer-history))))
@@ -115,7 +110,6 @@
        "C-b" 'vemv/duplicate
        "C-h" 'replace-string ;; search and replace
        "C-k" 'vemv/kill
-       "C-l" 'vemv/close-this-buffer
        "C-n" (argless (make-frame `((width . ,(frame-width)) (height . ,(frame-height))))) ;; in order to kill a frame, use the window system's standard exit (e.g. Alt-F4) command. The other frames won't close.
        "C-o" (argless (vemv/open))
        "C-p" (argless (ignore-errors (search-forward vemv-last-search)))
