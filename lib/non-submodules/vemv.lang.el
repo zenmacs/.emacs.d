@@ -722,6 +722,12 @@ Comments get ignored, this is, point will only move as long as its position stil
 (defun vemv/at-end-of-line-p ()
   (eq (point) (save-excursion (end-of-line) (point))))
 
+(defun vemv/chars-at-left ()
+  (save-excursion
+    (push-mark)
+    (move-beginning-of-line 1)
+   (vemv/selected-region)))
+
 (defmacro vemv/measure-time (&rest body)
   "Measure the time it takes to evaluate BODY."
   `(let ((time (current-time)))
@@ -763,3 +769,18 @@ Comments get ignored, this is, point will only move as long as its position stil
 
  (vemv/next-window)
  (message ""))
+
+(defun vemv/in-indentation-point-p ()
+  "Whether the cursor is in a point apt for triggering an indentation command."
+  
+  (or (vemv/at-beginning-of-line-p)
+      (every (lambda (x) (= x 32))
+             (vemv/chars-at-left))))
+
+(defun vemv/non-completable-char-p ()
+  "Whether the cursor is in a point predictably impossible to autocomplete"
+  (let ((current-char (vemv/current-char-at-point)))
+    (-any?
+      (lambda (x)
+        (string-equal x current-char))
+      (list "(" "[" "{" "}" "]" ")" ";" "#" "\""))))
