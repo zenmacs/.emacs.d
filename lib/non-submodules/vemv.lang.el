@@ -105,12 +105,6 @@
             (puthash (first kv) (second kv) result))
     result))
 
-(defun vemv/selected-window-number ()
-  (- (string-to-int (window-number-string))))
-
-(defun vemv/window-number-of-buffer (buffer-or-name)
-  "XXX")
-
 (defun vemv/selected-region ()
   "Returns the selected region as a string. Side effects free."
   (kill-ring-save (mark) (point))
@@ -651,13 +645,33 @@ Comments get ignored, this is, point will only move as long as its position stil
 (defun vemv/fiplr (&optional opener)
   (fiplr-find-file-in-directory vemv/project-fiplr-dir fiplr-ignored-globs (or opener #'find-file)))
 
+(setq vemv/line-before-formatting nil)
+(setq vemv/token-before-formatting nil)
+
+(defun vemv/current-line ()
+  (1+ (count-lines 1 (point))))
+
+(defun vemv/save-position-before-formatting ()
+  (setq vemv/line-before-formatting (max 0 (- (vemv/current-line) 3)))
+  (setq vemv/token-before-formatting (vemv/sexpr-content)))
+  
+(defun vemv/restore-position-before-formatting ()
+  (beginning-of-buffer)
+  (dotimes (i vemv/line-before-formatting)
+    (next-line))
+  (ignore-errors (search-forward vemv/token-before-formatting))
+  (paredit-backward)
+  (back-to-indentation))
+
 (defun vemv/save ()
   (interactive)
   (save-buffer)
   (when (and (vemv/contains? (buffer-name (current-buffer)) ".clj")
              (cider-connected-p))
+    (vemv/save-position-before-formatting)
     (save-excursion (cider-format-buffer)))
   (when (buffer-modified-p)
+    (vemv/restore-position-before-formatting)
     (vemv/echo "Formatted!")))
 
 (setq vemv/ns-hidden nil)

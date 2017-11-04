@@ -420,6 +420,6 @@ of the buffer into a formatted string."
   (let* ((original (substring-no-properties (buffer-string)))
          (formatted (funcall formatter original)))
     (if (or (not formatted) (equal original formatted))
-      (vemv/echo "Buffer has broken syntax, cannot format")
+      (when (not formatted) (vemv/echo "Buffer has broken syntax, cannot format"))
       (erase-buffer)
       (insert formatted))))
