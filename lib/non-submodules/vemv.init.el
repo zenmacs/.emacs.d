@@ -419,7 +419,7 @@ Uses FORMATTER, a function of one argument, to convert the string contents
 of the buffer into a formatted string."
   (let* ((original (substring-no-properties (buffer-string)))
          (formatted (funcall formatter original)))
-    (if (or (not formatted) (equal original formatted))
-      (when (not formatted) (vemv/echo "Buffer has broken syntax, cannot format"))
-      (erase-buffer)
-      (insert formatted))))
+        (if (or (not formatted) (equal original formatted))
+          (when (not formatted) (vemv/echo "Buffer has broken syntax, cannot format"))
+          (erase-buffer)
+          (insert formatted))))

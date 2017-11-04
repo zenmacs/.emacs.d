@@ -261,19 +261,6 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (unless (minibuffer-prompt)
     (vemv/safe-select-window (previous-window))))
 
-(defun vemv/elisp-popup-documentation ()
-  "Pops up the documentation for the symbol that is currently hovered by the point. Presumes emacs-lisp-mode."
-  (interactive)
-  (if-let (f (function-called-at-point))
-    (let ((string (ac-symbol-documentation f)))
-      (cond
-        ((and window-system (featurep 'pos-tip)) ;; see: `ac-pos-tip-show-quick-help'
-         (pos-tip-show string 'popup-tip-face nil nil 0 popup-tip-max-width))
-        ((featurep 'popup)
-         (popup-tip string :height ac-quick-help-height))
-        (t
-         (message string))))))
-
 (defun vemv/elisp-window-documentation ()
   "Displays the documentation for the symbol that is currently hovered by the point in a new window. Presumes emacs-lisp-mode."
   (interactive)
@@ -862,3 +849,12 @@ Comments get ignored, this is, point will only move as long as its position stil
     (advice-add 'vemv/next-file-buffer :after 'vemv/after-file-open)
     (advice-add 'vemv/previous-file-buffer :after 'vemv/after-file-open)
     (advice-add 'vemv/close-this-buffer :after 'vemv/after-file-open)))
+
+(defun vemv/tab ()
+  (or (and (or
+            (vemv/in-indentation-point-p)
+            (vemv/non-completable-char-p))
+           (or (call-interactively 'indent-for-tab-command)
+               t))
+      (call-interactively 'company-complete)
+      (call-interactively 'company-dabbrev)))

@@ -27,11 +27,12 @@
 
 (setq vemv/key-bindings-to-dummy '([mouse-6] [mouse-7] [double-mouse-6] [double-mouse-7] [triple-mouse-6] [triple-mouse-7]))
 
+;; XXX create instead vemv/clojure-mode-key-bindings, vemv/emacs-elisp-mode-key-bindings
 (setq vemv/local-key-bindings
       (list clojure-mode-map  ";" 'vemv/semicolon
+            clojure-mode-map "<tab>" 'vemv/tab
             emacs-lisp-mode-map  ";" 'vemv/semicolon
             emacs-lisp-mode-map "RET" 'newline-and-indent
-            emacs-lisp-mode-map "C-/" 'vemv/elisp-popup-documentation
             emacs-lisp-mode-map "C-?" 'vemv/elisp-window-documentation))
 
 ; basics reminder:
@@ -91,13 +92,6 @@
        "<C-backspace>" 'vemv/delete-this-line
        "<end>" 'vemv/end-of-line-or-code
        "<home>" 'back-to-indentation
-       "<tab>" (argless (or (and (or (not (eq (selected-window) vemv/main_window))
-                                     (vemv/in-indentation-point-p)
-                                     (vemv/non-completable-char-p))
-                                 (or (call-interactively 'indent-for-tab-command)
-                                     t))
-                            (call-interactively 'company-complete)
-                            (call-interactively 'company-dabbrev)))
        "C-;" 'toggle-truncate-lines
        "C-`" 'other-frame
        "C-=" 'mark-whole-buffer
