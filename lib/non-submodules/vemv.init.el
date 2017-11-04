@@ -263,69 +263,7 @@
 ;; (setenv "HORIZON_FG_HARD_RELOAD" "true")
 ;; (setenv "USE_YOURKIT_AGENT" "true")
 
-(setq vemv/launched nil)
-
-(vemv/initial-layout)
-
-(setq vemv/launched t)
-
-(setq custom-file "~/.emacs.d/custom.el") ;; touch on install!
-(load custom-file)
-
-(setq visible-bell nil) ;; disable flickering
-(setq ido-auto-merge-delay-time 99999) ;; prevents annoying folder switching. might be handy: (setq ido-max-directory-size 100000)
-
-(delay
- (argless (select-window vemv/main_window)
-          (if (file-readable-p recentf-save-file)
-            (if (pos? (length recentf-list))
-              (let* ((head (car recentf-list))
-                     (the-file (ignore-errors
-                                (if (vemv/ends-with head "ido.last")
-                                  (second recentf-list)
-                                  head))))
-                    (when the-file
-                      (vemv/open
-                       (if (vemv/contains? the-file vemv/project-clojure-dir) ;; ensure nrepl opens a clojure context
-                         the-file
-                         vemv/default-clojure-file))
-                      (delay 'vemv/safe-show-current-file-in-project-explorer 3)))))
-
-          (advice-add 'pe/show-buffer :after 'vemv/after-file-open)
-          (advice-add 'vemv/fiplr :after 'vemv/after-file-open)
-          (advice-add 'vemv/open :after 'vemv/after-file-open)
-          (advice-add 'vemv/next-file-buffer :after 'vemv/after-file-open)
-          (advice-add 'vemv/previous-file-buffer :after 'vemv/after-file-open)
-          (advice-add 'vemv/close-this-buffer :after 'vemv/after-file-open))
- 1)
-
-;; FONT SIZE -> 13 for laptop, 11 for desktop
-(delay (argless (if (window-system)
-                  (set-face-attribute 'default nil :font vemv-font)))
-       1)
-
-(put 'if 'lisp-indent-function nil)
-
-;; switches the expected input from "yes no" to "y n" on exit-without-save
-(defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
-  "Prevent annoying \"Active processes exist\" query when you quit Emacs."
-  (cl-letf (((symbol-function #'process-list) (lambda ())))
-           ad-do-it))
-
-(setq back-to-indentation-state nil)
-
-(defadvice back-to-indentation (around back-to-back)
-  (if (eq last-command this-command)
-    (progn
-     (if back-to-indentation-state
-       ad-do-it
-       (beginning-of-line)
-       (send! back-to-indentation-state 'not)))
-    (progn
-     (setq back-to-indentation-state nil)
-     ad-do-it)))
-
-(ad-activate 'back-to-indentation)
+;; Important - remove keybindings before (vemv/initial-layout) so M-x cannot interrupt
 
 (dolist (key vemv/local-key-bindings-to-remove)
         (mapc (lambda (arg)
@@ -355,6 +293,46 @@
               (read-kbd-macro k)
               k))
           (third binding)))
+
+(setq vemv/launched nil)
+
+(vemv/initial-layout)
+
+(setq custom-file "~/.emacs.d/custom.el") ;; touch on install!
+(load custom-file)
+
+(setq visible-bell nil) ;; disable flickering
+(setq ido-auto-merge-delay-time 99999) ;; prevents annoying folder switching. might be handy: (setq ido-max-directory-size 100000)
+
+(delay 'vemv/clojure-init 1)
+
+;; FONT SIZE -> 13 for laptop, 11 for desktop
+(delay (argless (if (window-system)
+                  (set-face-attribute 'default nil :font vemv-font)))
+       1)
+
+(put 'if 'lisp-indent-function nil)
+
+;; switches the expected input from "yes no" to "y n" on exit-without-save
+(defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
+  "Prevent annoying \"Active processes exist\" query when you quit Emacs."
+  (cl-letf (((symbol-function #'process-list) (lambda ())))
+           ad-do-it))
+
+(setq back-to-indentation-state nil)
+
+(defadvice back-to-indentation (around back-to-back)
+  (if (eq last-command this-command)
+    (progn
+     (if back-to-indentation-state
+       ad-do-it
+       (beginning-of-line)
+       (send! back-to-indentation-state 'not)))
+    (progn
+     (setq back-to-indentation-state nil)
+     ad-do-it)))
+
+(ad-activate 'back-to-indentation)
 
 (setq redisplay-dont-pause t
       column-number-mode t
@@ -388,7 +366,7 @@
        (setq vemv/help-frame frame))))
 
 (defun vemv/display-completion (buffer)
-  (select-window vemv/main_window)
+  (vemv/safe-select-window vemv/main_window)
   (set-window-buffer vemv/main_window buffer))
 
 ;; Prevents annoying popups

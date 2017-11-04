@@ -111,18 +111,6 @@
 (defun vemv/window-number-of-buffer (buffer-or-name)
   "XXX")
 
-(defun vemv/ensure-layout ()
-  "Fixes the anomalous size the minibuffer can get at times, as well as loss of the original layout proportions in general."
-  (interactive)
-  (vemv/maximize) (vemv/maximize)
-  (delay
-   (argless
-    (let ((selected (vemv/selected-window-number)))
-      (window-number-select 1)
-      (enlarge-window-horizontally (- 33 (window-width)))
-      (enlarge-window (- 47 (window-height)))
-      (window-number-select selected)))))
-
 (defun vemv/selected-region ()
   "Returns the selected region as a string. Side effects free."
   (kill-ring-save (mark) (point))
@@ -156,6 +144,10 @@ Unlike paredit-copy-as-kill, this function will only grab one sexpr (and no more
 (setq vemv/cljs-repl-name (concat "*cider-repl CLJS " vemv/project-ns-prefix "*"))
 (setq cider-launched nil)
 
+(defun vemv/safe-select-window (x)
+  (unless (minibuffer-prompt)
+    (select-window x)))
+
 (defun vemv/send (where &optional backward? content)
   "Copy the next sexp (or on non-nil backward? arg, the previous sexp) and its character trailer,
 switch to the window that is assigned for REPL purposes, then it switch to the corresponding buffer (different REPLs have different buffers),
@@ -169,7 +161,7 @@ paste and simulate an intro press. Finally, go back to sender window."
     (if (equal where :emacs)
       (eval (read content))
       (let ((sender (selected-window)))
-        (select-window vemv/repl2)
+        (vemv/safe-select-window vemv/repl2)
         (vemv/switch-to-buffer-in-any-frame (case where
                                               (:cider the-cider-buffer-name)
                                               (:ielm "*ielm*")
@@ -189,7 +181,7 @@ paste and simulate an intro press. Finally, go back to sender window."
 
         (pop kill-ring)
         (end-of-buffer)
-        (select-window sender)))))
+        (vemv/safe-select-window sender)))))
 
 ; XXX infer whether the user wants to insert newlines
 (defun vemv/duplicate (&optional backward?) ;; XXX indentation: stuff gets inserted at the absolute beggining of line TODO backward?, for sexprs
@@ -266,12 +258,14 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 (defun vemv/next-window ()
   "Switch to the next window."
   (interactive)
-  (select-window (next-window)))
+  (unless (minibuffer-prompt)
+    (vemv/safe-select-window (next-window))))
 
 (defun vemv/previous-window ()
   "Switch to the previous window."
   (interactive)
-  (select-window (previous-window)))
+  (unless (minibuffer-prompt)
+    (vemv/safe-select-window (previous-window))))
 
 (defun vemv/elisp-popup-documentation ()
   "Pops up the documentation for the symbol that is currently hovered by the point. Presumes emacs-lisp-mode."
@@ -340,11 +334,11 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (truncate (float-time)))
 
 (defun vemv/refresh-pe-cache ()
-  (select-window vemv/project-explorer-window)
+  (vemv/safe-select-window vemv/project-explorer-window)
   (funcall pe/directory-tree-function
            default-directory
            (apply-partially 'pe/set-tree (current-buffer) 'refresh))
-  (select-window vemv/main_window))
+  (vemv/safe-select-window vemv/main_window))
 
 (setq vemv/refreshing-caches
       nil)
@@ -367,11 +361,11 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 (defun vemv/open (&optional filepath)
   "Opens a file (from FILEPATH or the user input)."
   (interactive)
-  (select-window vemv/main_window)
+  (vemv/safe-select-window vemv/main_window)
   (let ((file (buffer-name (or (and filepath (find-file filepath)) (ido-find-file)))))) ;; magical let - do not unwrap!
   (save-buffer)
   (vemv/refresh-file-caches)
-  (select-window vemv/main_window))
+  (vemv/safe-select-window vemv/main_window))
 
 (defun vemv/open-project ()
   (let ((default-directory (replace-regexp-in-string "\\.$" "" (ido-read-file-name ()))))
@@ -383,7 +377,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
     (delay 'vemv/show-current-file-in-project-explorer 1)
 
     (vemv/refresh-file-caches)
-    (select-window vemv/main_window)
+    (vemv/safe-select-window vemv/main_window)
     (let* ((buffer-fragments (-remove (lambda (x) (string-equal x "")) (split-string (buffer-file-name) "/")))
            (projname (pe/project-root-function-default)) ;; "/Users/vemv/gpm"
            (project-fragments (-remove (lambda (x) (string-equal x "")) (split-string projname "/")))
@@ -391,7 +385,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
            (expanded-fragments (mapcar* (lambda (x y) (-take x y)) (number-sequence 1 (length fragments)) (-repeat (length fragments) fragments)))
            (final-fragments (mapcar (lambda (x) (concat (s-join "" (cons projname (-interpose "/" x))) "/")) expanded-fragments)))
 
-          (select-window vemv/project-explorer-window)
+          (vemv/safe-select-window vemv/project-explorer-window)
             ;; (pe/fold-all) ;; necessary in principle, skip it for performance. seems to work fine.
           (beginning-of-buffer)
 
@@ -409,7 +403,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (condition-case nil
                   (vemv/show-current-file-in-project-explorer)
                   (error (ignore-errors (vemv/show-current-file-in-project-explorer))))
-  (select-window vemv/main_window))
+  (vemv/safe-select-window vemv/main_window))
 
 (defun vemv/current-ns (&optional which-buffer)
   (with-current-buffer (buffer-name which-buffer)
@@ -440,13 +434,13 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
       (hs-show-all))))
 
 (defun vemv/show-clj-or-cljs-repl ()
-  (select-window vemv/main_window)
+  (vemv/safe-select-window vemv/main_window)
   (setq was (vemv/current-main-buffer-is-cljs))
-  (select-window vemv/repl2)
+  (vemv/safe-select-window vemv/repl2)
   (if was
     (switch-to-buffer vemv/cljs-repl-name)
     (switch-to-buffer vemv/clj-repl-name))
-  (select-window vemv/main_window))
+  (vemv/safe-select-window vemv/main_window))
 
 (defun vemv/ensure-repl-visible ()
   (when (cider-connected-p)
@@ -454,7 +448,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 
 (defun vemv/after-file-open (&rest ignore)
   (interactive)
-  (select-window vemv/main_window)
+  (vemv/safe-select-window vemv/main_window)
   (when (and (vemv/contains? (buffer-name) ".clj")
              (not vemv/ns-hidden))
     (vemv/toggle-ns-hiding))
@@ -510,7 +504,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
                                          (eval `(defun ,sym ()
                                                   (interactive)
                                                   ()
-                                                  (select-window vemv/main_window)
+                                                  (vemv/safe-select-window vemv/main_window)
                                                   (switch-to-buffer ,x)
                                                   (vemv/after-file-open)))
                                          (eval `(defun ,close-sym ()
@@ -536,7 +530,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 (defun vemv/next-file-buffer ()
   "Switch to the next buffer that contains a file opened by the user."
   (interactive)
-  (select-window vemv/main_window)
+  (vemv/safe-select-window vemv/main_window)
   (vemv/clean-chosen-file-buffer-order)
   (switch-to-buffer (or (second vemv/chosen-file-buffer-order)
                         (first vemv/chosen-file-buffer-order)
@@ -546,7 +540,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 (defun vemv/previous-file-buffer ()
   "Switch to the previous buffer that contains a file opened by the user."
   (interactive)
-  (select-window vemv/main_window)
+  (vemv/safe-select-window vemv/main_window)
   (vemv/clean-chosen-file-buffer-order)
   (if-let (file (or (car (last vemv/chosen-file-buffer-order)) (first vemv/chosen-file-buffer-order)))
     (progn
@@ -675,12 +669,12 @@ Comments get ignored, this is, point will only move as long as its position stil
   (if (not vemv-cleaning-namespaces)
     (vemv/echo "vemv-cleaning-namespaces set to false!")
     (let* ((files (filter (lambda (x) (vemv/ends-with x ".cljs")) (directory-files-recursively "/Users/vemv/gpm/src/horizon/src/" ".cljs"))))
-          (select-window vemv/repl2)
+          (vemv/safe-select-window vemv/repl2)
           (switch-to-buffer "*Messages*")
-          (select-window vemv/main_window)
+          (vemv/safe-select-window vemv/main_window)
           (vemv/open "/Users/vemv/gpm/src/horizon/project.clj")
           (seq-doseq (filename files)
-                     (select-window vemv/main_window)
+                     (vemv/safe-select-window vemv/main_window)
                      (vemv/open filename)
                      (setq lexical-binding t)
                      (setq whitespace-line-column 240)
@@ -755,10 +749,11 @@ Comments get ignored, this is, point will only move as long as its position stil
 
  (setq vemv/repl2 (selected-window))
 
- (delay (argless (select-window vemv/repl2)
+ (delay (argless (vemv/safe-select-window vemv/repl2)
                  (switch-to-buffer "*shell-1*")
                  (enable-paredit-mode)
-                 (select-window vemv/main_window))
+                 (vemv/safe-select-window vemv/main_window)
+                 (setq vemv/launched t))
         1)
 
  (vemv/next-window)
@@ -827,3 +822,28 @@ Comments get ignored, this is, point will only move as long as its position stil
       (vemv/close-this-window)))
   (unless (vemv/good-frame-p)
     (vemv/close-this-frame)))
+
+(defun vemv/clojure-init ()
+  (if (minibuffer-prompt)
+    (delay 'vemv/clojure-init 1)
+    (vemv/safe-select-window vemv/main_window)
+    (if (file-readable-p recentf-save-file)
+     (if (pos? (length recentf-list))
+       (let* ((head (car recentf-list))
+              (the-file (ignore-errors
+                         (if (vemv/ends-with head "ido.last")
+                           (second recentf-list)
+                           head))))
+             (when the-file
+               (vemv/open
+                (if (vemv/contains? the-file vemv/project-clojure-dir) ;; ensure nrepl opens a clojure context
+                  the-file
+                  vemv/default-clojure-file))
+               (delay 'vemv/safe-show-current-file-in-project-explorer 3)))))
+
+    (advice-add 'pe/show-buffer :after 'vemv/after-file-open)
+    (advice-add 'vemv/fiplr :after 'vemv/after-file-open)
+    (advice-add 'vemv/open :after 'vemv/after-file-open)
+    (advice-add 'vemv/next-file-buffer :after 'vemv/after-file-open)
+    (advice-add 'vemv/previous-file-buffer :after 'vemv/after-file-open)
+    (advice-add 'vemv/close-this-buffer :after 'vemv/after-file-open)))

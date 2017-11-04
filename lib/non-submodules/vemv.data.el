@@ -13,7 +13,7 @@
 ;; ESC acts like alt, but one does not have to hold it pressed.
 
 ;; XXX remove everything, and programatically
-(setq vemv/key-bindings-to-remove '("\C-a" "\C-b" "\C-e" "\C-f" "\C-s" "\C-w" "\C-j"
+(setq vemv/key-bindings-to-remove '("\C-a" "\C-b" "\C-e" "\C-f" "\C-s" "\C-w" "\C-j" "\M-x"
                                     "\C-l" "\C-n" "\C-o" "\C-p" "\C-q" "\C-o" "\C-k"
                                     "\C-t" "\C-u" "\C-v" "\C-z" "\C-d" "\C-y" "\C-S-z"
                                     "\C-m" "\C-\\" "\C-h" "\C-r" [f10] "\M-e" "\M-!"
@@ -125,6 +125,7 @@
        "M-]" 'paredit-forward
        "M-<next>" 'previous-buffer
        "M-<prior>" 'next-buffer
+       "M-x" (argless (when vemv/launched (smex)))
        "M-<up>" 'paredit-splice-sexp-killing-backward
        "M-|" (argless (vemv/send :emacs :backward))
        "M-a" (argless (kill-new (vemv/sexpr-content :backward)))
@@ -140,7 +141,6 @@
        "s-j" 'cider-eval-sexp-at-point
        "s-k" (argless (kill-new (vemv/kill))) ;; cut
        "s-o" (argless (vemv/open-project))
-       [f10] 'vemv/ensure-layout
        [f11] 'vemv/maximize
        [f4] (argless
              (save-excursion
