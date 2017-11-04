@@ -815,7 +815,8 @@ Comments get ignored, this is, point will only move as long as its position stil
 
 (defun vemv/close-this ()
   (interactive)
-  (unless (vemv/good-buffer-p)
+  (if (or (not (vemv/good-buffer-p))
+          (and (vemv/good-buffer-p) (vemv/good-window-p)))
     (vemv/close-this-buffer))
   (unless (< (length (vemv/current-frame-buffers)) 2)
     (unless (vemv/good-window-p)
