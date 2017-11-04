@@ -146,7 +146,7 @@
              (save-excursion
               (select-window vemv/repl2)
               (cider-repl-clear-buffer)))
-       [f6] 'vemv/hide-ns
+       [f6] 'vemv/toggle-ns-hiding
        [f7] 'vemv/previous-file-buffer
        [f8] 'vemv/after-file-open
        [f9] 'vemv/next-file-buffer))
