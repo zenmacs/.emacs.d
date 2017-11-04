@@ -75,8 +75,6 @@
        "C-f" (argless (ignore-errors
                        (call-interactively 'search-forward)
                        (setq vemv-last-search (first minibuffer-history))))
-       "M-l" (argless (save-buffer)
-                      (kill-buffer (current-buffer)))
        "<backspace>" (argless (if (region-active-p)
                                 (progn (call-interactively 'kill-region)
                                        (pop kill-ring))
@@ -101,10 +99,8 @@
                             (call-interactively 'company-complete)
                             (call-interactively 'company-dabbrev)))
        "C-;" 'toggle-truncate-lines
-       "C-'" (argless (vemv/send :ielm))
        "C-`" 'other-frame
        "C-=" 'mark-whole-buffer
-       "C-|" (argless (vemv/send :emacs))
        "C-3" 'vemv/indent
        "C-a" (argless (vemv/copy-selection-or-next-sexpr))
        "C-b" 'vemv/duplicate
@@ -120,14 +116,12 @@
        "C-u" (argless (vemv/delete-backward :cut))
        "C-v" 'cua-paste ;; paste
        "C-z" 'undo-tree-undo
-       "M-'" (argless (vemv/send :ielm :backward))
-       "M-[" 'paredit-backward ;; move one sexpr backward
+       "M-[" 'paredit-backward
        "M-]" 'paredit-forward
        "M-<next>" 'previous-buffer
        "M-<prior>" 'next-buffer
        "M-x" (argless (when vemv/launched (smex)))
        "M-<up>" 'paredit-splice-sexp-killing-backward
-       "M-|" (argless (vemv/send :emacs :backward))
        "M-a" (argless (kill-new (vemv/sexpr-content :backward)))
        "M-K" (argless (kill-new (vemv/kill :backward)))
        "M-k" (argless (vemv/kill :backward))
