@@ -265,39 +265,8 @@
 
 (setq vemv/launched nil)
 
-(if (window-system) (vemv/maximize))
+(vemv/initial-layout)
 
-(split-window-vertically)
-(enlarge-window 8)
-
-(setq default-directory vemv-home)
-(let ((default-directory vemv/project-root-dir))
-  (call-interactively 'project-explorer-open)
-  (enlarge-window-horizontally -20)
-  (setq vemv/project-explorer-window (selected-window)))
-
-(vemv/next-window)
-
-(setq vemv/main_window (selected-window))
-(vemv/next-window)
-
-(let ((default-directory vemv/project-root-dir))
-  (sh))
-
-(vemv/next-window)
-
-(setq vemv/repl2 (selected-window))
-
-(delay (argless
-        (select-window vemv/repl2)
-        (switch-to-buffer "*shell-1*")
-        (enable-paredit-mode)
-        (select-window vemv/main_window))
-       1)
-
-(vemv/next-window)
-
-(message "")
 (setq vemv/launched t)
 
 (setq custom-file "~/.emacs.d/custom.el") ;; touch on install!

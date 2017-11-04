@@ -727,3 +727,39 @@ Comments get ignored, this is, point will only move as long as its position stil
   `(let ((time (current-time)))
         ,@body
         (message "%.06f" (float-time (time-since time)))))
+
+(defun vemv/initial-layout ()
+ (if (window-system) (vemv/maximize))
+
+ (split-window-vertically)
+ (enlarge-window 8)
+
+ (setq default-directory vemv-home)
+
+ (let ((default-directory vemv/project-root-dir))
+   (call-interactively 'project-explorer-open)
+   (enlarge-window-horizontally -20)
+   (setq vemv/project-explorer-window (selected-window)))
+
+ (vemv/next-window)
+
+ (setq vemv/main_window (selected-window))
+
+ (vemv/next-window)
+
+ (let ((default-directory vemv/project-root-dir))
+   (sh)
+   (switch-to-buffer "*scratch*"))
+
+ (vemv/next-window)
+
+ (setq vemv/repl2 (selected-window))
+
+ (delay (argless (select-window vemv/repl2)
+                 (switch-to-buffer "*shell-1*")
+                 (enable-paredit-mode)
+                 (select-window vemv/main_window))
+        1)
+
+ (vemv/next-window)
+ (message ""))
