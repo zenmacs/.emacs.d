@@ -4,7 +4,7 @@
 (require 'multi-methods)
 (provide 'vemv.lang)
 
-; elisp gotchas: let vs. let* · last returns a list · "Wrong type argument: commandp" -> forgot interactive
+;; elisp gotchas: let vs. let* · last returns a list · "Wrong type argument: commandp" -> forgot interactive
 
 (defmacro comm (&rest forms)
   "Comment. Doesn't evaluate its arguments, returns nil.")
@@ -14,14 +14,14 @@
   `(lambda () (interactive) ,@forms))
 
 (defmacro if-let (binding &rest forms)
-"Usage: (if-let (x (some-computation))
+  "Usage: (if-let (x (some-computation))
                 (then x)
                 (else x) (else_2) ... (else_N))"
   (let ((symbol (first binding))
         (value (second binding)))
     `(let ((,symbol ,value))
        (if ,symbol
-           ,@forms))))
+            ,@forms))))
 
 (defmacro if-not (test &rest forms))
 
@@ -60,34 +60,39 @@
   `(- ,n 1))
 
 (recur-defun* vemv/take (n seq &optional acc)
-  ""
-  (if (and seq (pos? n))
-      (recur (dec n) (rest seq) (cons (first seq) acc))
-      (when (zero? n)
-        (reverse acc))))
+              ""
+              (if (and seq (pos? n))
+                (recur (dec n) (rest seq) (cons (first seq) acc))
+                (when (zero? n)
+                  (reverse acc))))
 
 (recur-defun* vemv/drop (n seq)
-  ""
-  (if (pos? n)
-      (recur (dec n) (rest seq))
-      seq))
+              ""
+              (if (pos? n)
+                (recur (dec n) (rest seq))
+                seq))
 
-(recur-defun* vemv/partition (n seq &optional step acc)
-  "Divides SEQ in a list of lists of N items each, at offsets STEP or N apart. ACC is an implementation detail - do not pass this parameter!"
-      (if seq
-          (recur n (vemv/drop (or step n) seq) (if-let (taken (vemv/take n seq)) ;; XXX <<<<<<<<<<< recur takes the args in mistaken order. wut
-                         (cons taken acc)
-                         acc) (or step n))
-        (reverse acc)))
+(recur-defun*
+ vemv/partition
+ (n seq &optional step acc)
+ "Divides SEQ in a list of lists of N items each, at offsets STEP or N apart. ACC is an implementation detail - do not pass this parameter!"
+ (if seq
+   (recur n ;; XXX recur takes the args in mistaken order. wut
+          (vemv/drop (or step n) seq)
+          (if-let (taken (vemv/take n seq))
+            (cons taken acc)
+            acc)
+          (or step n))
+   (reverse acc)))
 
 (defun vemv/contains? (a b)
   "Whether the string B is contained in A."
   (let* ((a-list (string-to-list a))
          (b-list (string-to-list b))
          (a-parted (vemv/partition (length b-list) a-list 1)))
-    (some (lambda (slice)
-            (equal slice b-list))
-          a-parted)))
+        (some (lambda (slice)
+                      (equal slice b-list))
+              a-parted)))
 
 (defun vemv/maximize ()
   "Maximize the current frame. Presumes an X-window environment."
@@ -97,7 +102,7 @@
   "Makes and returns a hash table out of its arguments."
   (let ((result (make-hash-table :test 'equal)))
     (dolist (kv (vemv/partition 2 kvs))
-      (puthash (first kv) (second kv) result))
+            (puthash (first kv) (second kv) result))
     result))
 
 (defun vemv/selected-window-number ()
@@ -139,13 +144,13 @@
 Unlike paredit-copy-as-kill, this function will only grab one sexpr (and no more even - if they are contigous), and is side-effect free."
   (interactive)
   (save-excursion
-    (push-mark)
-    (if backward? (paredit-backward) (paredit-forward))
+   (push-mark)
+   (if backward? (paredit-backward) (paredit-forward))
 
-    (let ((result (vemv/selected-region)))
-      (pop-mark)
-      (if backward? (paredit-forward) (paredit-backward))
-      result)))
+   (let ((result (vemv/selected-region)))
+     (pop-mark)
+     (if backward? (paredit-forward) (paredit-backward))
+     result)))
 
 (setq vemv/clj-repl-name (concat "*cider-repl " vemv/project-ns-prefix "*"))
 (setq vemv/cljs-repl-name (concat "*cider-repl CLJS " vemv/project-ns-prefix "*"))
@@ -158,33 +163,33 @@ paste and simulate an intro press. Finally, go back to sender window."
   (interactive)
 
   (let ((content (or content
-         (if (region-active-p)
-          (vemv/selected-region)
-          (vemv/sexpr-content backward?)))))
+                     (if (region-active-p)
+                       (vemv/selected-region)
+                       (vemv/sexpr-content backward?)))))
     (if (equal where :emacs)
-        (eval (read content))
-        (let ((sender (selected-window)))
-          (select-window vemv/repl2)
-          (vemv/switch-to-buffer-in-any-frame (case where
-                                                (:cider the-cider-buffer-name)
-                                                (:ielm "*ielm*")
-                                                (:shell "*shell-1*")
-                                                (:clj vemv/clj-repl-name)
-                                                (:cljs vemv/cljs-repl-name)))
-          
-          (end-of-buffer)
-          (insert content)
+      (eval (read content))
+      (let ((sender (selected-window)))
+        (select-window vemv/repl2)
+        (vemv/switch-to-buffer-in-any-frame (case where
+                                              (:cider the-cider-buffer-name)
+                                              (:ielm "*ielm*")
+                                              (:shell "*shell-1*")
+                                              (:clj vemv/clj-repl-name)
+                                              (:cljs vemv/cljs-repl-name)))
 
-          (case where
-            (:cider (cider-repl-return))
-            (:ielm (ielm-return))
-            (:shell (comint-send-input))
-            (:clj (cider-repl-return))
-            (:cljs (cider-repl-return)))
+        (end-of-buffer)
+        (insert content)
 
-          (pop kill-ring)
-          (end-of-buffer)
-          (select-window sender)))))
+        (case where
+          (:cider (cider-repl-return))
+          (:ielm (ielm-return))
+          (:shell (comint-send-input))
+          (:clj (cider-repl-return))
+          (:cljs (cider-repl-return)))
+
+        (pop kill-ring)
+        (end-of-buffer)
+        (select-window sender)))))
 
 ; XXX infer whether the user wants to insert newlines
 (defun vemv/duplicate (&optional backward?) ;; XXX indentation: stuff gets inserted at the absolute beggining of line TODO backward?, for sexprs
@@ -193,29 +198,29 @@ paste and simulate an intro press. Finally, go back to sender window."
 
   (if (region-active-p)
 
+    (progn
+     (dotimes (i (- (region-end) (point)))
+       (forward-char))
+     (insert "\n" (vemv/selected-region) "\n"))
+
+    (if (some (lambda (char) (equal char (vemv/current-char-at-point)))
+              '("(" "[" "{" "<" "\""))
       (progn
-        (dotimes (i (- (region-end) (point)))
-          (forward-char))
-        (insert "\n" (vemv/selected-region) "\n"))
+       (let ((content (vemv/sexpr-content))
+             (whitespace (progn (comm let N the num of chars until beggining-of-line, N* " ") "")))
+         (paredit-forward)
+         (insert (concat "\n\n" whitespace content))
+         (call-interactively 'move-end-of-line) ;; XXX end of sexpr instead
+         (paredit-backward)))
 
-      (if (some (lambda (char) (equal char (vemv/current-char-at-point)))
-                '("(" "[" "{" "<" "\""))
-          (progn
-            (let ((content (vemv/sexpr-content))
-                  (whitespace (progn (comm let N the num of chars until beggining-of-line, N*" ") "")))
-              (paredit-forward)
-              (insert (concat "\n\n" whitespace content))
-              (call-interactively 'move-end-of-line) ;; XXX end of sexpr instead
-              (paredit-backward)))
-
-          (progn
-            (move-beginning-of-line 1)
-            (kill-line)
-            (yank)
-            (open-line 1)
-            (next-line 1)
-            (yank)
-            (pop kill-ring)))))
+      (progn
+       (move-beginning-of-line 1)
+       (kill-line)
+       (yank)
+       (open-line 1)
+       (next-line 1)
+       (yank)
+       (pop kill-ring)))))
 
 (defun vemv/kill (&optional backward?) ;; XXX kill comments FIXME can leave sexprs unmatched
   "Deletes the next (or previous, on non-nil values of BACKWARD?) sexpr or comment (if there is one).
@@ -223,16 +228,16 @@ paste and simulate an intro press. Finally, go back to sender window."
 Unlike paredit-kill, this function will only grab one sexpr (and no more, if they are contigous), and it doesn't alter the kill-ring."
   (interactive)
   (ignore-errors
-    (push-mark)
-    (if backward? (paredit-backward) (paredit-forward))
+   (push-mark)
+   (if backward? (paredit-backward) (paredit-forward))
 
-    (let ((result (vemv/selected-region)))
-      (delete-region (mark) (point))
-      (while (and
-              (equal " " (vemv/current-char-at-point))
-              (not (equal "\n" (vemv/current-char-at-point))))
-        (paredit-forward-delete))
-      result)))
+   (let ((result (vemv/selected-region)))
+     (delete-region (mark) (point))
+     (while (and
+             (equal " " (vemv/current-char-at-point))
+             (not (equal "\n" (vemv/current-char-at-point))))
+       (paredit-forward-delete))
+     result)))
 
 (defun vemv/delete-backward (&optional cut?)
   "Performs a paredit-backward-delete unless the region is active, in which case the selection gets unconditionally removed.
@@ -243,18 +248,18 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (interactive)
 
   (if (region-active-p)
-      (progn (call-interactively 'kill-region)
-             (if (not cut?) (pop kill-ring)))
-      (paredit-backward-delete)))
+    (progn (call-interactively 'kill-region)
+           (if (not cut?) (pop kill-ring)))
+    (paredit-backward-delete)))
 
 (defun vemv/active-modes ()
   "Returns a list of the minor modes that are enabled in the current buffer."
   (interactive)
   (let ((active-modes))
     (mapc (lambda (mode) (condition-case nil
-                             (if (and (symbolp mode) (symbol-value mode))
-                                 (add-to-list 'active-modes mode))
-                           (error nil) ))
+                                         (if (and (symbolp mode) (symbol-value mode))
+                                           (add-to-list 'active-modes mode))
+                                         (error nil)))
           minor-mode-list)
     active-modes))
 
@@ -272,24 +277,24 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   "Pops up the documentation for the symbol that is currently hovered by the point. Presumes emacs-lisp-mode."
   (interactive)
   (if-let (f (function-called-at-point))
-          (let ((string (ac-symbol-documentation f)))
-            (cond
-             ((and window-system (featurep 'pos-tip)) ;; see: `ac-pos-tip-show-quick-help'
-              (pos-tip-show string 'popup-tip-face nil nil 0 popup-tip-max-width))
-             ((featurep 'popup)
-              (popup-tip string :height ac-quick-help-height))
-             (t
-              (message string))))))
+    (let ((string (ac-symbol-documentation f)))
+      (cond
+        ((and window-system (featurep 'pos-tip)) ;; see: `ac-pos-tip-show-quick-help'
+         (pos-tip-show string 'popup-tip-face nil nil 0 popup-tip-max-width))
+        ((featurep 'popup)
+         (popup-tip string :height ac-quick-help-height))
+        (t
+         (message string))))))
 
 (defun vemv/elisp-window-documentation ()
   "Displays the documentation for the symbol that is currently hovered by the point in a new window. Presumes emacs-lisp-mode."
   (interactive)
   (if-let (f (function-called-at-point))
-          (describe-function f)))
+    (describe-function f)))
 
 (defun vemv/reverse (seq)
   (typecase seq
-    (string (concat (reverse (string-to-list seq))))))
+            (string (concat (reverse (string-to-list seq))))))
 
 (defun vemv/ends-with (s ending)
   "Returns non-nil if string S ends with ENDING."
@@ -300,7 +305,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   "Returns non-nil if string S starts with CANDIDATE."
   (let ((clength (length candidate)))
     (if (<= clength (length s))
-        (string= (substring s 0 clength) candidate))))
+      (string= (substring s 0 clength) candidate))))
 
 (defun vemv/keyword-to-string (arg)
   ":foo -> \"foo\""
@@ -311,8 +316,8 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (interactive)
   (let ((result (buffer-substring-no-properties (line-beginning-position 1) (line-beginning-position 2))))
     (if (equal result "") ;; abstact away EOFs
-        "\n"
-        result)))
+      "\n"
+      result)))
 
 (defun vemv/current-char-at-point (&optional offset)
   "Returns the character -as a string- hovered by the point, or a contiguous one, if an integer offset is specified."
@@ -330,22 +335,22 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (call-interactively 'cider-format-region)
   (pop-mark)
   (paredit-backward))
-      
+
 (defun vemv/timestamp ()
- (truncate (float-time)))
+  (truncate (float-time)))
 
 (defun vemv/refresh-pe-cache ()
   (select-window vemv/project-explorer-window)
   (funcall pe/directory-tree-function
-       default-directory
-       (apply-partially 'pe/set-tree (current-buffer) 'refresh))
+           default-directory
+           (apply-partially 'pe/set-tree (current-buffer) 'refresh))
   (select-window vemv/main_window))
 
 (setq vemv/refreshing-caches
-  nil)
-  
+      nil)
+
 (setq vemv/project-explorer-initialized
-  nil)
+      nil)
 
 (defun vemv/timestamp-lock-acquired? (timestamp)
   (and timestamp (< (- (vemv/timestamp) timestamp) 30)))
@@ -355,9 +360,9 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
               (not vemv/project-explorer-initialized)
               (minibuffer-prompt)
               (not (vemv/contains? (buffer-name (current-buffer)) ".clj")))
-    (setq vemv/refreshing-caches (vemv/timestamp))
-    (vemv/refresh-pe-cache)
-    (fiplr-clear-cache)))
+          (setq vemv/refreshing-caches (vemv/timestamp))
+          (vemv/refresh-pe-cache)
+          (fiplr-clear-cache)))
 
 (defun vemv/open (&optional filepath)
   "Opens a file (from FILEPATH or the user input)."
@@ -376,7 +381,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (interactive)
   (if (minibuffer-prompt)
     (delay 'vemv/show-current-file-in-project-explorer 1)
-    
+
     (vemv/refresh-file-caches)
     (select-window vemv/main_window)
     (let* ((buffer-fragments (-remove (lambda (x) (string-equal x "")) (split-string (buffer-file-name) "/")))
@@ -385,20 +390,20 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
            (fragments (-drop (length project-fragments) buffer-fragments))
            (expanded-fragments (mapcar* (lambda (x y) (-take x y)) (number-sequence 1 (length fragments)) (-repeat (length fragments) fragments)))
            (final-fragments (mapcar (lambda (x) (concat (s-join "" (cons projname (-interpose "/" x))) "/")) expanded-fragments)))
-           
-            (select-window vemv/project-explorer-window)
+
+          (select-window vemv/project-explorer-window)
             ;; (pe/fold-all) ;; necessary in principle, skip it for performance. seems to work fine.
-            (beginning-of-buffer)
-           
-           (seq-doseq (f (butlast final-fragments))
-             (while (not (string-equal f (pe/current-directory)))
-               (next-line))
-             (pe/return))
-            
-            (while (not (string-equal (s-chop-suffix "/" (first (last final-fragments))) (pe/get-filename)))
-              (next-line))
-            
-            (end-of-line))
+          (beginning-of-buffer)
+
+          (seq-doseq (f (butlast final-fragments))
+                     (while (not (string-equal f (pe/current-directory)))
+                       (next-line))
+                     (pe/return))
+
+          (while (not (string-equal (s-chop-suffix "/" (first (last final-fragments))) (pe/get-filename)))
+            (next-line))
+
+          (end-of-line))
     (select-window vemv/main_window)))
 
 (defun vemv/safe-show-current-file-in-project-explorer ()
@@ -412,14 +417,13 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 
 (defun vemv/advice-nrepl ()
   (interactive)
-  (delay
-    (argless
-      (when (and (vemv/contains? (buffer-name) ".clj")
-                 (cider-connected-p)
-                 (not (string-equal (vemv/current-ns)
-                                    (vemv/current-ns (window-buffer vemv/repl2)))))
-        (cider-repl-set-ns (vemv/current-ns))))
-    1))
+  (delay (argless
+          (when (and (vemv/contains? (buffer-name) ".clj")
+                     (cider-connected-p)
+                     (not (string-equal (vemv/current-ns)
+                                        (vemv/current-ns (window-buffer vemv/repl2)))))
+            (cider-repl-set-ns (vemv/current-ns))))
+         1))
 
 (defun vemv/hide-ns ()
   (interactive)
@@ -431,8 +435,8 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
              (hs-hide-comments-when-hiding-all nil)
              (hs-adjust-block-beginning (lambda (initial)
                                                 (save-excursion
-                                                  (point)))))
-        (apply #'hs-hide-all ()))
+                                                 (point)))))
+            (apply #'hs-hide-all ()))
       (hs-show-all))))
 
 (defun vemv/show-clj-or-cljs-repl ()
@@ -464,22 +468,21 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 (setq vemv/chosen-file-buffer-order nil) ;; a list
 
 (defun vemv/clean-chosen-file-buffer-order ()
-    (let* (
-      (curr (buffer-name (current-buffer)))
-      (c (vemv/open_file_buffers))
-      (all (-distinct (-concat vemv/chosen-file-buffer-order c)))
-      (without-curr (-remove (lambda (x) (string-equal x curr)) all))
-      (final (cons curr without-curr)))
+  (let* ((curr (buffer-name (current-buffer)))
+         (c (vemv/open_file_buffers))
+         (all (-distinct (-concat vemv/chosen-file-buffer-order c)))
+         (without-curr (-remove (lambda (x) (string-equal x curr)) all))
+         (final (cons curr without-curr)))
         (setq vemv/chosen-file-buffer-order (filter (lambda (x)
-                                                      (member x c))
+                                                            (member x c))
                                                     final))))
 
 (defun vemv.abbreviate-ns/format-intermediate-fragment (x)
   (condition-case
-    nil (let* ((split (s-split "-" x))
-               (y (mapcar (lambda (f) (substring f 0 1)) split)))
-              (s-join "-" y))
-    (error "")))
+   nil (let* ((split (s-split "-" x))
+              (y (mapcar (lambda (f) (substring f 0 1)) split)))
+             (s-join "-" y))
+   (error "")))
 
 (defun vemv/abbreviate-ns (namespace)
   (let* ((split (s-split "\\." namespace))
@@ -488,43 +491,40 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
          (fname (car bbase))
          (base (rest bbase))
          (onechars (mapcar (lambda (x)
-                             (vemv.abbreviate-ns/format-intermediate-fragment x))
-                            base)))
-    (concat fname (if fname "." "") (s-join "." onechars) (if (> (length onechars) 0) "." "") name)))
+                                   (vemv.abbreviate-ns/format-intermediate-fragment x))
+                           base)))
+        (concat fname (if fname "." "") (s-join "." onechars) (if (> (length onechars) 0) "." "") name)))
 
 (defun vemv/message-file-buffers-impl ()
   (vemv/clean-chosen-file-buffer-order)
   (let* ((first (vemv/abbreviate-ns (or (ignore-errors (cider-current-ns)) (car vemv/chosen-file-buffer-order))))
-        (rest (cdr vemv/chosen-file-buffer-order))
-        (the-rest (mapcar (lambda (x)
-                              (let* ((buf (get-buffer x))
-                                     (sym (intern (buffer-file-name buf)))
-                                     (close-sym (intern (concat (buffer-file-name buf) "-close")))
-                                     (namespace (with-current-buffer x (or (ignore-errors (cider-current-ns)) x)))
-                                     (is-modified (with-current-buffer x (buffer-modified-p)))
-                                     (shortname (concat (if is-modified "*" "") (vemv/abbreviate-ns namespace))))
-                                (eval `(defun ,sym ()
-                                         (interactive)
-                                         ()
-                                         (select-window vemv/main_window)
-                                         (switch-to-buffer ,x)
-                                         (vemv/after-file-open)))
-                                (eval `(defun ,close-sym ()
-                                         (interactive)
-                                         (kill-buffer ,x)
-                                         (vemv/clean-chosen-file-buffer-order)))
-                                (propertize shortname 'local-map `(keymap
-                                                                   (mode-line keymap
-                                                                              (mouse-1 . ,sym)
-                                                                              (mouse-3 . ,close-sym)
-                                                                              )))
-                              ) )
-                          rest)
-                          )
-        (p (propertize first 'face 'font-lock-function-name-face))
-        (sep (propertize " | " 'face 'font-lock-line-and-column-face))
-        (all (cons p the-rest)))
-          (apply 'concat (-interpose sep all))))
+         (rest (cdr vemv/chosen-file-buffer-order))
+         (the-rest (mapcar (lambda (x)
+                                   (let* ((buf (get-buffer x))
+                                          (sym (intern (buffer-file-name buf)))
+                                          (close-sym (intern (concat (buffer-file-name buf) "-close")))
+                                          (namespace (with-current-buffer x (or (ignore-errors (cider-current-ns)) x)))
+                                          (is-modified (with-current-buffer x (buffer-modified-p)))
+                                          (shortname (concat (if is-modified "*" "") (vemv/abbreviate-ns namespace))))
+                                         (eval `(defun ,sym ()
+                                                  (interactive)
+                                                  ()
+                                                  (select-window vemv/main_window)
+                                                  (switch-to-buffer ,x)
+                                                  (vemv/after-file-open)))
+                                         (eval `(defun ,close-sym ()
+                                                  (interactive)
+                                                  (kill-buffer ,x)
+                                                  (vemv/clean-chosen-file-buffer-order)))
+                                         (propertize shortname 'local-map `(keymap
+                                                                            (mode-line keymap
+                                                                                       (mouse-1 . ,sym)
+                                                                                       (mouse-3 . ,close-sym))))))
+                           rest))
+         (p (propertize first 'face 'font-lock-function-name-face))
+         (sep (propertize " | " 'face 'font-lock-line-and-column-face))
+         (all (cons p the-rest)))
+        (apply 'concat (-interpose sep all))))
 
 (defun vemv/current-main-buffer-is-cljs ()
   (or (vemv/contains? (buffer-name) ".cljs")
@@ -540,7 +540,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (switch-to-buffer (or (second vemv/chosen-file-buffer-order)
                         (first vemv/chosen-file-buffer-order)
                         vemv/file-buffer-fallback))
-  (setq vemv/chosen-file-buffer-order `(,@(cdr vemv/chosen-file-buffer-order) ,(car vemv/chosen-file-buffer-order))))
+  (setq vemv/chosen-file-buffer-order `(@(cdr vemv/chosen-file-buffer-order) ,(car vemv/chosen-file-buffer-order))))
 
 (defun vemv/previous-file-buffer ()
   "Switch to the previous buffer that contains a file opened by the user."
@@ -548,19 +548,19 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (select-window vemv/main_window)
   (vemv/clean-chosen-file-buffer-order)
   (if-let (file (or (car (last vemv/chosen-file-buffer-order)) (first vemv/chosen-file-buffer-order)))
-            (progn
-              (switch-to-buffer file)
-              (setq vemv/chosen-file-buffer-order `(,file ,@(butlast vemv/chosen-file-buffer-order))))
-          (switch-to-buffer vemv/file-buffer-fallback)))
+    (progn
+     (switch-to-buffer file)
+     (setq vemv/chosen-file-buffer-order `(file ,@(butlast vemv/chosen-file-buffer-order))))
+    (switch-to-buffer vemv/file-buffer-fallback)))
 
 (defun vemv/home ()
   "Moves the point to leftmost non-empty character in the current line."
   (interactive)
   (move-beginning-of-line 1)
   (if (not (equal last-command 'vemv/home))
-      (while (some (lambda (char) (equal char (vemv/current-char-at-point)))
-                   '(" " "\t"))
-        (forward-char))))
+    (while (some (lambda (char) (equal char (vemv/current-char-at-point)))
+                 '(" " "\t"))
+      (forward-char))))
 
 (defun vemv/end () ;; XXX doesn't honor region
   "Moves the point to rightmost non-empty character in the current line.
@@ -568,45 +568,45 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 Comments get ignored, this is, point will only move as long as its position still belongs to the code - unless this command has been fired for the second time."
   (interactive)
   (if (equal last-command 'vemv/end)
-      (call-interactively 'move-end-of-line)
-      (let* ((line (vemv/current-line-content))
-             (rev (vemv/reverse line))
-             (line_length (length line))
-             (movement (recur-let ((result 0))
-                                 (if (some (lambda (char) (equal char (substring line result (inc result))))
-                                           '(";" "\n"))
-                                     result
-                                     (recur (inc result))))))
-        (move-beginning-of-line 1)
-        (forward-char movement)
+    (call-interactively 'move-end-of-line)
+    (let* ((line (vemv/current-line-content))
+           (rev (vemv/reverse line))
+           (line_length (length line))
+           (movement (recur-let ((result 0))
+                                (if (some (lambda (char) (equal char (substring line result (inc result))))
+                                          '(";" "\n"))
+                                  result
+                                  (recur (inc result))))))
+          (move-beginning-of-line 1)
+          (forward-char movement)
         ;; there may exist empty space between code and comment:
-        (if (pos? movement)
+          (if (pos? movement)
             (while (not (some (lambda (char) (equal char (vemv/current-char-at-point)))
                               '(" ")))
               (backward-char)))
-        (comm backward-char (recur-let ((result 0))
-                                  (if (or
-                                       (equal result line_length)
-                                       (equal " " (substring rev result (inc result))))
-                                      result
-                                      (recur (inc result))))))))
+          (comm backward-char (recur-let ((result 0))
+                                         (if (or
+                                              (equal result line_length)
+                                              (equal " " (substring rev result (inc result))))
+                                           result
+                                           (recur (inc result))))))))
 
 (defun vemv/end-of-line-code ()
   (interactive "^")
   (save-match-data
-    (let* ((bolpos (progn (beginning-of-line) (point)))
-           (eolpos (progn (end-of-line) (point))))
-      (if (comment-search-backward bolpos t)
-          (search-backward-regexp comment-start-skip bolpos 'noerror))
-      (skip-syntax-backward " " bolpos))))
+   (let* ((bolpos (progn (beginning-of-line) (point)))
+          (eolpos (progn (end-of-line) (point))))
+         (if (comment-search-backward bolpos t)
+           (search-backward-regexp comment-start-skip bolpos 'noerror))
+         (skip-syntax-backward " " bolpos))))
 
 (defun vemv/end-of-line-or-code ()
   (interactive "^")
   (ignore-errors (let ((here (point)))
-    (vemv/end-of-line-code)
-    (if (or (= here (point))
-        (bolp))
-        (end-of-line)))))
+                   (vemv/end-of-line-code)
+                   (if (or (= here (point))
+                           (bolp))
+                     (end-of-line)))))
 
 (defun vemv/line-empty? (line)
   (or (= 0 (length line))
@@ -621,17 +621,17 @@ Comments get ignored, this is, point will only move as long as its position stil
   (call-interactively 'kill-region)
   (let ((line (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
     (if (vemv/line-empty? line)
-  (vemv/delete-this-line)
-  (progn
-    (next-line)
-    (back-to-indentation)))))
+      (vemv/delete-this-line)
+      (progn
+       (next-line)
+       (back-to-indentation)))))
 
 (defun vemv/semicolon ()
   (interactive)
   (if (or (equal (vemv/current-char-at-point) ";")
-    (progn "cursor is within string" nil)) ;; XXX
-      (insert ";")
-      (insert ";; "))) ;; (when (and (eolp) COLUMN > 0) (insert " "))
+          (progn "cursor is within string" nil)) ;; XXX
+    (insert ";")
+    (insert ";; "))) ;; (when (and (eolp) COLUMN > 0) (insert " "))
 
 (setq vemv/shell-id 0)
 
@@ -641,18 +641,18 @@ Comments get ignored, this is, point will only move as long as its position stil
 
 (defun vemv/copy-selection-or-next-sexpr ()
   (if (region-active-p)
-     (call-interactively 'kill-ring-save)
-     (kill-new (vemv/sexpr-content))))
+    (call-interactively 'kill-ring-save)
+    (kill-new (vemv/sexpr-content))))
 
 ;; not needed anymore - cider-find-var does the trick!
 (defun vemv/open-namespace-at-point ()
   (let* ((ns (s-replace "." "" (vemv/copy-selection-or-next-sexpr)))
          (ns2 (s-replace "-" "" ns))
          (ns3 (concat "src/horizon/src/" ns2 ".cljs")))
-    (delay (argless (insert ns3))
-           2)
-    (vemv/fiplr)))
-  
+        (delay (argless (insert ns3))
+               2)
+        (vemv/fiplr)))
+
 (defun vemv/fiplr (&optional opener)
   (fiplr-find-file-in-directory vemv/project-fiplr-dir fiplr-ignored-globs (or opener #'find-file)))
 
@@ -660,9 +660,9 @@ Comments get ignored, this is, point will only move as long as its position stil
   (interactive)
   (save-buffer)
   (when (vemv/contains? (buffer-name (current-buffer)) ".clj"))
-    (save-excursion (cider-format-buffer))
-    (when (buffer-modified-p)
-      (vemv/echo "Formatted!")))
+  (save-excursion (cider-format-buffer))
+  (when (buffer-modified-p)
+    (vemv/echo "Formatted!")))
 
 (setq vemv/ns-hidden nil)
 
@@ -670,43 +670,43 @@ Comments get ignored, this is, point will only move as long as its position stil
   (interactive)
   (setq-local vemv/ns-hidden nil)
   (kill-buffer (current-buffer))
-   (unless (vemv/contains? (buffer-name) ".clj")
-     (vemv/next-file-buffer)))
+  (unless (vemv/contains? (buffer-name) ".clj")
+          (vemv/next-file-buffer)))
 
 (defun cljr--maybe-wrap-form ()) ;; void it
 
 ;; we can use this in horizon when ns's properly use initialization patterns
 (defun vemv/clean-project-namespaces ()
- (if (not vemv-cleaning-namespaces)
-  (vemv/echo "vemv-cleaning-namespaces set to false!")
-  (let* ((files (filter (lambda (x) (vemv/ends-with x ".cljs")) (directory-files-recursively "/Users/vemv/gpm/src/horizon/src/" ".cljs"))))
-    (select-window vemv/repl2)
-    (switch-to-buffer "*Messages*")
-    (select-window vemv/main_window)
-    (vemv/open "/Users/vemv/gpm/src/horizon/project.clj")
-      (seq-doseq (filename files)
-            (select-window vemv/main_window)
-            (vemv/open filename)
-            (setq lexical-binding t)
-            (setq whitespace-line-column 240)
-            (cljr-clean-ns)
-            (beginning-of-buffer)
-            (while (re-search-forward "(:require[^\-]" nil t)
-               (replace-match "(:require\n"))
-            (beginning-of-buffer)
-            (while (re-search-forward "(:require\-macros[^\n]" nil t)
-               (replace-match "(:require\-macros\n"))
-            (beginning-of-buffer)
-            (while (re-search-forward "(:import[^\-]" nil t)
-               (replace-match "(:import\n"))
-            (beginning-of-buffer)
-            (while (re-search-forward "(:use\-macros[^\n]" nil t)
-               (replace-match "(:use\-macros\n"))
-            (vemv/save)
-            (vemv/save)
-            (vemv/close-this-buffer)))
-  (vemv/echo "clean-project-namespaces done!")
-  (vemv/echo "Remember: goog* libspec can be spuriously removed.")))
+  (if (not vemv-cleaning-namespaces)
+    (vemv/echo "vemv-cleaning-namespaces set to false!")
+    (let* ((files (filter (lambda (x) (vemv/ends-with x ".cljs")) (directory-files-recursively "/Users/vemv/gpm/src/horizon/src/" ".cljs"))))
+          (select-window vemv/repl2)
+          (switch-to-buffer "*Messages*")
+          (select-window vemv/main_window)
+          (vemv/open "/Users/vemv/gpm/src/horizon/project.clj")
+          (seq-doseq (filename files)
+                     (select-window vemv/main_window)
+                     (vemv/open filename)
+                     (setq lexical-binding t)
+                     (setq whitespace-line-column 240)
+                     (cljr-clean-ns)
+                     (beginning-of-buffer)
+                     (while (re-search-forward "(:require[^\-]" nil t)
+                       (replace-match "(:require\n"))
+                     (beginning-of-buffer)
+                     (while (re-search-forward "(:require\-macros[^\n]" nil t)
+                       (replace-match "(:require\-macros\n"))
+                     (beginning-of-buffer)
+                     (while (re-search-forward "(:import[^\-]" nil t)
+                       (replace-match "(:import\n"))
+                     (beginning-of-buffer)
+                     (while (re-search-forward "(:use\-macros[^\n]" nil t)
+                       (replace-match "(:use\-macros\n"))
+                     (vemv/save)
+                     (vemv/save)
+                     (vemv/close-this-buffer)))
+    (vemv/echo "clean-project-namespaces done!")
+    (vemv/echo "Remember: goog* libspec can be spuriously removed.")))
 
 (defun vemv/load-clojure-buffer ()
   (interactive)
@@ -724,5 +724,5 @@ Comments get ignored, this is, point will only move as long as its position stil
 (defmacro vemv/measure-time (&rest body)
   "Measure the time it takes to evaluate BODY."
   `(let ((time (current-time)))
-     ,@body
-     (message "%.06f" (float-time (time-since time)))))
+        ,@body
+        (message "%.06f" (float-time (time-since time)))))
