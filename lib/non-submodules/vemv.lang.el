@@ -403,13 +403,13 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
           (while (not (string-equal (s-chop-suffix "/" (first (last final-fragments))) (pe/get-filename)))
             (next-line))
 
-          (end-of-line))
-    (select-window vemv/main_window)))
+          (end-of-line))))
 
 (defun vemv/safe-show-current-file-in-project-explorer ()
   (condition-case nil
                   (vemv/show-current-file-in-project-explorer)
-                  (error (ignore-errors (vemv/show-current-file-in-project-explorer)))))
+                  (error (ignore-errors (vemv/show-current-file-in-project-explorer))))
+  (select-window vemv/main_window))
 
 (defun vemv/current-ns (&optional which-buffer)
   (with-current-buffer (buffer-name which-buffer)

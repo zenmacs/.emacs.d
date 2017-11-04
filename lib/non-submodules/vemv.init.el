@@ -289,7 +289,7 @@
                        (if (vemv/contains? the-file vemv/project-clojure-dir) ;; ensure nrepl opens a clojure context
                          the-file
                          vemv/default-clojure-file))
-                      (delay 'vemv/show-current-file-in-project-explorer 3)))))
+                      (delay 'vemv/safe-show-current-file-in-project-explorer 3)))))
 
           (advice-add 'pe/show-buffer :after 'vemv/after-file-open)
           (advice-add 'vemv/fiplr :after 'vemv/after-file-open)
