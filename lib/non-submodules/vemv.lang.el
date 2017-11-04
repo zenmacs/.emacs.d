@@ -540,7 +540,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (switch-to-buffer (or (second vemv/chosen-file-buffer-order)
                         (first vemv/chosen-file-buffer-order)
                         vemv/file-buffer-fallback))
-  (setq vemv/chosen-file-buffer-order `(@(cdr vemv/chosen-file-buffer-order) ,(car vemv/chosen-file-buffer-order))))
+  (setq vemv/chosen-file-buffer-order `(,@(cdr vemv/chosen-file-buffer-order) ,(car vemv/chosen-file-buffer-order))))
 
 (defun vemv/previous-file-buffer ()
   "Switch to the previous buffer that contains a file opened by the user."
