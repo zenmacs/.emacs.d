@@ -158,9 +158,9 @@
        [f10] 'vemv/ensure-layout
        [f11] 'vemv/maximize
        [f4] (argless
-             (select-window vemv/repl2)
-             (cider-repl-clear-buffer)
-             (select-window vemv/main_window))
+             (save-excursion
+              (select-window vemv/repl2)
+              (cider-repl-clear-buffer)))
        [f6] 'vemv/hide-ns
        [f7] 'vemv/previous-file-buffer
        [f8] 'vemv/after-file-open
