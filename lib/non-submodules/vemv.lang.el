@@ -659,8 +659,9 @@ Comments get ignored, this is, point will only move as long as its position stil
 (defun vemv/save ()
   (interactive)
   (save-buffer)
-  (when (vemv/contains? (buffer-name (current-buffer)) ".clj"))
-  (save-excursion (cider-format-buffer))
+  (when (and (vemv/contains? (buffer-name (current-buffer)) ".clj")
+             (cider-connected-p))
+    (save-excursion (cider-format-buffer)))
   (when (buffer-modified-p)
     (vemv/echo "Formatted!")))
 

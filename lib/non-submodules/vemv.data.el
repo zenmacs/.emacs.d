@@ -125,19 +125,15 @@
        "C-o" (argless (vemv/open))
        "C-p" (argless (ignore-errors (search-forward vemv-last-search)))
        "C-q" 'save-buffers-kill-terminal
-       "C-S-j" nil
        "C-S-z" 'undo-tree-redo
        "C-s" 'vemv/save
        "C-t" (argless (vemv/fiplr))
        "C-u" (argless (vemv/delete-backward :cut))
        "C-v" 'cua-paste ;; paste
-       "C-y" nil
        "C-z" 'undo-tree-undo
        "M-'" (argless (vemv/send :ielm :backward))
        "M-[" 'paredit-backward ;; move one sexpr backward
        "M-]" 'paredit-forward
-       "M-<begin>" nil
-       "M-<end>" nil
        "M-<next>" 'previous-buffer
        "M-<prior>" 'next-buffer
        "M-<up>" 'paredit-splice-sexp-killing-backward
