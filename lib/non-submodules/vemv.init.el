@@ -425,14 +425,12 @@
                         (indent-region (region-beginning) (region-end) nil))))))
 
 (delay
- (argless
-  (setq vemv/project-explorer-initialized t)
-  12))
+ (argless (setq vemv/project-explorer-initialized t))
+ 12)
 
 (delay
- (argless
-  ;; every 5 seconds. in practice, not so often b/c `vemv/refreshing-caches` (timestamp lock)
-  (run-with-timer 0 5 'vemv/refresh-file-caches))
+ ;; every 5 seconds. in practice, not so often b/c `vemv/refreshing-caches` (timestamp lock)
+ (argless (run-with-timer 0 5 'vemv/refresh-file-caches))
  60)
 
 (setq company-dabbrev-char-regexp "\\sw\\|-")
