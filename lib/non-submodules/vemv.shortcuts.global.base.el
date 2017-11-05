@@ -586,6 +586,9 @@
 ;; "M-9"
 (setq vemv/shortcuts/global/secondary-9 nil)
 
+;; "M-~"
+(setq vemv/shortcuts/global/secondary-tilde nil)
+
 ;; "M-_"
 (setq vemv/shortcuts/global/secondary-underscore nil)
 
@@ -912,6 +915,9 @@
 
 ;; "s-9"
 (setq vemv/shortcuts/global/tertiary-9 nil)
+
+;; "s-~"
+(setq vemv/shortcuts/global/tertiary-tilde nil)
 
 ;; "s-_"
 (setq vemv/shortcuts/global/tertiary-underscore nil)

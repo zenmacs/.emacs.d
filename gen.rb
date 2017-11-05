@@ -1,5 +1,5 @@
 # Certain C-<char> keybindings are forbidden
-NO_C = %w([ i m g)
+NO_C = %w([ i m g ~)
 
 # there's no C-S-semicolon, but C-colon etc
 DUALS = %w(` ~ + = [ ] { } | \\ ; : ' " , < . > / ? ! @ # $ % ^ & * ( ) - _ 1 2 3 4 5 6 7 8 9 0)
@@ -9,6 +9,7 @@ SELF_INSERTING = (DUALS + %w(SPC))
 # XXX add all possible members of DUALS here
 # no backlash for now - don't want to escape things
 REPLACEMENTS = Hash.new{|map, key| key }.merge({
+  '~' => 'tilde',
   "_" => 'underscore',
   "-" => 'dash',
   "," => 'comma',
