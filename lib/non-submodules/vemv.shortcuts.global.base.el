@@ -1,8 +1,14 @@
 (provide 'vemv.shortcuts.global.base)
 ;; generated with gen.rb
 
-;; "`"
-(setq vemv/shortcuts/global/backtick nil)
+;; "_"
+(setq vemv/shortcuts/global/underscore nil)
+
+;; "-"
+(setq vemv/shortcuts/global/dash nil)
+
+;; ","
+(setq vemv/shortcuts/global/comma nil)
 
 ;; ";"
 (setq vemv/shortcuts/global/semicolon nil)
@@ -10,104 +16,35 @@
 ;; ":"
 (setq vemv/shortcuts/global/colon nil)
 
-;; "["
-(setq vemv/shortcuts/global/left-bracket nil)
-
-;; "]"
-(setq vemv/shortcuts/global/right-bracket nil)
-
-;; "{"
-(setq vemv/shortcuts/global/left-curly nil)
-
-;; "}"
-(setq vemv/shortcuts/global/right-curly nil)
-
-;; "|"
-(setq vemv/shortcuts/global/bar nil)
-
-;; "'"
-(setq vemv/shortcuts/global/single-quote nil)
-
-;; ","
-(setq vemv/shortcuts/global/comma nil)
+;; "?"
+(setq vemv/shortcuts/global/question-mark nil)
 
 ;; "."
 (setq vemv/shortcuts/global/dot nil)
 
-;; "/"
-(setq vemv/shortcuts/global/slash nil)
+;; "'"
+(setq vemv/shortcuts/global/single-quote nil)
 
-;; "?"
-(setq vemv/shortcuts/global/question-mark nil)
+;; "("
+(setq vemv/shortcuts/global/left-parens nil)
 
-;; "="
-(setq vemv/shortcuts/global/equal nil)
+;; ")"
+(setq vemv/shortcuts/global/right-parens nil)
 
-;; "+"
-(setq vemv/shortcuts/global/plus nil)
-
-;; "<next>"
-(setq vemv/shortcuts/global/next nil)
-
-;; "S-<next>"
-(setq vemv/shortcuts/global/S-next nil)
-
-;; "<prior>"
-(setq vemv/shortcuts/global/prior nil)
-
-;; "S-<prior>"
-(setq vemv/shortcuts/global/S-prior nil)
-
-;; "<end>"
-(setq vemv/shortcuts/global/end nil)
-
-;; "S-<end>"
-(setq vemv/shortcuts/global/S-end nil)
-
-;; "<home>"
-(setq vemv/shortcuts/global/home nil)
-
-;; "S-<home>"
-(setq vemv/shortcuts/global/S-home nil)
-
-;; "<up>"
-(setq vemv/shortcuts/global/up nil)
-
-;; "S-<up>"
-(setq vemv/shortcuts/global/S-up nil)
-
-;; "<down>"
-(setq vemv/shortcuts/global/down nil)
-
-;; "S-<down>"
-(setq vemv/shortcuts/global/S-down nil)
-
-;; "<left>"
-(setq vemv/shortcuts/global/left nil)
-
-;; "S-<left>"
-(setq vemv/shortcuts/global/S-left nil)
-
-;; "<right>"
-(setq vemv/shortcuts/global/right nil)
-
-;; "S-<right>"
-(setq vemv/shortcuts/global/S-right nil)
-
-;; "RET"
-(setq vemv/shortcuts/global/RET nil)
-
-;; "S-RET"
-(setq vemv/shortcuts/global/S-RET nil)
-
-;; "SPC"
-(setq vemv/shortcuts/global/SPC nil)
-
-;; "S-SPC"
-(setq vemv/shortcuts/global/S-SPC nil)
+;; "["
+(setq vemv/shortcuts/global/left-bracket nil)
 
 ;; "[f1]"
 (setq vemv/shortcuts/global/f1 nil)
+
+;; "[f10]"
+(setq vemv/shortcuts/global/f10 nil)
+
+;; "[f11]"
+(setq vemv/shortcuts/global/f11 nil)
+
+;; "[f12]"
+(setq vemv/shortcuts/global/f12 nil)
 
 ;; "[f2]"
 (setq vemv/shortcuts/global/f2 nil)
@@ -133,14 +70,92 @@
 ;; "[f9]"
 (setq vemv/shortcuts/global/f9 nil)
 
-;; "[f10]"
-(setq vemv/shortcuts/global/f10 nil)
+;; "]"
+(setq vemv/shortcuts/global/right-bracket nil)
 
-;; "[f11]"
-(setq vemv/shortcuts/global/f11 nil)
+;; "{"
+(setq vemv/shortcuts/global/left-curly nil)
 
-;; "[f12]"
-(setq vemv/shortcuts/global/f12 nil)
+;; "}"
+(setq vemv/shortcuts/global/right-curly nil)
+
+;; "*"
+(setq vemv/shortcuts/global/star nil)
+
+;; "/"
+(setq vemv/shortcuts/global/slash nil)
+
+;; "`"
+(setq vemv/shortcuts/global/backtick nil)
+
+;; "+"
+(setq vemv/shortcuts/global/plus nil)
+
+;; "<down>"
+(setq vemv/shortcuts/global/down nil)
+
+;; "S-<down>"
+(setq vemv/shortcuts/global/S-down nil)
+
+;; "<end>"
+(setq vemv/shortcuts/global/end nil)
+
+;; "S-<end>"
+(setq vemv/shortcuts/global/S-end nil)
+
+;; "<home>"
+(setq vemv/shortcuts/global/home nil)
+
+;; "S-<home>"
+(setq vemv/shortcuts/global/S-home nil)
+
+;; "<left>"
+(setq vemv/shortcuts/global/left nil)
+
+;; "S-<left>"
+(setq vemv/shortcuts/global/S-left nil)
+
+;; "<next>"
+(setq vemv/shortcuts/global/next nil)
+
+;; "S-<next>"
+(setq vemv/shortcuts/global/S-next nil)
+
+;; "<prior>"
+(setq vemv/shortcuts/global/prior nil)
+
+;; "S-<prior>"
+(setq vemv/shortcuts/global/S-prior nil)
+
+;; "<right>"
+(setq vemv/shortcuts/global/right nil)
+
+;; "S-<right>"
+(setq vemv/shortcuts/global/S-right nil)
+
+;; "<up>"
+(setq vemv/shortcuts/global/up nil)
+
+;; "S-<up>"
+(setq vemv/shortcuts/global/S-up nil)
+
+;; "="
+(setq vemv/shortcuts/global/equal nil)
+
+;; "|"
+(setq vemv/shortcuts/global/bar nil)
+
+;; "RET"
+(setq vemv/shortcuts/global/RET nil)
+
+;; "S-RET"
+(setq vemv/shortcuts/global/S-RET nil)
+
+;; "SPC"
+(setq vemv/shortcuts/global/SPC nil)
+
+;; "S-SPC"
+(setq vemv/shortcuts/global/S-SPC nil)
 
 ;; "C-a"
 (setq vemv/shortcuts/global/primary-a nil)
@@ -310,14 +325,35 @@
 ;; "C-9"
 (setq vemv/shortcuts/global/primary-9 nil)
 
-;; "C-`"
-(setq vemv/shortcuts/global/primary-backtick nil)
+;; "C-_"
+(setq vemv/shortcuts/global/primary-underscore nil)
+
+;; "C--"
+(setq vemv/shortcuts/global/primary-dash nil)
+
+;; "C-,"
+(setq vemv/shortcuts/global/primary-comma nil)
 
 ;; "C-;"
 (setq vemv/shortcuts/global/primary-semicolon nil)
 
 ;; "C-:"
 (setq vemv/shortcuts/global/primary-colon nil)
+
+;; "C-?"
+(setq vemv/shortcuts/global/primary-question-mark nil)
+
+;; "C-."
+(setq vemv/shortcuts/global/primary-dot nil)
+
+;; "C-'"
+(setq vemv/shortcuts/global/primary-single-quote nil)
+
+;; "C-("
+(setq vemv/shortcuts/global/primary-left-parens nil)
+
+;; "C-)"
+(setq vemv/shortcuts/global/primary-right-parens nil)
 
 ;; "C-]"
 (setq vemv/shortcuts/global/primary-right-bracket nil)
@@ -328,41 +364,23 @@
 ;; "C-}"
 (setq vemv/shortcuts/global/primary-right-curly nil)
 
-;; "C-|"
-(setq vemv/shortcuts/global/primary-bar nil)
-
-;; "C-'"
-(setq vemv/shortcuts/global/primary-single-quote nil)
-
-;; "C-,"
-(setq vemv/shortcuts/global/primary-comma nil)
-
-;; "C-."
-(setq vemv/shortcuts/global/primary-dot nil)
+;; "C-*"
+(setq vemv/shortcuts/global/primary-star nil)
 
 ;; "C-/"
 (setq vemv/shortcuts/global/primary-slash nil)
 
-;; "C-?"
-(setq vemv/shortcuts/global/primary-question-mark nil)
-
-;; "C-="
-(setq vemv/shortcuts/global/primary-equal nil)
+;; "C-`"
+(setq vemv/shortcuts/global/primary-backtick nil)
 
 ;; "C-+"
 (setq vemv/shortcuts/global/primary-plus nil)
 
-;; "C-<next>"
-(setq vemv/shortcuts/global/primary-next nil)
+;; "C-<down>"
+(setq vemv/shortcuts/global/primary-down nil)
 
-;; "C-S-<next>"
-(setq vemv/shortcuts/global/primary-S-next nil)
-
-;; "C-<prior>"
-(setq vemv/shortcuts/global/primary-prior nil)
-
-;; "C-S-<prior>"
-(setq vemv/shortcuts/global/primary-S-prior nil)
+;; "C-S-<down>"
+(setq vemv/shortcuts/global/primary-S-down nil)
 
 ;; "C-<end>"
 (setq vemv/shortcuts/global/primary-end nil)
@@ -376,29 +394,41 @@
 ;; "C-S-<home>"
 (setq vemv/shortcuts/global/primary-S-home nil)
 
-;; "C-<up>"
-(setq vemv/shortcuts/global/primary-up nil)
-
-;; "C-S-<up>"
-(setq vemv/shortcuts/global/primary-S-up nil)
-
-;; "C-<down>"
-(setq vemv/shortcuts/global/primary-down nil)
-
-;; "C-S-<down>"
-(setq vemv/shortcuts/global/primary-S-down nil)
-
 ;; "C-<left>"
 (setq vemv/shortcuts/global/primary-left nil)
 
 ;; "C-S-<left>"
 (setq vemv/shortcuts/global/primary-S-left nil)
 
+;; "C-<next>"
+(setq vemv/shortcuts/global/primary-next nil)
+
+;; "C-S-<next>"
+(setq vemv/shortcuts/global/primary-S-next nil)
+
+;; "C-<prior>"
+(setq vemv/shortcuts/global/primary-prior nil)
+
+;; "C-S-<prior>"
+(setq vemv/shortcuts/global/primary-S-prior nil)
+
 ;; "C-<right>"
 (setq vemv/shortcuts/global/primary-right nil)
 
 ;; "C-S-<right>"
 (setq vemv/shortcuts/global/primary-S-right nil)
+
+;; "C-<up>"
+(setq vemv/shortcuts/global/primary-up nil)
+
+;; "C-S-<up>"
+(setq vemv/shortcuts/global/primary-S-up nil)
+
+;; "C-="
+(setq vemv/shortcuts/global/primary-equal nil)
+
+;; "C-|"
+(setq vemv/shortcuts/global/primary-bar nil)
 
 ;; "C-RET"
 (setq vemv/shortcuts/global/primary-RET nil)
@@ -598,14 +628,35 @@
 ;; "M-9"
 (setq vemv/shortcuts/global/secondary-9 nil)
 
-;; "M-`"
-(setq vemv/shortcuts/global/secondary-backtick nil)
+;; "M-_"
+(setq vemv/shortcuts/global/secondary-underscore nil)
+
+;; "M--"
+(setq vemv/shortcuts/global/secondary-dash nil)
+
+;; "M-,"
+(setq vemv/shortcuts/global/secondary-comma nil)
 
 ;; "M-;"
 (setq vemv/shortcuts/global/secondary-semicolon nil)
 
 ;; "M-:"
 (setq vemv/shortcuts/global/secondary-colon nil)
+
+;; "M-?"
+(setq vemv/shortcuts/global/secondary-question-mark nil)
+
+;; "M-."
+(setq vemv/shortcuts/global/secondary-dot nil)
+
+;; "M-'"
+(setq vemv/shortcuts/global/secondary-single-quote nil)
+
+;; "M-("
+(setq vemv/shortcuts/global/secondary-left-parens nil)
+
+;; "M-)"
+(setq vemv/shortcuts/global/secondary-right-parens nil)
 
 ;; "M-["
 (setq vemv/shortcuts/global/secondary-left-bracket nil)
@@ -619,41 +670,23 @@
 ;; "M-}"
 (setq vemv/shortcuts/global/secondary-right-curly nil)
 
-;; "M-|"
-(setq vemv/shortcuts/global/secondary-bar nil)
-
-;; "M-'"
-(setq vemv/shortcuts/global/secondary-single-quote nil)
-
-;; "M-,"
-(setq vemv/shortcuts/global/secondary-comma nil)
-
-;; "M-."
-(setq vemv/shortcuts/global/secondary-dot nil)
+;; "M-*"
+(setq vemv/shortcuts/global/secondary-star nil)
 
 ;; "M-/"
 (setq vemv/shortcuts/global/secondary-slash nil)
 
-;; "M-?"
-(setq vemv/shortcuts/global/secondary-question-mark nil)
-
-;; "M-="
-(setq vemv/shortcuts/global/secondary-equal nil)
+;; "M-`"
+(setq vemv/shortcuts/global/secondary-backtick nil)
 
 ;; "M-+"
 (setq vemv/shortcuts/global/secondary-plus nil)
 
-;; "M-<next>"
-(setq vemv/shortcuts/global/secondary-next nil)
+;; "M-<down>"
+(setq vemv/shortcuts/global/secondary-down nil)
 
-;; "M-S-<next>"
-(setq vemv/shortcuts/global/secondary-S-next nil)
-
-;; "M-<prior>"
-(setq vemv/shortcuts/global/secondary-prior nil)
-
-;; "M-S-<prior>"
-(setq vemv/shortcuts/global/secondary-S-prior nil)
+;; "M-S-<down>"
+(setq vemv/shortcuts/global/secondary-S-down nil)
 
 ;; "M-<end>"
 (setq vemv/shortcuts/global/secondary-end nil)
@@ -667,29 +700,41 @@
 ;; "M-S-<home>"
 (setq vemv/shortcuts/global/secondary-S-home nil)
 
-;; "M-<up>"
-(setq vemv/shortcuts/global/secondary-up nil)
-
-;; "M-S-<up>"
-(setq vemv/shortcuts/global/secondary-S-up nil)
-
-;; "M-<down>"
-(setq vemv/shortcuts/global/secondary-down nil)
-
-;; "M-S-<down>"
-(setq vemv/shortcuts/global/secondary-S-down nil)
-
 ;; "M-<left>"
 (setq vemv/shortcuts/global/secondary-left nil)
 
 ;; "M-S-<left>"
 (setq vemv/shortcuts/global/secondary-S-left nil)
 
+;; "M-<next>"
+(setq vemv/shortcuts/global/secondary-next nil)
+
+;; "M-S-<next>"
+(setq vemv/shortcuts/global/secondary-S-next nil)
+
+;; "M-<prior>"
+(setq vemv/shortcuts/global/secondary-prior nil)
+
+;; "M-S-<prior>"
+(setq vemv/shortcuts/global/secondary-S-prior nil)
+
 ;; "M-<right>"
 (setq vemv/shortcuts/global/secondary-right nil)
 
 ;; "M-S-<right>"
 (setq vemv/shortcuts/global/secondary-S-right nil)
+
+;; "M-<up>"
+(setq vemv/shortcuts/global/secondary-up nil)
+
+;; "M-S-<up>"
+(setq vemv/shortcuts/global/secondary-S-up nil)
+
+;; "M-="
+(setq vemv/shortcuts/global/secondary-equal nil)
+
+;; "M-|"
+(setq vemv/shortcuts/global/secondary-bar nil)
 
 ;; "M-RET"
 (setq vemv/shortcuts/global/secondary-RET nil)
@@ -889,14 +934,35 @@
 ;; "s-9"
 (setq vemv/shortcuts/global/tertiary-9 nil)
 
-;; "s-`"
-(setq vemv/shortcuts/global/tertiary-backtick nil)
+;; "s-_"
+(setq vemv/shortcuts/global/tertiary-underscore nil)
+
+;; "s--"
+(setq vemv/shortcuts/global/tertiary-dash nil)
+
+;; "s-,"
+(setq vemv/shortcuts/global/tertiary-comma nil)
 
 ;; "s-;"
 (setq vemv/shortcuts/global/tertiary-semicolon nil)
 
 ;; "s-:"
 (setq vemv/shortcuts/global/tertiary-colon nil)
+
+;; "s-?"
+(setq vemv/shortcuts/global/tertiary-question-mark nil)
+
+;; "s-."
+(setq vemv/shortcuts/global/tertiary-dot nil)
+
+;; "s-'"
+(setq vemv/shortcuts/global/tertiary-single-quote nil)
+
+;; "s-("
+(setq vemv/shortcuts/global/tertiary-left-parens nil)
+
+;; "s-)"
+(setq vemv/shortcuts/global/tertiary-right-parens nil)
 
 ;; "s-["
 (setq vemv/shortcuts/global/tertiary-left-bracket nil)
@@ -910,41 +976,23 @@
 ;; "s-}"
 (setq vemv/shortcuts/global/tertiary-right-curly nil)
 
-;; "s-|"
-(setq vemv/shortcuts/global/tertiary-bar nil)
-
-;; "s-'"
-(setq vemv/shortcuts/global/tertiary-single-quote nil)
-
-;; "s-,"
-(setq vemv/shortcuts/global/tertiary-comma nil)
-
-;; "s-."
-(setq vemv/shortcuts/global/tertiary-dot nil)
+;; "s-*"
+(setq vemv/shortcuts/global/tertiary-star nil)
 
 ;; "s-/"
 (setq vemv/shortcuts/global/tertiary-slash nil)
 
-;; "s-?"
-(setq vemv/shortcuts/global/tertiary-question-mark nil)
-
-;; "s-="
-(setq vemv/shortcuts/global/tertiary-equal nil)
+;; "s-`"
+(setq vemv/shortcuts/global/tertiary-backtick nil)
 
 ;; "s-+"
 (setq vemv/shortcuts/global/tertiary-plus nil)
 
-;; "s-<next>"
-(setq vemv/shortcuts/global/tertiary-next nil)
+;; "s-<down>"
+(setq vemv/shortcuts/global/tertiary-down nil)
 
-;; "s-S-<next>"
-(setq vemv/shortcuts/global/tertiary-S-next nil)
-
-;; "s-<prior>"
-(setq vemv/shortcuts/global/tertiary-prior nil)
-
-;; "s-S-<prior>"
-(setq vemv/shortcuts/global/tertiary-S-prior nil)
+;; "s-S-<down>"
+(setq vemv/shortcuts/global/tertiary-S-down nil)
 
 ;; "s-<end>"
 (setq vemv/shortcuts/global/tertiary-end nil)
@@ -958,29 +1006,41 @@
 ;; "s-S-<home>"
 (setq vemv/shortcuts/global/tertiary-S-home nil)
 
-;; "s-<up>"
-(setq vemv/shortcuts/global/tertiary-up nil)
-
-;; "s-S-<up>"
-(setq vemv/shortcuts/global/tertiary-S-up nil)
-
-;; "s-<down>"
-(setq vemv/shortcuts/global/tertiary-down nil)
-
-;; "s-S-<down>"
-(setq vemv/shortcuts/global/tertiary-S-down nil)
-
 ;; "s-<left>"
 (setq vemv/shortcuts/global/tertiary-left nil)
 
 ;; "s-S-<left>"
 (setq vemv/shortcuts/global/tertiary-S-left nil)
 
+;; "s-<next>"
+(setq vemv/shortcuts/global/tertiary-next nil)
+
+;; "s-S-<next>"
+(setq vemv/shortcuts/global/tertiary-S-next nil)
+
+;; "s-<prior>"
+(setq vemv/shortcuts/global/tertiary-prior nil)
+
+;; "s-S-<prior>"
+(setq vemv/shortcuts/global/tertiary-S-prior nil)
+
 ;; "s-<right>"
 (setq vemv/shortcuts/global/tertiary-right nil)
 
 ;; "s-S-<right>"
 (setq vemv/shortcuts/global/tertiary-S-right nil)
+
+;; "s-<up>"
+(setq vemv/shortcuts/global/tertiary-up nil)
+
+;; "s-S-<up>"
+(setq vemv/shortcuts/global/tertiary-S-up nil)
+
+;; "s-="
+(setq vemv/shortcuts/global/tertiary-equal nil)
+
+;; "s-|"
+(setq vemv/shortcuts/global/tertiary-bar nil)
 
 ;; "s-RET"
 (setq vemv/shortcuts/global/tertiary-RET nil)

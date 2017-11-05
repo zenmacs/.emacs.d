@@ -7,6 +7,11 @@
 (setq vemv/shortcuts/global/equal                   (argless (insert "=")))
 (setq vemv/shortcuts/global/plus                    (argless (insert "+")))
 (setq vemv/shortcuts/global/SPC                     (argless (insert " ")))
+(setq vemv/shortcuts/global/star                    (argless (insert "*")))
+(setq vemv/shortcuts/global/left-parens             (argless (insert "(")))
+(setq vemv/shortcuts/global/right-parens            (argless (insert ")")))
+(setq vemv/shortcuts/global/dash                    (argless (insert "-")))
+(setq vemv/shortcuts/global/underscore              (argless (insert "_")))
 
 (setq vemv/shortcuts/global/backspace               vemv/backspace)
 (setq vemv/shortcuts/global/down                    'next-line)
