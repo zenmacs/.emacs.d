@@ -34,6 +34,27 @@
 ;; "["
 (setq vemv/shortcuts/global/left-bracket nil)
 
+;; "!"
+(setq vemv/shortcuts/global/bang nil)
+
+;; "@"
+(setq vemv/shortcuts/global/at nil)
+
+;; "#"
+(setq vemv/shortcuts/global/hash nil)
+
+;; "$"
+(setq vemv/shortcuts/global/dollar nil)
+
+;; "%"
+(setq vemv/shortcuts/global/percent nil)
+
+;; "^"
+(setq vemv/shortcuts/global/caret nil)
+
+;; "&"
+(setq vemv/shortcuts/global/ampersand nil)
+
 ;; "[f1]"
 (setq vemv/shortcuts/global/f1 nil)
 
@@ -355,6 +376,27 @@
 ;; "C-)"
 (setq vemv/shortcuts/global/primary-right-parens nil)
 
+;; "C-!"
+(setq vemv/shortcuts/global/primary-bang nil)
+
+;; "C-@"
+(setq vemv/shortcuts/global/primary-at nil)
+
+;; "C-#"
+(setq vemv/shortcuts/global/primary-hash nil)
+
+;; "C-$"
+(setq vemv/shortcuts/global/primary-dollar nil)
+
+;; "C-%"
+(setq vemv/shortcuts/global/primary-percent nil)
+
+;; "C-^"
+(setq vemv/shortcuts/global/primary-caret nil)
+
+;; "C-&"
+(setq vemv/shortcuts/global/primary-ampersand nil)
+
 ;; "C-]"
 (setq vemv/shortcuts/global/primary-right-bracket nil)
 
@@ -661,6 +703,27 @@
 ;; "M-["
 (setq vemv/shortcuts/global/secondary-left-bracket nil)
 
+;; "M-!"
+(setq vemv/shortcuts/global/secondary-bang nil)
+
+;; "M-@"
+(setq vemv/shortcuts/global/secondary-at nil)
+
+;; "M-#"
+(setq vemv/shortcuts/global/secondary-hash nil)
+
+;; "M-$"
+(setq vemv/shortcuts/global/secondary-dollar nil)
+
+;; "M-%"
+(setq vemv/shortcuts/global/secondary-percent nil)
+
+;; "M-^"
+(setq vemv/shortcuts/global/secondary-caret nil)
+
+;; "M-&"
+(setq vemv/shortcuts/global/secondary-ampersand nil)
+
 ;; "M-]"
 (setq vemv/shortcuts/global/secondary-right-bracket nil)
 
@@ -966,6 +1029,27 @@
 
 ;; "s-["
 (setq vemv/shortcuts/global/tertiary-left-bracket nil)
+
+;; "s-!"
+(setq vemv/shortcuts/global/tertiary-bang nil)
+
+;; "s-@"
+(setq vemv/shortcuts/global/tertiary-at nil)
+
+;; "s-#"
+(setq vemv/shortcuts/global/tertiary-hash nil)
+
+;; "s-$"
+(setq vemv/shortcuts/global/tertiary-dollar nil)
+
+;; "s-%"
+(setq vemv/shortcuts/global/tertiary-percent nil)
+
+;; "s-^"
+(setq vemv/shortcuts/global/tertiary-caret nil)
+
+;; "s-&"
+(setq vemv/shortcuts/global/tertiary-ampersand nil)
 
 ;; "s-]"
 (setq vemv/shortcuts/global/tertiary-right-bracket nil)
