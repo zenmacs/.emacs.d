@@ -1,5 +1,3 @@
-# XXX these commands should File.write for greater automation / bisecting
-
 # Certain C-<char> keybindings are forbidden
 NO_C = %w([ i m g)
 
@@ -51,16 +49,18 @@ REPLACEMENTS = Hash.new{|map, key| key }.merge({
 SPECIAL = REPLACEMENTS.keys
 
 def emit_setqs scope: 'global', modifier_mappings: {"primary" => 'C', "secondary" => 'M', "tertiary" => 's'}
-
+  
+  result = "(provide 'vemv.shortcuts.global.base)\n;; generated with gen.rb\n"
+  
   SPECIAL.each do |char|
     
-    puts %|
+    result += %|
 ;; "#{char}"
-(setq vemv/shortcuts/#{scope}/#{REPLACEMENTS[char]} nil)|
+(setq vemv/shortcuts/#{scope}/#{REPLACEMENTS[char]} nil)\n|
 
-    puts %|
+    result += %|
 ;; "S-#{char}"
-(setq vemv/shortcuts/#{scope}/S-#{REPLACEMENTS[char]} nil)| unless (char.include?('[f') || DUALS.include?(char))
+(setq vemv/shortcuts/#{scope}/S-#{REPLACEMENTS[char]} nil)\n| unless (char.include?('[f') || DUALS.include?(char))
     
   end
   
@@ -70,27 +70,39 @@ def emit_setqs scope: 'global', modifier_mappings: {"primary" => 'C', "secondary
       next if char.include?('[f')
       next if NO_C.include?(char) && modifier_mappings[modifier] == 'C'
       
-      puts %|
+      result += %|
 ;; "#{modifier_mappings[modifier]}-#{char}"
-(setq vemv/shortcuts/#{scope}/#{modifier}-#{REPLACEMENTS[char]} nil)|
+(setq vemv/shortcuts/#{scope}/#{modifier}-#{REPLACEMENTS[char]} nil)\n|
       
-      puts %|
+      result += %|
 ;; "#{modifier_mappings[modifier]}-S-#{char}"
-(setq vemv/shortcuts/#{scope}/#{modifier}-S-#{REPLACEMENTS[char]} nil)| unless DUALS.include?(char)
+(setq vemv/shortcuts/#{scope}/#{modifier}-S-#{REPLACEMENTS[char]} nil)\n| unless DUALS.include?(char)
     end
   end
-
+  
+  File.write 'lib/non-submodules/vemv.shortcuts.global.base.el', result
+  
 end
 
 def emit_bindings scope='global', modifier_mappings: {"primary" => 'C', "secondary" => 'M', "tertiary" => 's'}
+  
+  result = %|(require 'vemv.lang)
+(provide 'vemv.data.bindings)
+(require 'vemv.shortcuts.global)
+(require 'vemv.shortcuts.clojure)
+;; generated with gen.rb
 
+(setq vemv/global-key-bindings
+  (vemv/hash-map
+|
+  
   SPECIAL.each do |char|
     command = "vemv/shortcuts/#{scope}/#{REPLACEMENTS[char]}"
     left = char.include?('[f') ? "#{char}" : %|"#{char}"|
-    puts %|#{left} (argless (if #{command} (funcall #{command})))|
+    result += %|    #{left} (argless (if #{command} (funcall #{command})))\n|
     unless char.include?('[f') || DUALS.include?(char)
       command = "vemv/shortcuts/#{scope}/S-#{REPLACEMENTS[char]}"
-      puts %|"S-#{char}" (argless (if #{command} (funcall #{command})))|
+      result += %|    "S-#{char}" (argless (if #{command} (funcall #{command})))\n|
     end
   end
   
@@ -99,12 +111,16 @@ def emit_bindings scope='global', modifier_mappings: {"primary" => 'C', "seconda
       next if char.include?('[f')
       next if NO_C.include?(char) && modifier_mappings[modifier] == 'C'
       command = "vemv/shortcuts/#{scope}/#{modifier}-#{REPLACEMENTS[char]}"
-      puts %|"#{modifier_mappings[modifier]}-#{char}" (argless (if #{command} (funcall #{command})))|
+      result += %|    "#{modifier_mappings[modifier]}-#{char}" (argless (if #{command} (funcall #{command})))\n|
       s_command = "vemv/shortcuts/#{scope}/#{modifier}-S-#{REPLACEMENTS[char]}"
-      puts %|"#{modifier_mappings[modifier]}-S-#{char}" (argless (if #{s_command} (funcall #{s_command})))|
+      result += %|    "#{modifier_mappings[modifier]}-S-#{char}" (argless (if #{s_command} (funcall #{s_command})))\n|
     end
   end
-
+  
+  result += %|))|
+  
+  File.write 'lib/non-submodules/vemv.data.bindings.el', result
+  
 end
 
 def emit_to_remove scope='global', modifier_mappings: {"primary" => 'C', "secondary" => 'M', "tertiary" => 's'}
@@ -130,3 +146,6 @@ def emit_to_remove scope='global', modifier_mappings: {"primary" => 'C', "second
   ).flatten.compact.map{|x| x.gsub(/^\"C/, "\"\\C").gsub(/^\"M/, "\"\\M") }.map{|a| !a.include?('"') && !a.include?("[f") ? %|"#{a}"| : a }.reject{|a| a.include? "<" }
   puts result.join(" ")
 end
+
+emit_setqs
+emit_bindings

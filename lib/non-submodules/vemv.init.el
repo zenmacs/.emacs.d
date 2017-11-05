@@ -42,6 +42,7 @@
 (require 'fiplr)
 (require 'vemv.lang)
 (require 'vemv.data)
+(require 'vemv.data.bindings)
 (require 'vemv.theme)
 (provide 'vemv.init)
 
