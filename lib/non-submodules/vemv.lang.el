@@ -858,3 +858,78 @@ Comments get ignored, this is, point will only move as long as its position stil
                t))
       (call-interactively 'company-complete)
       (call-interactively 'company-dabbrev)))
+
+(setq vemv/c-j
+  (argless
+         (if (and (not cider-launched) vemv/using-nrepl)
+           (progn
+            (setq cider-launched t)
+            (setq vemv-cider-connecting t)
+            (delay
+             (argless
+              (funcall (vemv/project-initializers))
+              (select-window vemv/main_window)
+              (cider-jack-in-clojurescript))
+             1))
+           (if vemv/using-nrepl
+             (if (cider-connected-p)
+               (if (vemv/current-main-buffer-is-cljs)
+                 (vemv/send :cljs)
+                 (vemv/send :clj)))
+             (vemv/send :shell)))))
+
+(setq vemv/control-backtick
+  (argless
+         (let* ((old cider-prompt-for-symbol))
+               (setq cider-prompt-for-symbol nil)
+               (cider-find-var)
+               (setq cider-prompt-for-symbol old)
+               (vemv/advice-nrepl))))
+
+(setq vemv/c-f
+  (argless (ignore-errors
+                  (call-interactively 'search-forward)
+                  (setq vemv-last-search (first minibuffer-history)))))
+
+(setq vemv/backspace
+  (argless (if (region-active-p)
+                           (progn (call-interactively 'kill-region)
+                                  (pop kill-ring))
+                           (paredit-backward-delete))))
+
+(setq vemv/shift-backspace
+  (argless (if (region-active-p)
+                             (progn (call-interactively 'kill-region))
+                             (paredit-backward-delete))))
+
+(setq vemv/alt-t
+  (argless
+         (setq vemv/previous-buffer (current-buffer))
+         (vemv/fiplr (lambda (filename)
+                             (find-file filename)
+                             (when (not (eq vemv/previous-buffer (current-buffer)))
+                               (kill-buffer vemv/previous-buffer))))))
+
+(setq vemv/c-n
+  (argless (make-frame `((width . ,(frame-width)) (height . ,(frame-height)))))) ;; in order to kill a frame, use the window system's standard exit (e.g. Alt-F4) command. The other frames won't close.
+
+(setq vemv/c-p
+  (argless (ignore-errors (search-forward vemv-last-search))))
+  
+(defun vemv/smex ()
+  (when vemv/launched (smex)))
+  
+(setq vemv/alt-a (argless (kill-new (vemv/sexpr-content :backward))))
+
+(setq vemv/alt-k (argless (vemv/kill :backward)))
+
+(setq vemv/alt-shift-k (argless (kill-new (vemv/kill :backward))))
+
+(defun vemv/cut ()
+  (kill-new (vemv/kill)))
+
+(setq vemv/f4
+  (argless
+        (save-excursion
+         (select-window vemv/repl2)
+         (cider-repl-clear-buffer))))

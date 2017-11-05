@@ -54,3 +54,9 @@
        (concat vemv/project-clojure-dir "/src/" vemv/project-ns-prefix "/core.cljs")))
 
 (setq vemv-cleaning-namespaces nil)
+
+(setq vemv/modifiers/primary "C")
+
+(setq vemv/modifiers/secondary "M")
+
+(setq vemv/modifiers/tertiary "s")

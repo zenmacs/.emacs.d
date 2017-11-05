@@ -5,11 +5,12 @@
   (setq inhibit-startup-message t)
   (setq-default line-spacing 1) ;; NOTE: might mess up the echo area
   
-  (setq inhibit-message t) ;; Silence minibuffer
-  (setq debug-on-error nil)
-  (setq debugger (lambda (&rest _))) ;; Disable annoying *Backtrace* buffer
-  (setq command-error-function (lambda (&rest _))) ;; Silence "End of buffer" messages
-  (defun minibuffer-message (&rest _)) ;; Silence "No matching parenthesis found"
+  (when t
+    (setq inhibit-message t) ;; Silence minibuffer
+    (setq debug-on-error nil)
+    (setq debugger (lambda (&rest _))) ;; Disable annoying *Backtrace* buffer
+    (setq command-error-function (lambda (&rest _))) ;; Silence "End of buffer" messages
+    (defun minibuffer-message (&rest _))) ;; Silence "No matching parenthesis found"
   
   (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
   (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
