@@ -4,6 +4,8 @@ NO_C = %w([ i m g)
 # there's no C-S-semicolon, but C-colon etc
 DUALS = %w(` ~ + = [ ] { } | \\ ; : ' " , < . > / ? ! @ # $ % ^ & * ( ) - _ 1 2 3 4 5 6 7 8 9 0)
 
+SELF_INSERTING = (DUALS + %w(SPC))
+
 # XXX add all possible members of DUALS here
 # no backlash for now - don't want to escape things
 REPLACEMENTS = Hash.new{|map, key| key }.merge({
@@ -68,7 +70,7 @@ def emit_setqs scope: 'global', modifier_mappings: {"primary" => 'C', "secondary
     
     result += %|
 ;; "#{char}"
-(setq vemv/shortcuts/#{scope}/#{REPLACEMENTS[char]} nil)\n|
+(setq vemv/shortcuts/#{scope}/#{REPLACEMENTS[char]} nil)\n| unless SELF_INSERTING.include?(char)
 
     result += %|
 ;; "S-#{char}"
@@ -111,7 +113,7 @@ def emit_bindings scope='global', modifier_mappings: {"primary" => 'C', "seconda
   SPECIAL.each do |char|
     command = "vemv/shortcuts/#{scope}/#{REPLACEMENTS[char]}"
     left = char.include?('[f') ? "#{char}" : %|"#{char}"|
-    result += %|    #{left} (argless (if #{command} (funcall #{command})))\n|
+    result += %|    #{left} (argless (if #{command} (funcall #{command})))\n| unless SELF_INSERTING.include?(char)
     unless char.include?('[f') || DUALS.include?(char)
       command = "vemv/shortcuts/#{scope}/S-#{REPLACEMENTS[char]}"
       result += %|    "S-#{char}" (argless (if #{command} (funcall #{command})))\n|

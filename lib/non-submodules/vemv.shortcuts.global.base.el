@@ -1,60 +1,6 @@
 (provide 'vemv.shortcuts.global.base)
 ;; generated with gen.rb
 
-;; "_"
-(setq vemv/shortcuts/global/underscore nil)
-
-;; "-"
-(setq vemv/shortcuts/global/dash nil)
-
-;; ","
-(setq vemv/shortcuts/global/comma nil)
-
-;; ";"
-(setq vemv/shortcuts/global/semicolon nil)
-
-;; ":"
-(setq vemv/shortcuts/global/colon nil)
-
-;; "?"
-(setq vemv/shortcuts/global/question-mark nil)
-
-;; "."
-(setq vemv/shortcuts/global/dot nil)
-
-;; "'"
-(setq vemv/shortcuts/global/single-quote nil)
-
-;; "("
-(setq vemv/shortcuts/global/left-parens nil)
-
-;; ")"
-(setq vemv/shortcuts/global/right-parens nil)
-
-;; "["
-(setq vemv/shortcuts/global/left-bracket nil)
-
-;; "!"
-(setq vemv/shortcuts/global/bang nil)
-
-;; "@"
-(setq vemv/shortcuts/global/at nil)
-
-;; "#"
-(setq vemv/shortcuts/global/hash nil)
-
-;; "$"
-(setq vemv/shortcuts/global/dollar nil)
-
-;; "%"
-(setq vemv/shortcuts/global/percent nil)
-
-;; "^"
-(setq vemv/shortcuts/global/caret nil)
-
-;; "&"
-(setq vemv/shortcuts/global/ampersand nil)
-
 ;; "[f1]"
 (setq vemv/shortcuts/global/f1 nil)
 
@@ -90,27 +36,6 @@
 
 ;; "[f9]"
 (setq vemv/shortcuts/global/f9 nil)
-
-;; "]"
-(setq vemv/shortcuts/global/right-bracket nil)
-
-;; "{"
-(setq vemv/shortcuts/global/left-curly nil)
-
-;; "}"
-(setq vemv/shortcuts/global/right-curly nil)
-
-;; "*"
-(setq vemv/shortcuts/global/star nil)
-
-;; "/"
-(setq vemv/shortcuts/global/slash nil)
-
-;; "`"
-(setq vemv/shortcuts/global/backtick nil)
-
-;; "+"
-(setq vemv/shortcuts/global/plus nil)
 
 ;; "<down>"
 (setq vemv/shortcuts/global/down nil)
@@ -160,20 +85,11 @@
 ;; "S-<up>"
 (setq vemv/shortcuts/global/S-up nil)
 
-;; "="
-(setq vemv/shortcuts/global/equal nil)
-
-;; "|"
-(setq vemv/shortcuts/global/bar nil)
-
 ;; "RET"
 (setq vemv/shortcuts/global/RET nil)
 
 ;; "S-RET"
 (setq vemv/shortcuts/global/S-RET nil)
-
-;; "SPC"
-(setq vemv/shortcuts/global/SPC nil)
 
 ;; "S-SPC"
 (setq vemv/shortcuts/global/S-SPC nil)
