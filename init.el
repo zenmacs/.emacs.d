@@ -30,3 +30,8 @@
 
 (require 'vemv.project)
 (require 'vemv.init)
+
+(when (file-exists-p "~/.emacs.d.overrides/")
+  (let ((default-directory "~/.emacs.d.overrides/"))
+        (normal-top-level-add-subdirs-to-load-path))
+  (require 'emacs.d.overrides))
