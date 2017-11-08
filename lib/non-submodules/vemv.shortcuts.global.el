@@ -2,11 +2,11 @@
 (require 'vemv.shortcuts.global.base)
 (provide 'vemv.shortcuts.global)
 
-(setq vemv/shortcuts/global/backspace               vemv/backspace
+(setq vemv/shortcuts/global/backspace               'vemv/backspace
       vemv/shortcuts/global/down                    'next-line
       vemv/shortcuts/global/end                     'vemv/end-of-line-or-code
       vemv/shortcuts/global/f11                     'vemv/maximize
-      vemv/shortcuts/global/f4                      vemv/f4
+      vemv/shortcuts/global/f4                      'vemv/clear-cider-repl-buffer
       vemv/shortcuts/global/f6                      'vemv/toggle-ns-hiding
       vemv/shortcuts/global/f7                      'vemv/previous-file-buffer
       vemv/shortcuts/global/f8                      'vemv/after-file-open
@@ -20,12 +20,12 @@
       vemv/shortcuts/global/primary-backtick        'other-frame
       vemv/shortcuts/global/primary-down            'forward-paragraph
       vemv/shortcuts/global/primary-equal           'mark-whole-buffer
-      vemv/shortcuts/global/primary-f               vemv/c-f
-      vemv/shortcuts/global/primary-j               vemv/c-j
+      vemv/shortcuts/global/primary-f               'vemv/search-in-this-buffer
+      vemv/shortcuts/global/primary-j               'vemv/clojure-init-or-send-sexpr
       vemv/shortcuts/global/primary-k               'vemv/kill
-      vemv/shortcuts/global/primary-n               vemv/c-n
+      vemv/shortcuts/global/primary-n               'vemv/new-frame
       vemv/shortcuts/global/primary-o               'vemv/open
-      vemv/shortcuts/global/primary-p               vemv/c-p
+      vemv/shortcuts/global/primary-p               'vemv/repeat-last-search-in-this-buffer
       vemv/shortcuts/global/primary-q               'save-buffers-kill-terminal
       vemv/shortcuts/global/primary-s               'vemv/save
       vemv/shortcuts/global/primary-S-z             'undo-tree-redo
@@ -38,20 +38,20 @@
       vemv/shortcuts/global/primary-z               'undo-tree-undo
       vemv/shortcuts/global/RET                     'newline
       vemv/shortcuts/global/right                   'right-char
-      vemv/shortcuts/global/S-backspace             vemv/shift-backspace
-      vemv/shortcuts/global/secondary-a             vemv/alt-a
+      vemv/shortcuts/global/S-backspace             'vemv/shift-backspace
+      vemv/shortcuts/global/secondary-a             'vemv/copy-sexpr-content-backward
       vemv/shortcuts/global/secondary-backspace     'paredit-backward-kill-word
       vemv/shortcuts/global/secondary-colon         (argless (call-interactively 'eval-expression))
-      vemv/shortcuts/global/secondary-k             vemv/alt-k
+      vemv/shortcuts/global/secondary-k             'vemv/kill-backward
       vemv/shortcuts/global/secondary-left-bracket  'paredit-backward
       vemv/shortcuts/global/secondary-next          'previous-buffer
       vemv/shortcuts/global/secondary-prior         'next-buffer
       vemv/shortcuts/global/secondary-right-bracket 'paredit-forward
-      vemv/shortcuts/global/secondary-S-k           vemv/alt-shift-k
-      vemv/shortcuts/global/secondary-t             vemv/alt-t
+      vemv/shortcuts/global/secondary-S-k           'vemv/kill-backward-copying-content
+      vemv/shortcuts/global/secondary-t             'vemv/open-file-via-fiplr-then-close-previous-buffer
       vemv/shortcuts/global/secondary-up            'paredit-splice-sexp-killing-backward
       vemv/shortcuts/global/secondary-x             'vemv/smex
-      vemv/shortcuts/global/tertiary-backtick       'vemv/control-backtick
+      vemv/shortcuts/global/tertiary-backtick       'vemv/jump-to-clojure-definition
       vemv/shortcuts/global/tertiary-end            'end-of-buffer
       vemv/shortcuts/global/tertiary-home           'beginning-of-buffer
       vemv/shortcuts/global/tertiary-j              'cider-eval-sexp-at-point
