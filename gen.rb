@@ -47,6 +47,7 @@ REPLACEMENTS = Hash.new{|map, key| key }.merge({
   "/" => 'slash',
   "`" => 'backtick',
   "+" => 'plus',
+  "<backspace>" => "backspace",
   "<down>" => "down",
   "<end>" => "end",
   "<home>" => "home",

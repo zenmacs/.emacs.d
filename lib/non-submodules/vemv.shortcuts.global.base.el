@@ -37,6 +37,12 @@
 ;; "[f9]"
 (setq vemv/shortcuts/global/f9 nil)
 
+;; "<backspace>"
+(setq vemv/shortcuts/global/backspace nil)
+
+;; "S-<backspace>"
+(setq vemv/shortcuts/global/S-backspace nil)
+
 ;; "<down>"
 (setq vemv/shortcuts/global/down nil)
 
@@ -333,6 +339,12 @@
 
 ;; "C-+"
 (setq vemv/shortcuts/global/primary-plus nil)
+
+;; "C-<backspace>"
+(setq vemv/shortcuts/global/primary-backspace nil)
+
+;; "C-S-<backspace>"
+(setq vemv/shortcuts/global/primary-S-backspace nil)
 
 ;; "C-<down>"
 (setq vemv/shortcuts/global/primary-down nil)
@@ -664,6 +676,12 @@
 ;; "M-+"
 (setq vemv/shortcuts/global/secondary-plus nil)
 
+;; "M-<backspace>"
+(setq vemv/shortcuts/global/secondary-backspace nil)
+
+;; "M-S-<backspace>"
+(setq vemv/shortcuts/global/secondary-S-backspace nil)
+
 ;; "M-<down>"
 (setq vemv/shortcuts/global/secondary-down nil)
 
@@ -993,6 +1011,12 @@
 
 ;; "s-+"
 (setq vemv/shortcuts/global/tertiary-plus nil)
+
+;; "s-<backspace>"
+(setq vemv/shortcuts/global/tertiary-backspace nil)
+
+;; "s-S-<backspace>"
+(setq vemv/shortcuts/global/tertiary-S-backspace nil)
 
 ;; "s-<down>"
 (setq vemv/shortcuts/global/tertiary-down nil)
