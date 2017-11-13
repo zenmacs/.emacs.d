@@ -249,17 +249,6 @@
 (vemv-source "/Users/vemv/.ldap")
 
 (setenv "PATH" (concat (getenv "PATH") ":" vemv-home "/bin"))
-(setenv "GPM_SRC" "/Users/vemv/gpm/src")
-(setenv "FIGW_ADDR" "0.0.0.0")
-(setenv "EXTEND_IPERSISTENTVECTOR" "true")
-(setenv "FIGWHEEL_DESKTOP_NOTIFICATIONS" "true")
-(setenv "HORIZON_DISABLE_SPINNERS_ANIMATION" "true")
-(setenv "ENABLE_DEVCARDS_IN_DEV" "true")
-(setenv "ENABLE_DEVCARDS_IN_DEV_WITH_TESTS" "true")
-;; (setenv "HORIZON_ENABLE_REPL_TESTING" "true")
-;; (setenv "HORIZON_FG_HARD_RELOAD" "true")
-;; (setenv "USE_YOURKIT_AGENT" "true")
-
 ;; Important - remove keybindings before (vemv/initial-layout) so M-x cannot interrupt
 
 (dolist (key vemv/local-key-bindings-to-remove)
