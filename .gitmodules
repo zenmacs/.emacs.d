@@ -13,9 +13,6 @@
 [submodule "lib/dash"]
 	path = lib/dash
 	url = git@github.com:magnars/dash.el.git
-[submodule "lib/yasnippet"]
-	path = lib/yasnippet
-	url = https://github.com/capitaomorte/yasnippet
 [submodule "lib/project-explorer"]
 	path = lib/project-explorer
 	url = https://github.com/sabof/project-explorer

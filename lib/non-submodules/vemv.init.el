@@ -22,7 +22,6 @@
 (cua-mode 1)
 (blink-cursor-mode -1)
 
-(require 'yasnippet)
 (require 'saveplace)
 (require 'dash)
 (require 'popup)
@@ -56,14 +55,11 @@
 
 (add-to-list 'exec-path (concat vemv-home "/bin"))
 
-(yas-reload-all)
 (menu-bar-mode)
-(yas-global-mode 1)
 (global-auto-revert-mode t) ;; refresh buffers on external changes to the underlying files
 
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq initial-scratch-message "")
-(setq yas-use-menu nil)
 
 (setq require-final-newline 't)
 (global-hl-line-mode t)
