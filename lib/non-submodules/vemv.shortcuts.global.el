@@ -13,6 +13,7 @@
       vemv/shortcuts/global/f9                      'vemv/next-file-buffer
       vemv/shortcuts/global/home                    'back-to-indentation
       vemv/shortcuts/global/left                    'left-char
+      vemv/shortcuts/global/next                    'cua-scroll-up
       vemv/shortcuts/global/primary-3               'vemv/indent
       vemv/shortcuts/global/primary-a               'vemv/copy-selection-or-next-sexpr
       vemv/shortcuts/global/primary-b               'vemv/duplicate
@@ -32,10 +33,12 @@
       vemv/shortcuts/global/primary-semicolon       'toggle-truncate-lines
       vemv/shortcuts/global/primary-SPC             'cua-set-mark
       vemv/shortcuts/global/primary-t               'vemv/fiplr
+      vemv/shortcuts/global/primary-u               'cljr-add-missing-libspec
       vemv/shortcuts/global/primary-up              'backward-paragraph
       vemv/shortcuts/global/primary-v               'cua-paste
       vemv/shortcuts/global/primary-w               'vemv/close-this
       vemv/shortcuts/global/primary-z               'undo-tree-undo
+      vemv/shortcuts/global/prior                   'cua-scroll-down
       vemv/shortcuts/global/RET                     'newline
       vemv/shortcuts/global/right                   'right-char
       vemv/shortcuts/global/S-backspace             'vemv/shift-backspace

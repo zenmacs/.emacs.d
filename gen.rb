@@ -1,7 +1,7 @@
 # Certain C-<char> keybindings are forbidden
 NO_C = %w([ i m g ~)
 
-# there's no C-S-semicolon, but C-colon etc
+# there's no C-S-semicolon, but C-colon, and so on
 DUALS = %w(` ~ + = [ ] { } | \\ ; : ' " , < . > / ? ! @ # $ % ^ & * ( ) - _ 1 2 3 4 5 6 7 8 9 0)
 
 SELF_INSERTING = (DUALS + %w(SPC))
