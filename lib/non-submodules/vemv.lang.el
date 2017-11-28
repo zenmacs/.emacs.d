@@ -947,9 +947,15 @@ Comments get ignored, this is, point will only move as long as its position stil
   (interactive)
   (kill-new (vemv/kill)))
 
+(defmacro vemv/save-window-excursion (&rest forms)
+  `(let ((current-window (selected-window)))
+     (save-excursion
+       ,@forms)
+     (vemv/safe-select-window current-window)))
+
 (defun vemv/clear-cider-repl-buffer ()
   (interactive)
-  (save-excursion
+  (vemv/save-window-excursion
    (select-window vemv/repl2)
    (cider-repl-clear-buffer)))
 
