@@ -27,6 +27,7 @@
       vemv/shortcuts/global/primary-n               'vemv/new-frame
       vemv/shortcuts/global/primary-o               'vemv/open
       vemv/shortcuts/global/primary-p               'vemv/repeat-last-search-in-this-buffer
+      vemv/shortcuts/global/primary-r               'vemv/test-this-ns
       vemv/shortcuts/global/primary-q               'save-buffers-kill-terminal
       vemv/shortcuts/global/primary-s               'vemv/save
       vemv/shortcuts/global/primary-S-z             'undo-tree-redo

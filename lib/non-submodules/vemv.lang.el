@@ -947,3 +947,8 @@ Comments get ignored, this is, point will only move as long as its position stil
   (save-excursion
    (select-window vemv/repl2)
    (cider-repl-clear-buffer)))
+
+(defun vemv/test-this-ns ()
+  (vemv/send (if (vemv/current-main-buffer-is-cljs) :cljs :clj)
+             nil
+             (concat "(cljs.test/run-tests '" (vemv/current-ns) ")")))
