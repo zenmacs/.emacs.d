@@ -15,6 +15,7 @@
       vemv/shortcuts/global/left                    'left-char
       vemv/shortcuts/global/next                    'cua-scroll-up
       vemv/shortcuts/global/primary-3               'vemv/indent
+      vemv/shortcuts/global/primary-8               'vemv/toggle-verbosity
       vemv/shortcuts/global/primary-a               'vemv/copy-selection-or-next-sexpr
       vemv/shortcuts/global/primary-b               'vemv/duplicate
       vemv/shortcuts/global/primary-backspace       'vemv/delete-this-line

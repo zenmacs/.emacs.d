@@ -1,16 +1,33 @@
 (package-initialize)
 
+(setq vemv/original-debugger #'debug)
+(setq vemv/original-command-error-function #'command-error-default-function)
+(setq vemv/original-minibuffer-message #'minibuffer-message)
+
 (progn "Stuff that needs to be performed immediately, for a visually pleasant startup"
 
-  (setq inhibit-startup-message t)
   (setq-default line-spacing 1) ;; NOTE: might mess up the echo area
   
-  (when t
-    (setq inhibit-message t) ;; Silence minibuffer
-    (setq debug-on-error nil)
-    (setq debugger (lambda (&rest _))) ;; Disable annoying *Backtrace* buffer
-    (setq command-error-function (lambda (&rest _))) ;; Silence "End of buffer" messages
-    (defun minibuffer-message (&rest _))) ;; Silence "No matching parenthesis found"
+  ;; set to the opposite of the initially desired value, since it will be toggled below
+  (setq vemv/verbose-mode t)
+
+  (defun vemv/toggle-verbosity ()
+    (setq vemv/verbose-mode (not vemv/verbose-mode))
+    (setq inhibit-startup-message (not vemv/verbose-mode))
+    (setq inhibit-message (not vemv/verbose-mode)) ;; Silence minibuffer
+    (setq debug-on-error vemv/verbose-mode)
+    (setq debugger (if vemv/verbose-mode ;; Disable annoying *Backtrace* buffer
+                     vemv/original-debugger
+                     (lambda (&rest _))))
+    (setq command-error-function (if vemv/verbose-mode ;; Silence "End of buffer" messages
+                                    vemv/original-command-error-function
+                                    (lambda (&rest _))))
+    (defun minibuffer-message (&rest args) ;; Silence "No matching parenthesis found"
+      (if vemv/verbose-mode
+         (apply vemv/original-minibuffer-message args)
+         nil)))
+  
+  (vemv/toggle-verbosity)
   
   (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
   (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
