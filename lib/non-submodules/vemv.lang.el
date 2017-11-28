@@ -784,14 +784,17 @@ Comments get ignored, this is, point will only move as long as its position stil
   (unless (vemv/contains? (buffer-name) ".clj")
           (vemv/next-file-buffer)))
 
-(defun vemv/good-buffer-p ()
+(defun vemv/noncloseable-buffer-p ()
   (-any? (lambda (x) (vemv/contains? (buffer-name) x))
-         (list ".clj"
-               vemv/clj-repl-name
+         (list vemv/clj-repl-name
                vemv/cljs-repl-name
                "project-explorer"
                "shell-1"
                "scratch")))
+
+(defun vemv/good-buffer-p ()
+  (-any? (lambda (x) (vemv/contains? (buffer-name) x))
+         (list ".clj")))
 
 (defun vemv/good-window-p ()
   (or (eq (selected-window) vemv/main_window)
@@ -818,8 +821,10 @@ Comments get ignored, this is, point will only move as long as its position stil
 
 (defun vemv/close-this ()
   (interactive)
-  (if (or (not (vemv/good-buffer-p))
-          (and (vemv/good-buffer-p) (vemv/good-window-p)))
+  (if (or (and (not (vemv/good-buffer-p))
+               (not (vemv/noncloseable-buffer-p)))
+          (and (vemv/good-buffer-p)
+               (not (vemv/noncloseable-buffer-p))))
     (vemv/close-this-buffer))
   (unless (< (length (vemv/current-frame-buffers)) 2)
     (unless (vemv/good-window-p)
