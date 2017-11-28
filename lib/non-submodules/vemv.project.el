@@ -12,10 +12,9 @@
   (or
    (pcase vemv/current-project
           ("gpm" (lambda ()
-                         (shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make clean")
-                         (shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make sass")))
+                   (shell-command-to-string "source ~/.zshrc; cd ~/gpm/src; make clean")))
           ("assign" (lambda ()
-                            (shell-command-to-string "source ~/.zshrc; cd ~/assign; lein clean"))))
+                      (shell-command-to-string "source ~/.zshrc; cd ~/assign; lein clean"))))
    (lambda ())))
 
 ;; XXX assert default value exists in filesystem
