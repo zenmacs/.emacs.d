@@ -249,6 +249,7 @@
 (vemv-source "/Users/vemv/.ldap")
 
 (setenv "PATH" (concat (getenv "PATH") ":" vemv-home "/bin"))
+(setenv "HORIZON_IS_DEVELOPMENT_SERVER" "true")
 ;; Important - remove keybindings before (vemv/initial-layout) so M-x cannot interrupt
 
 (dolist (key vemv/local-key-bindings-to-remove)
