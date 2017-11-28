@@ -27,8 +27,8 @@
       vemv/shortcuts/global/primary-n               'vemv/new-frame
       vemv/shortcuts/global/primary-o               'vemv/open
       vemv/shortcuts/global/primary-p               'vemv/repeat-last-search-in-this-buffer
-      vemv/shortcuts/global/primary-r               'vemv/test-this-ns
       vemv/shortcuts/global/primary-q               'save-buffers-kill-terminal
+      vemv/shortcuts/global/primary-r               'vemv/test-this-ns
       vemv/shortcuts/global/primary-s               'vemv/save
       vemv/shortcuts/global/primary-S-z             'undo-tree-redo
       vemv/shortcuts/global/primary-semicolon       'toggle-truncate-lines
@@ -36,7 +36,7 @@
       vemv/shortcuts/global/primary-t               'vemv/fiplr
       vemv/shortcuts/global/primary-u               'cljr-add-missing-libspec
       vemv/shortcuts/global/primary-up              'backward-paragraph
-      vemv/shortcuts/global/primary-v               'cua-paste
+      vemv/shortcuts/global/primary-v               'vemv/paste-from-clipboard
       vemv/shortcuts/global/primary-w               'vemv/close-this
       vemv/shortcuts/global/primary-z               'undo-tree-undo
       vemv/shortcuts/global/prior                   'cua-scroll-down
@@ -62,4 +62,5 @@
       vemv/shortcuts/global/tertiary-k              'vemv/cut
       vemv/shortcuts/global/tertiary-o              'vemv/open-project
       vemv/shortcuts/global/tertiary-RET            'vemv/load-clojure-buffer
+      vemv/shortcuts/global/tertiary-v              'vemv/paste-from-kill-list
       vemv/shortcuts/global/up                      'previous-line)

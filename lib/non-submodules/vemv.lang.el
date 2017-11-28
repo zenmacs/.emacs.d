@@ -105,6 +105,30 @@
             (puthash (first kv) (second kv) result))
     result))
 
+(defun vemv/mutate-list-to (from to)
+  (setcar from (car to))
+  (setcdr from (rest to))
+  from)
+
+(defun vemv/bounded-list/insert-at-head! (x bounded-list bound)
+  (vemv/mutate-list-to bounded-list (cons x (-clone bounded-list)))
+  (vemv/mutate-list-to bounded-list (-take bound (-clone bounded-list)))
+  bounded-list)
+
+(defun vemv/bounded-list/insert-at-second-position! (x bounded-list bound)
+  (let ((head (car bounded-list)))
+    (vemv/mutate-list-to bounded-list (rest (-clone bounded-list)))
+    (vemv/mutate-list-to bounded-list (cons x (-clone bounded-list)))
+    (vemv/mutate-list-to bounded-list (cons head (-clone bounded-list)))
+    (vemv/mutate-list-to bounded-list (-take bound (-clone bounded-list)))
+    bounded-list))
+
+(setq vemv/kill-list-bound 10)
+
+;; The 10 last elements copied to the clipboard.
+;; I don't use kill-ring, since third-parties (e.g. paredit) can mess with it
+(setq vemv/kill-list (-repeat vemv/kill-list-bound nil))
+
 (defun vemv/selected-region ()
   "Returns the selected region as a string. Side effects free."
   (kill-ring-save (mark) (point))
@@ -208,7 +232,7 @@ paste and simulate an intro press. Finally, go back to sender window."
        (yank)
        (pop kill-ring)))))
 
-(defun vemv/kill (&optional backward?) ;; XXX kill comments FIXME can leave sexprs unmatched
+(defun vemv/kill (&optional backward? skip-save-to-clipboard?) ;; XXX kill comments FIXME can leave sexprs unmatched
   "Deletes the next (or previous, on non-nil values of BACKWARD?) sexpr or comment (if there is one).
 
 Unlike paredit-kill, this function will only grab one sexpr (and no more, if they are contigous), and it doesn't alter the kill-ring."
@@ -223,6 +247,8 @@ Unlike paredit-kill, this function will only grab one sexpr (and no more, if the
              (equal " " (vemv/current-char-at-point))
              (not (equal "\n" (vemv/current-char-at-point))))
        (paredit-forward-delete))
+     (when (not skip-save-to-clipboard?)
+       (simpleclip-set-contents result))
      result)))
 
 (defun vemv/delete-backward (&optional cut?)
@@ -233,10 +259,16 @@ The removed value will be pushed to the kill-ring only on non-nil values of CUT?
 Unconditionally removing code may yield semantically wrong results, i.e. leaving sexprs unmatched. I personally like this tradeoff - use with caution!"
   (interactive)
 
-  (if (region-active-p)
-    (progn (call-interactively 'kill-region)
-           (if (not cut?) (pop kill-ring)))
-    (paredit-backward-delete)))
+  (funcall (if cut?
+              'vemv/bounded-list/insert-at-head!
+              'vemv/bounded-list/insert-at-second-position!)
+            (if (region-active-p)
+              (progn (call-interactively 'kill-region)
+                     (if (not cut?) (pop kill-ring)))
+              
+              (paredit-backward-delete))
+            vemv/kill-list
+            vemv/kill-list-bound))
 
 (defun vemv/active-modes ()
   "Returns a list of the minor modes that are enabled in the current buffer."
@@ -591,6 +623,7 @@ Comments get ignored, this is, point will only move as long as its position stil
 (defun vemv/delete-this-line ()
   "Deletes the entire current line regardless of its contents, and any preceding empty lines."
   (interactive)
+  (end-of-line)
   (cua-set-mark)
   (previous-line)
   (end-of-line)
@@ -616,9 +649,11 @@ Comments get ignored, this is, point will only move as long as its position stil
   (shell (concat "*shell-" (number-to-string (send! vemv/shell-id (lambda (a) (inc a)))) "*")))
 
 (defun vemv/copy-selection-or-next-sexpr ()
-  (if (region-active-p)
-    (call-interactively 'kill-ring-save)
-    (kill-new (vemv/sexpr-content))))
+  (vemv/bounded-list/insert-at-head! (if (region-active-p)
+                                        (vemv/bounded-list/insert-at-head! (vemv/selected-region))
+                                        (vemv/sexpr-content))
+                                      vemv/kill-list
+                                      vemv/kill-list-bound))
 
 ;; not needed anymore - cider-find-var does the trick!
 (defun vemv/open-namespace-at-point ()
@@ -945,7 +980,9 @@ Comments get ignored, this is, point will only move as long as its position stil
 
 (defun vemv/cut ()
   (interactive)
-  (kill-new (vemv/kill)))
+  (vemv/bounded-list/insert-at-head! (vemv/kill nil nil)
+                                     vemv/kill-list
+                                     vemv/kill-list-bound))
 
 (defmacro vemv/save-window-excursion (&rest forms)
   `(let ((current-window (selected-window)))
@@ -963,3 +1000,9 @@ Comments get ignored, this is, point will only move as long as its position stil
   (vemv/send (if (vemv/current-main-buffer-is-cljs) :cljs :clj)
              nil
              (concat "(cljs.test/run-tests '" (vemv/current-ns) ")")))
+
+(defun vemv/paste-from-clipboard ()
+  (call-interactively 'cua-paste))
+
+(defun vemv/paste-from-kill-list ()
+  (insert (car vemv/kill-list)))

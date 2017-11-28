@@ -8,7 +8,7 @@
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 
-(dolist (package '(cider company queue fiplr clojure-mode clj-refactor company-quickhelp dash))
+(dolist (package '(cider company queue fiplr clojure-mode clj-refactor company-quickhelp dash simpleclip))
         (unless (package-installed-p package)
                 (package-refresh-contents)
                 (package-install package)))
@@ -19,7 +19,6 @@
 (show-paren-mode 1)
 (recentf-mode 1)
 (ido-mode 1)
-(cua-mode 1)
 (blink-cursor-mode -1)
 
 (require 'saveplace)
@@ -108,13 +107,14 @@
 (setq company-idle-delay nil) ;; no autopopup
 
 (custom-set-variables
- '(mac-mouse-wheel-smooth-scroll nil)
  '(cider-connection-message-fn nil)
  '(cider-repl-display-help-banner nil)
+ '(cua-remap-control-v nil)
+ '(ielm-prompt "ielm> ")
+ '(mac-mouse-wheel-smooth-scroll nil)
+ '(nrepl-popup-stacktraces nil)
  '(pe/inline-folders nil)
  '(tree-widget-image-enable nil)
- '(nrepl-popup-stacktraces nil)
- '(ielm-prompt "ielm> ")
  '(cljr-auto-sort-ns nil)
  '(cljr-magic-require-namespaces
    '(("io"   . "clojure.java.io")
@@ -173,6 +173,9 @@
 
 (setq vemv-cider-connecting nil)
 (setq vemv-cider-connected nil)
+
+;; initialized after customizing cua-remap-control-v
+(cua-mode 1)
 
 (add-hook 'clojure-mode-hook 'enable-paredit-mode)
 (when (not vemv-cleaning-namespaces)
