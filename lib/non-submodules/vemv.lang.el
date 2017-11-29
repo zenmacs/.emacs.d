@@ -996,10 +996,23 @@ Comments get ignored, this is, point will only move as long as its position stil
    (select-window vemv/repl2)
    (cider-repl-clear-buffer)))
 
+(setq vemv/latest-clojure-test-ran nil)
+(setq vemv/latest-cljs-test-ran nil)
+
 (defun vemv/test-this-ns ()
-  (vemv/send (if (vemv/current-main-buffer-is-cljs) :cljs :clj)
-             nil
-             (concat "(cljs.test/run-tests '" (vemv/current-ns) ")")))
+  "Runs the tests for the current namespace if its name contains 'test', or the latest ns that did."
+  (interactive)
+  (let* ((cljs (vemv/current-main-buffer-is-cljs))
+        (ns (vemv/current-ns))
+        (chosen (if (vemv/contains? ns "test") ns (if cljs vemv/latest-cljs-test-ran vemv/latest-clojure-test-ran))))
+    (when chosen
+      (setq vemv/latest-clojure-test-ran chosen)
+      (vemv/send (if cljs :cljs :clj)
+                 nil
+                 (concat (if cljs "(.reload js/location true) " "")
+                         "(cljs.test/run-tests '"
+                         chosen
+                         ")")))))
 
 (defun vemv/paste-from-clipboard ()
   (insert (substring-no-properties (simpleclip-get-contents))))
