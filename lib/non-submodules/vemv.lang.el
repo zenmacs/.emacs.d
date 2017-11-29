@@ -649,11 +649,11 @@ Comments get ignored, this is, point will only move as long as its position stil
   (shell (concat "*shell-" (number-to-string (send! vemv/shell-id (lambda (a) (inc a)))) "*")))
 
 (defun vemv/copy-selection-or-next-sexpr ()
-  (vemv/bounded-list/insert-at-head! (if (region-active-p)
-                                        (vemv/bounded-list/insert-at-head! (vemv/selected-region))
-                                        (vemv/sexpr-content))
-                                      vemv/kill-list
-                                      vemv/kill-list-bound))
+  (let ((content (if (region-active-p)
+                    (vemv/bounded-list/insert-at-head! (vemv/selected-region))
+                    (vemv/sexpr-content))))
+    (comm vemv/bounded-list/insert-at-head! content vemv/kill-list vemv/kill-list-bound)
+    (simpleclip-set-contents content)))
 
 ;; not needed anymore - cider-find-var does the trick!
 (defun vemv/open-namespace-at-point ()
@@ -1002,7 +1002,7 @@ Comments get ignored, this is, point will only move as long as its position stil
              (concat "(cljs.test/run-tests '" (vemv/current-ns) ")")))
 
 (defun vemv/paste-from-clipboard ()
-  (call-interactively 'cua-paste))
+  (insert (substring-no-properties (simpleclip-get-contents))))
 
 (defun vemv/paste-from-kill-list ()
   (insert (car vemv/kill-list)))
