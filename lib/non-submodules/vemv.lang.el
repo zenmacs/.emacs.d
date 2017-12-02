@@ -997,9 +997,11 @@ Comments get ignored, this is, point will only move as long as its position stil
 
 (defun vemv/clear-cider-repl-buffer ()
   (interactive)
-  (vemv/save-window-excursion
-   (select-window vemv/repl2)
-   (cider-repl-clear-buffer)))
+  (when (cider-connected-p)
+    (vemv/save-window-excursion
+     (select-window vemv/repl2)
+     (cider-repl-clear-buffer)
+     (end-of-buffer))))
 
 (setq vemv/latest-clojure-test-ran nil)
 (setq vemv/latest-cljs-test-ran nil)
