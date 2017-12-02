@@ -163,7 +163,7 @@
 
 (defun cider-repl--banner () "")
 
-(setq clojure-indent-style ':align-arguments)
+(setq clojure-indent-style ':always-align)
 
 (setq-default mode-line-format (list "  "
                                      '(:eval (when (and (buffer-file-name) (buffer-modified-p)) "*"))
