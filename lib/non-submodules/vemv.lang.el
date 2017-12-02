@@ -825,6 +825,7 @@ Comments get ignored, this is, point will only move as long as its position stil
                vemv/cljs-repl-name
                "project-explorer"
                "shell-1"
+               "cider-repl"
                "scratch")))
 
 (defun vemv/good-buffer-p ()
@@ -856,10 +857,14 @@ Comments get ignored, this is, point will only move as long as its position stil
 
 (defun vemv/close-this ()
   (interactive)
-  (if (or (and (not (vemv/good-buffer-p))
+  (if (or (and (vemv/good-buffer-p)
+               (vemv/good-window-p))
+          (and (not (vemv/good-buffer-p))
                (not (vemv/noncloseable-buffer-p)))
           (and (vemv/good-buffer-p)
-               (not (vemv/noncloseable-buffer-p))))
+               (not (vemv/noncloseable-buffer-p))
+               (not (vemv/good-window-p))
+               (vemv/good-frame-p)))
     (vemv/close-this-buffer))
   (unless (< (length (vemv/current-frame-buffers)) 2)
     (unless (vemv/good-window-p)
