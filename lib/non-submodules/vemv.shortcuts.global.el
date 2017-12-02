@@ -41,7 +41,7 @@
       vemv/shortcuts/global/primary-w               'vemv/close-this
       vemv/shortcuts/global/primary-z               'undo-tree-undo
       vemv/shortcuts/global/prior                   'cua-scroll-down
-      vemv/shortcuts/global/RET                     'newline
+      vemv/shortcuts/global/RET                     'newline-and-indent
       vemv/shortcuts/global/right                   'right-char
       vemv/shortcuts/global/S-backspace             'vemv/shift-backspace
       vemv/shortcuts/global/secondary-a             'vemv/copy-sexpr-content-backward

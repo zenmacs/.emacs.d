@@ -181,7 +181,6 @@
 (when (not vemv-cleaning-namespaces)
   (add-hook 'clojure-mode-hook 'hs-minor-mode))
 (add-hook 'clojure-mode-hook 'undo-tree-mode)
-(add-hook 'clojure-mode-hook (argless (local-set-key (kbd "RET") 'newline-and-indent)))
 (add-hook 'clojure-mode-hook (argless (clj-refactor-mode 1)
                                       (cljr-add-keybindings-with-prefix "<f5>")
                                       (setq-local mode-line-format
