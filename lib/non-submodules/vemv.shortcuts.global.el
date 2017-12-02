@@ -6,7 +6,7 @@
       vemv/shortcuts/global/down                    'next-line
       vemv/shortcuts/global/end                     'vemv/end-of-line-or-code
       vemv/shortcuts/global/f11                     'vemv/maximize
-      vemv/shortcuts/global/f4                      'vemv/clear-cider-repl-buffer
+      vemv/shortcuts/global/f4                      nil
       vemv/shortcuts/global/f6                      'vemv/toggle-ns-hiding
       vemv/shortcuts/global/f7                      'vemv/previous-file-buffer
       vemv/shortcuts/global/f8                      'vemv/after-file-open
@@ -65,3 +65,6 @@
       vemv/shortcuts/global/tertiary-RET            'vemv/load-clojure-buffer
       vemv/shortcuts/global/tertiary-v              'vemv/paste-from-kill-list
       vemv/shortcuts/global/up                      'previous-line)
+
+;; other S-RET syntaxes don't work. TODO: abstract away this
+(global-set-key [(shift return)] 'vemv/clear-cider-repl-buffer)
