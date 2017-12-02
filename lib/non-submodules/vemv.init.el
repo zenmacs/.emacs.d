@@ -50,8 +50,6 @@
 (global-company-mode)
 (company-quickhelp-mode 1)
 
-(add-hook 'css-mode-hook (lambda () (rainbow-mode 1)))
-
 (add-to-list 'exec-path (concat vemv-home "/bin"))
 
 (menu-bar-mode)
@@ -177,12 +175,13 @@
 ;; initialized after customizing cua-remap-control-v
 (cua-mode 1)
 
-(add-hook 'clojure-mode-hook 'enable-paredit-mode)
 (when (not vemv-cleaning-namespaces)
   (add-hook 'clojure-mode-hook 'hs-minor-mode))
-(add-hook 'clojure-mode-hook 'undo-tree-mode)
 (add-hook 'clojure-mode-hook (argless (clj-refactor-mode 1)
+                                      (undo-tree-mode)
+(add-hook 'clojure-mode-hook (argless (enable-paredit-mode)
                                       (cljr-add-keybindings-with-prefix "<f5>")
+                                      (global-set-key (kbd "C-r") 'vemv/test-this-ns) ;; must be defined there. TODO: define all clojure bindings here
                                       (setq-local mode-line-format
                                                   (list
                                                    "  "
