@@ -189,6 +189,7 @@
                                                    '(:eval (vemv/message-file-buffers-impl))
                                                    '(:eval (propertize " %l:%c" 'face 'font-lock-line-and-column-face))
                                                    '(:eval (when (and (not vemv-cider-connecting) (not vemv-cider-connected)) (propertize " Disconnected" 'face 'font-lock-line-and-column-face)))
+                                                   '(:eval (when vemv/verbose-mode (propertize " Verbose" 'face 'font-lock-line-and-column-face)))
                                                    '(:eval (when vemv-cider-connecting (propertize " Connecting..." 'face 'vemv-cider-connection-face)))))))
 
 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
