@@ -1026,3 +1026,9 @@ Comments get ignored, this is, point will only move as long as its position stil
 
 (defun vemv/paste-from-kill-list ()
   (insert (car vemv/kill-list)))
+
+(defun vemv/onelineize ()
+  (let ((replacement (replace-regexp-in-string "[\s|\n]+" " " (vemv/sexpr-content))))
+    (vemv/kill)
+    (insert (concat replacement " "))
+    (call-interactively 'paredit-backward)))
