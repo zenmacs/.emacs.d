@@ -652,9 +652,11 @@ Comments get ignored, this is, point will only move as long as its position stil
 
 (defun vemv/copy-selection-or-next-sexpr ()
   (let ((content (if (region-active-p)
-                    (vemv/bounded-list/insert-at-head! (vemv/selected-region))
+                    (vemv/selected-region)
                     (vemv/sexpr-content))))
-    (comm vemv/bounded-list/insert-at-head! content vemv/kill-list vemv/kill-list-bound)
+    (when (region-active-p)
+      (call-interactively 'cua-set-mark))
+    (vemv/bounded-list/insert-at-head! content vemv/kill-list vemv/kill-list-bound)
     (simpleclip-set-contents content)))
 
 ;; not needed anymore - cider-find-var does the trick!
