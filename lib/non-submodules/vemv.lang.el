@@ -201,8 +201,7 @@ paste and simulate an intro press. Finally, go back to sender window."
         (end-of-buffer)
         (vemv/safe-select-window sender)))))
 
-; XXX infer whether the user wants to insert newlines
-(defun vemv/duplicate (&optional backward?) ;; XXX indentation: stuff gets inserted at the absolute beggining of line TODO backward?, for sexprs
+(defun vemv/duplicate (&optional backward?)
   "Copies the current line (or sexpr, if point is at the beggining of one, or selection, if the region is active), inserting it at a new line."
   (interactive)
 
@@ -212,16 +211,19 @@ paste and simulate an intro press. Finally, go back to sender window."
      (dotimes (i (- (region-end) (point)))
        (forward-char))
      (insert "\n" (vemv/selected-region) "\n"))
-
+     
+    (back-to-indentation)
+     
     (if (some (lambda (char) (equal char (vemv/current-char-at-point)))
               '("(" "[" "{" "<" "\""))
       (progn
        (let ((content (vemv/sexpr-content))
-             (whitespace (progn (comm let N the num of chars until beggining-of-line, N* " ") "")))
+             (at-b (vemv/at-beginning-of-line-p)))
          (paredit-forward)
-         (insert (concat "\n\n" whitespace content))
-         (call-interactively 'move-end-of-line) ;; XXX end of sexpr instead
-         (paredit-backward)))
+         (insert (concat (if at-b "\n\n" "\n") content))
+         (paredit-backward)
+         (beginning-of-line)
+         (indent-for-tab-command)))
 
       (progn
        (move-beginning-of-line 1)
