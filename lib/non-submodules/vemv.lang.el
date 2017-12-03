@@ -85,6 +85,34 @@
           (or step n))
    (reverse acc)))
 
+(defun vemv/debounce (func &optional delay)
+  (let*
+      ((callee
+        (cond
+         ((and
+           (not (symbolp func)) (functionp func)) `',func)
+         ((boundp func) (symbol-value func))
+         (t `',func)))
+       (delay (if (not delay) 0.100 delay))
+       (timer (intern (concat "timer-" (symbol-name func)))))
+      
+    (progn
+      (set timer nil)
+      `(lambda
+         (&rest args)
+         (progn
+           (if
+               (and (vectorp ,timer) (not (aref ,timer 0)))
+               (cancel-timer ,timer))
+           (setq
+            ,timer
+            (run-at-time
+             ,delay nil
+             (lambda
+               (params)
+               (apply ,callee params))
+             args)))))))
+
 (defun vemv/contains? (a b)
   "Whether the string B is contained in A."
   (let* ((a-list (string-to-list a))
@@ -414,11 +442,14 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 
           (end-of-line))))
 
-(defun vemv/safe-show-current-file-in-project-explorer ()
+(defun vemv/safe-show-current-file-in-project-explorer* ()
   (condition-case nil
                   (vemv/show-current-file-in-project-explorer)
                   (error (ignore-errors (vemv/show-current-file-in-project-explorer))))
   (vemv/safe-select-window vemv/main_window))
+
+(setq vemv/safe-show-current-file-in-project-explorer
+     (vemv/debounce 'vemv/safe-show-current-file-in-project-explorer* 0.8))
 
 (defun vemv/current-ns (&optional which-buffer)
   (with-current-buffer (buffer-name which-buffer)
@@ -469,7 +500,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
     (vemv/toggle-ns-hiding))
   (vemv/advice-nrepl)
   (vemv/ensure-repl-visible)
-  (delay 'vemv/safe-show-current-file-in-project-explorer 0.1))
+  (funcall vemv/safe-show-current-file-in-project-explorer))
 
 (defun vemv/open_file_buffers ()
   (let ((c (mapcar (lambda (x) (buffer-name x)) (buffer-list))))
@@ -894,7 +925,8 @@ Comments get ignored, this is, point will only move as long as its position stil
                 (if (vemv/contains? the-file vemv/project-clojure-dir) ;; ensure nrepl opens a clojure context
                   the-file
                   vemv/default-clojure-file))
-               (delay 'vemv/safe-show-current-file-in-project-explorer 3)))))
+               (delay (argless (funcall vemv/safe-show-current-file-in-project-explorer))
+                      3)))))
 
     (advice-add 'pe/show-buffer :after 'vemv/after-file-open)
     (advice-add 'vemv/fiplr :after 'vemv/after-file-open)
