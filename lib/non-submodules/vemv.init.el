@@ -181,7 +181,7 @@
 (add-hook 'clojure-mode-hook (argless (enable-paredit-mode)
                                       (clj-refactor-mode 1)
                                       (undo-tree-mode)
-                                      (cljr-add-keybindings-with-prefix "<f5>")
+                                      (cljr-add-keybindings-with-prefix "C-0")
                                       (global-set-key (kbd "C-r") 'vemv/test-this-ns) ;; must be defined there. TODO: define all clojure bindings here
                                       (setq-local mode-line-format
                                                   (list
