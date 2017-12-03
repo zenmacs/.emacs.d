@@ -785,10 +785,28 @@ Comments get ignored, this is, point will only move as long as its position stil
 (defun vemv/at-end-of-line-p ()
   (eq (point) (save-excursion (end-of-line) (point))))
 
+(defun vemv/char-at-left ()
+  (save-excursion
+    (push-mark)
+    (left-char)
+   (vemv/selected-region)))
+
 (defun vemv/chars-at-left ()
   (save-excursion
     (push-mark)
     (move-beginning-of-line 1)
+   (vemv/selected-region)))
+
+(defun vemv/char-at-right ()
+  (save-excursion
+    (push-mark)
+    (right-char)
+   (vemv/selected-region)))
+
+(defun vemv/chars-at-right ()
+  (save-excursion
+    (push-mark)
+    (move-end-of-line 1)
    (vemv/selected-region)))
 
 (defmacro vemv/measure-time (&rest body)
@@ -1067,7 +1085,10 @@ Comments get ignored, this is, point will only move as long as its position stil
   (insert (car vemv/kill-list)))
 
 (defun vemv/onelineize ()
+  "Turns the current sexpr into a oneliner"
   (let ((replacement (replace-regexp-in-string "[\s|\n]+" " " (vemv/sexpr-content))))
     (vemv/kill)
     (insert (concat replacement " "))
+    (when (string-equal " " (vemv/char-at-left))
+      (paredit-backward-delete))
     (call-interactively 'paredit-backward)))
