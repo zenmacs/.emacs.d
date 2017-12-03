@@ -44,7 +44,7 @@
       vemv/shortcuts/global/prior                   'cua-scroll-down
       vemv/shortcuts/global/RET                     'newline-and-indent
       vemv/shortcuts/global/right                   'right-char
-      vemv/shortcuts/global/S-backspace             'vemv/shift-backspace
+      vemv/shortcuts/global/S-backspace             'vemv/force-backspace
       vemv/shortcuts/global/secondary-a             'vemv/copy-sexpr-content-backward
       vemv/shortcuts/global/secondary-backspace     'paredit-backward-kill-word
       vemv/shortcuts/global/secondary-colon         (argless (call-interactively 'eval-expression))

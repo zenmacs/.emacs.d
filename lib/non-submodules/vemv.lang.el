@@ -948,11 +948,12 @@ Comments get ignored, this is, point will only move as long as its position stil
            (pop kill-ring))
     (paredit-backward-delete)))
 
-(defun vemv/shift-backspace ()
+(defun vemv/force-backspace ()
+  "Performs a deletion, overriding paredit safeguards"
   (interactive)
   (if (region-active-p)
     (progn (call-interactively 'kill-region))
-    (paredit-backward-delete)))
+    (delete-region (dec (point)) (point))))
 
 (defun vemv/open-file-via-fiplr-then-close-previous-buffer ()
   (interactive)
