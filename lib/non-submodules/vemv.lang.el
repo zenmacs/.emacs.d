@@ -1092,3 +1092,11 @@ Comments get ignored, this is, point will only move as long as its position stil
     (when (string-equal " " (vemv/char-at-left))
       (paredit-backward-delete))
     (call-interactively 'paredit-backward)))
+
+(defun vemv/emacs-reload ()
+  (load "vemv.lang")
+  (load "vemv.data.bindings")
+  (load "vemv.shortcuts.global.base")
+  (load "vemv.shortcuts.global")
+  (load "vemv.shortcuts.clojure")
+  (load "vemv.theme"))

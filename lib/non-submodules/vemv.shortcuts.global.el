@@ -16,6 +16,7 @@
       vemv/shortcuts/global/next                    'cua-scroll-up
       vemv/shortcuts/global/primary-1               'vemv/onelineize
       vemv/shortcuts/global/primary-3               'vemv/indent
+      vemv/shortcuts/global/primary-6               'vemv/emacs-reload
       vemv/shortcuts/global/primary-8               'vemv/toggle-verbosity
       vemv/shortcuts/global/primary-a               'vemv/copy-selection-or-next-sexpr
       vemv/shortcuts/global/primary-b               'vemv/duplicate
