@@ -33,6 +33,7 @@
       vemv/shortcuts/global/primary-q               'save-buffers-kill-terminal
       vemv/shortcuts/global/primary-r               'vemv/test-this-ns
       vemv/shortcuts/global/primary-s               'vemv/save
+      vemv/shortcuts/global/primary-S-r             'vemv/run-this-deftest
       vemv/shortcuts/global/primary-S-z             'undo-tree-redo
       vemv/shortcuts/global/primary-semicolon       'toggle-truncate-lines
       vemv/shortcuts/global/primary-SPC             'cua-set-mark

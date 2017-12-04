@@ -455,14 +455,16 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (with-current-buffer (buffer-name which-buffer)
     (cider-current-ns)))
 
-(defun vemv/advice-nrepl ()
+(defun vemv/advice-nrepl (&optional after)
   (interactive)
   (delay (argless
           (when (and (vemv/contains? (buffer-name) ".clj")
                      (cider-connected-p)
                      (not (string-equal (vemv/current-ns)
                                         (vemv/current-ns (window-buffer vemv/repl2)))))
-            (cider-repl-set-ns (vemv/current-ns))))
+            (cider-repl-set-ns (vemv/current-ns)))
+          (when after
+            (funcall after)))
          1))
 
 (defun vemv/toggle-ns-hiding ()
@@ -1066,17 +1068,33 @@ Comments get ignored, this is, point will only move as long as its position stil
 (defun vemv/test-this-ns ()
   "Runs the tests for the current namespace if its name contains 'test', or the latest ns that did."
   (interactive)
-  (let* ((cljs (vemv/current-main-buffer-is-cljs))
-        (ns (vemv/current-ns))
-        (chosen (if (vemv/contains? ns "test") ns (if cljs vemv/latest-cljs-test-ran vemv/latest-clojure-test-ran))))
-    (when chosen
-      (setq vemv/latest-clojure-test-ran chosen)
-      (vemv/send (if cljs :cljs :clj)
-                 nil
-                 (concat (if cljs "(.reload js/location true) " "")
-                         "(cljs.test/run-tests '"
-                         chosen
-                         ")")))))
+  (vemv/advice-nrepl (argless
+                      (let* ((cljs (vemv/current-main-buffer-is-cljs))
+                            (ns (vemv/current-ns))
+                            (chosen (if (vemv/contains? ns "test") ns (if cljs vemv/latest-cljs-test-ran vemv/latest-clojure-test-ran))))
+                        (when chosen
+                          (setq vemv/latest-clojure-test-ran chosen)
+                          (vemv/send (if cljs :cljs :clj)
+                                     nil
+                                     (concat (if cljs "(.reload js/location true) " "")
+                                             "(cljs.test/run-tests '"
+                                             chosen
+                                             ")")))))))
+
+(defun vemv/run-this-deftest ()
+  "Assuming `point` is at a deftest name, it runs it"
+  (interactive)
+  (vemv/advice-nrepl (argless
+                      (let* ((cljs (vemv/current-main-buffer-is-cljs))
+                             (ns (vemv/current-ns))
+                             (chosen (cider-symbol-at-point)))
+                        (when chosen
+                          (vemv/send (if cljs :cljs :clj)
+                                     nil
+                                     (concat (if cljs "(.reload js/location true) " "")
+                                             "(cljs.test/run-block ["
+                                             chosen
+                                             "])")))))))
 
 (defun vemv/paste-from-clipboard ()
   (insert (substring-no-properties (simpleclip-get-contents))))
