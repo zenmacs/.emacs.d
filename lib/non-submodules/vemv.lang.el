@@ -491,13 +491,20 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (when (and (cider-connected-p) (string-equal cider-launched vemv/current-project))
     (vemv/show-clj-or-cljs-repl)))
 
+(defun vemv/scratch-p ()
+  (string-equal "*scratch*" (buffer-name (current-buffer))))
+
 (defun vemv/after-file-open (&rest ignore)
   (interactive)
   (vemv/safe-select-window vemv/main_window)
   (when (and (vemv/contains? (buffer-name) ".clj")
              (not vemv/ns-hidden))
     (vemv/toggle-ns-hiding))
-  (vemv/advice-nrepl)
+  
+  (unless (or (vemv/scratch-p)
+              (not (vemv/contains? (buffer-file-name (current-buffer)) vemv/running-project-root-dir))
+              (and (eq vemv/running-project-type :clj) (vemv/current-main-buffer-is-cljs)))
+    (vemv/advice-nrepl))
   (vemv/ensure-repl-visible)
   (funcall vemv/safe-show-current-file-in-project-explorer))
 
@@ -967,14 +974,17 @@ Comments get ignored, this is, point will only move as long as its position stil
   (interactive)
   (if (and (not cider-launched) vemv/using-nrepl)
     (progn
-     (setq cider-launched t)
+     (setq cider-launched vemv/current-project)
      (setq vemv-cider-connecting t)
-     (delay
-      (argless
-       (funcall (vemv/project-initializers))
-       (select-window vemv/main_window)
-       (cider-jack-in-clojurescript))
-      1))
+     (setq vemv/running-project vemv/current-project)
+     (setq vemv/running-project-root-dir vemv/project-root-dir)
+     (setq vemv/running-project-type vemv/project-type)
+     (delay (argless (funcall vemv/project-initializers)
+                     (select-window vemv/main_window)
+                     (if (eq vemv/project-type :cljs)
+                       (cider-jack-in-clojurescript)
+                       (cider-jack-in)))
+            1))
     (if vemv/using-nrepl
       (if (cider-connected-p)
         (if (vemv/current-main-buffer-is-cljs)
@@ -1121,10 +1131,10 @@ Comments get ignored, this is, point will only move as long as its position stil
 (defun vemv/next-project ()
   (interactive)
   (setq vemv/all-projects `(,@(cdr vemv/all-projects) ,(car vemv/all-projects)))
-  (vemv/refresh-current-project (car vemv/all-projects)))
+  (vemv/refresh-current-project (car vemv/all-projects) :switch))
 
 (defun vemv/previous-project ()
   (interactive)
   (setq vemv/all-projects `(,(or (car (last vemv/all-projects)) (first vemv/all-projects))
                             ,@(butlast vemv/all-projects)))
-  (vemv/refresh-current-project (car vemv/all-projects)))
+  (vemv/refresh-current-project (car vemv/all-projects) :switch))

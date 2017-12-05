@@ -22,6 +22,7 @@ limitations, I was able to implement a simple yet powerful workflow, including a
 * Any language other than Clojure(Script) is not intendedly supported. I use Atom/vim/IDEA for non-Clojure stuff (aka right tool for the job).
 * There's the key assumption that one works with one project, one window, one directory tree, one editor and one repl at a time. I don't want to maintain an intrincate graphical/project system, tracking and syncing stuff. These limitations turn out to be liberating (and one still can switch between projects in a same Emacs session - as long as the same window is used)
 * `vemv/` is the fragment used to prevent clashes with other functions/vars. Sorry for all the vemvs!
+* Note that as of today, CIDER does not robustly allow to have disparate per-project REPLs. Follow https://github.com/clojure-emacs/cider/pull/2069 for news. Until the situation progresses, once you choose a REPL, you cannot start another one for a different project.
 
 ## Getting started
 
