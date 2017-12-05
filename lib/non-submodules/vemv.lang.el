@@ -7,7 +7,8 @@
 ;; elisp gotchas: let vs. let* · last returns a list · "Wrong type argument: commandp" -> forgot interactive
 
 (defmacro comm (&rest forms)
-  "Comment. Doesn't evaluate its arguments, returns nil.")
+  "Comment. Doesn't evaluate its arguments, returns nil."
+  nil)
 
 (defmacro argless (&rest forms)
   "Shortcut for (lambda () (interactive) ,@forms)"
