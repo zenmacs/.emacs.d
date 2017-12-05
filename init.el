@@ -45,7 +45,6 @@
 
 (if (window-system) (set-face-attribute 'default nil :font vemv-font))
 
-(require 'vemv.project)
 (require 'vemv.init)
 
 (when (file-exists-p "~/.emacs.d.overrides/")

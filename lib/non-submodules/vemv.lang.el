@@ -187,10 +187,6 @@ Unlike paredit-copy-as-kill, this function will only grab one sexpr (and no more
      (if backward? (paredit-forward) (paredit-backward))
      result)))
 
-(setq vemv/clj-repl-name (concat "*cider-repl " vemv/repl-identifier "*"))
-(setq vemv/cljs-repl-name (concat "*cider-repl CLJS " vemv/repl-identifier "*"))
-(setq cider-launched nil)
-
 (defun vemv/safe-select-window (x)
   (unless (minibuffer-prompt)
     (select-window x)))
@@ -492,7 +488,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (vemv/safe-select-window vemv/main_window))
 
 (defun vemv/ensure-repl-visible ()
-  (when (cider-connected-p)
+  (when (and (cider-connected-p) (string-equal cider-launched vemv/current-project))
     (vemv/show-clj-or-cljs-repl)))
 
 (defun vemv/after-file-open (&rest ignore)
@@ -819,6 +815,7 @@ Comments get ignored, this is, point will only move as long as its position stil
         (message "%.06f" (float-time (time-since time)))))
 
 (defun vemv/initial-layout ()
+ 
  (if (window-system) (vemv/maximize))
 
  (split-window-vertically)
@@ -1113,9 +1110,21 @@ Comments get ignored, this is, point will only move as long as its position stil
     (call-interactively 'paredit-backward)))
 
 (defun vemv/emacs-reload ()
+  (load "vemv.project")
   (load "vemv.lang")
   (load "vemv.data.bindings")
   (load "vemv.shortcuts.global.base")
   (load "vemv.shortcuts.global")
   (load "vemv.shortcuts.clojure")
   (load "vemv.theme"))
+
+(defun vemv/next-project ()
+  (interactive)
+  (setq vemv/all-projects `(,@(cdr vemv/all-projects) ,(car vemv/all-projects)))
+  (vemv/refresh-current-project (car vemv/all-projects)))
+
+(defun vemv/previous-project ()
+  (interactive)
+  (setq vemv/all-projects `(,(or (car (last vemv/all-projects)) (first vemv/all-projects))
+                            ,@(butlast vemv/all-projects)))
+  (vemv/refresh-current-project (car vemv/all-projects)))

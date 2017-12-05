@@ -21,6 +21,11 @@
 (ido-mode 1)
 (blink-cursor-mode -1)
 
+;; defonces
+(setq cider-launched nil)
+(setq vemv-cider-connecting nil)
+(setq vemv-cider-connected nil)
+
 (require 'saveplace)
 (require 'dash)
 (require 'popup)
@@ -169,9 +174,6 @@
                                      '(:eval (buffer-name))
                                      " "
                                      '(:eval (when (buffer-file-name) (propertize "%l:%c" 'face 'font-lock-line-and-column-face)))))
-
-(setq vemv-cider-connecting nil)
-(setq vemv-cider-connected nil)
 
 ;; initialized after customizing cua-remap-control-v
 (cua-mode 1)

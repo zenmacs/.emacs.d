@@ -6,11 +6,11 @@
 ;; - make `setq`s defuns
 ;; - infer project from currently open file
 ;; - use inferred value as implicit argument to these defuns
-(setq vemv/current-project (or
-                               "gpm"
-                              ; "assign"
-                              "jumbo"
-                              ))
+
+(setq vemv/all-projects '("gpm" "jumbo" "assign"))
+
+;; XXX last from a file
+(setq vemv/current-project "gpm")
 
 (defun vemv/project-initializers ()
   (or
@@ -32,6 +32,8 @@
 (setq vemv/modifiers/primary nil)
 (setq vemv/modifiers/secondary nil)
 (setq vemv/modifiers/tertiary nil)
+(setq vemv/clj-repl-name nil)
+(setq vemv/cljs-repl-name nil)
 
 (defun vemv/refresh-current-project (&optional which)
   
@@ -78,6 +80,9 @@
           ("jumbo" "jumbo"))
         vemv/project-ns-prefix))
 
+  (setq vemv/clj-repl-name (concat "*cider-repl " vemv/repl-identifier "*"))
+  (setq vemv/cljs-repl-name (concat "*cider-repl CLJS " vemv/repl-identifier "*"))
+
   (setq vemv/default-clojure-file
         (or
          (pcase vemv/current-project
@@ -93,6 +98,21 @@
 
   (setq vemv/modifiers/secondary "M")
 
-  (setq vemv/modifiers/tertiary "s"))
+  (setq vemv/modifiers/tertiary "s")
+  
+  (when which
+    (vemv/save-window-excursion
+      (select-window vemv/main_window)
+      (vemv/close-this-buffer)
+      (vemv/open vemv/default-clojure-file)
+      (select-window vemv/project-explorer-window)
+      (let ((default-directory vemv/project-root-dir))
+        (call-interactively 'project-explorer-open)))
+      (select-window vemv/repl2)
+      (unless (cider-connected-p)
+        (vemv/send :shell nil vemv/project-root-dir))
+      (delay (argless (vemv/save-window-excursion (comint-clear-buffer))) 0.3)))
 
 (vemv/refresh-current-project)
+
+;; (vemv/refresh-current-project "jumbo")
