@@ -6,7 +6,17 @@
 ;; - make `setq`s defuns
 ;; - infer project from currently open file
 ;; - use inferred value as implicit argument to these defuns
-(setq vemv/current-project (if t "gpm" "assign"))
+(setq vemv/current-project (or
+                               "gpm"
+                              ; "assign"
+                              "jumbo"
+                              ))
+
+(setq vemv/project-type
+  (or (pcase vemv/current-project ("gpm" :cljs)
+                                  ("assign" :cljs)
+                                  ("jumbo" :clj))
+      :clj))
 
 (defun vemv/project-initializers ()
   (or
@@ -35,22 +45,30 @@
 (setq vemv/project-fiplr-dir
       (or
        (pcase vemv/current-project
-              ("gpm" (concat vemv-home "/fiplr-gpm")) ;; this is a directory with symlinks to src and test. avoids displaying compilation artifacts, unrelated files etc
-              ("assign" (concat vemv/project-clojure-dir "/src")))
-       vemv/project-clojure-dir))
+              ("gpm" (concat vemv-home "/fiplr-gpm"))) ;; this is a directory with symlinks to src and test. avoids displaying compilation artifacts, unrelated files etc
+       (concat vemv/project-clojure-dir "/src")))
 
 (setq vemv/project-ns-prefix ;; the bit to remove in tabs (mode-line). also identifies repls (important)
       (or
        (pcase vemv/current-project
-              ("gpm" "horizon"))
+              ("gpm" "horizon")
+              ("jumbo" "vemv"))
        vemv/current-project))
+
+;; XXX automatically infer instead
+(setq vemv/repl-identifier
+  (or (pcase vemv/current-project
+        ("jumbo" "jumbo"))
+      vemv/project-ns-prefix))
 
 (setq vemv/default-clojure-file
       (or
        (pcase vemv/current-project
-              ("gpm" (concat vemv/project-clojure-dir "src/horizon/desktop/core.cljs")))
-    ;; XXX should be the first existing file: .clj, .cljs or .cljc
-       (concat vemv/project-clojure-dir "/src/" vemv/project-ns-prefix "/core.cljs")))
+              ("gpm" (concat vemv/project-clojure-dir "src/horizon/desktop/core.cljs"))
+              ("assign" (concat vemv/project-clojure-dir "/src/" vemv/project-ns-prefix "/core.cljs"))
+              ("jumbo" (concat vemv/project-clojure-dir "/clojure/" vemv/project-ns-prefix "/jumbo.clj")))
+       ;; XXX should be the first existing file: .clj, .cljs or .cljc
+       (concat vemv/project-clojure-dir "/src/" vemv/project-ns-prefix "/core.clj" (if (eq vemv/project-type :cljs "s" "")))))
 
 (setq vemv-cleaning-namespaces nil)
 

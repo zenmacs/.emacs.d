@@ -187,8 +187,8 @@ Unlike paredit-copy-as-kill, this function will only grab one sexpr (and no more
      (if backward? (paredit-forward) (paredit-backward))
      result)))
 
-(setq vemv/clj-repl-name (concat "*cider-repl " vemv/project-ns-prefix "*"))
-(setq vemv/cljs-repl-name (concat "*cider-repl CLJS " vemv/project-ns-prefix "*"))
+(setq vemv/clj-repl-name (concat "*cider-repl " vemv/repl-identifier "*"))
+(setq vemv/cljs-repl-name (concat "*cider-repl CLJS " vemv/repl-identifier "*"))
 (setq cider-launched nil)
 
 (defun vemv/safe-select-window (x)
