@@ -64,19 +64,25 @@ REPLACEMENTS = Hash.new{|map, key| key }.merge({
 
 SPECIAL = REPLACEMENTS.keys
 
+def informative_stub binding
+  %|(argless (message "You pressed `#{binding}`! For making this binding useful, customize it (you can find instructions at the wiki)"))|
+end
+
 def emit_setqs scope: 'global', modifier_mappings: {"primary" => 'C', "secondary" => 'M', "tertiary" => 's'}
   
   result = "(provide 'vemv.shortcuts.global.base)\n;; generated with gen.rb\n"
   
   SPECIAL.each do |char|
     
+    binding = "vemv/shortcuts/#{scope}/#{REPLACEMENTS[char]}"
     result += %|
 ;; "#{char}"
-(setq vemv/shortcuts/#{scope}/#{REPLACEMENTS[char]} nil)\n| unless SELF_INSERTING.include?(char)
+(setq #{binding} #{informative_stub binding})\n| unless SELF_INSERTING.include?(char)
 
+    binding = "vemv/shortcuts/#{scope}/S-#{REPLACEMENTS[char]}"
     result += %|
 ;; "S-#{char}"
-(setq vemv/shortcuts/#{scope}/S-#{REPLACEMENTS[char]} nil)\n| unless (char.include?('[f') || DUALS.include?(char))
+(setq #{binding} #{informative_stub binding})\n| unless (char.include?('[f') || DUALS.include?(char))
     
   end
   
@@ -86,13 +92,15 @@ def emit_setqs scope: 'global', modifier_mappings: {"primary" => 'C', "secondary
       next if char.include?('[f')
       next if NO_C.include?(char) && modifier_mappings[modifier] == 'C'
       
+      binding = "vemv/shortcuts/#{scope}/#{modifier}-#{REPLACEMENTS[char]}"
       result += %|
 ;; "#{modifier_mappings[modifier]}-#{char}"
-(setq vemv/shortcuts/#{scope}/#{modifier}-#{REPLACEMENTS[char]} nil)\n|
+(setq #{binding} #{informative_stub binding})\n|
       
+      binding = "vemv/shortcuts/#{scope}/#{modifier}-S-#{REPLACEMENTS[char]}"
       result += %|
 ;; "#{modifier_mappings[modifier]}-S-#{char}"
-(setq vemv/shortcuts/#{scope}/#{modifier}-S-#{REPLACEMENTS[char]} nil)\n| unless DUALS.include?(char)
+(setq #{binding} #{informative_stub binding})\n| unless DUALS.include?(char)
     end
   end
   
