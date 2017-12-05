@@ -38,6 +38,7 @@
 (require 's)
 (require 'clj-refactor)
 (require 'fiplr)
+(require 'vemv.project)
 (require 'vemv.lang)
 (require 'vemv.data)
 (require 'vemv.data.bindings)
