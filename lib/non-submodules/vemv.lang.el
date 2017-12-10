@@ -418,7 +418,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 
     (vemv/refresh-file-caches)
     (vemv/safe-select-window vemv/main_window)
-    (let* ((buffer-fragments (-remove (lambda (x) (string-equal x "")) (split-string (buffer-file-name) "/")))
+    (let* ((buffer-fragments (-remove (lambda (x) (string-equal x "")) (split-string (file-truename (buffer-file-name)) "/")))
            (projname (pe/project-root-function-default)) ;; "/Users/vemv/gpm"
            (project-fragments (-remove (lambda (x) (string-equal x "")) (split-string projname "/")))
            (fragments (-drop (length project-fragments) buffer-fragments))
@@ -502,7 +502,8 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
     (vemv/toggle-ns-hiding))
   
   (unless (or (vemv/scratch-p)
-              (not (vemv/contains? (buffer-file-name (current-buffer)) vemv/running-project-root-dir))
+              (not (vemv/contains? (file-truename (buffer-file-name (current-buffer)))
+                                   vemv/running-project-root-dir))
               (and (eq vemv/running-project-type :clj) (vemv/current-main-buffer-is-cljs)))
     (vemv/advice-nrepl))
   (vemv/ensure-repl-visible)
@@ -947,7 +948,7 @@ Comments get ignored, this is, point will only move as long as its position stil
                            head))))
              (when the-file
                (vemv/open
-                (if (vemv/contains? the-file vemv/project-clojure-dir) ;; ensure nrepl opens a clojure context
+                (if (vemv/contains? (file-truename the-file) vemv/project-clojure-dir) ;; ensure nrepl opens a clojure context
                   the-file
                   vemv/default-clojure-file))
                (delay (argless (funcall vemv/safe-show-current-file-in-project-explorer))
