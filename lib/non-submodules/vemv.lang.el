@@ -452,11 +452,34 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (with-current-buffer (buffer-name which-buffer)
     (cider-current-ns)))
 
+(setq vemv/figwheel-connected-p-already nil)
+
+;; XXX this should be a universal fighwheel fn. open PR at some point
+(defun vemv/figwheel-connected-p ()
+  (if (or
+        vemv/figwheel-connected-p-already
+        (not (vemv/contains? (buffer-name) ".cljs"))
+        (not (string-equal vemv/current-project "gpm")))
+    t
+    (condition-case nil
+                    (with-current-buffer vemv/clj-repl-name
+                      (progn (cider-nrepl-sync-request:eval "(require 'dev.formatting.watch)")
+                            (if (string-equal (nrepl-dict-get (cider-nrepl-sync-request:eval "(dev.formatting.watch/currently-connected?)")
+                                                          "value")
+                                          "true")
+                                (progn
+                                  (setq vemv/figwheel-connected-p-already t)
+                                  t)
+                                nil)))
+                    (error nil))))
+
 (defun vemv/advice-nrepl (&optional after)
   (interactive)
   (delay (argless
           (when (and (vemv/contains? (buffer-name) ".clj")
                      (cider-connected-p)
+                     vemv-cider-connected
+                     (vemv/figwheel-connected-p)
                      (not (string-equal (vemv/current-ns)
                                         (vemv/current-ns (window-buffer vemv/repl2)))))
             (cider-repl-set-ns (vemv/current-ns)))

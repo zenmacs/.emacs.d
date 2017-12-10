@@ -219,9 +219,8 @@
                    (vemv/show-clj-or-cljs-repl)
                    (setq vemv-cider-connecting nil)
                    (setq vemv-cider-connected t)
-                   (comment ;; XXX breaks cljs repl, because cider-connected-hook is not aware of when figwheel connects.
-                     (when (not vemv-cleaning-namespaces)
-                       (vemv/advice-nrepl))))
+                   (when (not vemv-cleaning-namespaces)
+                     (vemv/advice-nrepl)))
                   2)))
 
 (set-default 'truncate-lines t)
