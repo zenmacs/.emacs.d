@@ -1016,13 +1016,18 @@ Comments get ignored, this is, point will only move as long as its position stil
           (vemv/send :clj)))
       (vemv/send :shell))))
 
+(setq vemv/cider-prompt-for-symbol cider-prompt-for-symbol)
+
 (defun vemv/jump-to-clojure-definition ()
   (interactive)
-  (let* ((old cider-prompt-for-symbol))
-        (setq cider-prompt-for-symbol nil)
-        (cider-find-var)
-        (setq cider-prompt-for-symbol old)
-        (vemv/advice-nrepl)))
+  (let* ((curr-token (cider-symbol-at-point 'look-back))
+         (curr-token-is-qualified-kw (vemv/starts-with curr-token "::")))
+      (setq cider-prompt-for-symbol nil)
+      (if curr-token-is-qualified-kw
+        (call-interactively 'cider-find-keyword)
+        (cider-find-var))
+      (setq cider-prompt-for-symbol vemv/cider-prompt-for-symbol)
+      (vemv/advice-nrepl)))
 
 (defun vemv/search-in-this-buffer ()
   (ignore-errors
