@@ -952,6 +952,11 @@ Comments get ignored, this is, point will only move as long as its position stil
                (not (vemv/good-window-p))
                (vemv/good-frame-p)))
     (vemv/close-this-buffer))
+  ;; buffer closing can change the selected window. compensate it:
+  (if-let (unrelated-window (first (filter (lambda (w) (not (seq-contains (list vemv/repl2 vemv/project-explorer-window vemv/main_window)
+                                                                          w)))
+                                           (window-list))))
+    (select-window unrelated-window))
   (unless (< (length (vemv/current-frame-buffers)) 2)
     (unless (vemv/good-window-p)
       (vemv/close-this-window)))
