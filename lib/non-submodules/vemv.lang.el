@@ -164,6 +164,9 @@
 (defun vemv/current-frame-buffers ()
   (mapcar #'buffer-name (mapcar #'window-buffer (window-list))))
 
+(defun vemv/all-buffer-names ()
+  (mapcar #'buffer-name (buffer-list)))
+
 (defun vemv/switch-to-buffer-in-any-frame (buffer-name)
   (if (seq-contains (vemv/current-frame-buffers) buffer-name)
     (switch-to-buffer buffer-name)
@@ -199,27 +202,30 @@ paste and simulate an intro press. Finally, go back to sender window."
                        (vemv/sexpr-content backward?)))))
     (if (equal where :emacs)
       (eval (read content))
-      (let ((sender (selected-window)))
-        (vemv/safe-select-window vemv/repl2)
-        (vemv/switch-to-buffer-in-any-frame (case where
-                                              (:cider the-cider-buffer-name)
-                                              (:ielm "*ielm*")
-                                              (:shell "*shell-1*")
-                                              (:clj vemv/clj-repl-name)
-                                              (:cljs vemv/cljs-repl-name)))
+      (let ((sender (selected-window))
+            (destination-buffer (case where
+                                  (:cider the-cider-buffer-name)
+                                  (:ielm "*ielm*")
+                                  (:shell "*shell-1*")
+                                  (:clj vemv/clj-repl-name)
+                                  (:cljs vemv/cljs-repl-name))))
+        (if (not (seq-contains (vemv/all-buffer-names) destination-buffer))
+          (vemv/echo "Can't eval in a different project!")
+          (vemv/safe-select-window vemv/repl2)
+          (vemv/switch-to-buffer-in-any-frame destination-buffer)
 
-        (end-of-buffer)
-        (insert content)
+          (end-of-buffer)
+          (insert content)
 
-        (case where
-          (:cider (cider-repl-return))
-          (:ielm (ielm-return))
-          (:shell (comint-send-input))
-          (:clj (cider-repl-return))
-          (:cljs (cider-repl-return)))
+          (case where
+            (:cider (cider-repl-return))
+            (:ielm (ielm-return))
+            (:shell (comint-send-input))
+            (:clj (cider-repl-return))
+            (:cljs (cider-repl-return)))
 
-        (pop kill-ring)
-        (end-of-buffer)
+          (pop kill-ring)
+          (end-of-buffer))
         (vemv/safe-select-window sender)))))
 
 (defun vemv/duplicate (&optional backward?)
