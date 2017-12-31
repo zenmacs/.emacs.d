@@ -482,7 +482,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (vemv/contains? (file-truename (buffer-file-name b))
                   vemv/running-project-root-dir))
 
-(defun vemv/advice-nrepl (&optional after)
+(defun vemv/advice-nrepl* (&optional after)
   (interactive)
   (delay (argless
           (unless (or (vemv/scratch-p)
@@ -498,6 +498,11 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
           (when after
             (funcall after)))
          1))
+
+(setq vemv/debounced-advice-nrepl (vemv/debounce 'vemv/advice-nrepl* 0.8))
+
+(defun vemv/advice-nrepl (&optional x)
+  (funcall vemv/debounced-advice-nrepl x))
 
 (defun vemv/toggle-ns-hiding ()
   (interactive)
