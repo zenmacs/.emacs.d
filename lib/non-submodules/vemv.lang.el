@@ -539,13 +539,14 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 (setq vemv/chosen-file-buffer-order nil) ;; a list
 
 (defun vemv/clean-chosen-file-buffer-order ()
+  "Removes closed buffers from vemv/chosen-file-buffer-order"
   (let* ((curr (buffer-name (current-buffer)))
-         (c (vemv/open_file_buffers))
-         (all (-distinct (-concat vemv/chosen-file-buffer-order c)))
-         (without-curr (-remove (lambda (x) (string-equal x curr)) all))
-         (final (cons curr without-curr)))
+         (actually-open (vemv/open_file_buffers))
+         (all (-distinct (-concat vemv/chosen-file-buffer-order actually-open)))
+         (all-without-curr (-remove (lambda (x) (string-equal x curr)) all))
+         (final (cons curr all-without-curr)))
         (setq vemv/chosen-file-buffer-order (filter (lambda (x)
-                                                            (member x c))
+                                                            (member x actually-open))
                                                     final))))
 
 (defun vemv.abbreviate-ns/format-intermediate-fragment (x)
