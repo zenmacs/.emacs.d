@@ -1124,7 +1124,9 @@ Comments get ignored, this is, point will only move as long as its position stil
                           (setq vemv/latest-clojure-test-ran chosen)
                           (vemv/send (if cljs :cljs :clj)
                                      nil
-                                     (concat (if cljs "(.reload js/location true) " "")
+                                     (concat (if (and cljs (vemv/contains? (vemv/current-ns) "smoke"))
+                                                 "(.reload js/location true) "
+                                                 "")
                                              "(cljs.test/run-tests '"
                                              chosen
                                              ")")))))))
