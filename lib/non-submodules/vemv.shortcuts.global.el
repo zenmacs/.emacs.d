@@ -59,6 +59,7 @@
       vemv/shortcuts/global/secondary-t             'vemv/open-file-via-fiplr-then-close-previous-buffer
       vemv/shortcuts/global/secondary-up            'paredit-splice-sexp-killing-backward
       vemv/shortcuts/global/secondary-x             'vemv/smex
+      vemv/shortcuts/global/tertiary-a              'vemv/copy-inserting-at-kill-list
       vemv/shortcuts/global/tertiary-backtick       'vemv/jump-to-clojure-definition
       vemv/shortcuts/global/tertiary-left           'vemv/previous-project
       vemv/shortcuts/global/tertiary-right          'vemv/next-project

@@ -1087,6 +1087,12 @@ Comments get ignored, this is, point will only move as long as its position stil
                                      vemv/kill-list
                                      vemv/kill-list-bound))
 
+(defun vemv/copy-inserting-at-kill-list ()
+  (interactive)
+  (vemv/bounded-list/insert-at-head! (vemv/copy-selection-or-next-sexpr)
+                                     vemv/kill-list
+                                     vemv/kill-list-bound))
+
 (defmacro vemv/save-window-excursion (&rest forms)
   `(let ((current-window (selected-window)))
      (save-excursion
