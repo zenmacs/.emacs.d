@@ -1091,11 +1091,16 @@ Comments get ignored, this is, point will only move as long as its position stil
        ,@forms)
      (vemv/safe-select-window current-window)))
 
-(defun vemv/clear-cider-repl-buffer ()
+(defun vemv/clear-cider-repl-buffer (&optional no-recur)
   (interactive)
   (when (cider-connected-p)
     (vemv/save-window-excursion
      (select-window vemv/repl2)
+     (end-of-buffer)
+     (when (and (not no-recur) (vemv/contains? (vemv/current-ns) "test"))
+       (cider-repl-return) ;; stdout might be hijacking the prompt (e.g. cljs.test output)
+       (cider-repl-clear-buffer)
+       (delay (argless (vemv/clear-cider-repl-buffer :no-recur)) 1))
      (cider-repl-clear-buffer)
      (end-of-buffer))))
 
