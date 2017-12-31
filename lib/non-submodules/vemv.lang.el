@@ -24,10 +24,6 @@
        (if ,symbol
             ,@forms))))
 
-(defmacro if-not (test &rest forms))
-
-(defmacro when-not (test &rest forms))
-
 (defun vemv/echo (&rest xs)
   (let ((what (apply 'concat xs)))
     (setq inhibit-message nil)
