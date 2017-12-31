@@ -478,13 +478,17 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 (defun vemv/advice-nrepl (&optional after)
   (interactive)
   (delay (argless
-          (when (and (vemv/contains? (buffer-name) ".clj")
-                     (cider-connected-p)
-                     vemv-cider-connected
-                     (vemv/figwheel-connected-p)
-                     (not (string-equal (vemv/current-ns)
-                                        (vemv/current-ns (window-buffer vemv/repl2)))))
-            (cider-repl-set-ns (vemv/current-ns)))
+          (unless (or (vemv/scratch-p)
+                      (not (vemv/contains? (file-truename (buffer-file-name (current-buffer)))
+                                           vemv/running-project-root-dir))
+                      (and (eq vemv/running-project-type :clj) (vemv/current-main-buffer-is-cljs)))
+            (when (and (vemv/contains? (buffer-name) ".clj")
+                       (cider-connected-p)
+                       vemv-cider-connected
+                       (vemv/figwheel-connected-p)
+                       (not (string-equal (vemv/current-ns)
+                                          (vemv/current-ns (window-buffer vemv/repl2)))))
+              (cider-repl-set-ns (vemv/current-ns))))
           (when after
             (funcall after)))
          1))
@@ -526,11 +530,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
              (not vemv/ns-hidden))
     (vemv/toggle-ns-hiding))
   
-  (unless (or (vemv/scratch-p)
-              (not (vemv/contains? (file-truename (buffer-file-name (current-buffer)))
-                                   vemv/running-project-root-dir))
-              (and (eq vemv/running-project-type :clj) (vemv/current-main-buffer-is-cljs)))
-    (vemv/advice-nrepl))
+  (vemv/advice-nrepl)
   (vemv/ensure-repl-visible)
   (funcall vemv/safe-show-current-file-in-project-explorer))
 
