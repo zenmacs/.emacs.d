@@ -164,8 +164,11 @@
 (defun vemv/current-frame-buffers ()
   (mapcar #'buffer-name (mapcar #'window-buffer (window-list))))
 
+(defun vemv/all-buffers ()
+  (buffer-list))
+
 (defun vemv/all-buffer-names ()
-  (mapcar #'buffer-name (buffer-list)))
+  (mapcar #'buffer-name (vemv/all-buffers)))
 
 (defun vemv/switch-to-buffer-in-any-frame (buffer-name)
   (if (seq-contains (vemv/current-frame-buffers) buffer-name)
@@ -475,12 +478,15 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
                                 nil)))
                     (error nil))))
 
+(defun vemv/buffer-of-current-project? (b)
+  (vemv/contains? (file-truename (buffer-file-name b))
+                  vemv/running-project-root-dir))
+
 (defun vemv/advice-nrepl (&optional after)
   (interactive)
   (delay (argless
           (unless (or (vemv/scratch-p)
-                      (not (vemv/contains? (file-truename (buffer-file-name (current-buffer)))
-                                           vemv/running-project-root-dir))
+                      (not (vemv/buffer-of-current-project? (current-buffer)))
                       (and (eq vemv/running-project-type :clj) (vemv/current-main-buffer-is-cljs)))
             (when (and (vemv/contains? (buffer-name) ".clj")
                        (cider-connected-p)
@@ -747,6 +753,8 @@ Comments get ignored, this is, point will only move as long as its position stil
   (setq vemv/line-before-formatting (max 0 (- (vemv/current-line) 3)))
   (setq vemv/token-before-formatting (vemv/sexpr-content)))
   
+;; XXX unused
+;; XXX should be per-buffer (see vemv/save-all-clojure-buffers-for-this-project)
 (defun vemv/restore-position-before-formatting ()
   (beginning-of-buffer)
   (dotimes (i vemv/line-before-formatting)
@@ -755,18 +763,27 @@ Comments get ignored, this is, point will only move as long as its position stil
   (paredit-backward)
   (back-to-indentation))
 
-(defun vemv/save ()
+(defun vemv/save (&optional b)
   (interactive)
-  (when (and (vemv/contains? (buffer-name (current-buffer)) ".clj")
-             (cider-connected-p))
-    (vemv/save-position-before-formatting)
-    (let ((old (substring-no-properties (buffer-string))))
-      (save-excursion
-        (condition-case nil (cider-format-buffer)
-                        (error
-                          (erase-buffer)
-                          (insert old))))))
-  (save-buffer))
+  (let ((b (or b (current-buffer))))
+    (with-current-buffer b
+      (when (and (vemv/contains? (buffer-name b) ".clj")
+                 (cider-connected-p))
+        (vemv/save-position-before-formatting)
+        (let ((old (substring-no-properties (buffer-string))))
+          (save-excursion
+            (condition-case nil (cider-format-buffer)
+                            (error
+                              (erase-buffer)
+                              (insert old))))))
+      (save-buffer))))
+
+(defun vemv/save-all-clojure-buffers-for-this-project ()
+  (mapcar (lambda (b)
+            (when (and (vemv/contains? (buffer-name b) ".clj")
+                       (vemv/buffer-of-current-project? b))
+              (vemv/save b)))
+          (vemv/all-buffers)))
 
 (setq vemv/ns-hidden nil)
 

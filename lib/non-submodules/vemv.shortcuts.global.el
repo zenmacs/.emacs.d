@@ -61,14 +61,15 @@
       vemv/shortcuts/global/secondary-x             'vemv/smex
       vemv/shortcuts/global/tertiary-a              'vemv/copy-inserting-at-kill-list
       vemv/shortcuts/global/tertiary-backtick       'vemv/jump-to-clojure-definition
-      vemv/shortcuts/global/tertiary-left           'vemv/previous-project
-      vemv/shortcuts/global/tertiary-right          'vemv/next-project
       vemv/shortcuts/global/tertiary-end            'end-of-buffer
       vemv/shortcuts/global/tertiary-home           'beginning-of-buffer
       vemv/shortcuts/global/tertiary-j              'cider-eval-sexp-at-point
       vemv/shortcuts/global/tertiary-k              'vemv/cut
+      vemv/shortcuts/global/tertiary-left           'vemv/previous-project
       vemv/shortcuts/global/tertiary-o              'vemv/open-project
       vemv/shortcuts/global/tertiary-RET            'vemv/load-clojure-buffer
+      vemv/shortcuts/global/tertiary-right          'vemv/next-project
+      vemv/shortcuts/global/tertiary-s              'vemv/save-all-clojure-buffers-for-this-project
       vemv/shortcuts/global/tertiary-v              'vemv/paste-from-kill-list
       vemv/shortcuts/global/up                      'previous-line)
 
