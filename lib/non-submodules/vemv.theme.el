@@ -19,7 +19,21 @@
   "."
   :group 'vemv)
 
+(setq vemv-default-background-color "#4D575F")
+(setq vemv-default-foreground-color "#F5F5F5")
+
 (custom-theme-set-faces 'vemv
+      
+      `(term-color-black      ((t (:foreground ,vemv-default-foreground-color :background ,vemv-default-background-color))))
+      `(term-color-red        ((t (:foreground ,vemv-default-foreground-color :background ,vemv-default-background-color))))
+      `(term-color-green      ((t (:foreground ,vemv-default-foreground-color :background ,vemv-default-background-color))))
+      `(term-color-yellow     ((t (:foreground ,vemv-default-foreground-color :background ,vemv-default-background-color))))
+      `(term-color-blue       ((t (:foreground ,vemv-default-foreground-color :background ,vemv-default-background-color))))
+      `(term-color-magenta    ((t (:foreground ,vemv-default-foreground-color :background ,vemv-default-background-color))))
+      `(term-color-cyan       ((t (:foreground ,vemv-default-foreground-color :background ,vemv-default-background-color))))
+      `(term-color-white      ((t (:foreground ,vemv-default-foreground-color :background ,vemv-default-background-color))))
+      '(term-default-fg-color ((t (:inherit term-color-white))))
+      '(term-default-bg-color ((t (:inherit term-color-black))))
       
       '(grizzl-selection-face
        ((((class color) (background light))
@@ -155,3 +169,83 @@
 
       '(vhl/default-face ((t (:background "#333333"))))
       '(undo-tree-visualizer-active-branch-face ((t (:foreground "deep pink" :background "black")))))
+
+(setq ansi-color-faces-vector [vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face])
+                               
+(setq ansi-color-map          [vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face])
+                               
+(setq ansi-color-names-vector [vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face])
+
+(setq ansi-term-color-vector  [vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face
+                               vemv-default-face])
