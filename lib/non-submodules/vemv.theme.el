@@ -1,4 +1,7 @@
-;; list-faces-display is cool.
+;; for debugging:
+;;   list-faces-display
+;;   m-x describe-theme
+;;   (buffer-string)
 
 (provide 'vemv.theme)
 
@@ -21,6 +24,13 @@
 
 (setq vemv-default-background-color "#4D575F")
 (setq vemv-default-foreground-color "#F5F5F5")
+(setq vemv-error-foreground-color vemv-default-foreground-color)
+
+(defface vemv-default-face
+  `((t :foreground ,vemv-default-foreground-color :background ,vemv-default-background-color))
+  "."
+  :group 'vemv)
+
 
 (custom-theme-set-faces 'vemv
       
@@ -42,7 +52,8 @@
          (:foreground "#C1ED3D"))
         (t (:foreground "#C1ED3D"))))
       
-      '(default ((t (:background "#4D575F" :foreground "#F5F5F5"))))
+      `(default ((t (:background ,vemv-default-background-color :foreground ,vemv-default-foreground-color))))
+      `(default ((t (:background ,vemv-default-background-color :foreground ,vemv-default-foreground-color))))
       '(cursor ((t (:foreground "#4D575F" :background "#CFCFCF"))))
       '(blue ((t (:foreground "blue"))))
       '(bold ((t (:bold t))))
@@ -50,20 +61,31 @@
       '(border-glyph ((t (nil))))
       '(buffers-tab ((t (:foreground "#F8F8F8"))))
       
+      `(cider-fringe-good-face ((t (:foreground ,vemv-default-foreground-color))))
+      `(cider-error-highlight-face ((t (:foreground ,vemv-default-foreground-color))))
+      `(cider-stacktrace-error-class-face ((t (:foreground ,vemv-error-foreground-color))))
+      `(cider-repl-stderr-face ((t (:foreground ,vemv-error-foreground-color))))
+      `(cider-stacktrace-error-class-face ((t (:foreground ,vemv-error-foreground-color))))
+      
       '(font-lock-builtin-face ((t (:foreground "#F5F5F5"))))
       '(font-lock-comment-face ((t (:italic t :foreground "#FFE33B"))))
       `(font-lock-constant-face ((t (:italic t :foreground ,vemv-colors/keyword-green))))
       '(font-lock-doc-string-face ((t (:foreground "#FFE33B" :italic t))))
-      '(font-lock-function-name-face ((t (:foreground "#FFE33B" :bold t)))) ;; yellow
-      '(font-lock-keyword-face ((t (:foreground "#F5F5F5"))))
+      '(font-lock-function-name-face ((t (:foreground "#FFE33B" :bold t))))
+      
+      ;; used for special forms and macros. also for def - which is annoying
+      '(font-lock-keyword-face ((t (:foreground "#ffe444")))) ;; a lighter yellow
       '(font-lock-preprocessor-face ((t (:foreground "#C1ED3D")))) ;; Java
       ;; '(font-lock-reference-face ((t (:foreground "medium slate blue"))))
       ;; '(font-lock-reference-face ((t (:foreground "gray"))))
       '(font-lock-regexp-grouping-backslash ((t (:foreground "#FFE33B"))))
       '(font-lock-regexp-grouping-construct ((t (:foreground "red"))))
       '(font-lock-string-face ((t (:foreground "#BFD8FF"))))
-      '(font-lock-type-face ((t (:foreground "#D8FA3C"))))
-      '(font-lock-variable-name-face ((t (:foreground "#F5F5F5"))))
+      
+      ;; ns prefixes:
+      '(font-lock-type-face ((t (:foreground "#ededed"))))
+      
+      '(font-lock-variable-name-face ((t (:foreground "#FFE33B" :bold t))))
       '(font-lock-warning-face ((t (:bold t :foreground "Pink"))))
 
       '(gui-element ((t (:background "#484848" :foreground "#96CBFE"))))
