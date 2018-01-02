@@ -118,6 +118,7 @@
 (custom-set-variables
  '(cider-connection-message-fn nil)
  '(cider-repl-display-help-banner nil)
+ '(cider-font-lock-dynamically '(macro deprecated))
  '(cua-remap-control-v nil)
  '(ielm-prompt "ielm> ")
  '(mac-mouse-wheel-smooth-scroll nil)
