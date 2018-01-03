@@ -1133,7 +1133,8 @@ Comments get ignored, this is, point will only move as long as its position stil
     (vemv/save-window-excursion
      (select-window vemv/repl2)
      (end-of-buffer)
-     (when (and (not no-recur) (vemv/contains? (buffer-string) "tests")) ;; this output hijacks input: "Ran 4 tests containing 8 assertions."
+     (when (and (not no-recur) (vemv/contains? (prin1-to-string (buffer-string))
+                                               "cider-repl-stdout-face"))
        (cider-repl-return) ;; ub-hijack the prompt
        (cider-repl-clear-buffer)
        (delay (argless (vemv/clear-cider-repl-buffer :no-recur)) 1.5))
