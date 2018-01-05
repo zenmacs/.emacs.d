@@ -8,7 +8,7 @@
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 
-(dolist (package '(cider company queue fiplr clojure-mode clj-refactor company-quickhelp dash simpleclip))
+(dolist (package '(cider company queue fiplr clojure-mode clj-refactor company-quickhelp dash simpleclip helm-ag))
         (unless (package-installed-p package)
                 (package-refresh-contents)
                 (package-install package)))
@@ -48,6 +48,7 @@
 (require 's)
 (require 'clj-refactor)
 (require 'fiplr)
+(require 'helm-ag)
 (require 'vemv.project)
 (require 'vemv.lang)
 (require 'vemv.data)
@@ -427,3 +428,5 @@ of the buffer into a formatted string."
           (when (not formatted) (vemv/echo "Buffer has broken syntax, cannot format"))
           (erase-buffer)
           (insert formatted))))
+
+(advice-add 'helm-ag--edit :after 'vemv/ag-replace)

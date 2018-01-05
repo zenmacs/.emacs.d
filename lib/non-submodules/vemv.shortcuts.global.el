@@ -33,7 +33,9 @@
       vemv/shortcuts/global/primary-q               'save-buffers-kill-terminal
       vemv/shortcuts/global/primary-r               'vemv/test-this-ns
       vemv/shortcuts/global/primary-s               'vemv/save
+      vemv/shortcuts/global/primary-S-f             'helm-do-ag
       vemv/shortcuts/global/primary-S-r             'vemv/run-this-deftest
+      vemv/shortcuts/global/primary-S-y             'vemv/abort-ag
       vemv/shortcuts/global/primary-S-z             'undo-tree-redo
       vemv/shortcuts/global/primary-semicolon       'toggle-truncate-lines
       vemv/shortcuts/global/primary-SPC             'cua-set-mark
@@ -42,6 +44,7 @@
       vemv/shortcuts/global/primary-up              'backward-paragraph
       vemv/shortcuts/global/primary-v               'vemv/paste-from-clipboard
       vemv/shortcuts/global/primary-w               'vemv/close-this
+      vemv/shortcuts/global/primary-y               'vemv/ag-replace
       vemv/shortcuts/global/primary-z               'undo-tree-undo
       vemv/shortcuts/global/prior                   'cua-scroll-down
       vemv/shortcuts/global/RET                     'newline-and-indent
@@ -62,6 +65,7 @@
       vemv/shortcuts/global/tertiary-a              'vemv/copy-inserting-at-kill-list
       vemv/shortcuts/global/tertiary-backtick       'vemv/jump-to-clojure-definition
       vemv/shortcuts/global/tertiary-end            'end-of-buffer
+      vemv/shortcuts/global/tertiary-f              'helm-do-ag-this-file
       vemv/shortcuts/global/tertiary-home           'beginning-of-buffer
       vemv/shortcuts/global/tertiary-j              'cider-eval-sexp-at-point
       vemv/shortcuts/global/tertiary-k              'vemv/cut

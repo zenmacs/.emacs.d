@@ -29,6 +29,7 @@
 (setq vemv-default-autocomplete-popup-foreground-color "#333333")
 
 (setq vemv-default-background-color "#4D575F")
+(setq vemv-default-background-color-slightly-darker "#404950")
 (setq vemv-default-foreground-color "#F5F5F5")
 (setq vemv-default-foreground-color-very-slightly-darker "#ededed")
 (setq vemv-error-foreground-color vemv-default-foreground-color)
@@ -72,7 +73,7 @@
       `(cider-error-highlight-face ((t (:foreground ,vemv-default-foreground-color))))
       `(cider-stacktrace-error-class-face ((t (:foreground ,vemv-error-foreground-color))))
       `(cider-repl-stderr-face ((t (:foreground ,vemv-error-foreground-color))))
-      `(cider-repl-prompt-face ((t (:foreground ,vemv-default-foreground-color))))
+      `(cider-repl-prompt-face ((t (:foreground ,vemv-default-foreground-color :italic t))))
       `(cider-repl-stdout-face ((t (:foreground ,vemv-default-foreground-color-very-slightly-darker))))
       `(cider-stacktrace-error-class-face ((t (:foreground ,vemv-error-foreground-color))))
       
@@ -156,6 +157,26 @@
       `(yas/field-highlight-face ((t (:background "deep pink" :foreground "black"))))
 
       `(show-paren-match-face ((t (:background "#D93273" :foreground ,vemv-default-foreground-color))))
+      
+      `(helm-candidate-number ((t (:inherit helm-header))))
+      `(helm-candidate-number-suspended ((t (:inherit helm-header))))
+      `(helm-ff-directory ((t (:foreground ,vemv-colors/yellow :bold t))))
+      `(helm-ff-dotted-directory ((t (:foreground ,vemv-colors/yellow :bold t))))
+      `(helm-ff-dotted-symlink-directory ((t (:foreground ,vemv-colors/yellow :bold t))))
+      `(helm-ff-prefix ((t (:inherit helm-header))))
+      `(helm-ff-symlink ((t (:foreground ,vemv-colors/light-blue))))
+      `(helm-grep-lineno ((t (:foreground ,vemv-colors/lighter-yellow))))
+      `(helm-grep-finish ((t (:inherit mode-line))))
+      `(helm-grep-match ((t (:foreground ,vemv-colors/keyword-green))))
+      `(helm-header-line-left-margin ((t (:inherit helm-header))))
+      `(helm-match ((t (:foreground ,vemv-colors/keyword-green :background ,vemv-default-autocomplete-popup-foreground-color))))
+      `(helm-match-item ((t (:foreground ,vemv-colors/keyword-green))))
+      `(helm-moccur-buffer ((t (:foreground ,vemv-default-foreground-color-very-slightly-darker :background ,vemv-default-background-color-slightly-darker))))
+      `(helm-selection ((t (:background ,vemv-default-background-color-slightly-darker))))
+      `(helm-selection ((t (:background "#7A3555" :foreground ,vemv-default-foreground-color))))
+      `(helm-separator ((t (:foreground ,vemv-colors/lighter-yellow))))
+      `(helm-source-header ((t (:inherit helm-header :bold t))))
+      `(helm-visible-mark ((t (:background "#D93273" :foreground ,vemv-default-foreground-color))))
 
       `(naeu-green-face ((t (:foreground "green" :background "black"))))
       `(naeu-pink-face ((t (:foreground "deep pink" :background "black"))))
