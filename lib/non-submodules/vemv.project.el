@@ -1,3 +1,4 @@
+(require 'vemv.lang)
 (provide 'vemv.project)
 
 (setq vemv/using-nrepl t)
@@ -94,3 +95,23 @@
         (delay (argless (vemv/save-window-excursion (comint-clear-buffer))) 0.3))))
 
 (vemv/refresh-current-project vemv/current-project)
+
+(defun vemv-source (filename)
+  (mapcar
+   (lambda (x)
+           (let* ((xy (s-split "=" (s-chop-prefix "+" x)))
+                  (x (car xy))
+                  (y (car (last xy))))
+                 (setenv x y)))
+   (-filter
+    (lambda (x) (vemv/starts-with x "+"))
+    (s-split
+     "\n"
+     (shell-command-to-string (concat "diff -u  <(true; export) <(source " filename "; export) | tail -n +4"))))))
+
+(vemv-source "/Users/vemv/gpm/src/environment.sh")
+(vemv-source "/Users/vemv/gpm/src/custom-environment.sh")
+(vemv-source "/Users/vemv/.ldap")
+
+(setenv "PATH" (concat (getenv "PATH") ":" vemv-home "/bin"))
+(setenv "HORIZON_IS_DEVELOPMENT_SERVER" "true")
