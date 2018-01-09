@@ -423,26 +423,28 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 
     (vemv/refresh-file-caches)
     (vemv/safe-select-window vemv/main_window)
-    (let* ((buffer-fragments (-remove (lambda (x) (string-equal x "")) (split-string (file-truename (buffer-file-name)) "/")))
-           (projname (pe/project-root-function-default)) ;; "/Users/vemv/gpm"
-           (project-fragments (-remove (lambda (x) (string-equal x "")) (split-string projname "/")))
-           (fragments (-drop (length project-fragments) buffer-fragments))
-           (expanded-fragments (mapcar* (lambda (x y) (-take x y)) (number-sequence 1 (length fragments)) (-repeat (length fragments) fragments)))
-           (final-fragments (mapcar (lambda (x) (concat (s-join "" (cons projname (-interpose "/" x))) "/")) expanded-fragments)))
+    (if (minibuffer-prompt)
+      (delay 'vemv/show-current-file-in-project-explorer 1)
+      (let* ((buffer-fragments (-remove (lambda (x) (string-equal x "")) (split-string (file-truename (buffer-file-name)) "/")))
+             (projname (pe/project-root-function-default)) ;; "/Users/vemv/gpm"
+             (project-fragments (-remove (lambda (x) (string-equal x "")) (split-string projname "/")))
+             (fragments (-drop (length project-fragments) buffer-fragments))
+             (expanded-fragments (mapcar* (lambda (x y) (-take x y)) (number-sequence 1 (length fragments)) (-repeat (length fragments) fragments)))
+             (final-fragments (mapcar (lambda (x) (concat (s-join "" (cons projname (-interpose "/" x))) "/")) expanded-fragments)))
 
-          (vemv/safe-select-window vemv/project-explorer-window)
-            ;; (pe/fold-all) ;; necessary in principle, skip it for performance. seems to work fine.
-          (beginning-of-buffer)
+            (vemv/safe-select-window vemv/project-explorer-window)
+              ;; (pe/fold-all) ;; necessary in principle, skip it for performance. seems to work fine.
+            (beginning-of-buffer)
 
-          (seq-doseq (f (butlast final-fragments))
-                     (while (not (string-equal f (pe/current-directory)))
-                       (next-line))
-                     (pe/return))
+            (seq-doseq (f (butlast final-fragments))
+                       (while (not (string-equal f (pe/current-directory)))
+                         (next-line))
+                       (pe/return))
 
-          (while (not (string-equal (s-chop-suffix "/" (first (last final-fragments))) (pe/get-filename)))
-            (next-line))
+            (while (not (string-equal (s-chop-suffix "/" (first (last final-fragments))) (pe/get-filename)))
+              (next-line))
 
-          (end-of-line))))
+            (end-of-line)))))
 
 (defun vemv/safe-show-current-file-in-project-explorer* ()
   (condition-case nil
@@ -832,7 +834,8 @@ Comments get ignored, this is, point will only move as long as its position stil
   (vemv/save)
   (vemv/save) ;; save autoformatting
   (vemv/advice-nrepl)
-  (cider-load-buffer))
+  (cider-load-buffer)
+  (delay (argless (vemv/echo "Reloaded!") 0.1)))
 
 (defun vemv/at-beginning-of-line-p ()
   (eq (point) (save-excursion (beginning-of-line) (point))))
@@ -1144,8 +1147,10 @@ Comments get ignored, this is, point will only move as long as its position stil
     (vemv/save-window-excursion
      (select-window vemv/repl2)
      (end-of-buffer)
-     (when (and (not no-recur) (vemv/contains? (prin1-to-string (buffer-string))
-                                               "cider-repl-stdout-face"))
+     (when (and (not no-recur)
+          (or (> (point-max) 5000) ;; b/c I think the code below is slow, can hang emacs
+              (vemv/contains? (prin1-to-string (buffer-string))
+                              "cider-repl-stdout-face")))
        (cider-repl-return) ;; ub-hijack the prompt
        (cider-repl-clear-buffer)
        (delay (argless (vemv/clear-cider-repl-buffer :no-recur)) 1.5))
