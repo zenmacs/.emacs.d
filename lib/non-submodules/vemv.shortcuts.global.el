@@ -79,3 +79,6 @@
 
 ;; other S-RET syntaxes don't work. TODO: abstract away this
 (global-set-key [(shift return)] 'vemv/clear-cider-repl-buffer)
+
+;; same here. control-ret is interpreted as s-return rather than as tertiary-RET
+(global-set-key [(s return)] 'vemv/load-clojure-buffer)
