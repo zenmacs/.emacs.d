@@ -484,15 +484,18 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (vemv/contains? (file-truename (buffer-file-name b))
                   vemv/running-project-root-dir))
 
+(defun vemv/ciderable-p ()
+  (vemv/contains? (buffer-name) ".clj")
+  (cider-connected-p)
+  vemv-cider-connected)
+
 (defun vemv/advice-nrepl* (&optional after)
   (interactive)
   (delay (argless
           (unless (or (vemv/scratch-p)
                       (not (vemv/buffer-of-current-project? (current-buffer)))
                       (and (eq vemv/running-project-type :clj) (vemv/current-main-buffer-is-cljs)))
-            (when (and (vemv/contains? (buffer-name) ".clj")
-                       (cider-connected-p)
-                       vemv-cider-connected
+            (when (and (vemv/ciderable-p)
                        (vemv/figwheel-connected-p)
                        (not (string-equal (vemv/current-ns)
                                           (vemv/current-ns (window-buffer vemv/repl2)))))
@@ -1001,6 +1004,11 @@ Comments get ignored, this is, point will only move as long as its position stil
   (unless (vemv/good-frame-p)
     (vemv/close-this-frame)))
 
+(defun vemv/indent-on-paste ()
+  (when (vemv/ciderable-p) ;; in-clojure-mode-p
+      (paredit-backward)
+      (vemv/indent)))
+
 (defun vemv/clojure-init ()
   (if (minibuffer-prompt)
     (delay 'vemv/clojure-init 1)
@@ -1021,6 +1029,8 @@ Comments get ignored, this is, point will only move as long as its position stil
                       3)))))
 
     (advice-add 'pe/show-buffer :after 'vemv/after-file-open)
+    (advice-add 'vemv/paste-from-clipboard :after 'vemv/indent-on-paste)
+    (advice-add 'vemv/paste-from-kill-list :after 'vemv/indent-on-paste)
     (advice-add 'vemv/fiplr :after 'vemv/after-file-open)
     (advice-add 'vemv/open :after 'vemv/after-file-open)
     (advice-add 'vemv/next-file-buffer :after 'vemv/after-file-open)
