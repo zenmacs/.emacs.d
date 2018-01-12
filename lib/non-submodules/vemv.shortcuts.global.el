@@ -33,7 +33,8 @@
       vemv/shortcuts/global/primary-q               'save-buffers-kill-terminal
       vemv/shortcuts/global/primary-r               'vemv/test-this-ns
       vemv/shortcuts/global/primary-s               'vemv/save
-      vemv/shortcuts/global/primary-S-f             'helm-do-ag
+      vemv/shortcuts/global/primary-S-f             (argless (let ((default-directory vemv/project-clojure-dir))
+                                                                (call-interactively 'helm-do-ag)))
       vemv/shortcuts/global/primary-S-r             'vemv/run-this-deftest
       vemv/shortcuts/global/primary-S-y             'vemv/abort-ag
       vemv/shortcuts/global/primary-S-z             'undo-tree-redo
