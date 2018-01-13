@@ -290,6 +290,15 @@
 (setq visible-bell nil) ;; disable flickering
 (setq ido-auto-merge-delay-time 99999) ;; prevents annoying folder switching. might be handy: (setq ido-max-directory-size 100000)
 
+(setq mouse-buffer-menu-maxlen 99999)
+(setq mouse-buffer-menu-mode-mult 1)
+
+(mapcar (lambda (f)
+          (let ((emacs-path (concat vemv-home "/.emacs.d/lib/non-submodules")))
+                (vemv/open (concat emacs-path "/vemv." f ".el"))
+                (switch-to-buffer "*scratch*")))
+      '("init" "lang" "project" "theme" "shortcuts.global"))
+
 (delay 'vemv/clojure-init 1)
 
 ;; FONT SIZE -> 13 for laptop, 11 for desktop
