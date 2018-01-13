@@ -515,19 +515,26 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 (defun vemv/advice-nrepl (&optional x)
   (funcall vemv/debounced-advice-nrepl x))
 
-(defun vemv/toggle-ns-hiding ()
+(defun vemv/toggle-ns-hiding (&optional after-file-open)
   (interactive)
   (when (not vemv-cleaning-namespaces)
-    (setq-local vemv/ns-hidden (not vemv/ns-hidden))
-    (if vemv/ns-hidden
-      (let* ((hs-block-start-regexp "(ns")
-             (hs-block-end-regexp ")")
-             (hs-hide-comments-when-hiding-all nil)
-             (hs-adjust-block-beginning (lambda (initial)
-                                                (save-excursion
-                                                 (point)))))
-            (apply #'hs-hide-all ()))
-      (hs-show-all))))
+    (let ((curr-buff-name (buffer-name (current-buffer))))
+      (setq-local vemv/ns-shown (if after-file-open
+                                     (if vemv/ns-shown
+                                         vemv/ns-shown
+                                         nil)
+                                     (if vemv/ns-shown
+                                         nil
+                                         curr-buff-name)))
+      (if vemv/ns-shown
+          (hs-show-all)
+          (let* ((hs-block-start-regexp "(ns")
+                 (hs-block-end-regexp ")")
+                 (hs-hide-comments-when-hiding-all nil)
+                 (hs-adjust-block-beginning (lambda (initial)
+                                              (save-excursion
+                                                (point)))))
+            (apply #'hs-hide-all ()))))))
 
 (defun vemv/show-clj-or-cljs-repl ()
   (vemv/safe-select-window vemv/main_window)
@@ -549,8 +556,8 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (interactive)
   (vemv/safe-select-window vemv/main_window)
   (when (and (vemv/contains? (buffer-name) ".clj")
-             (not vemv/ns-hidden))
-    (vemv/toggle-ns-hiding))
+             (not vemv/ns-shown))
+    (vemv/toggle-ns-hiding :after-file-open))
   
   (vemv/advice-nrepl)
   (vemv/ensure-repl-visible)
@@ -798,7 +805,7 @@ Comments get ignored, this is, point will only move as long as its position stil
               (vemv/save b)))
           (vemv/all-buffers)))
 
-(setq vemv/ns-hidden nil)
+(setq vemv/ns-shown nil)
 
 (defun cljr--maybe-wrap-form ()) ;; void it
 
@@ -933,7 +940,7 @@ Comments get ignored, this is, point will only move as long as its position stil
       (list "(" "[" "{" "#" "\""))))
 
 (defun vemv/close-this-buffer ()
-  (setq-local vemv/ns-hidden nil)
+  (setq-local vemv/ns-shown nil)
   (kill-buffer (current-buffer))
   (when (and (eq (selected-window) vemv/main_window)
              (not (vemv/contains? (buffer-name) ".clj")))
@@ -1017,7 +1024,19 @@ Comments get ignored, this is, point will only move as long as its position stil
 (defun vemv/clojure-init ()
   (if (minibuffer-prompt)
     (delay 'vemv/clojure-init 1)
+    
+    (advice-add 'pe/show-buffer :after 'vemv/after-file-open)
+    (advice-add 'vemv/paste-from-clipboard :after 'vemv/indent-on-paste)
+    (advice-add 'vemv/paste-from-kill-list :after 'vemv/indent-on-paste)
+    (advice-add 'vemv/fiplr :after 'vemv/after-file-open)
+    (advice-add 'vemv/open :after 'vemv/after-file-open)
+    (advice-add 'vemv/next-file-buffer :after 'vemv/after-file-open)
+    (advice-add 'vemv/previous-file-buffer :after 'vemv/after-file-open)
+    (advice-add 'vemv/close-this-buffer :after 'vemv/after-file-open)
+    (advice-add 'helm-ag--action-find-file :after 'vemv/after-file-open)
+    
     (vemv/safe-select-window vemv/main_window)
+    
     (if (file-readable-p recentf-save-file)
      (if (pos? (length recentf-list))
        (let* ((head (car recentf-list))
@@ -1031,17 +1050,7 @@ Comments get ignored, this is, point will only move as long as its position stil
                   the-file
                   vemv/default-clojure-file))
                (delay (argless (funcall vemv/safe-show-current-file-in-project-explorer))
-                      3)))))
-
-    (advice-add 'pe/show-buffer :after 'vemv/after-file-open)
-    (advice-add 'vemv/paste-from-clipboard :after 'vemv/indent-on-paste)
-    (advice-add 'vemv/paste-from-kill-list :after 'vemv/indent-on-paste)
-    (advice-add 'vemv/fiplr :after 'vemv/after-file-open)
-    (advice-add 'vemv/open :after 'vemv/after-file-open)
-    (advice-add 'vemv/next-file-buffer :after 'vemv/after-file-open)
-    (advice-add 'vemv/previous-file-buffer :after 'vemv/after-file-open)
-    (advice-add 'vemv/close-this-buffer :after 'vemv/after-file-open)
-    (advice-add 'helm-ag--action-find-file :after 'vemv/after-file-open)))
+                      3)))))))
 
 (defun vemv/tab ()
   (interactive)
