@@ -930,11 +930,11 @@ Comments get ignored, this is, point will only move as long as its position stil
       (list "(" "[" "{" "#" "\""))))
 
 (defun vemv/close-this-buffer ()
-  (interactive)
   (setq-local vemv/ns-hidden nil)
   (kill-buffer (current-buffer))
-  (unless (vemv/contains? (buffer-name) ".clj")
-          (vemv/next-file-buffer)))
+  (when (and (eq (selected-window) vemv/main_window)
+             (not (vemv/contains? (buffer-name) ".clj")))
+    (vemv/next-file-buffer)))
 
 (defun vemv/noncloseable-buffer-p ()
   (-any? (lambda (x) (vemv/contains? (buffer-name) x))
@@ -959,18 +959,20 @@ Comments get ignored, this is, point will only move as long as its position stil
 (defun vemv/good-frame-p ()
   (eq vemv/main_frame (selected-frame)))
 
-(defun vemv/close-this-buffer ()
-  (setq-local vemv/ns-hidden nil)
-  (kill-buffer (current-buffer))
-  (when (and (eq (selected-window) vemv/main_window)
-             (not (vemv/contains? (buffer-name) ".clj")))
-        (vemv/next-file-buffer)))
-
 (defun vemv/close-this-window ()
   (delete-window))
 
 (defun vemv/close-this-frame ()
   (delete-frame (selected-frame) t))
+
+(defun vemv/close-all-file-buffers ()
+  (interactive)
+  (mapcar (lambda (b)
+            (with-current-buffer b
+              (kill-buffer (current-buffer))))
+          (-clone vemv/chosen-file-buffer-order))
+  (setq vemv/chosen-file-buffer-order nil)
+  (switch-to-buffer "*scratch*"))
 
 (defun vemv/stop-using-minibuffer (&optional callback)
   "kill the minibuffer"
