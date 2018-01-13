@@ -8,9 +8,9 @@
       vemv/shortcuts/global/f11                     'vemv/maximize
       vemv/shortcuts/global/f4                      nil
       vemv/shortcuts/global/f6                      'vemv/toggle-ns-hiding
-      vemv/shortcuts/global/f7                      'vemv/previous-file-buffer
+      vemv/shortcuts/global/f7                      'vemv/previous-project
       vemv/shortcuts/global/f8                      'vemv/after-file-open
-      vemv/shortcuts/global/f9                      'vemv/next-file-buffer
+      vemv/shortcuts/global/f9                      'vemv/next-project
       vemv/shortcuts/global/home                    'back-to-indentation
       vemv/shortcuts/global/left                    'left-char
       vemv/shortcuts/global/next                    'cua-scroll-up
@@ -71,10 +71,10 @@
       vemv/shortcuts/global/tertiary-home           'beginning-of-buffer
       vemv/shortcuts/global/tertiary-j              'cider-eval-sexp-at-point
       vemv/shortcuts/global/tertiary-k              'vemv/cut
-      vemv/shortcuts/global/tertiary-left           'vemv/previous-project
+      vemv/shortcuts/global/tertiary-left           'vemv/previous-file-buffer
       vemv/shortcuts/global/tertiary-o              'vemv/open-project
       vemv/shortcuts/global/tertiary-RET            'vemv/load-clojure-buffer
-      vemv/shortcuts/global/tertiary-right          'vemv/next-project
+      vemv/shortcuts/global/tertiary-right          'vemv/next-file-buffer
       vemv/shortcuts/global/tertiary-s              'vemv/save-all-clojure-buffers-for-this-project
       vemv/shortcuts/global/tertiary-v              'vemv/paste-from-kill-list
       vemv/shortcuts/global/up                      'vemv/previous-line)
