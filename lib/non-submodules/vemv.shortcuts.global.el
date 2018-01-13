@@ -3,7 +3,7 @@
 (provide 'vemv.shortcuts.global)
 
 (setq vemv/shortcuts/global/backspace               'vemv/backspace
-      vemv/shortcuts/global/down                    'next-line
+      vemv/shortcuts/global/down                    'vemv/next-line
       vemv/shortcuts/global/end                     'vemv/end-of-line-or-code
       vemv/shortcuts/global/f11                     'vemv/maximize
       vemv/shortcuts/global/f4                      nil
@@ -77,7 +77,7 @@
       vemv/shortcuts/global/tertiary-right          'vemv/next-project
       vemv/shortcuts/global/tertiary-s              'vemv/save-all-clojure-buffers-for-this-project
       vemv/shortcuts/global/tertiary-v              'vemv/paste-from-kill-list
-      vemv/shortcuts/global/up                      'previous-line)
+      vemv/shortcuts/global/up                      'vemv/previous-line)
 
 ;; other S-RET syntaxes don't work. TODO: abstract away this
 (global-set-key [(shift return)] 'vemv/clear-cider-repl-buffer)

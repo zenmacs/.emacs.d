@@ -350,13 +350,19 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   ":foo -> \"foo\""
   (substring (symbol-name arg) 1))
 
-(defun vemv/current-line-content ()
+(defun vemv/current-line-contents ()
   "Returns the content of the line at which the point is currently located. Side effects free."
   (interactive)
   (let ((result (buffer-substring-no-properties (line-beginning-position 1) (line-beginning-position 2))))
     (if (equal result "") ;; abstact away EOFs
       "\n"
       result)))
+
+(defun vemv/current-line ()
+  (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+
+(defun vemv/current-line-number ()
+  (1+ (count-lines 1 (point))))
 
 (defun vemv/current-char-at-point (&optional offset)
   "Returns the character -as a string- hovered by the point, or a contiguous one, if an integer offset is specified."
@@ -661,7 +667,7 @@ Comments get ignored, this is, point will only move as long as its position stil
   (interactive)
   (if (equal last-command 'vemv/end)
     (call-interactively 'move-end-of-line)
-    (let* ((line (vemv/current-line-content))
+    (let* ((line (vemv/current-line-contents))
            (rev (vemv/reverse line))
            (line_length (length line))
            (movement (recur-let ((result 0))
@@ -712,7 +718,7 @@ Comments get ignored, this is, point will only move as long as its position stil
   (previous-line)
   (end-of-line)
   (call-interactively 'kill-region)
-  (let ((line (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
+  (let ((line (vemv/current-line)))
     (if (vemv/line-empty? line)
       (vemv/delete-this-line)
       (progn
@@ -756,11 +762,8 @@ Comments get ignored, this is, point will only move as long as its position stil
 (setq vemv/line-before-formatting nil)
 (setq vemv/token-before-formatting nil)
 
-(defun vemv/current-line ()
-  (1+ (count-lines 1 (point))))
-
 (defun vemv/save-position-before-formatting ()
-  (setq vemv/line-before-formatting (max 0 (- (vemv/current-line) 3)))
+  (setq vemv/line-before-formatting (max 0 (- (vemv/current-line-number) 3)))
   (setq vemv/token-before-formatting (vemv/sexpr-content)))
   
 ;; XXX unused
@@ -1303,3 +1306,21 @@ Comments get ignored, this is, point will only move as long as its position stil
     :candidate-number-limit 9999
     :keymap helm-do-ag-map
     :follow (and helm-follow-mode-persistent 1)))
+
+(defun vemv/indent-if-current-line-empty ()
+  (when (vemv/line-empty? (vemv/current-line))
+    (call-interactively 'indent-for-tab-command)))
+
+(defun vemv/next-line ()
+  "Note: makes <down> performance a bit slower than the native alternative.
+  But one shouldn't use <down> repeatedly (there are many better code-navigation commands)."
+  (interactive)
+  (call-interactively 'next-line)
+  (vemv/indent-if-current-line-empty))
+
+(defun vemv/previous-line ()
+  "Note: makes <up> performance a bit slower than the native alternative.
+  But one shouldn't use <up> repeatedly (there are many better code-navigation commands)."
+  (interactive)
+  (call-interactively 'previous-line)
+  (vemv/indent-if-current-line-empty))
