@@ -8,7 +8,7 @@
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 
-(dolist (package '(cider company queue fiplr clojure-mode clj-refactor company-quickhelp dash simpleclip helm-ag))
+(dolist (package '(cider company queue fiplr clojure-mode clj-refactor company-quickhelp dash simpleclip helm-ag git-timemachine))
         (unless (package-installed-p package)
                 (package-refresh-contents)
                 (package-install package)))
