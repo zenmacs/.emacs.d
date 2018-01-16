@@ -35,12 +35,14 @@
       vemv/shortcuts/global/primary-s               'vemv/save
       vemv/shortcuts/global/primary-S-f             (argless (let ((default-directory vemv/project-clojure-dir))
                                                                 (call-interactively 'helm-do-ag)))
+      vemv/shortcuts/global/RET                     'newline-and-indent
+      vemv/shortcuts/global/S-backspace             'vemv/force-backspace
       vemv/shortcuts/global/primary-S-r             'vemv/run-this-deftest
       vemv/shortcuts/global/primary-S-w             'vemv/close-all-file-buffers
       vemv/shortcuts/global/primary-S-y             'vemv/abort-ag
       vemv/shortcuts/global/primary-S-z             'undo-tree-redo
-      vemv/shortcuts/global/primary-semicolon       'toggle-truncate-lines
       vemv/shortcuts/global/primary-SPC             'cua-set-mark
+      vemv/shortcuts/global/primary-semicolon       'toggle-truncate-lines
       vemv/shortcuts/global/primary-t               'vemv/fiplr
       vemv/shortcuts/global/primary-u               'cljr-add-missing-libspec
       vemv/shortcuts/global/primary-up              'backward-paragraph
@@ -49,9 +51,8 @@
       vemv/shortcuts/global/primary-y               'vemv/ag-replace
       vemv/shortcuts/global/primary-z               'undo-tree-undo
       vemv/shortcuts/global/prior                   'cua-scroll-down
-      vemv/shortcuts/global/RET                     'newline-and-indent
       vemv/shortcuts/global/right                   'right-char
-      vemv/shortcuts/global/S-backspace             'vemv/force-backspace
+      vemv/shortcuts/global/secondary-S-k           'vemv/kill-backward-copying-content
       vemv/shortcuts/global/secondary-a             'vemv/copy-sexpr-content-backward
       vemv/shortcuts/global/secondary-backspace     'paredit-backward-kill-word
       vemv/shortcuts/global/secondary-colon         (argless (call-interactively 'eval-expression))
@@ -60,10 +61,10 @@
       vemv/shortcuts/global/secondary-next          'previous-buffer
       vemv/shortcuts/global/secondary-prior         'next-buffer
       vemv/shortcuts/global/secondary-right-bracket 'paredit-forward
-      vemv/shortcuts/global/secondary-S-k           'vemv/kill-backward-copying-content
       vemv/shortcuts/global/secondary-t             'vemv/open-file-via-fiplr-then-close-previous-buffer
       vemv/shortcuts/global/secondary-up            'paredit-splice-sexp-killing-backward
       vemv/shortcuts/global/secondary-x             'vemv/smex
+      vemv/shortcuts/global/tertiary-RET            'vemv/load-clojure-buffer
       vemv/shortcuts/global/tertiary-a              'vemv/copy-inserting-at-kill-list
       vemv/shortcuts/global/tertiary-backtick       'vemv/jump-to-clojure-definition
       vemv/shortcuts/global/tertiary-end            'end-of-buffer
@@ -73,10 +74,10 @@
       vemv/shortcuts/global/tertiary-k              'vemv/cut
       vemv/shortcuts/global/tertiary-left           'vemv/previous-file-buffer
       vemv/shortcuts/global/tertiary-o              'vemv/open-project
-      vemv/shortcuts/global/tertiary-RET            'vemv/load-clojure-buffer
       vemv/shortcuts/global/tertiary-right          'vemv/next-file-buffer
       vemv/shortcuts/global/tertiary-s              'vemv/save-all-clojure-buffers-for-this-project
       vemv/shortcuts/global/tertiary-v              'vemv/paste-from-kill-list
+      vemv/shortcuts/global/tertiary-w              'vemv/close-all-other-file-buffers
       vemv/shortcuts/global/up                      'previous-line)
 
 ;; other S-RET syntaxes don't work. TODO: abstract away this

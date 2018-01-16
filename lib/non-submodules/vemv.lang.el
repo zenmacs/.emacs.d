@@ -979,15 +979,6 @@ Comments get ignored, this is, point will only move as long as its position stil
 (defun vemv/close-this-frame ()
   (delete-frame (selected-frame) t))
 
-(defun vemv/close-all-file-buffers ()
-  (interactive)
-  (mapcar (lambda (b)
-            (with-current-buffer b
-              (kill-buffer (current-buffer))))
-          (-clone vemv/chosen-file-buffer-order))
-  (setq vemv/chosen-file-buffer-order nil)
-  (switch-to-buffer "*scratch*"))
-
 (defun vemv/stop-using-minibuffer (&optional callback)
   "kill the minibuffer"
   (condition-case nil
@@ -1019,6 +1010,23 @@ Comments get ignored, this is, point will only move as long as its position stil
       (vemv/close-this-window)))
   (unless (vemv/good-frame-p)
     (vemv/close-this-frame)))
+
+(defun vemv/close-all-file-buffers ()
+  (interactive)
+  (mapcar (lambda (b)
+            (with-current-buffer b
+              (vemv/close-this-buffer)))
+          (-clone vemv/chosen-file-buffer-order))
+  (switch-to-buffer "*scratch*"))
+
+(defun vemv/close-all-other-file-buffers ()
+  (interactive)
+  (let ((root (buffer-name (current-buffer))))
+    (mapcar (lambda (b)
+              (unless (string-equal b root)
+                (with-current-buffer b
+                  (vemv/close-this-buffer))))
+            (-clone vemv/chosen-file-buffer-order))))
 
 (defun vemv/indent-on-paste ()
   (when (vemv/ciderable-p) ;; in-clojure-mode-p
