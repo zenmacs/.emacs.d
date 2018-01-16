@@ -1054,7 +1054,9 @@ Comments get ignored, this is, point will only move as long as its position stil
     
     (if (file-readable-p recentf-save-file)
      (if (pos? (length recentf-list))
-       (let* ((head (car recentf-list))
+         (let* ((head (car (filter (lambda (x)
+                                     (vemv/contains? x ".clj"))
+                                   recentf-list)))
               (the-file (ignore-errors
                          (if (vemv/ends-with head "ido.last")
                            (second recentf-list)
