@@ -494,8 +494,11 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (vemv/contains? (file-truename (buffer-file-name b))
                   vemv/running-project-root-dir))
 
+(defun vemv/in-clojure-mode? ()
+  (vemv/contains? (prin1-to-string major-mode) "clojure"))
+
 (defun vemv/ciderable-p ()
-  (vemv/contains? (buffer-name) ".clj")
+  (vemv/in-clojure-mode?)
   (cider-connected-p)
   vemv-cider-connected)
 
@@ -559,7 +562,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 (defun vemv/after-file-open (&rest ignore)
   (interactive)
   (vemv/safe-select-window vemv/main_window)
-  (when (and (vemv/contains? (buffer-name) ".clj")
+  (when (and (vemv/in-clojure-mode?)
              (not vemv/ns-shown))
     (vemv/toggle-ns-hiding :after-file-open))
   
@@ -947,7 +950,7 @@ Comments get ignored, this is, point will only move as long as its position stil
   (setq-local vemv/ns-shown nil)
   (kill-buffer (current-buffer))
   (when (and (eq (selected-window) vemv/main_window)
-             (not (vemv/contains? (buffer-name) ".clj")))
+             (not (vemv/in-clojure-mode?)))
     (vemv/next-file-buffer)))
 
 (defun vemv/noncloseable-buffer-p ()
