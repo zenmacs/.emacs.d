@@ -1319,21 +1319,3 @@ Comments get ignored, this is, point will only move as long as its position stil
     :candidate-number-limit 9999
     :keymap helm-do-ag-map
     :follow (and helm-follow-mode-persistent 1)))
-
-(defun vemv/indent-if-current-line-empty ()
-  (when (vemv/line-empty? (vemv/current-line))
-    (call-interactively 'indent-for-tab-command)))
-
-(defun vemv/next-line ()
-  "Note: makes <down> performance a bit slower than the native alternative.
-  But one shouldn't use <down> repeatedly (there are many better code-navigation commands)."
-  (interactive)
-  (call-interactively 'next-line)
-  (vemv/indent-if-current-line-empty))
-
-(defun vemv/previous-line ()
-  "Note: makes <up> performance a bit slower than the native alternative.
-  But one shouldn't use <up> repeatedly (there are many better code-navigation commands)."
-  (interactive)
-  (call-interactively 'previous-line)
-  (vemv/indent-if-current-line-empty))
