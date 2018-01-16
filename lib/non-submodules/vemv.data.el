@@ -33,6 +33,7 @@
             clojure-mode-map "<tab>" 'vemv/tab
             emacs-lisp-mode-map  ";" 'vemv/semicolon
             helm-map [(shift return)] (argless (interactive) (helm-select-nth-action 1))
+            helm-map "C-a" 'vemv/helm-persistent-action-all
             emacs-lisp-mode-map "RET" 'newline-and-indent
             emacs-lisp-mode-map "C-?" 'vemv/elisp-window-documentation))
 

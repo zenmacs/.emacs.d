@@ -1332,3 +1332,14 @@ Comments get ignored, this is, point will only move as long as its position stil
     :candidate-number-limit 9999
     :keymap helm-do-ag-map
     :follow (and helm-follow-mode-persistent 1)))
+
+(defun vemv/helm-persistent-action-all ()
+  (interactive)
+  (call-interactively 'helm-beginning-of-buffer)
+  (setq-local vemv-current-line (vemv/current-line-number))
+  (setq-local vemv-last-line (save-excursion (call-interactively 'helm-end-of-buffer) (vemv/current-line-number)))
+  (call-interactively 'helm-beginning-of-buffer)
+  (dotimes (i 100) ; while (not (eq vemv-current-line vemv-last-line))
+    (setq-local vemv-current-line (vemv/current-line-number))
+    (call-interactively 'helm-execute-persistent-action)
+    (call-interactively 'helm-next-line)))
