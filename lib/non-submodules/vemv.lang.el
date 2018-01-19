@@ -1037,18 +1037,11 @@ Comments get ignored, this is, point will only move as long as its position stil
                   (vemv/close-this-buffer))))
             (-clone vemv/chosen-file-buffer-order))))
 
-(defun vemv/indent-on-paste ()
-  (when (vemv/ciderable-p) ;; in-clojure-mode-p
-      (paredit-backward)
-      (vemv/indent)))
-
 (defun vemv/clojure-init ()
   (if (minibuffer-prompt)
     (delay 'vemv/clojure-init 1)
     
     (advice-add 'pe/show-buffer :after 'vemv/after-file-open)
-    (advice-add 'vemv/paste-from-clipboard :after 'vemv/indent-on-paste)
-    (advice-add 'vemv/paste-from-kill-list :after 'vemv/indent-on-paste)
     (advice-add 'vemv/fiplr :after 'vemv/after-file-open)
     (advice-add 'vemv/open :after 'vemv/after-file-open)
     (advice-add 'vemv/next-file-buffer :after 'vemv/after-file-open)
@@ -1240,11 +1233,21 @@ Comments get ignored, this is, point will only move as long as its position stil
                                              chosen
                                              "])")))))))
 
+(defun vemv/maybe-indent-on-paste (content)
+  (when (and (vemv/in-clojure-mode?)
+             (s-match "^\s*[\(|[|{]" content))
+      (paredit-backward)
+      (vemv/indent)))
+
 (defun vemv/paste-from-clipboard ()
-  (insert (substring-no-properties (simpleclip-get-contents))))
+  (let ((content (substring-no-properties (simpleclip-get-contents))))
+    (insert content)
+    (vemv/maybe-indent-on-paste content)))
 
 (defun vemv/paste-from-kill-list ()
-  (insert (car vemv/kill-list)))
+  (let ((content (car vemv/kill-list)))
+    (insert content)
+    (vemv/maybe-indent-on-paste content)))
 
 (defun vemv/onelineize ()
   "Turns the current sexpr into a oneliner"
