@@ -377,14 +377,38 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
     (pop kill-ring)
     result))
 
-(defun vemv/indent ()
-  "Indents the next sexpr."
+(defun vemv/in-clojure-mode? ()
+  (vemv/contains? (prin1-to-string major-mode) "clojure"))
+
+(defun vemv/ciderable-p ()
+  (vemv/in-clojure-mode?)
+  (cider-connected-p)
+  vemv-cider-connected)
+
+(defun vemv/dumb-indent ()
+  (interactive)
+  (save-excursion
+    (while (not (some (lambda (char)
+                        (equal char (vemv/current-char-at-point)))
+                      '("(" "[" "{")))
+      (beginning-of-sexp))
+    (paredit-wrap-round)
+    (paredit-splice-sexp-killing-backward)))
+
+(defun vemv/cider-indent ()
   (interactive)
   (push-mark)
   (paredit-forward)
   (call-interactively 'cider-format-region)
   (pop-mark)
   (paredit-backward))
+
+(defun vemv/indent ()
+  "Indents the next sexpr."
+  (interactive)
+  (if (vemv/ciderable-p)
+   (vemv/cider-indent)
+   (vemv/dumb-indent)))
 
 (defun vemv/timestamp ()
   (truncate (float-time)))
@@ -502,14 +526,6 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 (defun vemv/buffer-of-current-running-project? (b)
   (vemv/contains? (file-truename (buffer-file-name b))
                   vemv/running-project-root-dir))
-
-(defun vemv/in-clojure-mode? ()
-  (vemv/contains? (prin1-to-string major-mode) "clojure"))
-
-(defun vemv/ciderable-p ()
-  (vemv/in-clojure-mode?)
-  (cider-connected-p)
-  vemv-cider-connected)
 
 (defun vemv/advice-nrepl* (&optional after)
   (interactive)
