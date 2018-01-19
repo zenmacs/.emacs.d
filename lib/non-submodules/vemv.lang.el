@@ -497,6 +497,10 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
 
 (defun vemv/buffer-of-current-project? (b)
   (vemv/contains? (file-truename (buffer-file-name b))
+                  vemv/project-root-dir))
+
+(defun vemv/buffer-of-current-running-project? (b)
+  (vemv/contains? (file-truename (buffer-file-name b))
                   vemv/running-project-root-dir))
 
 (defun vemv/in-clojure-mode? ()
@@ -511,7 +515,7 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
   (interactive)
   (delay (argless
           (unless (or (vemv/scratch-p)
-                      (not (vemv/buffer-of-current-project? (current-buffer)))
+                      (not (vemv/buffer-of-current-running-project? (current-buffer)))
                       (and (eq vemv/running-project-type :clj) (vemv/current-main-buffer-is-cljs)))
             (when (and (vemv/ciderable-p)
                        (vemv/figwheel-connected-p)
@@ -1354,7 +1358,7 @@ Comments get ignored, this is, point will only move as long as its position stil
   (setq-local vemv-current-line (vemv/current-line-number))
   (setq-local vemv-last-line (save-excursion (call-interactively 'helm-end-of-buffer) (vemv/current-line-number)))
   (call-interactively 'helm-beginning-of-buffer)
-  (dotimes (i 100) ; while (not (eq vemv-current-line vemv-last-line))
+  (dotimes (i 200) ; while (not (eq vemv-current-line vemv-last-line))
     (setq-local vemv-current-line (vemv/current-line-number))
     (call-interactively 'helm-execute-persistent-action)
     (call-interactively 'helm-next-line)))
