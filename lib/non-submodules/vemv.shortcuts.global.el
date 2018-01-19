@@ -6,11 +6,13 @@
       vemv/shortcuts/global/down                    'next-line
       vemv/shortcuts/global/end                     'vemv/end-of-line-or-code
       vemv/shortcuts/global/f11                     'vemv/maximize
+      vemv/shortcuts/global/RET                     'newline-and-indent
+      vemv/shortcuts/global/S-backspace             'vemv/force-backspace
       vemv/shortcuts/global/f4                      nil
       vemv/shortcuts/global/f6                      'vemv/toggle-ns-hiding
-      vemv/shortcuts/global/f7                      'vemv/previous-project
+      vemv/shortcuts/global/f7                      nil ;;  'vemv/previous-project
       vemv/shortcuts/global/f8                      'vemv/after-file-open
-      vemv/shortcuts/global/f9                      'vemv/next-project
+      vemv/shortcuts/global/f9                      nil ;; 'vemv/next-project
       vemv/shortcuts/global/home                    'back-to-indentation
       vemv/shortcuts/global/left                    'left-char
       vemv/shortcuts/global/next                    'cua-scroll-up
@@ -18,6 +20,14 @@
       vemv/shortcuts/global/primary-3               'vemv/indent
       vemv/shortcuts/global/primary-6               'vemv/emacs-reload
       vemv/shortcuts/global/primary-8               'vemv/toggle-verbosity
+      vemv/shortcuts/global/primary-S-f             (argless
+                                                     (let ((default-directory vemv/project-clojure-dir))
+                                                       (call-interactively 'helm-do-ag)))
+      vemv/shortcuts/global/primary-S-r             'vemv/run-this-deftest
+      vemv/shortcuts/global/primary-S-w             'vemv/close-all-other-file-buffers
+      vemv/shortcuts/global/primary-S-y             'vemv/abort-ag
+      vemv/shortcuts/global/primary-S-z             'undo-tree-redo
+      vemv/shortcuts/global/primary-SPC             'cua-set-mark
       vemv/shortcuts/global/primary-a               'vemv/copy-selection-or-next-sexpr
       vemv/shortcuts/global/primary-b               'vemv/duplicate
       vemv/shortcuts/global/primary-backspace       'vemv/delete-this-line
@@ -33,15 +43,6 @@
       vemv/shortcuts/global/primary-q               'save-buffers-kill-terminal
       vemv/shortcuts/global/primary-r               'vemv/test-this-ns
       vemv/shortcuts/global/primary-s               'vemv/save
-      vemv/shortcuts/global/primary-S-f             (argless (let ((default-directory vemv/project-clojure-dir))
-                                                                (call-interactively 'helm-do-ag)))
-      vemv/shortcuts/global/RET                     'newline-and-indent
-      vemv/shortcuts/global/S-backspace             'vemv/force-backspace
-      vemv/shortcuts/global/primary-S-r             'vemv/run-this-deftest
-      vemv/shortcuts/global/primary-S-w             'vemv/close-all-file-buffers
-      vemv/shortcuts/global/primary-S-y             'vemv/abort-ag
-      vemv/shortcuts/global/primary-S-z             'undo-tree-redo
-      vemv/shortcuts/global/primary-SPC             'cua-set-mark
       vemv/shortcuts/global/primary-semicolon       'toggle-truncate-lines
       vemv/shortcuts/global/primary-t               'vemv/fiplr
       vemv/shortcuts/global/primary-u               'cljr-add-missing-libspec
@@ -77,7 +78,7 @@
       vemv/shortcuts/global/tertiary-right          'vemv/next-file-buffer
       vemv/shortcuts/global/tertiary-s              'vemv/save-all-clojure-buffers-for-this-project
       vemv/shortcuts/global/tertiary-v              'vemv/paste-from-kill-list
-      vemv/shortcuts/global/tertiary-w              'vemv/close-all-other-file-buffers
+      vemv/shortcuts/global/tertiary-w              'vemv/close-all-file-buffers
       vemv/shortcuts/global/up                      'previous-line)
 
 ;; other S-RET syntaxes don't work. TODO: abstract away this
