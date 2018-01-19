@@ -358,6 +358,11 @@ Unconditionally removing code may yield semantically wrong results, i.e. leaving
       "\n"
       result)))
 
+(defun vemv/previous-line ()
+  (save-excursion
+    (call-interactively 'previous-line)
+    (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
+
 (defun vemv/current-line ()
   (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
 
@@ -733,7 +738,8 @@ Comments get ignored, this is, point will only move as long as its position stil
   (end-of-line)
   (call-interactively 'kill-region)
   (let ((line (vemv/current-line)))
-    (if (vemv/line-empty? line)
+    (if (and (vemv/line-empty? line)
+             (vemv/line-empty? (vemv/previous-line)))
       (vemv/delete-this-line)
       (progn
        (next-line)
