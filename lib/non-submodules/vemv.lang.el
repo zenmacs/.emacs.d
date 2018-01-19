@@ -861,11 +861,15 @@ Comments get ignored, this is, point will only move as long as its position stil
 
 (defun vemv/load-clojure-buffer ()
   (interactive)
-  (vemv/save)
-  (vemv/save) ;; save autoformatting
-  (vemv/advice-nrepl)
-  (cider-load-buffer)
-  (delay (argless (vemv/echo "Reloaded!") 0.1)))
+  (if (vemv/current-main-buffer-is-cljs)
+      (vemv/send :cljs nil "(.reload js/location true)")
+      (progn
+        (vemv/save)
+        (vemv/save) ;; save autoformatting
+        (vemv/advice-nrepl)
+        (cider-load-buffer)
+        (delay (argless (vemv/echo "Reloaded!"))
+               0.1))))
 
 (defun vemv/at-beginning-of-line-p ()
   (eq (point) (save-excursion (beginning-of-line) (point))))
@@ -1210,7 +1214,10 @@ Comments get ignored, this is, point will only move as long as its position stil
   (vemv/advice-nrepl (argless
                       (let* ((cljs (vemv/current-main-buffer-is-cljs))
                             (ns (vemv/current-ns))
-                            (chosen (if (vemv/contains? ns "test") ns (if cljs vemv/latest-cljs-test-ran vemv/latest-clojure-test-ran))))
+                            (chosen (if (vemv/contains? ns "test")
+                                        ns
+                                        (if cljs vemv/latest-cljs-test-ran
+                                            vemv/latest-clojure-test-ran))))
                         (when chosen
                           (setq vemv/latest-clojure-test-ran chosen)
                           (vemv/send (if cljs :cljs :clj)
