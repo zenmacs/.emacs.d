@@ -14,20 +14,20 @@
 
 (defmacro vemv.project/reset ()
   `(progn
-    (setq vemv/project-type nil)
-    (setq vemv/project-initializers nil)
-    (setq vemv/project-root-dir nil)
-    (setq vemv/project-clojure-dir nil)
-    (setq vemv/project-fiplr-dir nil)
-    (setq vemv/project-ns-prefix  nil)
-    (setq vemv/repl-identifier nil)
-    (setq vemv/default-clojure-file nil)
-    (setq vemv-cleaning-namespaces nil)
-    (setq vemv/modifiers/primary nil)
-    (setq vemv/modifiers/secondary nil)
-    (setq vemv/modifiers/tertiary nil)
-    (setq vemv/clj-repl-name nil)
-    (setq vemv/cljs-repl-name nil)))
+     (setq vemv/project-type nil)
+     (setq vemv/project-initializers nil)
+     (setq vemv/project-root-dir nil)
+     (setq vemv/project-clojure-dir nil)
+     (setq vemv/project-fiplr-dir nil)
+     (setq vemv/project-ns-prefix  nil)
+     (setq vemv/repl-identifier nil)
+     (setq vemv/default-clojure-file nil)
+     (setq vemv-cleaning-namespaces nil)
+     (setq vemv/modifiers/primary nil)
+     (setq vemv/modifiers/secondary nil)
+     (setq vemv/modifiers/tertiary nil)
+     (setq vemv/clj-repl-name nil)
+     (setq vemv/cljs-repl-name nil)))
 
 (vemv.project/reset)
 
@@ -39,14 +39,14 @@
     (setq vemv/current-project which))
   
   ;;gpm defines its own,
-    ;; trailing slash required
-    ;; XXX assert default value exists in filesystem
-    ;; XXX the case statements are hardcoded. paremeterize
-    (setq vemv/project-root-dir
-          (or vemv/project-root-dir
-              (concat vemv-home "/" vemv/current-project)))
+  ;; trailing slash required
+  ;; XXX assert default value exists in filesystem
+  ;; XXX the case statements are hardcoded. paremeterize
+  (setq vemv/project-root-dir
+        (or vemv/project-root-dir
+            (concat vemv-home "/" vemv/current-project)))
 
-;; must set before (load), but if we do so, gpm loses its customization
+  ;; must set before (load), but if we do so, gpm loses its customization
   ;; should equal to vemv/project-root-dir unless project.clj is non-root
   (setq vemv/project-clojure-dir (or vemv/project-clojure-dir vemv/project-root-dir))
 
@@ -83,26 +83,26 @@
   
   (when switch-p
     (vemv/save-window-excursion
-      (select-window vemv/main_window)
-      (vemv/close-this-buffer)
-      (vemv/open vemv/default-clojure-file)
-      (select-window vemv/project-explorer-window)
-      (let ((default-directory vemv/project-root-dir))
-        (call-interactively 'project-explorer-open)))
-      (select-window vemv/repl2)
-      (unless (or cider-launched vemv-cider-connected (cider-connected-p))
-        (vemv/send :shell nil vemv/project-root-dir)
-        (delay (argless (vemv/save-window-excursion (comint-clear-buffer))) 0.3))))
+     (select-window vemv/main_window)
+     (vemv/close-this-buffer)
+     (vemv/open vemv/default-clojure-file)
+     (select-window vemv/project-explorer-window)
+     (let ((default-directory vemv/project-root-dir))
+       (call-interactively 'project-explorer-open)))
+    (select-window vemv/repl2)
+    (unless (or cider-launched vemv-cider-connected (cider-connected-p))
+      (vemv/send :shell nil vemv/project-root-dir)
+      (delay (argless (vemv/save-window-excursion (comint-clear-buffer))) 0.3))))
 
 (vemv/refresh-current-project vemv/current-project)
 
 (defun vemv-source (filename)
   (mapcar
    (lambda (x)
-           (let* ((xy (s-split "=" (s-chop-prefix "+" x)))
-                  (x (car xy))
-                  (y (car (last xy))))
-                 (setenv x y)))
+     (let* ((xy (s-split "=" (s-chop-prefix "+" x)))
+            (x (car xy))
+            (y (car (last xy))))
+       (setenv x y)))
    (-filter
     (lambda (x) (vemv/starts-with x "+"))
     (s-split

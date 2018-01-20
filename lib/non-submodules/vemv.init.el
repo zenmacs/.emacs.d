@@ -9,9 +9,9 @@
 (package-initialize)
 
 (dolist (package '(cider company queue fiplr clojure-mode clj-refactor company-quickhelp dash simpleclip helm-ag git-timemachine))
-        (unless (package-installed-p package)
-                (package-refresh-contents)
-                (package-install package)))
+  (unless (package-installed-p package)
+    (package-refresh-contents)
+    (package-install package)))
 
 ;; Eases editing locally-modified packages.
 ;; Example:
@@ -118,16 +118,20 @@
 
 (setq fiplr-ignored-globs
       ;; `directories` is semi-useless. do not alter but also do not bother adding entries
-      '((directories (".git" ".svn" ".hg" ".bzr" "tools" "res-vagrant" ".paket" "doc" "src/horizon/resources/public/js" "src/.sass-cache" "src/horizon/node_modules"  "src/horizon/node_modules/*" "src/horizon/node_modules*" "src/horizon/node_modules/**" "src/utils" "src/integration-testing" "src/integration-testing/spec/features" "src/integration-testing/spec" "src/integration\-testing/public"))
+      '((directories (".git" ".svn" ".hg" ".bzr" "tools" "res-vagrant" ".paket" "doc" "src/horizon/resources/public/js"
+                      "src/.sass-cache" "src/horizon/node_modules"  "src/horizon/node_modules/*" "src/horizon/node_modules*"
+                      "src/horizon/node_modules/**" "src/utils" "src/integration-testing" "src/integration-testing/spec/features"
+                      "src/integration-testing/spec" "src/integration\-testing/public"))
         (files (".#*" "*~" "*.so" "*.jpg" "*.png" "*.gif" "*.pdf" "*.gz" "*.zip" "*.js" "*.DS_Store"
-                      "*.md" "*.gitgnore" "*.scssc" "*.keep" "*.json" "LICENSE" "LICENCE" "license" "*.patch"
-                      "flask-server" "Makefile" "makefile" "*.txt" "*.yml" "*.html" "*ignore" "*.rb" "*.*rc" "*.map"
-                      "*.ico" "*.css" "*.erb" "Gemfile" "Rakefile" ".rspec" "*integration-testing*" "*node_modules*"
-                      "*.workerjs" "*.MIT" "acorn" "AUTHORS" "*.APACHE2" "JSONStream" "babylon" "*.iml" "*.BSD" "*.log" "*.rake" "*.ru"
-                      "*.ls" "loose-envify" "errno" "*.flow" "*.properties" "*.extract-native-dependencies" "*.targets"
-                      "*.sh" "*.ps1" "*.arcconfig" "Vagrantfile" "*.template" "*.nuspec" "*.emz" "1" "2" "*.svg"
-                      "*.ttf" ".lein-repl-history" "*.scss" "*.cur" "profile" ".figwheel-compile-stamp" "*.woff" "*.eor"
-                      "*.xml" "*.coffee" "*.lock" "*.markdown" "*.opts" "module-deps" ".nrepl-port" "repl-port"))))
+                "*.md" "*.gitgnore" "*.scssc" "*.keep" "*.json" "LICENSE" "LICENCE" "license" "*.patch"
+                "flask-server" "Makefile" "makefile" "*.txt" "*.yml" "*.html" "*ignore" "*.rb" "*.*rc" "*.map"
+                "*.ico" "*.css" "*.erb" "Gemfile" "Rakefile" ".rspec" "*integration-testing*" "*node_modules*"
+                "*.workerjs" "*.MIT" "acorn" "AUTHORS" "*.APACHE2" "JSONStream" "babylon" "*.iml" "*.BSD" "*.log" "*.rake"
+                "*.ru"
+                "*.ls" "loose-envify" "errno" "*.flow" "*.properties" "*.extract-native-dependencies" "*.targets"
+                "*.sh" "*.ps1" "*.arcconfig" "Vagrantfile" "*.template" "*.nuspec" "*.emz" "1" "2" "*.svg"
+                "*.ttf" ".lein-repl-history" "*.scss" "*.cur" "profile" ".figwheel-compile-stamp" "*.woff" "*.eor"
+                "*.xml" "*.coffee" "*.lock" "*.markdown" "*.opts" "module-deps" ".nrepl-port" "repl-port"))))
 
 (setq company-idle-delay nil) ;; no autopopup
 
@@ -184,18 +188,22 @@
  '(cljr-project-clean-prompt nil)
  '(cljr-favor-private-function nil)
  '(cljr-auto-clean-ns nil)
- '(cljr-libspec-whitelist '("^cljsns" "^slingshot.test" "^monger.joda-time" "^monger.json" "^cljsjs" "^horizon.controls.devcards" "^goog" ".*card.*" ".*asDatepicker.*" "horizon.desktop.core" "horizon.controls.bootstrap" "leongersen.*" "horizon.desktop.layout.page" "horizon.common.macros" "horizon.desktop.bootstrap" "rabbit.stomp"))
+ '(cljr-libspec-whitelist '("^cljsns" "^slingshot.test" "^monger.joda-time" "^monger.json" "^cljsjs" "^horizon.controls.devcards"
+                            "^goog" ".*card.*" ".*asDatepicker.*" "horizon.desktop.core" "horizon.controls.bootstrap"
+                            "leongersen.*""horizon.desktop.layout.page" "horizon.common.macros" "horizon.desktop.bootstrap"
+                            "rabbit.stomp"))
  '(cljr-warn-on-eval nil))
 
 (defun cider-repl--banner () "")
 
 (setq clojure-indent-style ':always-align)
 
-(setq-default mode-line-format (list "  "
-                                     '(:eval (when (and (buffer-file-name) (buffer-modified-p)) "*"))
-                                     '(:eval (buffer-name))
-                                     " "
-                                     '(:eval (when (buffer-file-name) (propertize "%l:%c" 'face 'font-lock-line-and-column-face)))))
+(setq-default mode-line-format
+              (list "  "
+                    '(:eval (when (and (buffer-file-name) (buffer-modified-p)) "*"))
+                    '(:eval (buffer-name))
+                    " "
+                    '(:eval (when (buffer-file-name) (propertize "%l:%c" 'face 'font-lock-line-and-column-face)))))
 
 ;; initialized after customizing cua-remap-control-v
 (cua-mode 1)
@@ -203,21 +211,25 @@
 (when (not vemv-cleaning-namespaces)
   (add-hook 'clojure-mode-hook 'hs-minor-mode))
 
-(add-hook 'clojure-mode-hook (argless (enable-paredit-mode)
-                                      (clj-refactor-mode 1)
-                                      (undo-tree-mode)
-                                      (cljr-add-keybindings-with-prefix "C-0")
-                                      (global-set-key (kbd "C-r") 'vemv/test-this-ns) ;; must be defined there. TODO: define all clojure bindings here
-                                      (setq-local mode-line-format
-                                                  (list
-                                                   "  "
-                                                   '(:eval (when (buffer-modified-p) (propertize "*" 'face 'font-lock-function-name-face)))
-                                                   '(:eval (vemv/message-file-buffers-impl))
-                                                   '(:eval (propertize " %l:%c" 'face 'font-lock-line-and-column-face))
-                                                   '(:eval (when (and (not vemv-cider-connecting) (not vemv-cider-connected)) (propertize " Disconnected" 'face 'font-lock-line-and-column-face)))
-                                                   '(:eval (when vemv/verbose-mode (propertize " Verbose" 'face 'font-lock-line-and-column-face)))
-                                                   '(:eval (when vemv/current-project (propertize (concat " " vemv/current-project) 'face 'font-lock-line-and-column-face)))
-                                                   '(:eval (when vemv-cider-connecting (propertize " Connecting..." 'face 'vemv-cider-connection-face)))))))
+(add-hook 'clojure-mode-hook
+          (argless (enable-paredit-mode)
+                   (clj-refactor-mode 1)
+                   (undo-tree-mode)
+                   (cljr-add-keybindings-with-prefix "C-0")
+                   (global-set-key (kbd "C-r") 'vemv/test-this-ns) ;; must be defined there. TODO: define all clojure bindings here
+                   (setq-local mode-line-format
+                               (list
+                                "  "
+                                '(:eval (when (buffer-modified-p) (propertize "*" 'face 'font-lock-function-name-face)))
+                                '(:eval (vemv/message-file-buffers-impl))
+                                '(:eval (propertize " %l:%c" 'face 'font-lock-line-and-column-face))
+                                '(:eval (when (and (not vemv-cider-connecting) (not vemv-cider-connected))
+                                          (propertize " Disconnected" 'face 'font-lock-line-and-column-face)))
+                                '(:eval (when vemv/verbose-mode (propertize " Verbose" 'face 'font-lock-line-and-column-face)))
+                                '(:eval (when vemv/current-project
+                                          (propertize (concat " " vemv/current-project) 'face 'font-lock-line-and-column-face)))
+                                '(:eval (when vemv-cider-connecting
+                                          (propertize " Connecting..." 'face 'vemv-cider-connection-face)))))))
 
 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 
@@ -226,7 +238,7 @@
 (when (not vemv-cleaning-namespaces)
   (setq cider-cljs-lein-repl
         (if vemv/using-nrepl
-          "(do (require 'figwheel-sidecar.repl-api)
+            "(do (require 'figwheel-sidecar.repl-api)
                
                (try
                  (require 'figwheel-sidecar.system)
@@ -234,7 +246,7 @@
                  (catch Throwable e))
                (figwheel-sidecar.repl-api/start-figwheel!)
                (figwheel-sidecar.repl-api/cljs-repl))"
-          "")))
+            "")))
 
 (add-hook 'cider-connected-hook
           (argless
@@ -256,7 +268,7 @@
 
 (setq mouse-wheel-scroll-amount '(4 ((shift) . 4)))
 (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
-(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+(setq mouse-wheel-follow-mouse 't)       ;; scroll window under mouse
 (setq scroll-step 1)
 
 (setq nrepl-hide-special-buffers t)
@@ -267,33 +279,33 @@
 ;; Important - remove keybindings before (vemv/initial-layout) so M-x cannot interrupt
 
 (dolist (key vemv/local-key-bindings-to-remove)
-        (mapc (lambda (arg)
-                      (define-key (car key) arg nil))
-              (cdr key)))
+  (mapc (lambda (arg)
+          (define-key (car key) arg nil))
+        (cdr key)))
 
 (dolist (key vemv/key-bindings-to-remove)
-        (global-unset-key key))
+  (global-unset-key key))
 
 (dolist (key vemv/key-bindings-to-dummy)
-        (global-set-key key (argless)))
+  (global-set-key key (argless)))
 
 (maphash (lambda (key _)
-                 (let* ((keyboard-macro (if (stringp key)
-                                          (read-kbd-macro key)
-                                          key)))
-                       (global-set-key
-                        keyboard-macro
-                        (argless (call-interactively (gethash key vemv/global-key-bindings))))))
+           (let* ((keyboard-macro (if (stringp key)
+                                      (read-kbd-macro key)
+                                      key)))
+             (global-set-key
+              keyboard-macro
+              (argless (call-interactively (gethash key vemv/global-key-bindings))))))
          vemv/global-key-bindings)
 
 (dolist (binding (vemv/partition 3 vemv/local-key-bindings))
-        (define-key
-          (car binding)
-          (let ((k (second binding)))
-            (if (stringp k)
-              (read-kbd-macro k)
-              k))
-          (third binding)))
+  (define-key
+    (car binding)
+    (let ((k (second binding)))
+      (if (stringp k)
+          (read-kbd-macro k)
+          k))
+    (third binding)))
 
 (setq vemv/launched nil)
 
@@ -310,15 +322,15 @@
 
 (mapcar (lambda (f)
           (let ((emacs-path (concat vemv-home "/.emacs.d/lib/non-submodules")))
-                (vemv/open (concat emacs-path "/vemv." f ".el"))
-                (switch-to-buffer "*scratch*")))
-      '("init" "lang" "project" "theme" "shortcuts.global"))
+            (vemv/open (concat emacs-path "/vemv." f ".el"))
+            (switch-to-buffer "*scratch*")))
+        '("init" "lang" "project" "theme" "shortcuts.global"))
 
 (delay 'vemv/clojure-init 1)
 
 ;; FONT SIZE -> 13 for laptop, 11 for desktop
 (delay (argless (if (window-system)
-                  (set-face-attribute 'default nil :font vemv-font)))
+                    (set-face-attribute 'default nil :font vemv-font)))
        1)
 
 (put 'if 'lisp-indent-function nil)
@@ -327,20 +339,20 @@
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
   "Prevent annoying \"Active processes exist\" query when you quit Emacs."
   (cl-letf (((symbol-function #'process-list) (lambda ())))
-           ad-do-it))
+    ad-do-it))
 
 (setq back-to-indentation-state nil)
 
 (defadvice back-to-indentation (around back-to-back)
   (if (eq last-command this-command)
-    (progn
-     (if back-to-indentation-state
-       ad-do-it
-       (beginning-of-line)
-       (send! back-to-indentation-state 'not)))
-    (progn
-     (setq back-to-indentation-state nil)
-     ad-do-it)))
+      (progn
+        (if back-to-indentation-state
+            ad-do-it
+            (beginning-of-line)
+            (send! back-to-indentation-state 'not)))
+      (progn
+        (setq back-to-indentation-state nil)
+        ad-do-it)))
 
 (ad-activate 'back-to-indentation)
 
@@ -369,11 +381,11 @@
 
 (defmacro vemv/get-help-frame ()
   `(if (and vemv/help-frame (terminal-live-p vemv/help-frame))
-     vemv/help-frame
-     (let ((frame (vemv/make-frame)))
-       (select-frame frame)
-       (vemv/maximize)
-       (setq vemv/help-frame frame))))
+       vemv/help-frame
+       (let ((frame (vemv/make-frame)))
+         (select-frame frame)
+         (vemv/maximize)
+         (setq vemv/help-frame frame))))
 
 (defun vemv/display-completion (buffer)
   (vemv/safe-select-window vemv/main_window)
@@ -390,7 +402,7 @@
 
 (global-set-key [kp-delete] 'delete-char) ;; OSX
 
-(setq ;; http://www.emacswiki.org/emacs/BackupDirectory
+(setq               ;; http://www.emacswiki.org/emacs/BackupDirectory
  backup-by-copying t ;; don't clobber symlinks
  delete-old-versions t
  kept-new-versions 6
@@ -404,11 +416,11 @@
       `((".*" ,temporary-file-directory t)))
 
 (dolist (command '(yank yank-pop))
-        (eval `(defadvice ,command (after indent-region activate)
-                 (and (not current-prefix-arg)
-                      (member major-mode '(emacs-lisp-mode lisp-mode clojure-mode))
-                      (let ((mark-even-if-inactive transient-mark-mode))
-                        (indent-region (region-beginning) (region-end) nil))))))
+  (eval `(defadvice ,command (after indent-region activate)
+           (and (not current-prefix-arg)
+                (member major-mode '(emacs-lisp-mode lisp-mode clojure-mode))
+                (let ((mark-even-if-inactive transient-mark-mode))
+                  (indent-region (region-beginning) (region-end) nil))))))
 
 (delay
  (argless (setq vemv/project-explorer-initialized t))
@@ -429,9 +441,9 @@ Uses FORMATTER, a function of one argument, to convert the string contents
 of the buffer into a formatted string."
   (let* ((original (substring-no-properties (buffer-string)))
          (formatted (funcall formatter original)))
-        (if (or (not formatted) (equal original formatted))
-          (when (not formatted) (vemv/echo "Buffer has broken syntax, cannot format"))
-          (erase-buffer)
-          (insert formatted))))
+    (if (or (not formatted) (equal original formatted))
+        (when (not formatted) (vemv/echo "Buffer has broken syntax, cannot format"))
+        (erase-buffer)
+        (insert formatted))))
 
 (advice-add 'helm-ag--edit :after 'vemv/ag-replace)
