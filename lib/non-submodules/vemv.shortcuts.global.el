@@ -58,9 +58,11 @@
       vemv/shortcuts/global/secondary-backspace     'paredit-backward-kill-word
       vemv/shortcuts/global/secondary-colon         (argless (call-interactively 'eval-expression))
       vemv/shortcuts/global/secondary-k             'vemv/kill-backward
+      vemv/shortcuts/global/secondary-left          'backward-word
       vemv/shortcuts/global/secondary-left-bracket  'paredit-backward
       vemv/shortcuts/global/secondary-next          'previous-buffer
       vemv/shortcuts/global/secondary-prior         'next-buffer
+      vemv/shortcuts/global/secondary-right         'forward-word
       vemv/shortcuts/global/secondary-right-bracket 'paredit-forward
       vemv/shortcuts/global/secondary-t             'vemv/open-file-via-fiplr-then-close-previous-buffer
       vemv/shortcuts/global/secondary-up            'paredit-splice-sexp-killing-backward
