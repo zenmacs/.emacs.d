@@ -68,6 +68,8 @@
 (smex-initialize)
 (global-set-key (kbd "M-x") 'smex)
 
+(global-subword-mode)
+
 (global-company-mode)
 (company-quickhelp-mode 1)
 
