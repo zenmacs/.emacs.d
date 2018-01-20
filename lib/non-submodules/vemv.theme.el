@@ -10,10 +10,12 @@
 
 (deftheme vemv "")
 
+(setq vemv-colors/blue "#6da5ff")
 (setq vemv-colors/light-blue "#BFD8FF")
 (setq vemv-colors/keyword-green "#C1ED3D")
 (setq vemv-colors/yellow "#FFE33B")
 (setq vemv-colors/lighter-yellow "#ffe444")
+(setq vemv-colors/pink "#D93273")
 
 (defface font-lock-line-and-column-face
   `((t :foreground "#696969"))
@@ -68,6 +70,8 @@
       `(bold-italic ((t (:bold t :italc t))))
       `(border-glyph ((t (nil))))
       `(buffers-tab ((t (:foreground "#F8F8F8"))))
+
+      `(whitespace-line ((t (:background ,vemv-colors/pink :foreground ,vemv-default-foreground-color))))
       
       `(cider-fringe-good-face ((t (:foreground ,vemv-default-foreground-color))))
       `(cider-error-highlight-face ((t (:foreground ,vemv-default-foreground-color))))
@@ -87,10 +91,8 @@
       ;; used for special forms and macros. also for def - which is annoying
       `(font-lock-keyword-face ((t (:foreground ,vemv-colors/lighter-yellow))))
       `(font-lock-preprocessor-face ((t (:foreground ,vemv-colors/keyword-green)))) ;; Java
-      ;; `(font-lock-reference-face ((t (:foreground "medium slate blue"))))
-      ;; `(font-lock-reference-face ((t (:foreground "gray"))))
       `(font-lock-regexp-grouping-backslash ((t (:foreground ,vemv-colors/yellow))))
-      `(font-lock-regexp-grouping-construct ((t (:foreground "red"))))
+      `(font-lock-regexp-grouping-construct ((t (:foreground ,vemv-colors/blue))))
       `(font-lock-string-face ((t (:foreground ,vemv-colors/light-blue))))
       
       ;; ns prefixes:
@@ -156,7 +158,7 @@
 
       `(yas/field-highlight-face ((t (:background "deep pink" :foreground "black"))))
 
-      `(show-paren-match-face ((t (:background "#D93273" :foreground ,vemv-default-foreground-color))))
+      `(show-paren-match-face ((t (:background ,vemv-colors/pink :foreground ,vemv-default-foreground-color))))
       
       `(helm-candidate-number ((t (:inherit helm-header))))
       `(helm-candidate-number-suspended ((t (:inherit helm-header))))
