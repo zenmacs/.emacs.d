@@ -13,6 +13,15 @@
                 (package-refresh-contents)
                 (package-install package)))
 
+;; Eases editing locally-modified packages.
+;; Example:
+;; Fork a package
+;; Copy the relevant file to ~/.emacs.d/elpa/the-package
+;; rm ~/.emacs.d/elpa/the-package/foo.elc
+;; restart emacs.
+(add-hook 'compilation-finish-functions (lambda (b _) (kill-buffer b)))
+(byte-recompile-directory (expand-file-name "~/.emacs.d/elpa") 0)
+
 (setq lexical-binding t)
 (setq vc-follow-symlinks t)
 (setq-default indent-tabs-mode nil)
