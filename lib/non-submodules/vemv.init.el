@@ -8,7 +8,8 @@
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 
-(dolist (package '(cider company queue fiplr clojure-mode clj-refactor company-quickhelp dash simpleclip helm-ag git-timemachine))
+(dolist (package '(cider company queue fiplr clojure-mode clj-refactor
+                         company-quickhelp dash simpleclip helm-ag git-timemachine paren-face))
   (unless (package-installed-p package)
     (package-refresh-contents)
     (package-install package)))
@@ -141,6 +142,7 @@
  '(cider-font-lock-dynamically '(macro deprecated))
  '(cua-remap-control-v nil)
  '(ielm-prompt "ielm> ")
+ '(paren-face-regexp "[][(){}#]")
  '(mac-mouse-wheel-smooth-scroll nil)
  '(nrepl-popup-stacktraces nil)
  '(pe/inline-folders nil)
@@ -212,8 +214,10 @@
   (add-hook 'clojure-mode-hook 'hs-minor-mode))
 
 (add-hook 'clojure-mode-hook
-          (argless (enable-paredit-mode)
+          (argless (call-interactively 'text-scale-increase)
+                   (enable-paredit-mode)
                    (clj-refactor-mode 1)
+                   (paren-face-mode 1)
                    (undo-tree-mode)
                    (cljr-add-keybindings-with-prefix "C-0")
                    (global-set-key (kbd "C-r") 'vemv/test-this-ns) ;; must be defined there. TODO: define all clojure bindings here
