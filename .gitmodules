@@ -1,9 +1,9 @@
 [submodule "lib/smex"]
 	path = lib/smex
-	url = https://github.com/nonsequitur/smex
+	url = https://github.com/nonsequitur/smex.git
 [submodule "lib/popup"]
 	path = lib/popup
-	url = https://github.com/auto-complete/popup-el
+	url = https://github.com/auto-complete/popup-el.git
 [submodule "lib/recur"]
 	path = lib/recur
 	url = https://github.com/VincentToups/recur.git
@@ -12,22 +12,22 @@
 	url = https://github.com/VincentToups/emacs-utils.git
 [submodule "lib/project-explorer"]
 	path = lib/project-explorer
-	url = https://github.com/sabof/project-explorer
+	url = https://github.com/sabof/project-explorer.git
 [submodule "lib/es-lib"]
 	path = lib/es-lib
-	url = https://github.com/sabof/es-lib
+	url = https://github.com/sabof/es-lib.git
 [submodule "lib/pkg-info"]
 	path = lib/pkg-info
-	url = git@github.com:lunaryorn/pkg-info.el.git
+	url = https://github.com/lunaryorn/pkg-info.el.git
 [submodule "lib/epl"]
 	path = lib/epl
-	url = git@github.com:cask/epl.git
+	url = https://github.com/cask/epl.git
 [submodule "lib/spinner"]
 	path = lib/spinner
-	url = git@github.com:Malabarba/spinner.el.git
+	url = https://github.com/Malabarba/spinner.el.git
 [submodule "lib/seq"]
 	path = lib/seq
-	url = git@github.com:NicolasPetton/seq.el.git
+	url = https://github.com/NicolasPetton/seq.el.git
 [submodule "lib/es-windows"]
 	path = lib/es-windows
-	url = git@github.com:sabof/es-windows
+	url = https://github.com/sabof/es-windows.git
