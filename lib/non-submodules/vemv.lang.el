@@ -529,13 +529,15 @@ inserting it at a new line."
                         nil)))
          (error nil))))
 
- (defun vemv/buffer-of-current-project? (b)
-   (vemv/contains? (file-truename (buffer-file-name b))
-                   vemv/project-root-dir))
+(defun vemv/buffer-of-current-project? (b)
+  (when (and b (buffer-file-name b))
+    (vemv/contains? (file-truename (buffer-file-name b))
+                    vemv/project-root-dir)))
 
- (defun vemv/buffer-of-current-running-project? (b)
-   (vemv/contains? (file-truename (buffer-file-name b))
-                   vemv/running-project-root-dir))
+(defun vemv/buffer-of-current-running-project? (b)
+  (when (and b (buffer-file-name b))
+    (vemv/contains? (file-truename (buffer-file-name b))
+                    vemv/running-project-root-dir)))
 
  (defun vemv/advice-nrepl* (&optional after)
    (interactive)
@@ -1099,7 +1101,7 @@ inserting it at a new line."
                                  (if (vemv/ends-with head "ido.last")
                                      (second recentf-list)
                                      head))))
-                (when the-file
+                (when (and the-file (file-truename the-file))
                   (vemv/open
                    (if (vemv/contains? (file-truename the-file) vemv/project-clojure-dir) ;; ensure nrepl opens a clojure context
                        the-file
