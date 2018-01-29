@@ -102,16 +102,13 @@
      (let* ((xy (s-split "=" (s-chop-prefix "+" x)))
             (x (car xy))
             (y (car (last xy))))
-       (setenv x y)))
+        (setenv (s-chop-prefix "declare -x " x)
+                (s-replace "\"" "" y))))
    (-filter
     (lambda (x) (vemv/starts-with x "+"))
     (s-split
      "\n"
      (shell-command-to-string (concat "diff -u  <(true; export) <(source " filename "; export) | tail -n +4"))))))
 
-(vemv-source "/Users/vemv/gpm/src/environment.sh")
-(vemv-source "/Users/vemv/gpm/src/custom-environment.sh")
-(vemv-source "/Users/vemv/.ldap")
-
+(setenv "SHELL" "/bin/zsh")
 (setenv "PATH" (concat (getenv "PATH") ":" vemv-home "/bin"))
-(setenv "HORIZON_IS_DEVELOPMENT_SERVER" "true")
