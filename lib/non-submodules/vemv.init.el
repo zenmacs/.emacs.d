@@ -319,7 +319,8 @@
 
 (vemv/initial-layout)
 
-(setq custom-file "~/.emacs.d/custom.el") ;; touch on install!
+(shell-command-to-string "touch ~/.emacs.d/custom.el")
+(setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
 (setq visible-bell nil) ;; disable flickering
