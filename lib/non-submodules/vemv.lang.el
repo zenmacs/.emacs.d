@@ -510,11 +510,11 @@ inserting it at a new line."
 
  (setq vemv/figwheel-connected-p-already nil)
 
-;; XXX this should be a universal fighwheel fn. open PR at some point
+;; XXX this should be a universal figwheel fn. open PR at some point
  (defun vemv/figwheel-connected-p ()
    (if (or
         vemv/figwheel-connected-p-already
-        (not (vemv/contains? (buffer-name) ".cljs"))
+        (not (vemv/current-main-buffer-is-cljs))
         (not (string-equal vemv/current-project "gpm")))
        t
        (condition-case nil
