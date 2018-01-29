@@ -136,11 +136,15 @@
 
 (setq company-idle-delay nil) ;; no autopopup
 
+(setq vemv/cljr-ast-load-counter 0)
+
 (custom-set-variables
  '(cider-connection-message-fn nil)
  '(cider-repl-display-help-banner nil)
  '(cider-font-lock-dynamically '(macro deprecated))
  '(cua-remap-control-v nil)
+ '(cljr-after-warming-ast-cache-hook (lambda (_)
+                                       (setq vemv/cljr-ast-load-counter (inc vemv/cljr-ast-load-counter))))
  '(ielm-prompt "ielm> ")
  '(paren-face-regexp "[][(){}#]")
  '(mac-mouse-wheel-smooth-scroll nil)
