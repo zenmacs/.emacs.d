@@ -2,7 +2,6 @@
 (provide 'vemv.project)
 
 (setq vemv/using-nrepl t)
-(setq vemv-home (getenv "HOME"))
 
 ;; - make `setq`s defuns
 ;; - infer project from currently open file
@@ -95,20 +94,3 @@
       (delay (argless (vemv/save-window-excursion (comint-clear-buffer))) 0.3))))
 
 (vemv/refresh-current-project vemv/current-project)
-
-(defun vemv-source (filename)
-  (mapcar
-   (lambda (x)
-     (let* ((xy (s-split "=" (s-chop-prefix "+" x)))
-            (x (car xy))
-            (y (car (last xy))))
-        (setenv (s-chop-prefix "declare -x " x)
-                (s-replace "\"" "" y))))
-   (-filter
-    (lambda (x) (vemv/starts-with x "+"))
-    (s-split
-     "\n"
-     (shell-command-to-string (concat "diff -u  <(true; export) <(source " filename "; export) | tail -n +4"))))))
-
-(setenv "SHELL" "/bin/zsh")
-(setenv "PATH" (concat (getenv "PATH") ":" vemv-home "/bin"))

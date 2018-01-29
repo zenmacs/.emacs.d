@@ -48,6 +48,25 @@
 
 (if (window-system) (set-face-attribute 'default nil :font vemv-font))
 
+(setq vemv-home (getenv "HOME"))
+
+(defun vemv-source (filename)
+  (mapcar
+   (lambda (x)
+     (let* ((xy (s-split "=" (s-chop-prefix "+" x)))
+            (x (car xy))
+            (y (car (last xy))))
+        (setenv (s-chop-prefix "declare -x " x)
+                (s-replace "\"" "" y))))
+   (-filter
+    (lambda (x) (vemv/starts-with x "+"))
+    (s-split
+     "\n"
+     (shell-command-to-string (concat "diff -u  <(true; export) <(source " filename "; export) | tail -n +4"))))))
+
+(setenv "SHELL" "/bin/zsh")
+(setenv "PATH" (concat (getenv "PATH") ":" vemv-home "/bin"))
+
 (when (file-exists-p "~/.emacs.d.overrides/")
   (let ((default-directory "~/.emacs.d.overrides/"))
         (normal-top-level-add-subdirs-to-load-path)))
