@@ -8,7 +8,7 @@
 ;; - infer project from currently open file
 ;; - use inferred value as implicit argument to these defuns
 
-(setq vemv/all-projects '("gpm" "jumbo" "assign"))
+(setq vemv/all-projects '("gpm" "jumbo" "assign" "ventas"))
 
 (load (concat "vemv.project." vemv/current-project))
 
