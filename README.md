@@ -30,7 +30,7 @@ limitations, I was able to implement a simple yet powerful workflow, including a
 * Get Emacs 25.
 * Backup and remove `~/.emacs.d` if that directory existed already
 * Clone the repo into `~`, so Emacs will pick up `~/.emacs.d` on startup
-* cd into it, make sure that each git submodule is pulled. `./lib` should have many non-empty directories.
+* cd into it, make sure that each git submodule is pulled, typically with `git submodule update --init --recursive`. `./lib` should have many non-empty directories, and no errors in the fetching process.
 * Take a look at `vemv.project.el`, override it with at least one Clojure project, and get familiar with the concept of `vemv/modifiers/primary` (and secondary, tertiary)
 * Take a look at `vemv.shortcuts.global.el` and `vemv.shortcuts.clojure.el`. Learn those shortcuts.
 * Execute the shortcut corresponding to `vemv/shortcuts/global/primary-j` (typically: `C-j`) so CIDER starts and you can get a Clojure(Script) REPL accordingly.
