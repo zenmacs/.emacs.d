@@ -8,8 +8,9 @@
 
   (setq-default line-spacing 1) ;; NOTE: might mess up the echo area
   
-  ;; set to the opposite of the initially desired value, since it will be toggled below
-  (setq vemv/verbose-mode t)
+  (setq vemv/should-start-in-verbose-mode nil)
+  
+  (setq vemv/verbose-mode (not vemv/should-start-in-verbose-mode))
 
   (defun vemv/toggle-verbosity ()
     (setq vemv/verbose-mode (not vemv/verbose-mode))
