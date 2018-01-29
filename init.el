@@ -16,7 +16,9 @@
     (setq vemv/verbose-mode (not vemv/verbose-mode))
     (setq inhibit-startup-message (not vemv/verbose-mode))
     (setq inhibit-message (not vemv/verbose-mode)) ;; Silence minibuffer
-    (setq debug-on-error vemv/verbose-mode)
+    
+    (setq debug-on-error nil) ;; NOTE: overly verbose, so it's always set to nil. Set manually if needed. (proof of verbosity: try to undo in a pristine buffer, with this line uncommented)
+    
     (setq debugger (if vemv/verbose-mode ;; Disable annoying *Backtrace* buffer
                      vemv/original-debugger
                      (lambda (&rest _))))
