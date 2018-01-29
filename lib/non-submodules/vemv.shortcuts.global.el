@@ -9,10 +9,9 @@
       vemv/shortcuts/global/RET                     'newline-and-indent
       vemv/shortcuts/global/S-backspace             'vemv/force-backspace
       vemv/shortcuts/global/f4                      nil
-      vemv/shortcuts/global/f6                      'vemv/toggle-ns-hiding
-      vemv/shortcuts/global/f7                      nil ;;  'vemv/previous-project
+      vemv/shortcuts/global/f7                      'vemv/previous-project
       vemv/shortcuts/global/f8                      'vemv/after-file-open
-      vemv/shortcuts/global/f9                      nil ;; 'vemv/next-project
+      vemv/shortcuts/global/f9                      'vemv/next-project
       vemv/shortcuts/global/home                    'back-to-indentation
       vemv/shortcuts/global/left                    'left-char
       vemv/shortcuts/global/next                    'cua-scroll-up
@@ -24,7 +23,6 @@
                                                      (let ((default-directory vemv/project-clojure-dir))
                                                        (call-interactively 'helm-do-ag)))
       vemv/shortcuts/global/primary-S-r             'vemv/run-this-deftest
-      vemv/shortcuts/global/primary-S-w             'vemv/close-all-other-file-buffers
       vemv/shortcuts/global/primary-S-y             'vemv/abort-ag
       vemv/shortcuts/global/primary-S-z             'undo-tree-redo
       vemv/shortcuts/global/primary-SPC             'cua-set-mark
@@ -62,11 +60,13 @@
       vemv/shortcuts/global/secondary-left-bracket  'paredit-backward
       vemv/shortcuts/global/secondary-next          'previous-buffer
       vemv/shortcuts/global/secondary-prior         'next-buffer
+      vemv/shortcuts/global/secondary-RET           'vemv/toggle-ns-hiding
       vemv/shortcuts/global/secondary-right         'forward-word
       vemv/shortcuts/global/secondary-right-bracket 'paredit-forward
       vemv/shortcuts/global/secondary-t             'vemv/open-file-via-fiplr-then-close-previous-buffer
       vemv/shortcuts/global/secondary-up            'paredit-splice-sexp-killing-backward
       vemv/shortcuts/global/secondary-x             'vemv/smex
+      vemv/shortcuts/global/secondary-w             'vemv/close-all-other-file-buffers
       vemv/shortcuts/global/tertiary-RET            'vemv/load-clojure-buffer
       vemv/shortcuts/global/tertiary-a              'vemv/copy-inserting-at-kill-list
       vemv/shortcuts/global/tertiary-backtick       'vemv/jump-to-clojure-definition
