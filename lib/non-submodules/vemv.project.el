@@ -7,7 +7,10 @@
 ;; - infer project from currently open file
 ;; - use inferred value as implicit argument to these defuns
 
-(setq vemv/all-projects '("gpm" "jumbo" "assign" "ventas" "emacs"))
+;; override this in ~/.emacs.d.overrides/lib/emacs.d.overrides.el with a value such as:
+;; `(setq vemv/all-projects '("gpm" "ventas" "jumbo" "assign" "overrides" "emacs"))`,
+;; where each identifier corresponds with a .el file (example: `vemv.project.gpm.el`)
+(setq vemv/all-projects nil)
 
 (defun vemv/root-marker ()
   "A string that proves that a project is a full directory, rather than a project id (name - like 'gpm')"
@@ -69,6 +72,11 @@
               (if on-the-fly-project
                   which
                   (concat vemv/project-clojure-dir "/src"))))
+
+    (setq vemv/project-fiplr-dir
+          (if (file-exists-p vemv/project-fiplr-dir)
+              vemv/project-fiplr-dir
+              vemv/project-root-dir))
     
     ;; the bit to remove in tabs (mode-line). also identifies repls (important)
     (setq vemv/project-ns-prefix (or vemv/project-ns-prefix vemv/current-project))
@@ -91,6 +99,8 @@
     (setq vemv/modifiers/tertiary "s")
     
     (when switch-p
+      (vemv/next-file-buffer)
+      (vemv/previous-file-buffer)
       (select-window vemv/project-explorer-window)
       (let ((default-directory vemv/project-root-dir))
         (call-interactively 'project-explorer-open))
@@ -100,7 +110,10 @@
         (delay (argless
                 (comint-clear-buffer)
                 (select-window vemv/main_window))
-               0.3)))))
+               0.3)))
+
+    (when (not (gethash vemv/current-project vemv/chosen-file-buffer-order))
+        (vemv/open-recent-file-for-this-project!))))
 
 (vemv/refresh-current-project vemv/current-project)
     

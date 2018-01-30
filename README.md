@@ -24,6 +24,14 @@ limitations, I was able to implement a simple yet powerful workflow, including a
 * `vemv/` is the fragment used to prevent clashes with other functions/vars. Sorry for all the vemvs!
 * Note that as of today, CIDER does not robustly allow to have disparate per-project REPLs. Follow https://github.com/clojure-emacs/cider/pull/2069 for news. Until the situation progresses, once you choose a REPL, you cannot start another one for a different project.
 
+**"But, monolith"**
+
+This setup is similar to others in that it's a monolithic conglomerate of functionality - you couldn't cherry-pick just what you wanted.
+
+This has the drawback of being all-or-nothing: either you use all the provided features, or you are left bare-bones and have to build it all yourself (maybe copying some bits).
+
+I am aware of this weakness. Be assured, dear reader, that if this project takes off, I will split this setup into many independent packages. Meanwhile such effort would be premature optimization.
+
 ## Getting started
 
 * Watch the video so you know what to expect.

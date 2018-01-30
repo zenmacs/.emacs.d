@@ -26,8 +26,7 @@
         [triple-mouse-6] [triple-mouse-7]
         ;; [triple-wheel-up] [triple-wheel-down] ;; don't override these.
         ;; they disable three-finger swipe (as I originally intended), but also two-finger swipe too (ruins scrolling)
-        [triple-wheel-right] [triple-wheel-left]
-        ))
+        [triple-wheel-right] [triple-wheel-left]))
 
 ;; XXX create instead vemv/clojure-mode-key-bindings, vemv/emacs-elisp-mode-key-bindings
 (setq vemv/local-key-bindings

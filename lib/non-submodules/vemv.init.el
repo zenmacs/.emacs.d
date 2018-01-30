@@ -104,23 +104,10 @@
 (setq create-lockfiles nil)
 
 (setq pe/mode-line-format
-      `(:eval (concat (propertize
-                       (concat "  "
-                               (file-name-nondirectory
-                                (directory-file-name
-                                 default-directory)))
-                       'face 'font-lock-function-name-face
-                       'help-echo default-directory)
-                      (when (or pe/reverting pe/filter-regex)
-                        (format " (%s)"
-                                (concat
-                                 (when pe/filter-regex
-                                   "Filtered")
-                                 (and pe/filter-regex
-                                      pe/reverting
-                                      ", ")
-                                 (when pe/reverting
-                                   "Indexing")))))))
+      `(:eval (concat "  "
+                      (propertize (car vemv/all-projects) 'face 'font-lock-keyword-face)
+                      " | "
+                      (s-join " | " (cdr vemv/all-projects)))))
 
 (setq fiplr-ignored-globs
       ;; `directories` is semi-useless. do not alter but also do not bother adding entries
@@ -222,6 +209,24 @@
 (when (not vemv-cleaning-namespaces)
   (add-hook 'clojure-mode-hook 'hs-minor-mode))
 
+(setq tabbed-line-format
+      (list
+       "  "
+       '(:eval (when (buffer-modified-p) (propertize "*" 'face 'font-lock-function-name-face)))
+       '(:eval (vemv/message-file-buffers-impl))
+       '(:eval (propertize " %l:%c" 'face 'font-lock-line-and-column-face))
+       '(:eval (when (and (not vemv-cider-connecting) (not vemv-cider-connected))
+                 (propertize " Disconnected" 'face 'font-lock-line-and-column-face)))
+       '(:eval (when vemv/verbose-mode (propertize " Verbose" 'face 'font-lock-line-and-column-face)))
+       '(:eval (when vemv/current-project
+                 (propertize (concat " " vemv/current-project) 'face 'font-lock-line-and-column-face)))
+       '(:eval (when vemv-cider-connecting
+                 (propertize " Connecting..." 'face 'vemv-cider-connection-face)))))
+
+(add-hook 'emacs-lisp-mode-hook
+          (argless (call-interactively 'text-scale-increase)
+                   (setq-local mode-line-format tabbed-line-format)))
+
 (add-hook 'clojure-mode-hook
           (argless (call-interactively 'text-scale-increase)
                    (enable-paredit-mode)
@@ -230,19 +235,7 @@
                    (undo-tree-mode)
                    (cljr-add-keybindings-with-prefix "C-0")
                    (global-set-key (kbd "C-r") 'vemv/test-this-ns) ;; must be defined there. TODO: define all clojure bindings here
-                   (setq-local mode-line-format
-                               (list
-                                "  "
-                                '(:eval (when (buffer-modified-p) (propertize "*" 'face 'font-lock-function-name-face)))
-                                '(:eval (vemv/message-file-buffers-impl))
-                                '(:eval (propertize " %l:%c" 'face 'font-lock-line-and-column-face))
-                                '(:eval (when (and (not vemv-cider-connecting) (not vemv-cider-connected))
-                                          (propertize " Disconnected" 'face 'font-lock-line-and-column-face)))
-                                '(:eval (when vemv/verbose-mode (propertize " Verbose" 'face 'font-lock-line-and-column-face)))
-                                '(:eval (when vemv/current-project
-                                          (propertize (concat " " vemv/current-project) 'face 'font-lock-line-and-column-face)))
-                                '(:eval (when vemv-cider-connecting
-                                          (propertize " Connecting..." 'face 'vemv-cider-connection-face)))))))
+                   (setq-local mode-line-format tabbed-line-format)))
 
 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 

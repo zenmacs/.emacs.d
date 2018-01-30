@@ -31,6 +31,9 @@
     (setq inhibit-message t)
     what))
 
+(defun pr-str (x)
+  (prin1-to-string x))
+
 (defun delay (f &optional seconds)
   "Calls f in one or SECONDS seconds."
   (run-at-time (concat (int-to-string (or seconds 1)) " seconds") nil f))
@@ -203,253 +206,253 @@ if they are contigous), and is side-effect free."
 
 (defun vemv/send (where &optional backward? content)
   "Copy the next sexp (or on non-nil backward? arg, the previous sexp) and its character trailer,
-switch to the window that is assigned for REPL purposes, then it switch to the corresponding buffer
-(different REPLs have different buffers),
-paste and simulate an intro press. Finally, go back to sender window."
-   (interactive)
+  switch to the window that is assigned for REPL purposes, then it switch to the corresponding buffer
+  (different REPLs have different buffers),
+  paste and simulate an intro press. Finally, go back to sender window."
+  (interactive)
 
-   (let ((content (or content
-                      (if (region-active-p)
-                          (vemv/selected-region)
-                          (vemv/sexpr-content backward?)))))
-     (if (equal where :emacs)
-         (eval (read content))
-         (let ((sender (selected-window))
-               (destination-buffer (case where
-                                     (:cider the-cider-buffer-name)
-                                     (:ielm "*ielm*")
-                                     (:shell "*shell-1*")
-                                     (:clj vemv/clj-repl-name)
-                                     (:cljs vemv/cljs-repl-name))))
-           (if (not (seq-contains (vemv/all-buffer-names) destination-buffer))
-               (vemv/echo "Can't eval in a different project!")
-               (vemv/safe-select-window vemv/repl2)
-               (vemv/switch-to-buffer-in-any-frame destination-buffer)
+  (let ((content (or content
+                     (if (region-active-p)
+                         (vemv/selected-region)
+                         (vemv/sexpr-content backward?)))))
+    (if (equal where :emacs)
+        (eval (read content))
+        (let ((sender (selected-window))
+              (destination-buffer (case where
+                                    (:cider the-cider-buffer-name)
+                                    (:ielm "*ielm*")
+                                    (:shell "*shell-1*")
+                                    (:clj vemv/clj-repl-name)
+                                    (:cljs vemv/cljs-repl-name))))
+          (if (not (seq-contains (vemv/all-buffer-names) destination-buffer))
+              (vemv/echo "Can't eval in a different project!")
+              (vemv/safe-select-window vemv/repl2)
+              (switch-to-buffer destination-buffer)
 
-               (end-of-buffer)
-               (insert content)
+              (end-of-buffer)
+              (insert content)
 
-               (case where
-                 (:cider (cider-repl-return))
-                 (:ielm (ielm-return))
-                 (:shell (comint-send-input))
-                 (:clj (cider-repl-return))
-                 (:cljs (cider-repl-return)))
+              (case where
+                (:cider (cider-repl-return))
+                (:ielm (ielm-return))
+                (:shell (comint-send-input))
+                (:clj (cider-repl-return))
+                (:cljs (cider-repl-return)))
 
-               (pop kill-ring)
-               (end-of-buffer))
-           (vemv/safe-select-window sender)))))
+              (pop kill-ring)
+              (end-of-buffer))
+          (vemv/safe-select-window sender)))))
 
- (defun vemv/duplicate (&optional backward?)
-   "Copies the current line (or sexpr, if point is at the beggining of one, or selection, if the region is active),
+(defun vemv/duplicate (&optional backward?)
+  "Copies the current line (or sexpr, if point is at the beggining of one, or selection, if the region is active),
 inserting it at a new line."
-   (interactive)
+  (interactive)
 
-   (if (region-active-p)
+  (if (region-active-p)
 
-       (progn
-         (dotimes (i (- (region-end) (point)))
-           (forward-char))
-         (insert "\n" (vemv/selected-region) "\n"))
-     
-       (back-to-indentation)
-     
-       (if (some (lambda (char) (equal char (vemv/current-char-at-point)))
-                 '("(" "[" "{" "<" "\""))
-           (progn
-             (let ((content (vemv/sexpr-content))
-                   (at-b (vemv/at-beginning-of-line-p)))
-               (paredit-forward)
-               (insert (concat (if at-b "\n\n" "\n") content))
-               (paredit-backward)
-               (beginning-of-line)
-               (indent-for-tab-command)))
+      (progn
+        (dotimes (i (- (region-end) (point)))
+          (forward-char))
+        (insert "\n" (vemv/selected-region) "\n"))
+      
+      (back-to-indentation)
+      
+      (if (some (lambda (char) (equal char (vemv/current-char-at-point)))
+                '("(" "[" "{" "<" "\""))
+          (progn
+            (let ((content (vemv/sexpr-content))
+                  (at-b (vemv/at-beginning-of-line-p)))
+              (paredit-forward)
+              (insert (concat (if at-b "\n\n" "\n") content))
+              (paredit-backward)
+              (beginning-of-line)
+              (indent-for-tab-command)))
 
-           (progn
-             (move-beginning-of-line 1)
-             (kill-line)
-             (yank)
-             (open-line 1)
-             (next-line 1)
-             (yank)
-             (pop kill-ring)))))
+          (progn
+            (move-beginning-of-line 1)
+            (kill-line)
+            (yank)
+            (open-line 1)
+            (next-line 1)
+            (yank)
+            (pop kill-ring)))))
 
- (defun vemv/kill (&optional backward? skip-save-to-clipboard?) ;; XXX kill comments FIXME can leave sexprs unmatched
-   "Deletes the next (or previous, on non-nil values of BACKWARD?) sexpr or comment (if there is one).
+(defun vemv/kill (&optional backward? skip-save-to-clipboard?) ;; XXX kill comments FIXME can leave sexprs unmatched
+  "Deletes the next (or previous, on non-nil values of BACKWARD?) sexpr or comment (if there is one).
 
    Unlike paredit-kill, this function will only grab one sexpr (and no more, if they are contigous),
    and it doesn't alter the kill-ring."
-   (interactive)
-   (ignore-errors
-     (push-mark)
-     (if backward? (paredit-backward) (paredit-forward))
+  (interactive)
+  (ignore-errors
+    (push-mark)
+    (if backward? (paredit-backward) (paredit-forward))
 
-     (let ((result (vemv/selected-region)))
-       (delete-region (mark) (point))
-       (while (and
-               (equal " " (vemv/current-char-at-point))
-               (not (equal "\n" (vemv/current-char-at-point))))
-         (paredit-forward-delete))
-       (when (not skip-save-to-clipboard?)
-         (simpleclip-set-contents result))
-       result)))
+    (let ((result (vemv/selected-region)))
+      (delete-region (mark) (point))
+      (while (and
+              (equal " " (vemv/current-char-at-point))
+              (not (equal "\n" (vemv/current-char-at-point))))
+        (paredit-forward-delete))
+      (when (not skip-save-to-clipboard?)
+        (simpleclip-set-contents result))
+      result)))
 
- (defun vemv/delete-backward (&optional cut?)
-   "Performs a paredit-backward-delete unless the region is active, in which case the selection gets unconditionally removed.
+(defun vemv/delete-backward (&optional cut?)
+  "Performs a paredit-backward-delete unless the region is active, in which case the selection gets unconditionally removed.
 
    The removed value will be pushed to the kill-ring only on non-nil values of CUT?.
 
    Unconditionally removing code may yield semantically wrong results, i.e. leaving sexprs unmatched.
    I personally like this tradeoff - use with caution!"
-   (interactive)
+  (interactive)
 
-   (funcall (if cut?
-                'vemv/bounded-list/insert-at-head!
-                'vemv/bounded-list/insert-at-second-position!)
-            (if (region-active-p)
-                (progn (call-interactively 'kill-region)
-                       (if (not cut?) (pop kill-ring)))
-              
-                (paredit-backward-delete))
-            vemv/kill-list
-            vemv/kill-list-bound))
+  (funcall (if cut?
+               'vemv/bounded-list/insert-at-head!
+               'vemv/bounded-list/insert-at-second-position!)
+           (if (region-active-p)
+               (progn (call-interactively 'kill-region)
+                      (if (not cut?) (pop kill-ring)))
+               
+               (paredit-backward-delete))
+           vemv/kill-list
+           vemv/kill-list-bound))
 
- (defun vemv/active-modes ()
-   "Returns a list of the minor modes that are enabled in the current buffer."
-   (interactive)
-   (let ((active-modes))
-     (mapc (lambda (mode) (condition-case nil
-                              (if (and (symbolp mode) (symbol-value mode))
-                                  (add-to-list 'active-modes mode))
-                            (error nil)))
-           minor-mode-list)
-     active-modes))
+(defun vemv/active-modes ()
+  "Returns a list of the minor modes that are enabled in the current buffer."
+  (interactive)
+  (let ((active-modes))
+    (mapc (lambda (mode) (condition-case nil
+                             (if (and (symbolp mode) (symbol-value mode))
+                                 (add-to-list 'active-modes mode))
+                           (error nil)))
+          minor-mode-list)
+    active-modes))
 
- (defun vemv/next-window ()
-   "Switch to the next window."
-   (interactive)
-   (unless (minibuffer-prompt)
-     (vemv/safe-select-window (next-window))))
+(defun vemv/next-window ()
+  "Switch to the next window."
+  (interactive)
+  (unless (minibuffer-prompt)
+    (vemv/safe-select-window (next-window))))
 
- (defun vemv/previous-window ()
-   "Switch to the previous window."
-   (interactive)
-   (unless (minibuffer-prompt)
-     (vemv/safe-select-window (previous-window))))
+(defun vemv/previous-window ()
+  "Switch to the previous window."
+  (interactive)
+  (unless (minibuffer-prompt)
+    (vemv/safe-select-window (previous-window))))
 
- (defun vemv/elisp-window-documentation ()
-   "Displays the documentation for the symbol that is currently hovered by the point in a new window. Presumes emacs-lisp-mode."
-   (interactive)
-   (if-let (f (function-called-at-point))
-       (describe-function f)))
+(defun vemv/elisp-window-documentation ()
+  "Displays the documentation for the symbol that is currently hovered by the point in a new window. Presumes emacs-lisp-mode."
+  (interactive)
+  (if-let (f (function-called-at-point))
+      (describe-function f)))
 
- (defun vemv/reverse (seq)
-   (typecase seq
-     (string (concat (reverse (string-to-list seq))))))
+(defun vemv/reverse (seq)
+  (typecase seq
+    (string (concat (reverse (string-to-list seq))))))
 
- (defun vemv/ends-with (s ending)
-   "Returns non-nil if string S ends with ENDING."
-   (let ((elength (length ending)))
-     (string= (substring s (- 0 elength)) ending)))
+(defun vemv/ends-with (s ending)
+  "Returns non-nil if string S ends with ENDING."
+  (let ((elength (length ending)))
+    (string= (substring s (- 0 elength)) ending)))
 
- (defun vemv/starts-with (s candidate)
-   "Returns non-nil if string S starts with CANDIDATE."
-   (let ((clength (length candidate)))
-     (if (<= clength (length s))
-         (string= (substring s 0 clength) candidate))))
+(defun vemv/starts-with (s candidate)
+  "Returns non-nil if string S starts with CANDIDATE."
+  (let ((clength (length candidate)))
+    (if (<= clength (length s))
+        (string= (substring s 0 clength) candidate))))
 
- (defun vemv/keyword-to-string (arg)
-   ":foo -> \"foo\""
-   (substring (symbol-name arg) 1))
+(defun vemv/keyword-to-string (arg)
+  ":foo -> \"foo\""
+  (substring (symbol-name arg) 1))
 
- (defun vemv/current-line-contents ()
-   "Returns the content of the line at which the point is currently located. Side effects free."
-   (interactive)
-   (let ((result (buffer-substring-no-properties (line-beginning-position 1) (line-beginning-position 2))))
-     (if (equal result "") ;; abstact away EOFs
-         "\n"
-         result)))
+(defun vemv/current-line-contents ()
+  "Returns the content of the line at which the point is currently located. Side effects free."
+  (interactive)
+  (let ((result (buffer-substring-no-properties (line-beginning-position 1) (line-beginning-position 2))))
+    (if (equal result "") ;; abstact away EOFs
+        "\n"
+        result)))
 
- (defun vemv/previous-line ()
-   (save-excursion
-     (call-interactively 'previous-line)
-     (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
+(defun vemv/previous-line ()
+  (save-excursion
+    (call-interactively 'previous-line)
+    (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
 
- (defun vemv/current-line ()
-   (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+(defun vemv/current-line ()
+  (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
 
- (defun vemv/current-line-number ()
-   (1+ (count-lines 1 (point))))
+(defun vemv/current-line-number ()
+  (1+ (count-lines 1 (point))))
 
- (defun vemv/current-char-at-point (&optional offset)
-   "Returns the character -as a string- hovered by the point, or a contiguous one, if an integer offset is specified."
-   (interactive)
-   (kill-ring-save (+ 1 (point) (or offset 0)) (+ (point) (or offset 0)))
-   (let ((result (substring-no-properties (car kill-ring))))
-     (pop kill-ring)
-     result))
+(defun vemv/current-char-at-point (&optional offset)
+  "Returns the character -as a string- hovered by the point, or a contiguous one, if an integer offset is specified."
+  (interactive)
+  (kill-ring-save (+ 1 (point) (or offset 0)) (+ (point) (or offset 0)))
+  (let ((result (substring-no-properties (car kill-ring))))
+    (pop kill-ring)
+    result))
 
- (defun vemv/in-clojure-mode? ()
-   ;; better: derived-mode-p
-   (vemv/contains? (prin1-to-string major-mode) "clojure"))
+(defun vemv/in-clojure-mode? ()
+  ;; better: derived-mode-p
+  (vemv/contains? (pr-str major-mode) "clojure"))
 
- (defun vemv/ciderable-p ()
-   (vemv/in-clojure-mode?)
-   (cider-connected-p)
-   vemv-cider-connected)
+(defun vemv/ciderable-p ()
+  (vemv/in-clojure-mode?)
+  (cider-connected-p)
+  vemv-cider-connected)
 
- (defun vemv/dumb-indent ()
-   (interactive)
-   (save-excursion
-     (while (not (some (lambda (char)
-                         (equal char (vemv/current-char-at-point)))
-                       '("(" "[" "{")))
-       (beginning-of-sexp))
-     (paredit-wrap-round)
-     (paredit-splice-sexp-killing-backward)))
+(defun vemv/dumb-indent ()
+  (interactive)
+  (save-excursion
+    (while (not (some (lambda (char)
+                        (equal char (vemv/current-char-at-point)))
+                      '("(" "[" "{")))
+      (beginning-of-sexp))
+    (paredit-wrap-round)
+    (paredit-splice-sexp-killing-backward)))
 
- (defun vemv/cider-indent ()
-   (interactive)
-   (push-mark)
-   (paredit-forward)
-   (call-interactively 'cider-format-region)
-   (pop-mark)
-   (paredit-backward))
+(defun vemv/cider-indent ()
+  (interactive)
+  (push-mark)
+  (paredit-forward)
+  (call-interactively 'cider-format-region)
+  (pop-mark)
+  (paredit-backward))
 
- (defun vemv/indent ()
-   "Indents the next sexpr."
-   (interactive)
-   (if (vemv/ciderable-p)
-       (vemv/cider-indent)
-       (vemv/dumb-indent)))
+(defun vemv/indent ()
+  "Indents the next sexpr."
+  (interactive)
+  (if (vemv/ciderable-p)
+      (vemv/cider-indent)
+      (vemv/dumb-indent)))
 
- (defun vemv/timestamp ()
-   (truncate (float-time)))
+(defun vemv/timestamp ()
+  (truncate (float-time)))
 
- (defun vemv/refresh-pe-cache ()
-   (vemv/safe-select-window vemv/project-explorer-window)
-   (funcall pe/directory-tree-function
-            default-directory
-            (apply-partially 'pe/set-tree (current-buffer) 'refresh))
-   (vemv/safe-select-window vemv/main_window))
+(defun vemv/refresh-pe-cache ()
+  (vemv/safe-select-window vemv/project-explorer-window)
+  (funcall pe/directory-tree-function
+           default-directory
+           (apply-partially 'pe/set-tree (current-buffer) 'refresh))
+  (vemv/safe-select-window vemv/main_window))
 
- (setq vemv/refreshing-caches
-       nil)
+(setq vemv/refreshing-caches
+      nil)
 
- (setq vemv/project-explorer-initialized
-       nil)
+(setq vemv/project-explorer-initialized
+      nil)
 
- (defun vemv/timestamp-lock-acquired? (timestamp)
-   (and timestamp (< (- (vemv/timestamp) timestamp) 30)))
+(defun vemv/timestamp-lock-acquired? (timestamp)
+  (and timestamp (< (- (vemv/timestamp) timestamp) 30)))
 
- (defun vemv/refresh-file-caches ()
-   (unless (or (vemv/timestamp-lock-acquired? vemv/refreshing-caches)
-               (not vemv/project-explorer-initialized)
-               (minibuffer-prompt)
-               (not (vemv/contains? (buffer-name (current-buffer)) ".clj")))
-     (setq vemv/refreshing-caches (vemv/timestamp))
-     (vemv/refresh-pe-cache)
-     (fiplr-clear-cache)))
+(defun vemv/refresh-file-caches ()
+  (unless (or (vemv/timestamp-lock-acquired? vemv/refreshing-caches)
+              (not vemv/project-explorer-initialized)
+              (minibuffer-prompt)
+              (not (vemv/contains? (buffer-name (current-buffer)) ".clj")))
+    (setq vemv/refreshing-caches (vemv/timestamp))
+    (vemv/refresh-pe-cache)
+    (fiplr-clear-cache)))
 
 (defun vemv/open (&optional filepath)
   "Opens a file (from FILEPATH or the user input)."
@@ -486,81 +489,81 @@ inserting it at a new line."
    (let* ((expected vemv/project-root-dir)
           (actual (pe/project-root-function-default))
           (default-directory expected))
-      (when (not (string-equal expected actual))
-        (call-interactively 'project-explorer-open)))))
+     (when (not (string-equal expected actual))
+       (call-interactively 'project-explorer-open)))))
 
 (defun vemv/show-current-file-in-project-explorer-unsafe ()
-   (interactive)
-   (let ((fallback (argless (funcall vemv/safe-show-current-file-in-project-explorer))))
-     (if (minibuffer-prompt)
-         (delay fallback 1)
+  (interactive)
+  (let ((fallback (argless (funcall vemv/safe-show-current-file-in-project-explorer))))
+    (if (minibuffer-prompt)
+        (delay fallback 1)
         
-         (vemv/refresh-file-caches)
-         (vemv/safe-select-window vemv/main_window)
-         (if (minibuffer-prompt)
-             (delay fallback 1)
+        (vemv/refresh-file-caches)
+        (vemv/safe-select-window vemv/main_window)
+        (if (minibuffer-prompt)
+            (delay fallback 1)
 
-             (vemv/ensure-project-is-displayed!)
-             (let ((buffer-truename (file-truename (buffer-file-name))))
-               (when (vemv/contains? buffer-truename vemv/project-root-dir)
-                 (let* ((buffer-fragments (-remove (lambda (x) (string-equal x "")) (split-string buffer-truename "/")))
-                        (projname (pe/project-root-function-default)) ;; "/Users/vemv/gpm"
-                        (project-fragments (-remove (lambda (x) (string-equal x "")) (split-string projname "/")))
-                        (fragments (-drop (length project-fragments) buffer-fragments))
-                        (expanded-fragments (mapcar* (lambda (x y)
-                                                       (-take x y))
-                                                     (number-sequence 1 (length fragments)) (-repeat (length fragments) fragments)))
-                        (final-fragments (mapcar (lambda (x)
-                                                   (concat (s-join "" (cons projname (-interpose "/" x))) "/"))
-                                                 expanded-fragments)))
+            (vemv/ensure-project-is-displayed!)
+            (let ((buffer-truename (file-truename (buffer-file-name))))
+              (when (vemv/contains? buffer-truename vemv/project-root-dir)
+                (let* ((buffer-fragments (-remove (lambda (x) (string-equal x "")) (split-string buffer-truename "/")))
+                       (projname (pe/project-root-function-default)) ;; "/Users/vemv/gpm"
+                       (project-fragments (-remove (lambda (x) (string-equal x "")) (split-string projname "/")))
+                       (fragments (-drop (length project-fragments) buffer-fragments))
+                       (expanded-fragments (mapcar* (lambda (x y)
+                                                      (-take x y))
+                                                    (number-sequence 1 (length fragments)) (-repeat (length fragments) fragments)))
+                       (final-fragments (mapcar (lambda (x)
+                                                  (concat (s-join "" (cons projname (-interpose "/" x))) "/"))
+                                                expanded-fragments)))
                   
-                   (vemv/safe-select-window vemv/project-explorer-window)
+                  (vemv/safe-select-window vemv/project-explorer-window)
                   ;; (pe/fold-all) ;; necessary in principle, skip it for performance. seems to work fine.
-                   (beginning-of-buffer)
+                  (beginning-of-buffer)
                   
-                   (seq-doseq (f (butlast final-fragments))
-                     (while (not (string-equal f (pe/current-directory)))
-                       (next-line))
-                     (pe/return))
+                  (seq-doseq (f (butlast final-fragments))
+                    (while (not (string-equal f (pe/current-directory)))
+                      (next-line))
+                    (pe/return))
                   
-                   (while (not (string-equal (s-chop-suffix "/" (first (last final-fragments))) (pe/get-filename)))
-                     (next-line))
+                  (while (not (string-equal (s-chop-suffix "/" (first (last final-fragments))) (pe/get-filename)))
+                    (next-line))
                   
-                   (end-of-line))))))))
+                  (end-of-line))))))))
 
- (defun vemv/safe-show-current-file-in-project-explorer* ()
-   (condition-case nil
-       (vemv/show-current-file-in-project-explorer-unsafe)
-     (error (ignore-errors (vemv/show-current-file-in-project-explorer-unsafe))))
-   (vemv/safe-select-window vemv/main_window))
+(defun vemv/safe-show-current-file-in-project-explorer* ()
+  (condition-case nil
+      (vemv/show-current-file-in-project-explorer-unsafe)
+    (error (ignore-errors (vemv/show-current-file-in-project-explorer-unsafe))))
+  (vemv/safe-select-window vemv/main_window))
 
- (setq vemv/safe-show-current-file-in-project-explorer
-       (vemv/debounce 'vemv/safe-show-current-file-in-project-explorer* 0.8))
+(setq vemv/safe-show-current-file-in-project-explorer
+      (vemv/debounce 'vemv/safe-show-current-file-in-project-explorer* 0.8))
 
- (defun vemv/current-ns (&optional which-buffer)
-   (with-current-buffer (buffer-name which-buffer)
-     (cider-current-ns)))
+(defun vemv/current-ns (&optional which-buffer)
+  (with-current-buffer (buffer-name which-buffer)
+    (cider-current-ns)))
 
- (setq vemv/figwheel-connected-p-already nil)
+(setq vemv/figwheel-connected-p-already nil)
 
 ;; XXX this should be a universal figwheel fn. open PR at some point
- (defun vemv/figwheel-connected-p ()
-   (if (or
-        vemv/figwheel-connected-p-already
-        (not (vemv/current-main-buffer-is-cljs))
-        (not (string-equal vemv/current-project "gpm")))
-       t
-       (condition-case nil
-           (with-current-buffer vemv/clj-repl-name
-             (progn (cider-nrepl-sync-request:eval "(require 'dev.formatting.watch)")
-                    (if (string-equal (nrepl-dict-get (cider-nrepl-sync-request:eval "(dev.formatting.watch/currently-connected?)")
-                                                      "value")
-                                      "true")
-                        (progn
-                          (setq vemv/figwheel-connected-p-already t)
-                          t)
-                        nil)))
-         (error nil))))
+(defun vemv/figwheel-connected-p ()
+  (if (or
+       vemv/figwheel-connected-p-already
+       (not (vemv/current-main-buffer-is-cljs))
+       (not (string-equal vemv/current-project "gpm")))
+      t
+      (condition-case nil
+          (with-current-buffer vemv/clj-repl-name
+            (progn (cider-nrepl-sync-request:eval "(require 'dev.formatting.watch)")
+                   (if (string-equal (nrepl-dict-get (cider-nrepl-sync-request:eval "(dev.formatting.watch/currently-connected?)")
+                                                     "value")
+                                     "true")
+                       (progn
+                         (setq vemv/figwheel-connected-p-already t)
+                         t)
+                       nil)))
+        (error nil))))
 
 (defun vemv/buffer-of-current-project? (b)
   (when (and b (buffer-file-name b))
@@ -572,208 +575,245 @@ inserting it at a new line."
     (vemv/contains? (file-truename (buffer-file-name b))
                     vemv/running-project-root-dir)))
 
- (defun vemv/advice-nrepl* (&optional after)
-   (interactive)
-   (delay (argless
-           (unless (or (vemv/scratch-p)
-                       (not (vemv/buffer-of-current-running-project? (current-buffer)))
-                       (and (eq vemv/running-project-type :clj) (vemv/current-main-buffer-is-cljs)))
-             (when (and (vemv/ciderable-p)
-                        (vemv/figwheel-connected-p)
-                        (not (string-equal (vemv/current-ns)
-                                           (vemv/current-ns (window-buffer vemv/repl2)))))
-               (cider-repl-set-ns (vemv/current-ns))))
-           (when after
-             (funcall after)))
-          1))
+(defun vemv/advice-nrepl* (&optional after)
+  (interactive)
+  (delay (argless
+          (unless (or (vemv/scratch-p)
+                      (not (vemv/buffer-of-current-running-project? (current-buffer)))
+                      (and (eq vemv/running-project-type :clj) (vemv/current-main-buffer-is-cljs)))
+            (when (and (vemv/ciderable-p)
+                       (vemv/figwheel-connected-p)
+                       (not (string-equal (vemv/current-ns)
+                                          (vemv/current-ns (window-buffer vemv/repl2)))))
+              (cider-repl-set-ns (vemv/current-ns))))
+          (when after
+            (funcall after)))
+         1))
 
- (setq vemv/debounced-advice-nrepl (vemv/debounce 'vemv/advice-nrepl* 0.8))
+(setq vemv/debounced-advice-nrepl (vemv/debounce 'vemv/advice-nrepl* 0.8))
 
- (defun vemv/advice-nrepl (&optional x)
-   (funcall vemv/debounced-advice-nrepl x))
+(defun vemv/advice-nrepl (&optional x)
+  (funcall vemv/debounced-advice-nrepl x))
 
- (defun vemv/toggle-ns-hiding (&optional after-file-open)
-   (interactive)
-   (when (not vemv-cleaning-namespaces)
-     (let ((curr-buff-name (buffer-name (current-buffer))))
-       (setq-local vemv/ns-shown (if after-file-open
-                                     (if vemv/ns-shown
-                                         vemv/ns-shown
-                                         nil)
-                                     (if vemv/ns-shown
-                                         nil
-                                         curr-buff-name)))
-       (if vemv/ns-shown
-           (hs-show-all)
-           (let* ((hs-block-start-regexp "(ns")
-                  (hs-block-end-regexp ")")
-                  (hs-hide-comments-when-hiding-all nil)
-                  (hs-adjust-block-beginning (lambda (initial)
-                                               (save-excursion
-                                                 (point)))))
-             (apply #'hs-hide-all ()))))))
+(defun vemv/toggle-ns-hiding (&optional after-file-open)
+  (interactive)
+  (when (not vemv-cleaning-namespaces)
+    (let ((curr-buff-name (buffer-name (current-buffer))))
+      (setq-local vemv/ns-shown (if after-file-open
+                                    (if vemv/ns-shown
+                                        vemv/ns-shown
+                                        nil)
+                                    (if vemv/ns-shown
+                                        nil
+                                        curr-buff-name)))
+      (if vemv/ns-shown
+          (hs-show-all)
+          (let* ((hs-block-start-regexp "(ns")
+                 (hs-block-end-regexp ")")
+                 (hs-hide-comments-when-hiding-all nil)
+                 (hs-adjust-block-beginning (lambda (initial)
+                                              (save-excursion
+                                                (point)))))
+            (apply #'hs-hide-all ()))))))
 
- (defun vemv/show-clj-or-cljs-repl ()
-   (vemv/safe-select-window vemv/main_window)
-   (setq was (vemv/current-main-buffer-is-cljs))
-   (vemv/safe-select-window vemv/repl2)
-   (if was
-       (switch-to-buffer vemv/cljs-repl-name)
-       (switch-to-buffer vemv/clj-repl-name))
-   (vemv/safe-select-window vemv/main_window))
+(defun vemv/show-clj-or-cljs-repl ()
+  (vemv/safe-select-window vemv/main_window)
+  (setq was (vemv/current-main-buffer-is-cljs))
+  (vemv/safe-select-window vemv/repl2)
+  (if was
+      (switch-to-buffer vemv/cljs-repl-name)
+      (switch-to-buffer vemv/clj-repl-name))
+  (vemv/safe-select-window vemv/main_window))
 
- (defun vemv/ensure-repl-visible ()
-   (when (and (cider-connected-p) (string-equal cider-launched vemv/current-project))
-     (vemv/show-clj-or-cljs-repl)))
+(defun vemv/ensure-repl-visible ()
+  (when (and (cider-connected-p) (string-equal cider-launched vemv/current-project))
+    (vemv/show-clj-or-cljs-repl)))
 
- (defun vemv/scratch-p ()
-   (string-equal "*scratch*" (buffer-name (current-buffer))))
+(defun vemv/scratch-p ()
+  (string-equal "*scratch*" (buffer-name (current-buffer))))
 
- (defun vemv/after-file-open (&rest ignore)
-   (interactive)
-   (vemv/safe-select-window vemv/main_window)
-   (when (vemv/buffer-of-current-project? (current-buffer))
-     (when (and (vemv/in-clojure-mode?)
-                (not vemv/ns-shown))
-       (vemv/toggle-ns-hiding :after-file-open))
+(defun vemv/after-file-open (&rest ignore)
+  (interactive)
+  (vemv/safe-select-window vemv/main_window)
+  (when (vemv/buffer-of-current-project? (current-buffer))
+    (when (and (vemv/in-clojure-mode?)
+               (not vemv/ns-shown))
+      (vemv/toggle-ns-hiding :after-file-open))
     
-     (vemv/advice-nrepl)
-     (vemv/ensure-repl-visible)
-     (funcall vemv/safe-show-current-file-in-project-explorer)))
+    (vemv/advice-nrepl)
+    (vemv/ensure-repl-visible)
+    (funcall vemv/safe-show-current-file-in-project-explorer)))
 
- (defun vemv/open_file_buffers ()
-   (let ((c (mapcar (lambda (x) (buffer-name x)) (buffer-list))))
-     (filter (lambda (filename) (vemv/contains? filename ".clj")) c)))
+(defun vemv/open_file_buffers ()
+  (let* ((bs (filter (lambda (x)
+                       (vemv/buffer-of-current-project? x))
+                     (buffer-list)))
+         (c (mapcar (lambda (x) (buffer-name x)) bs)))
+    (filter (lambda (filename)
+              ;; XXX better: keep a list of all files ever explicitly open in this session
+              (or (vemv/contains? filename ".clj")
+                  (vemv/contains? filename ".el")))
+            c)))
 
- (setq vemv/chosen-file-buffer-order nil) ;; a list
+(setq vemv/chosen-file-buffer-order (vemv/hash-map))
 
- (defun vemv/clean-chosen-file-buffer-order ()
-   "Removes closed buffers from vemv/chosen-file-buffer-order"
-   (let* ((curr (buffer-name (current-buffer)))
-          (actually-open (vemv/open_file_buffers))
-          (all (-distinct (-concat vemv/chosen-file-buffer-order actually-open)))
-          (all-without-curr (-remove (lambda (x) (string-equal x curr)) all))
-          (final (cons curr all-without-curr)))
-     (setq vemv/chosen-file-buffer-order (filter (lambda (x)
-                                                   (member x actually-open))
-                                                 final))))
+(defun vemv/clean-chosen-file-buffer-order ()
+  "Removes closed buffers from vemv/chosen-file-buffer-order"
+  (let* ((curr (buffer-name (current-buffer)))
+         (actually-open (vemv/open_file_buffers))
+         (all (-distinct (-concat (gethash vemv/current-project vemv/chosen-file-buffer-order) actually-open)))
+         (all-without-curr (-remove (lambda (x) (string-equal x curr)) all))
+         (final (cons curr all-without-curr)))
+    (puthash vemv/current-project
+             (filter (lambda (x)
+                       (member x actually-open))
+                     final)
+             vemv/chosen-file-buffer-order)))
 
- (defun vemv.abbreviate-ns/format-intermediate-fragment (x)
-   (condition-case
-       nil (let* ((split (s-split "-" x))
-                  (y (mapcar (lambda (f) (substring f 0 1)) split)))
-             (s-join "-" y))
-     (error "")))
+(defun vemv.abbreviate-ns/format-intermediate-fragment (x)
+  (condition-case
+      nil (let* ((split (s-split "-" x))
+                 (y (mapcar (lambda (f) (substring f 0 1)) split)))
+            (s-join "-" y))
+    (error "")))
 
- (defun vemv/abbreviate-ns (namespace)
-   (let* ((split (s-split "\\." namespace))
-          (name (car (last split)))
-          (bbase (-remove (lambda (x) (string-equal x vemv/project-ns-prefix)) (butlast split)))
-          (fname (car bbase))
-          (base (rest bbase))
-          (onechars (mapcar (lambda (x)
-                              (vemv.abbreviate-ns/format-intermediate-fragment x))
-                            base)))
-     (concat fname (if fname "." "") (s-join "." onechars) (if (> (length onechars) 0) "." "") name)))
+(defun vemv/abbreviate-ns (namespace)
+  (let* ((split (s-split "\\." namespace))
+         (name (car (last split)))
+         (bbase (-remove (lambda (x) (string-equal x vemv/project-ns-prefix)) (butlast split)))
+         (fname (car bbase))
+         (base (rest bbase))
+         (onechars (mapcar (lambda (x)
+                             (vemv.abbreviate-ns/format-intermediate-fragment x))
+                           base)))
+    (concat fname (if fname "." "") (s-join "." onechars) (if (> (length onechars) 0) "." "") name)))
 
- (defun vemv/message-file-buffers-impl ()
-   (vemv/clean-chosen-file-buffer-order)
-   (let* ((first (vemv/abbreviate-ns (or (ignore-errors (cider-current-ns)) (car vemv/chosen-file-buffer-order))))
-          (rest (cdr vemv/chosen-file-buffer-order))
-          (the-rest (mapcar (lambda (x)
-                              (let* ((buf (get-buffer x))
-                                     (sym (intern (buffer-file-name buf)))
-                                     (close-sym (intern (concat (buffer-file-name buf) "-close")))
-                                     (namespace (with-current-buffer x (or (ignore-errors (cider-current-ns)) x)))
-                                     (is-modified (with-current-buffer x (buffer-modified-p)))
-                                     (shortname (concat (if is-modified "*" "") (vemv/abbreviate-ns namespace))))
-                                (eval `(defun ,sym ()
-                                         (interactive)
-                                         ()
-                                         (vemv/safe-select-window vemv/main_window)
-                                         (switch-to-buffer ,x)
-                                         (vemv/after-file-open)))
-                                (eval `(defun ,close-sym ()
-                                         (interactive)
-                                         (kill-buffer ,x)
-                                         (vemv/clean-chosen-file-buffer-order)))
-                                (propertize shortname 'local-map `(keymap
-                                                                   (mode-line keymap
-                                                                              (mouse-1 . ,sym)
-                                                                              (mouse-3 . ,close-sym))))))
-                            rest))
-          (p (propertize first 'face 'font-lock-function-name-face))
-          (sep (propertize " | " 'face 'font-lock-line-and-column-face))
-          (all (cons p the-rest)))
-     (apply 'concat (-interpose sep all))))
+(defun vemv/message-file-buffers-impl ()
+  (vemv/clean-chosen-file-buffer-order)
+  (let* ((x (car (gethash vemv/current-project vemv/chosen-file-buffer-order))) 
+        (first (if (vemv/contains? x ".clj")
+                   (vemv/abbreviate-ns (or (ignore-errors (cider-current-ns)) xxx))
+                   x))
+         (rest (cdr (gethash vemv/current-project vemv/chosen-file-buffer-order)))
+         (the-rest (mapcar (lambda (x)
+                             (if (not (vemv/contains? x ".clj"))
+                                 (let* ((buf (get-buffer x))
+                                        (sym (intern (buffer-file-name buf)))
+                                        (close-sym (intern (concat (buffer-file-name buf) "-close")))
+                                        (is-modified (with-current-buffer x (buffer-modified-p))))
+                                   (eval `(defun ,sym ()
+                                            (interactive)
+                                            ()
+                                            (vemv/safe-select-window vemv/main_window)
+                                            (switch-to-buffer ,x)
+                                            (vemv/after-file-open)))
+                                   (eval `(defun ,close-sym ()
+                                            (interactive)
+                                            (kill-buffer ,x)
+                                            (vemv/clean-chosen-file-buffer-order)))
+                                   (propertize x 'local-map `(keymap
+                                                              (mode-line keymap
+                                                                         (mouse-1 . ,sym)
+                                                                         (mouse-3 . ,close-sym)))))
+                                 (let* ((buf (get-buffer x))
+                                        (sym (intern (buffer-file-name buf)))
+                                        (close-sym (intern (concat (buffer-file-name buf) "-close")))
+                                        (namespace (with-current-buffer x (or (ignore-errors (cider-current-ns)) x)))
+                                        (is-modified (with-current-buffer x (buffer-modified-p)))
+                                        (shortname (concat (if is-modified "*" "") (vemv/abbreviate-ns namespace))))
+                                   (eval `(defun ,sym ()
+                                            (interactive)
+                                            ()
+                                            (vemv/safe-select-window vemv/main_window)
+                                            (switch-to-buffer ,x)
+                                            (vemv/after-file-open)))
+                                   (eval `(defun ,close-sym ()
+                                            (interactive)
+                                            (kill-buffer ,x)
+                                            (vemv/clean-chosen-file-buffer-order)))
+                                   (propertize shortname 'local-map `(keymap
+                                                                      (mode-line keymap
+                                                                                 (mouse-1 . ,sym)
+                                                                                 (mouse-3 . ,close-sym)))))))
+                           rest))
+         (p (propertize first 'face 'font-lock-function-name-face))
+         (sep (propertize " | " 'face 'font-lock-line-and-column-face))
+         (all (cons p the-rest)))
+    (apply 'concat (-interpose sep all))))
 
- (defun vemv/current-main-buffer-is-cljs ()
-   (or (vemv/contains? (buffer-name) ".cljs")
-       (vemv/contains? (buffer-name) ".cljc")))
+(defun vemv/current-main-buffer-is-cljs ()
+  (or (vemv/contains? (buffer-name) ".cljs")
+      (vemv/contains? (buffer-name) ".cljc")))
 
- (setq vemv/file-buffer-fallback "*scratch*")
+(setq vemv/file-buffer-fallback "*scratch*")
 
- (defun vemv/next-file-buffer ()
-   "Switch to the next buffer that contains a file opened by the user."
-   (interactive)
-   (when (vemv/good-frame-p)
-     (vemv/safe-select-window vemv/main_window))
-   (vemv/clean-chosen-file-buffer-order)
-   (switch-to-buffer (or (second vemv/chosen-file-buffer-order)
-                         (first vemv/chosen-file-buffer-order)
-                         vemv/file-buffer-fallback))
-   (setq vemv/chosen-file-buffer-order `(,@(cdr vemv/chosen-file-buffer-order) ,(car vemv/chosen-file-buffer-order))))
+(defun vemv/next-file-buffer ()
+  "Switch to the next buffer that contains a file opened by the user."
+  (interactive)
+  (when (vemv/good-frame-p)
+    (vemv/safe-select-window vemv/main_window))
+  (vemv/clean-chosen-file-buffer-order)
+  (switch-to-buffer (or (second (gethash vemv/current-project vemv/chosen-file-buffer-order))
+                        (first (gethash vemv/current-project vemv/chosen-file-buffer-order))
+                        vemv/file-buffer-fallback))
+  (puthash vemv/current-project
+           `(,@(cdr (gethash vemv/current-project vemv/chosen-file-buffer-order))
+             ,(car (gethash vemv/current-project vemv/chosen-file-buffer-order)))
+           vemv/chosen-file-buffer-order))
 
- (defun vemv/previous-file-buffer ()
-   "Switch to the previous buffer that contains a file opened by the user."
-   (interactive)
-   (when (vemv/good-frame-p)
-     (vemv/safe-select-window vemv/main_window))
-   (vemv/clean-chosen-file-buffer-order)
-   (if-let (file (or (car (last vemv/chosen-file-buffer-order)) (first vemv/chosen-file-buffer-order)))
-       (progn
-         (switch-to-buffer file)
-         (setq vemv/chosen-file-buffer-order `(file ,@(butlast vemv/chosen-file-buffer-order))))
-     (switch-to-buffer vemv/file-buffer-fallback)))
+(defun vemv/previous-file-buffer ()
+  "Switch to the previous buffer that contains a file opened by the user."
+  (interactive)
+  (when (vemv/good-frame-p)
+    (vemv/safe-select-window vemv/main_window))
+  (vemv/clean-chosen-file-buffer-order)
+  (if-let (file (or (car (last (gethash vemv/current-project vemv/chosen-file-buffer-order)))
+                    (first (gethash vemv/current-project vemv/chosen-file-buffer-order))))
+      (progn
+        (switch-to-buffer file)
+        (puthash vemv/current-project
+                 `(file ,@(butlast (gethash vemv/current-project vemv/chosen-file-buffer-order)))
+                  vemv/chosen-file-buffer-order))
+    (switch-to-buffer vemv/file-buffer-fallback)))
 
- (defun vemv/home ()
-   "Moves the point to leftmost non-empty character in the current line."
-   (interactive)
-   (move-beginning-of-line 1)
-   (if (not (equal last-command 'vemv/home))
-       (while (some (lambda (char) (equal char (vemv/current-char-at-point)))
-                    '(" " "\t"))
-         (forward-char))))
+(defun vemv/home ()
+  "Moves the point to leftmost non-empty character in the current line."
+  (interactive)
+  (move-beginning-of-line 1)
+  (if (not (equal last-command 'vemv/home))
+      (while (some (lambda (char) (equal char (vemv/current-char-at-point)))
+                   '(" " "\t"))
+        (forward-char))))
 
- (defun vemv/end () ;; XXX doesn't honor region
-   "Moves the point to rightmost non-empty character in the current line.
+(defun vemv/end () ;; XXX doesn't honor region
+  "Moves the point to rightmost non-empty character in the current line.
 
    Comments get ignored, this is, point will only move as long as its position still belongs to the code -
    unless this command has been fired for the second time."
-   (interactive)
-   (if (equal last-command 'vemv/end)
-       (call-interactively 'move-end-of-line)
-       (let* ((line (vemv/current-line-contents))
-              (rev (vemv/reverse line))
-              (line_length (length line))
-              (movement (recur-let ((result 0))
-                                   (if (some (lambda (char) (equal char (substring line result (inc result))))
-                                             '(";" "\n"))
-   result
-   (recur (inc result))))))
-(move-beginning-of-line 1)
-(forward-char movement)
-;; there may exist empty space between code and comment:
-(if (pos? movement)
-    (while (not (some (lambda (char) (equal char (vemv/current-char-at-point)))
-                      '(" ")))
-      (backward-char)))
-(comm backward-char (recur-let ((result 0))
-                               (if (or
-                                    (equal result line_length)
-                                    (equal " " (substring rev result (inc result))))
-                                   result
-                                   (recur (inc result))))))))
+  (interactive)
+  (if (equal last-command 'vemv/end)
+      (call-interactively 'move-end-of-line)
+      (let* ((line (vemv/current-line-contents))
+             (rev (vemv/reverse line))
+             (line_length (length line))
+             (movement (recur-let ((result 0))
+                                  (if (some (lambda (char) (equal char (substring line result (inc result))))
+                                            '(";" "\n"))
+                                      result
+                                      (recur (inc result))))))
+        (move-beginning-of-line 1)
+        (forward-char movement)
+        ;; there may exist empty space between code and comment:
+        (if (pos? movement)
+            (while (not (some (lambda (char) (equal char (vemv/current-char-at-point)))
+                              '(" ")))
+              (backward-char)))
+        (comm backward-char (recur-let ((result 0))
+                                       (if (or
+                                            (equal result line_length)
+                                            (equal " " (substring rev result (inc result))))
+                                           result
+                                           (recur (inc result))))))))
 
 (defun vemv/end-of-line-code ()
   (interactive "^")
@@ -1044,7 +1084,7 @@ inserting it at a new line."
 
 (defun vemv/good-buffer-p ()
   (-any? (lambda (x) (vemv/contains? (buffer-name) x))
-         (list ".clj")))
+         (list ".clj" ".el")))
 
 (defun vemv/good-window-p ()
   (or (eq (selected-window) vemv/main_window)
@@ -1101,7 +1141,7 @@ inserting it at a new line."
   (mapcar (lambda (b)
             (with-current-buffer b
               (vemv/close-this-buffer)))
-          (-clone vemv/chosen-file-buffer-order))
+          (-clone (gethash vemv/current-project vemv/chosen-file-buffer-order)))
   (switch-to-buffer "*scratch*"))
 
 (defun vemv/close-all-other-file-buffers ()
@@ -1111,7 +1151,28 @@ inserting it at a new line."
               (unless (string-equal b root)
                 (with-current-buffer b
                   (vemv/close-this-buffer))))
-            (-clone vemv/chosen-file-buffer-order))))
+            (-clone (gethash vemv/current-project vemv/chosen-file-buffer-order)))))
+
+(defun vemv/open-recent-file-for-this-project! ()
+  (when (and (boundp 'vemv/main_window)
+             (file-readable-p recentf-save-file)
+             (pos? (length recentf-list)))
+      (let* ((recents (filter (lambda (x) (vemv/contains? (file-truename x) vemv/project-root-dir))
+                              recentf-list))
+             (head (car (filter (lambda (x)
+                                  (or (vemv/contains? x ".clj")
+                                      (vemv/contains? x ".el")))
+                                recents)))
+             (the-file (ignore-errors
+                         (if (vemv/ends-with head "ido.last")
+                             (second recents)
+                             head))))
+        (when (and the-file (file-truename the-file))
+          (vemv/open
+           (if (or (equal vemv/project-type :elisp)
+                    (vemv/contains? (file-truename the-file) vemv/project-clojure-dir)) ;; ensure nrepl opens a clojure context
+               the-file
+               vemv/default-clojure-file))))))
 
 (defun vemv/clojure-init ()
   (if (minibuffer-prompt)
@@ -1126,23 +1187,7 @@ inserting it at a new line."
       (advice-add 'helm-ag--action-find-file :after 'vemv/after-file-open)
       
       (vemv/safe-select-window vemv/main_window)
-      
-      (if (file-readable-p recentf-save-file)
-          (if (pos? (length recentf-list))
-              (let* ((head (car (filter (lambda (x)
-                                          (vemv/contains? x ".clj"))
-                                        recentf-list)))
-                     (the-file (ignore-errors
-                                 (if (vemv/ends-with head "ido.last")
-                                     (second recentf-list)
-                                     head))))
-                (when (and the-file (file-truename the-file))
-                  (vemv/open
-                   (if (vemv/contains? (file-truename the-file) vemv/project-clojure-dir) ;; ensure nrepl opens a clojure context
-                       the-file
-                       vemv/default-clojure-file))
-                  (delay (argless (funcall vemv/safe-show-current-file-in-project-explorer))
-                         3)))))))
+      (vemv/open-recent-file-for-this-project!)))
 
 (defun vemv/tab ()
   (interactive)
@@ -1436,5 +1481,4 @@ inserting it at a new line."
   ;; Jump to the last file, so one ensures that:
   ;;   helm is closed. Less steps
   ;;   the open files are shown. Helm likes to jump back to *scratch* after completion 
-  (helm-select-nth-action 1)
-  )
+  (helm-select-nth-action 1))
