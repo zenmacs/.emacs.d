@@ -30,3 +30,4 @@ recentf
 ido.last
 /xkcd
 /.mc-lists.el
+/lib/non-submodules/init.el

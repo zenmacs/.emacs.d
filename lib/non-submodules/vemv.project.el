@@ -7,7 +7,7 @@
 ;; - infer project from currently open file
 ;; - use inferred value as implicit argument to these defuns
 
-(setq vemv/all-projects '("gpm" "jumbo" "assign" "ventas"))
+(setq vemv/all-projects '("gpm" "jumbo" "assign" "ventas" "emacs"))
 
 (defun vemv/root-marker ()
   "A string that proves that a project is a full directory, rather than a project id (name - like 'gpm')"

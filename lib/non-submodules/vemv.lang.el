@@ -390,6 +390,7 @@ inserting it at a new line."
      result))
 
  (defun vemv/in-clojure-mode? ()
+   ;; better: derived-mode-p
    (vemv/contains? (prin1-to-string major-mode) "clojure"))
 
  (defun vemv/ciderable-p ()

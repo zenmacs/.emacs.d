@@ -20,17 +20,20 @@
             (list comint-mode-map "\M-p")
             (list undo-tree-map (kbd "C-/") (kbd "C-?"))))
 
-(setq vemv/key-bindings-to-dummy '([mouse-6] [mouse-7]
-                                   [double-mouse-6] [double-mouse-7]
-                                   [triple-mouse-6] [triple-mouse-7]
-                                   ;; [triple-wheel-up] [triple-wheel-down] ;; don't override these. they disable three-finger swipe (as I originally intended), but also two-finger swipe too (ruins scrolling)
-                                   [triple-wheel-right] [triple-wheel-left]
-                                   ))
+(setq vemv/key-bindings-to-dummy
+      '([mouse-6] [mouse-7]
+        [double-mouse-6] [double-mouse-7]
+        [triple-mouse-6] [triple-mouse-7]
+        ;; [triple-wheel-up] [triple-wheel-down] ;; don't override these.
+        ;; they disable three-finger swipe (as I originally intended), but also two-finger swipe too (ruins scrolling)
+        [triple-wheel-right] [triple-wheel-left]
+        ))
 
 ;; XXX create instead vemv/clojure-mode-key-bindings, vemv/emacs-elisp-mode-key-bindings
 (setq vemv/local-key-bindings
       (list clojure-mode-map  ";" 'vemv/semicolon
             clojure-mode-map "<tab>" 'vemv/tab
+            emacs-lisp-mode-map "<tab>" 'vemv/tab
             emacs-lisp-mode-map  ";" 'vemv/semicolon
             helm-map [(shift return)] (argless (interactive) (helm-select-nth-action 1))
             helm-map "C-a" 'vemv/helm-persistent-action-all
