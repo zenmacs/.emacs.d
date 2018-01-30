@@ -59,6 +59,7 @@
       vemv/shortcuts/global/secondary-left          'backward-word
       vemv/shortcuts/global/secondary-left-bracket  'paredit-backward
       vemv/shortcuts/global/secondary-next          'previous-buffer
+      vemv/shortcuts/global/secondary-o             'vemv/open-at-project-root
       vemv/shortcuts/global/secondary-prior         'next-buffer
       vemv/shortcuts/global/secondary-RET           'vemv/toggle-ns-hiding
       vemv/shortcuts/global/secondary-right         'forward-word

@@ -195,6 +195,12 @@ if they are contigous), and is side-effect free."
   (unless (minibuffer-prompt)
     (select-window x)))
 
+(defmacro vemv/save-window-excursion (&rest forms)
+  `(let ((current-window (selected-window)))
+     (save-excursion
+       ,@forms)
+     (vemv/safe-select-window current-window)))
+
 (defun vemv/send (where &optional backward? content)
   "Copy the next sexp (or on non-nil backward? arg, the previous sexp) and its character trailer,
 switch to the window that is assigned for REPL purposes, then it switch to the corresponding buffer
@@ -444,20 +450,45 @@ inserting it at a new line."
      (vemv/refresh-pe-cache)
      (fiplr-clear-cache)))
 
- (defun vemv/open (&optional filepath)
-   "Opens a file (from FILEPATH or the user input)."
-   (interactive)
-   (vemv/safe-select-window vemv/main_window)
-   (let ((file (buffer-name (or (and filepath (find-file filepath)) (ido-find-file)))))) ;; magical let - do not unwrap!
-   (save-buffer)
-   (vemv/refresh-file-caches)
-   (vemv/safe-select-window vemv/main_window))
+(defun vemv/open (&optional filepath)
+  "Opens a file (from FILEPATH or the user input)."
+  (interactive)
+  (vemv/safe-select-window vemv/main_window)
+  (let ((file (buffer-name (or (and filepath (find-file filepath)) (ido-find-file)))))) ;; magical let - do not unwrap!
+  (save-buffer)
+  (vemv/refresh-file-caches)
+  (vemv/safe-select-window vemv/main_window))
 
- (defun vemv/open-project ()
-   (let ((default-directory (replace-regexp-in-string "\\.$" "" (ido-read-file-name ()))))
-     (call-interactively 'project-explorer-open)))
+(defun vemv/open-at-project-root ()
+  (interactive)
+  (let ((default-directory vemv/project-root-dir))
+    (call-interactively 'vemv/open)))
 
- (defun vemv/show-current-file-in-project-explorer-unsafe ()
+(defun vemv/dir-opened-from-home ()
+  (let ((default-directory vemv-home))
+    (replace-regexp-in-string "\\.$" "" (ido-read-file-name ()))))
+
+(defun vemv/safely-open-pe-window ()
+  (when (boundp 'vemv/project-explorer-window)
+    (vemv/safe-select-window vemv/project-explorer-window)))
+
+(defun vemv/open-project ()
+  (interactive)
+  (vemv/save-window-excursion
+   (vemv/safely-open-pe-window)
+   (let ((default-directory (vemv/dir-opened-from-home)))
+     (call-interactively 'project-explorer-open))))
+
+(defun vemv/ensure-project-is-displayed! ()
+  (vemv/save-window-excursion
+   (vemv/safe-select-window vemv/project-explorer-window)
+   (let* ((expected vemv/project-root-dir)
+          (actual (pe/project-root-function-default))
+          (default-directory expected))
+      (when (not (string-equal expected actual))
+        (call-interactively 'project-explorer-open)))))
+
+(defun vemv/show-current-file-in-project-explorer-unsafe ()
    (interactive)
    (let ((fallback (argless (funcall vemv/safe-show-current-file-in-project-explorer))))
      (if (minibuffer-prompt)
@@ -467,7 +498,8 @@ inserting it at a new line."
          (vemv/safe-select-window vemv/main_window)
          (if (minibuffer-prompt)
              (delay fallback 1)
-            
+
+             (vemv/ensure-project-is-displayed!)
              (let ((buffer-truename (file-truename (buffer-file-name))))
                (when (vemv/contains? buffer-truename vemv/project-root-dir)
                  (let* ((buffer-fragments (-remove (lambda (x) (string-equal x "")) (split-string buffer-truename "/")))
@@ -599,13 +631,14 @@ inserting it at a new line."
  (defun vemv/after-file-open (&rest ignore)
    (interactive)
    (vemv/safe-select-window vemv/main_window)
-   (when (and (vemv/in-clojure-mode?)
-              (not vemv/ns-shown))
-     (vemv/toggle-ns-hiding :after-file-open))
-  
-   (vemv/advice-nrepl)
-   (vemv/ensure-repl-visible)
-   (funcall vemv/safe-show-current-file-in-project-explorer))
+   (when (vemv/buffer-of-current-project? (current-buffer))
+     (when (and (vemv/in-clojure-mode?)
+                (not vemv/ns-shown))
+       (vemv/toggle-ns-hiding :after-file-open))
+    
+     (vemv/advice-nrepl)
+     (vemv/ensure-repl-visible)
+     (funcall vemv/safe-show-current-file-in-project-explorer)))
 
  (defun vemv/open_file_buffers ()
    (let ((c (mapcar (lambda (x) (buffer-name x)) (buffer-list))))
@@ -948,6 +981,7 @@ inserting it at a new line."
   (setq default-directory vemv-home)
 
   (let ((default-directory vemv/project-root-dir))
+    (vemv/safely-open-pe-window)
     (call-interactively 'project-explorer-open)
     (enlarge-window-horizontally -20)
     (setq vemv/project-explorer-window (selected-window)))
@@ -1216,12 +1250,6 @@ inserting it at a new line."
   (vemv/bounded-list/insert-at-head! (vemv/copy-selection-or-next-sexpr)
                                      vemv/kill-list
                                      vemv/kill-list-bound))
-
-(defmacro vemv/save-window-excursion (&rest forms)
-  `(let ((current-window (selected-window)))
-     (save-excursion
-       ,@forms)
-     (vemv/safe-select-window current-window)))
 
 (defun vemv/clear-cider-repl-buffer (&optional no-recur)
   (interactive)

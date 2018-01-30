@@ -17,7 +17,7 @@
 ;; Eases editing locally-modified packages.
 ;; Example:
 ;; Fork a package
-;; Copy the relevant file to ~/.emacs.d/elpa/the-package
+;; `ln -s` the relevant file to ~/.emacs.d/elpa/the-package
 ;; rm ~/.emacs.d/elpa/the-package/foo.elc
 ;; restart emacs.
 (add-hook 'compilation-finish-functions (lambda (b _) (kill-buffer b)))
@@ -87,6 +87,11 @@
 
 (setq cider-repl-display-help-banner' nil)
 (setq ido-show-dot-for-dired t)
+
+(setq pe/project-root-function (lambda (&rest _)
+                                 (if (vemv/buffer-of-current-project? (current-buffer))
+                                  vemv/project-root-dir
+                                  default-directory)))
 
 ;; XXX should be per-project.
 ;; when doing that improvement, keep in mind that whitespace-mode doesn't re-render by a mere `setq`
