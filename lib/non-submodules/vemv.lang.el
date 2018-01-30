@@ -1024,7 +1024,7 @@ inserting it at a new line."
   (let ((default-directory vemv/project-root-dir))
     (vemv/safely-open-pe-window)
     (call-interactively 'project-explorer-open)
-    (enlarge-window-horizontally -20)
+    (enlarge-window-horizontally -19) ;; leaves 130 columns for vemv/main_window in a 13" Macbook Air
     (setq vemv/project-explorer-window (selected-window)))
 
   (vemv/next-window)
