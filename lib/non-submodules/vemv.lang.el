@@ -475,9 +475,9 @@ inserting it at a new line."
 (defun vemv/open-project ()
   (interactive)
   (vemv/save-window-excursion
-   (vemv/safely-open-pe-window)
    (let ((default-directory (vemv/dir-opened-from-home)))
-     (call-interactively 'project-explorer-open))))
+     (setq vemv/all-projects `(,default-directory ,@vemv/all-projects))
+     (vemv/refresh-current-project (car vemv/all-projects) :switch))))
 
 (defun vemv/ensure-project-is-displayed! ()
   (vemv/save-window-excursion
