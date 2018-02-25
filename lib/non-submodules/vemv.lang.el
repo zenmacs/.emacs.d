@@ -431,6 +431,7 @@ inserting it at a new line."
 
 (defun vemv/refresh-pe-cache ()
   (vemv/safe-select-window vemv/project-explorer-window)
+  (call-interactively 'pe/cache-clear)
   (funcall pe/directory-tree-function
            default-directory
            (apply-partially 'pe/set-tree (current-buffer) 'refresh))
@@ -453,15 +454,6 @@ inserting it at a new line."
     (setq vemv/refreshing-caches (vemv/timestamp))
     (vemv/refresh-pe-cache)
     (fiplr-clear-cache)))
-
-(defun vemv/open (&optional filepath)
-  "Opens a file (from FILEPATH or the user input)."
-  (interactive)
-  (vemv/safe-select-window vemv/main_window)
-  (let ((file (buffer-name (or (and filepath (find-file filepath)) (ido-find-file)))))) ;; magical let - do not unwrap!
-  (save-buffer)
-  (vemv/refresh-file-caches)
-  (vemv/safe-select-window vemv/main_window))
 
 (defun vemv/open-at-project-root ()
   (interactive)
@@ -632,7 +624,7 @@ inserting it at a new line."
 (defun vemv/scratch-p ()
   (string-equal "*scratch*" (buffer-name (current-buffer))))
 
-(defun vemv/after-file-open (&rest ignore)
+(defun vemv/after-file-open-without-project-explorer-highlighting ()
   (interactive)
   (vemv/safe-select-window vemv/main_window)
   (when (vemv/buffer-of-current-project? (current-buffer))
@@ -641,8 +633,25 @@ inserting it at a new line."
       (vemv/toggle-ns-hiding :after-file-open))
     
     (vemv/advice-nrepl)
-    (vemv/ensure-repl-visible)
-    (funcall vemv/safe-show-current-file-in-project-explorer)))
+    (vemv/ensure-repl-visible)))
+
+(defun vemv/after-file-open (&rest ignore)
+  (interactive)
+  (vemv/after-file-open-without-project-explorer-highlighting)
+  (funcall vemv/safe-show-current-file-in-project-explorer))
+
+(defun vemv/open (&optional filepath)
+  "Opens a file (from FILEPATH or the user input)."
+  (interactive)
+  (vemv/safe-select-window vemv/main_window)
+  (let ((file (buffer-name (or (and filepath (find-file filepath))
+                               (ido-find-file)))))) ;; magical let - do not unwrap!
+  (save-buffer)
+  (vemv/refresh-file-caches)
+  (vemv/safe-select-window vemv/main_window)
+  (vemv/after-file-open-without-project-explorer-highlighting)
+  (delay (argless (funcall vemv/safe-show-current-file-in-project-explorer))
+         20))
 
 (defun vemv/open_file_buffers ()
   (let* ((bs (filter (lambda (x)
@@ -1180,7 +1189,7 @@ inserting it at a new line."
       
       (advice-add 'pe/show-buffer :after 'vemv/after-file-open)
       (advice-add 'vemv/fiplr :after 'vemv/after-file-open)
-      (advice-add 'vemv/open :after 'vemv/after-file-open)
+      ;; (advice-add 'vemv/open :after 'vemv/after-file-open) ;; I don't remember why I disabled this
       (advice-add 'vemv/next-file-buffer :after 'vemv/after-file-open)
       (advice-add 'vemv/previous-file-buffer :after 'vemv/after-file-open)
       (advice-add 'vemv/close-this-buffer :after 'vemv/after-file-open)
