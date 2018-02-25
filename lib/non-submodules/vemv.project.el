@@ -44,7 +44,9 @@
     (vemv.project/reset)
 
     (when which
-      (setq vemv/current-project which))
+      (setq vemv/current-project (if on-the-fly-project
+                                     (cider-project-name which)
+                                     which)))
     
     ;;gpm defines its own,
     ;; trailing slash required
@@ -81,8 +83,7 @@
     ;; the bit to remove in tabs (mode-line). also identifies repls (important)
     (setq vemv/project-ns-prefix (or vemv/project-ns-prefix vemv/current-project))
 
-    ;; XXX automatically infer instead
-    (setq vemv/repl-identifier (or vemv/repl-identifier vemv/project-ns-prefix))
+    (setq vemv/repl-identifier (or vemv/repl-identifier (cider-project-name vemv/project-root-dir)))
 
     (setq vemv/clj-repl-name (concat "*cider-repl " vemv/repl-identifier "*"))
     (setq vemv/cljs-repl-name (concat "*cider-repl CLJS " vemv/repl-identifier "*"))

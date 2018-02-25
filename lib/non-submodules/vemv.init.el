@@ -105,7 +105,7 @@
 
 (setq pe/mode-line-format
       `(:eval (concat "  "
-                      (propertize (car vemv/all-projects) 'face 'font-lock-keyword-face)
+                      (propertize vemv/current-project 'face 'font-lock-keyword-face)
                       " | "
                       (s-join " | " (cdr vemv/all-projects)))))
 
