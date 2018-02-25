@@ -131,6 +131,7 @@
 (setq vemv/cljr-ast-load-counter 0)
 
 (custom-set-variables
+ '(xref-prompt-for-identifier nil)
  '(cider-connection-message-fn nil)
  '(cider-repl-display-help-banner nil)
  '(cider-font-lock-dynamically '(macro deprecated))
