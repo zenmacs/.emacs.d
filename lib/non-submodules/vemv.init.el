@@ -212,16 +212,13 @@
 
 (setq tabbed-line-format
       (list
-       '(:eval (propertize "  %l:%c" 'face 'font-lock-line-and-column-face))
-       '(:eval (when (and (not vemv-cider-connecting) (not vemv-cider-connected))
-                 (propertize " Disconnected" 'face 'font-lock-line-and-column-face)))
-       '(:eval (when vemv/verbose-mode (propertize " Verbose" 'face 'font-lock-line-and-column-face)))
-       '(:eval (when vemv/current-project
-                 (propertize (concat " " vemv/current-project " ") 'face 'font-lock-line-and-column-face)))
+       '(:eval (concat (propertize "  %l:%c " 'face 'font-lock-line-and-column-face)
+                       (when (and (not vemv-cider-connecting) (not vemv-cider-connected))
+                         (propertize "Disconnected " 'face 'font-lock-line-and-column-face))
+                       (when vemv/verbose-mode (propertize "Verbose " 'face 'font-lock-line-and-column-face))))
        '(:eval (when vemv-cider-connecting
                  (propertize "Connecting... " 'face 'vemv-cider-connection-face)))
-       '(:eval (vemv/message-file-buffers-impl))
-       '(:eval (when (buffer-modified-p) (propertize "*" 'face 'font-lock-function-name-face)))))
+       '(:eval (vemv/message-file-buffers-impl))))
 
 (add-hook 'emacs-lisp-mode-hook
           (argless (call-interactively 'text-scale-increase)
