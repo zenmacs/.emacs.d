@@ -71,5 +71,5 @@
   (let ((default-directory "~/.emacs.d.overrides/"))
         (normal-top-level-add-subdirs-to-load-path)))
 
-(require 'vemv.init)
 (require 'emacs.d.overrides)
+(require 'vemv.init)

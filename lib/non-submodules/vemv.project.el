@@ -7,10 +7,9 @@
 ;; - infer project from currently open file
 ;; - use inferred value as implicit argument to these defuns
 
-;; override this in ~/.emacs.d.overrides/lib/emacs.d.overrides.el with a value such as:
+;; ~/.emacs.d.overrides/lib/emacs.d.overrides.el must have a value such as:
 ;; `(setq vemv/all-projects '("gpm" "ventas" "jumbo" "assign" "overrides" "emacs"))`,
 ;; where each identifier corresponds with a .el file (example: `vemv.project.gpm.el`)
-(setq vemv/all-projects nil)
 
 (defun vemv/root-marker ()
   "A string that proves that a project is a full directory, rather than a project id (name - like 'gpm')"

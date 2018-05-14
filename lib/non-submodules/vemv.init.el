@@ -36,7 +36,7 @@
 (setq vemv-cider-connecting nil)
 (setq vemv-cider-connected nil)
 ;; XXX last from a file
-(setq vemv/current-project "gpm")
+(setq vemv/current-project (car vemv/all-projects))
 (setq vemv/running-project nil)
 (setq vemv/running-project-root-dir nil)
 (setq vemv/running-project-type nil)
