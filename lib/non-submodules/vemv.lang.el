@@ -24,6 +24,12 @@
        (if ,symbol
            ,@forms))))
 
+(defmacro replying-yes (&rest forms)
+ `(cl-flet ((always-yes (&rest _) t))
+   (cl-letf (((symbol-function 'y-or-n-p) #'always-yes)
+             ((symbol-function 'yes-or-no-p) #'always-yes))
+     ,@forms)))
+
 (defun vemv/echo (&rest xs)
   (let ((what (apply 'concat xs)))
     (setq inhibit-message nil)
@@ -990,6 +996,8 @@ inserting it at a new line."
         (vemv/save) ;; save autoformatting
         (vemv/advice-nrepl)
         (cider-load-buffer)
+        (replying-yes
+         (cider-load-all-project-ns))
         (delay (argless (vemv/echo "Reloaded!"))
                0.1))))
 
