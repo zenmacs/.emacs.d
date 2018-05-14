@@ -9,7 +9,7 @@
 (package-initialize)
 
 (dolist (package '(cider company queue fiplr clojure-mode clj-refactor
-                         company-quickhelp dash simpleclip helm-ag git-timemachine paren-face))
+                         dash simpleclip helm-ag git-timemachine paren-face))
   (unless (package-installed-p package)
     (package-refresh-contents)
     (package-install package)))
@@ -72,7 +72,6 @@
 (global-subword-mode)
 
 (global-company-mode)
-(company-quickhelp-mode 1)
 
 (add-to-list 'exec-path (concat vemv-home "/bin"))
 
@@ -133,6 +132,7 @@
 (custom-set-variables
  '(xref-prompt-for-identifier nil)
  '(cider-connection-message-fn nil)
+ '(cider-use-tooltips nil)
  '(cider-repl-display-help-banner nil)
  '(cider-font-lock-dynamically '(macro deprecated))
  '(cua-remap-control-v nil)
