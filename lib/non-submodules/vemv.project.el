@@ -85,7 +85,7 @@
     (setq vemv/repl-identifier (or vemv/repl-identifier (cider-project-name vemv/project-root-dir)))
 
     (setq vemv/clj-repl-name (concat "*cider-repl " vemv/repl-identifier "*"))
-    (setq vemv/cljs-repl-name (concat "*cider-repl CLJS " vemv/repl-identifier "*"))
+    (setq vemv/cljs-repl-name (concat "*cider-repl " vemv/repl-identifier "(cljs)*"))
 
     (setq vemv/default-clojure-file
           (or

@@ -134,6 +134,7 @@
  '(cider-connection-message-fn nil)
  '(cider-use-tooltips nil)
  '(cider-preferred-build-tool "lein")
+ '(cider-default-cljs-repl 'figwheel)
  '(cider-repl-display-help-banner nil)
  '(cider-font-lock-dynamically '(macro deprecated))
  '(cua-remap-control-v nil)
