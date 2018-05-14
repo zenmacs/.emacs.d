@@ -1210,6 +1210,7 @@ inserting it at a new line."
       (advice-add 'vemv/previous-file-buffer :after 'vemv/after-file-open)
       (advice-add 'vemv/close-this-buffer :after 'vemv/after-file-open)
       (advice-add 'helm-ag--action-find-file :after 'vemv/after-file-open)
+      (advice-add 'cider-new-error-buffer :after (lambda (&rest _) (cider-interactive-eval "(prn *e)")))
       
       (vemv/safe-select-window vemv/main_window)
       (vemv/open-recent-file-for-this-project!)))
