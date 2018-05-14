@@ -3,6 +3,8 @@
 
 (setq vemv/using-nrepl t)
 
+(setq vemv/initial-cider-lein-parameters cider-lein-parameters)
+
 ;; - make `setq`s defuns
 ;; - infer project from currently open file
 ;; - use inferred value as implicit argument to these defuns
@@ -21,6 +23,7 @@
 ;; XXX document the meaning of each of these?
 (defmacro vemv.project/reset ()
   `(progn
+     (set-variable 'cider-lein-parameters vemv/initial-cider-lein-parameters)
      (setq vemv/project-type nil)
      (setq vemv/project-initializers nil)
      (setq vemv/project-root-dir nil)
