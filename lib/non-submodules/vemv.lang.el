@@ -759,7 +759,8 @@ inserting it at a new line."
 
 (defun vemv/current-main-buffer-is-cljs ()
   (or (vemv/contains? (buffer-name) ".cljs")
-      (vemv/contains? (buffer-name) ".cljc")))
+      (and (vemv/contains? (buffer-name) ".cljc")
+           (eq vemv/project-type :cljs))))
 
 (setq vemv/file-buffer-fallback "*scratch*")
 
