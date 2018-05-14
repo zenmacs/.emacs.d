@@ -133,6 +133,7 @@
  '(xref-prompt-for-identifier nil)
  '(cider-connection-message-fn nil)
  '(cider-use-tooltips nil)
+ '(cider-preferred-build-tool "lein")
  '(cider-repl-display-help-banner nil)
  '(cider-font-lock-dynamically '(macro deprecated))
  '(cua-remap-control-v nil)
