@@ -36,6 +36,9 @@
 (setq vemv-default-foreground-color-very-slightly-darker "#ededed")
 (setq vemv-error-foreground-color vemv-default-foreground-color)
 
+(set-variable 'cider-stacktrace-frames-background-color vemv-default-background-color)
+(set-variable 'cider-test-items-background-color vemv-default-background-color)
+
 (defface vemv-default-face
   `((t :foreground ,vemv-default-foreground-color :background ,vemv-default-background-color))
   "."
@@ -83,6 +86,7 @@
  `(cider-repl-prompt-face ((t (:foreground ,vemv-default-foreground-color :italic t))))
  `(cider-repl-stdout-face ((t (:foreground ,vemv-default-foreground-color-very-slightly-darker))))
  `(cider-stacktrace-error-class-face ((t (:foreground ,vemv-error-foreground-color))))
+ `(cider-stacktrace-ns-face ((t (:foreground "white"))))
 
  `(font-lock-builtin-face ((t (:foreground ,vemv-default-foreground-color))))
 
