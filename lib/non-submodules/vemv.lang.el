@@ -1212,7 +1212,15 @@ inserting it at a new line."
       (advice-add 'vemv/previous-file-buffer :after 'vemv/after-file-open)
       (advice-add 'vemv/close-this-buffer :after 'vemv/after-file-open)
       (advice-add 'helm-ag--action-find-file :after 'vemv/after-file-open)
-      (advice-add 'cider-new-error-buffer :after (lambda (&rest _) (cider-interactive-eval "(prn *e)")))
+      (advice-add 'cider-new-error-buffer :after (lambda (&rest _)
+                                                   (cider-interactive-eval "(prn *e)")
+                                                   (delay (argless
+                                                           (vemv/safe-select-window vemv/repl2)
+                                                           (vemv/switch-to-buffer-in-any-frame vemv/clj-repl-name)
+                                                           (end-of-buffer)
+                                                           (paredit-backward)
+                                                           (paredit-backward))
+                                                          1)))
       
       (vemv/safe-select-window vemv/main_window)
       (vemv/open-recent-file-for-this-project!)))
