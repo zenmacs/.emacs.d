@@ -25,6 +25,7 @@
   `(progn
      (set-variable 'cider-lein-parameters vemv/initial-cider-lein-parameters)
      (setq vemv/project-type nil)
+     (setq vemv/cider-port nil)
      (setq vemv/project-initializers nil)
      (setq vemv/project-root-dir nil)
      (setq vemv/project-clojure-dir nil)
@@ -87,7 +88,9 @@
 
     (setq vemv/repl-identifier (or vemv/repl-identifier (cider-project-name vemv/project-root-dir)))
 
-    (setq vemv/clj-repl-name (concat "*cider-repl " vemv/repl-identifier "*"))
+    (if vemv/cider-port
+        (setq vemv/clj-repl-name (concat "*cider-repl 127.0.0.1*"))
+        (setq vemv/clj-repl-name (concat "*cider-repl " vemv/repl-identifier "*")))
     (setq vemv/cljs-repl-name (concat "*cider-repl " vemv/repl-identifier "(cljs)*"))
 
     (setq vemv/default-clojure-file

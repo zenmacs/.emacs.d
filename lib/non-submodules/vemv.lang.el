@@ -1238,7 +1238,9 @@ inserting it at a new line."
                         (select-window vemv/main_window)
                         (if (eq vemv/project-type :cljs)
                             (cider-jack-in-clojurescript)
-                            (cider-jack-in)))
+                            (if vemv/cider-port
+                                (cider-connect "127.0.0.1" vemv/cider-port vemv/project-root-dir)
+                                (cider-jack-in))))
                1))
       (if vemv/using-nrepl
           (if (cider-connected-p)
