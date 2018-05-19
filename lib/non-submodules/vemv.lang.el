@@ -1512,3 +1512,8 @@ inserting it at a new line."
   ;;   helm is closed. Less steps
   ;;   the open files are shown. Helm likes to jump back to *scratch* after completion 
   (helm-select-nth-action 1))
+
+(defun vemv/pull-next-sexpr ()
+  "Brings the sexpr located in the next line at the current one."
+  (interactive)
+  (just-one-space -1))

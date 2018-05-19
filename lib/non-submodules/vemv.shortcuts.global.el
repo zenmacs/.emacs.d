@@ -77,6 +77,7 @@
       vemv/shortcuts/global/tertiary-j              'cider-eval-sexp-at-point
       vemv/shortcuts/global/tertiary-k              'vemv/cut
       vemv/shortcuts/global/tertiary-left           'vemv/previous-file-buffer
+      vemv/shortcuts/global/tertiary-left-bracket   'vemv/pull-next-sexpr
       vemv/shortcuts/global/tertiary-o              'vemv/open-project
       vemv/shortcuts/global/tertiary-right          'vemv/next-file-buffer
       vemv/shortcuts/global/tertiary-s              'vemv/save-all-clojure-buffers-for-this-project
