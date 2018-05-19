@@ -990,16 +990,18 @@ inserting it at a new line."
 (defun vemv/load-clojure-buffer ()
   (interactive)
   (if (vemv/current-main-buffer-is-cljs)
-      (vemv/send :cljs nil "(.reload js/location true)")
-      (progn
-        (vemv/save)
-        (vemv/save) ;; save autoformatting
-        (vemv/advice-nrepl)
-        (cider-load-buffer)
-        (replying-yes
-         (cider-load-all-project-ns))
-        (delay (argless (vemv/echo "Reloaded!"))
-               0.1))))
+    (vemv/send :cljs nil "(.reload js/location true)")
+    (progn
+     (vemv/save)
+     (vemv/save) ;; save autoformatting
+     (vemv/advice-nrepl)
+     (cider-load-buffer)
+     (replying-yes
+      (if vemv/using-component-reloaded-workflow
+          (cider-interactive-eval "(with-out-str (com.stuartsierra.component.user-helpers/reset))")
+          (cider-load-all-project-ns)))
+     (delay (argless (message "Reloaded!"))
+            0.1))))
 
 (defun vemv/at-beginning-of-line-p ()
   (eq (point) (save-excursion (beginning-of-line) (point))))

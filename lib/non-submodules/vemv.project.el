@@ -25,6 +25,7 @@
   `(progn
      (set-variable 'cider-lein-parameters vemv/initial-cider-lein-parameters)
      (setq vemv/project-type nil)
+     (setq vemv/using-component-reloaded-workflow nil) ;; whether the project uses com.stuartsierra.component.user-helpers
      (setq vemv/cider-port nil)
      (setq vemv/project-initializers nil)
      (setq vemv/project-root-dir nil)
