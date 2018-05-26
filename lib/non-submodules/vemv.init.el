@@ -147,52 +147,10 @@
  '(pe/inline-folders nil)
  '(tree-widget-image-enable nil)
  '(cljr-auto-sort-ns nil)
- '(cljr-magic-require-namespaces
-   '(("io"   . "clojure.java.io")
-     ("set"  . "clojure.set")
-     ("str"  . "clojure.string")
-     ("walk" . "clojure.walk")
-     ("zip"  . "clojure.zip")
-     ("om"  . "om.core")
-     ("pprint" . "cljs.pprint")
-     ("html" . "sablono.core")
-
-     ("common.routing"  . "horizon.common.routing")
-     ("s" . "horizon.common.state.core")
-     ("config" . "horizon.common.config")
-     ("log" . "horizon.common.logging")
-     ("c" . "horizon.common.config")
-     ("env" . "horizon.common.env")
-     ("constants" . "horizon.common.config-constants")
-     ("dispatcher" . "horizon.common.dispatcher")
-     ("i18n" . "horizon.common.i18n.core")
-     ("m" . "horizon.common.messaging.core")
-     ("p" . "horizon.common.protocols")
-     ("service" . "horizon.common.service.core")
-     ("actions" . "horizon.common.state.actions")
-     ("tp" . "horizon.common.time-periods")
-     ("ptp" . "horizon.common.utils.plant-time-period")
-     ("utils.string" . "horizon.common.utils.string")
-
-     ("utils.css-transitions-group" . "horizon.controls.utils.css-transitions-group")
-     ("utils.reactive" . "horizon.controls.utils.reactive")
-     ("utils.time" . "horizon.controls.utils.time-core")
-     ("widgets.combobox" . "horizon.controls.widgets.combobox")
-     ("widgets.comboboxes.status" . "horizon.controls.widgets.comboboxes.status")
-     ("widgets.data-input" . "horizon.controls.widgets.data-input")
-     ("widgets.timestamp" . "horizon.controls.widgets.timestamp")
-
-     ("domain.routing" . "horizon.domain.routing")
-     ("service-helpers" . "horizon.domain.service-helpers")
-
-     ("expectations" . "horizon.test-helpers.expectations")))
  '(cljr-project-clean-prompt nil)
  '(cljr-favor-private-function nil)
  '(cljr-auto-clean-ns nil)
- '(cljr-libspec-whitelist '("^cljsns" "^slingshot.test" "^monger.joda-time" "^monger.json" "^cljsjs" "^horizon.controls.devcards"
-                            "^goog" ".*card.*" ".*asDatepicker.*" "horizon.desktop.core" "horizon.controls.bootstrap"
-                            "leongersen.*""horizon.desktop.layout.page" "horizon.common.macros" "horizon.desktop.bootstrap"
-                            "rabbit.stomp"))
+ '(cljr-libspec-whitelist '("^cljsns" "^slingshot.test" "^monger.joda-time" "^monger.json" "^cljsjs" "leongersen.*"))
  '(cljr-warn-on-eval nil))
 
 (defun cider-repl--banner () "")
