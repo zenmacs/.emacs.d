@@ -77,7 +77,7 @@
           (or vemv/project-fiplr-dir
               (if on-the-fly-project
                   which
-                  (concat vemv/project-clojure-dir "/src"))))
+                  (concat vemv/project-clojure-dir))))
 
     (setq vemv/project-fiplr-dir
           (if (file-exists-p vemv/project-fiplr-dir)
