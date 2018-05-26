@@ -54,6 +54,7 @@
       vemv/shortcuts/global/secondary-S-k           'vemv/kill-backward-copying-content
       vemv/shortcuts/global/secondary-a             'vemv/copy-sexpr-content-backward
       vemv/shortcuts/global/secondary-backspace     'paredit-backward-kill-word
+      vemv/shortcuts/global/secondary-backtick      'xref-pop-marker-stack
       vemv/shortcuts/global/secondary-colon         (argless (call-interactively 'eval-expression))
       vemv/shortcuts/global/secondary-k             'vemv/kill-backward
       vemv/shortcuts/global/secondary-left          'backward-word
