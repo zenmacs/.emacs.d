@@ -72,4 +72,7 @@
         (normal-top-level-add-subdirs-to-load-path)))
 
 (require 'emacs.d.overrides)
+
+(setq vemv/all-projects vemv/available-projects)
+
 (require 'vemv.init)

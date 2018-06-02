@@ -10,7 +10,7 @@
 ;; - use inferred value as implicit argument to these defuns
 
 ;; ~/.emacs.d.overrides/lib/emacs.d.overrides.el must have a value such as:
-;; `(setq vemv/all-projects '("gpm" "ventas" "jumbo" "assign" "overrides" "emacs"))`,
+;; `(setq vemv/available-projects '("gpm" "ventas" "jumbo" "assign" "overrides" "emacs"))`,
 ;; where each identifier corresponds with a .el file (example: `vemv.project.gpm.el`)
 
 (defun vemv/root-marker ()
@@ -18,7 +18,9 @@
   "/Users")
 
 (when (not (vemv/starts-with vemv/current-project (vemv/root-marker)))
-  (load (concat "vemv.project." vemv/current-project)))
+  (condition-case nil
+      (load (concat "vemv.project." vemv/current-project))
+    (error nil)))
 
 ;; XXX document the meaning of each of these?
 (defmacro vemv.project/reset ()

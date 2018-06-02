@@ -1432,13 +1432,21 @@ inserting it at a new line."
       (vemv/toggle-verbosity))
     (vemv/echo "Reloaded!")))
 
+(defun vemv/refresh-available-projects ()
+  (load "emacs.d.overrides")
+  (mapcar (lambda (x)
+            (conj! vemv/all-projects x))
+          (-difference vemv/available-projects vemv/all-projects)))
+
 (defun vemv/next-project ()
   (interactive)
+  (vemv/refresh-available-projects)
   (setq vemv/all-projects `(,@(cdr vemv/all-projects) ,(car vemv/all-projects)))
   (vemv/refresh-current-project (car vemv/all-projects) :switch))
 
 (defun vemv/previous-project ()
   (interactive)
+  (vemv/refresh-available-projects)
   (setq vemv/all-projects `(,(or (car (last vemv/all-projects)) (first vemv/all-projects))
                             ,@(butlast vemv/all-projects)))
   (vemv/refresh-current-project (car vemv/all-projects) :switch))
