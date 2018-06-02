@@ -1436,7 +1436,12 @@ inserting it at a new line."
   (load "emacs.d.overrides")
   (mapcar (lambda (x)
             (conj! vemv/all-projects x))
-          (-difference vemv/available-projects vemv/all-projects)))
+          (-difference vemv/available-projects vemv/all-projects))
+  (setq vemv/all-projects (filter (lambda (x)
+                                          (or (string-equal x vemv/current-project)
+                                              (vemv/starts-with (vemv/root-marker) x)
+                                              (member x vemv/available-projects)))
+                                        vemv/all-projects)))
 
 (defun vemv/next-project ()
   (interactive)

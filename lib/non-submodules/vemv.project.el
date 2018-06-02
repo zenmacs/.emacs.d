@@ -17,10 +17,9 @@
   "A string that proves that a project is a full directory, rather than a project id (name - like 'gpm')"
   "/Users")
 
-(when (not (vemv/starts-with vemv/current-project (vemv/root-marker)))
-  (condition-case nil
-      (load (concat "vemv.project." vemv/current-project))
-    (error nil)))
+(condition-case nil
+    (load (concat "vemv.project." vemv/current-project))
+  (error nil))
 
 ;; XXX document the meaning of each of these?
 (defmacro vemv.project/reset ()
@@ -46,7 +45,7 @@
 (vemv.project/reset)
 
 (defun vemv/refresh-current-project (which &optional switch-p)
-  (let ((on-the-fly-project (vemv/starts-with which (vemv/root-marker))))
+  (let ((on-the-fly-project (not (member which vemv/available-projects))))
     (vemv.project/reset)
 
     (when which
@@ -69,7 +68,9 @@
     (setq vemv/project-clojure-dir (or vemv/project-clojure-dir vemv/project-root-dir))
 
     (when (and which (not on-the-fly-project))
-      (load (concat "vemv.project." which)))
+      (condition-case nil
+          (load (concat "vemv.project." which))
+        (error nil)))
 
     (setq vemv/project-type (or vemv/project-type :clj))
     
