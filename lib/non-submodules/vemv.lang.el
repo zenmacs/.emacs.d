@@ -474,11 +474,31 @@ inserting it at a new line."
   (when (boundp 'vemv/project-explorer-window)
     (vemv/safe-select-window vemv/project-explorer-window)))
 
+(defun vemv/dir-for-project (which)
+  (concat vemv-home "/" which))
+
+(defun vemv/available-project-files ()
+  (if-let (x (car (filter (lambda (x) (vemv/contains? x ".emacs.d.overrides")) load-path)))
+    (mapcar 
+      (lambda (x)
+        (s-replace ".el" "" (s-replace "vemv.project." "" x)))
+      (-remove (lambda (x)
+                 (member x (list "." ".." "emacs.d.overrides.el")))
+              (directory-files x)))))
+
 (defun vemv/open-project ()
   (interactive)
+  (load "emacs.d.overrides")
   (vemv/save-window-excursion
-   (let ((default-directory (vemv/dir-opened-from-home)))
-     (setq vemv/all-projects `(,default-directory ,@vemv/all-projects))
+   (let* ((default-directory (vemv/dir-opened-from-home))
+          (project-name (or (car (filter (lambda (x)
+                                             (let ((dfp (vemv/dir-for-project x)))
+                                                (or (vemv/contains? default-directory dfp)
+                                                    (vemv/contains? dfp default-directory))))
+                                           (vemv/available-project-files)))
+                            default-directory)))
+     (conj! vemv/on-the-fly-projects project-name)
+     (setq vemv/all-projects `(,project-name ,@vemv/all-projects))
      (vemv/refresh-current-project (car vemv/all-projects) :switch))))
 
 (defun vemv/ensure-project-is-displayed! ()
@@ -1440,7 +1460,8 @@ inserting it at a new line."
   (setq vemv/all-projects (filter (lambda (x)
                                           (or (string-equal x vemv/current-project)
                                               (vemv/starts-with (vemv/root-marker) x)
-                                              (member x vemv/available-projects)))
+                                              (member x vemv/available-projects)
+                                              (member x vemv/on-the-fly-projects)))
                                         vemv/all-projects)))
 
 (defun vemv/next-project ()

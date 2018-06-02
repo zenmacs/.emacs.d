@@ -45,7 +45,7 @@
 (vemv.project/reset)
 
 (defun vemv/refresh-current-project (which &optional switch-p)
-  (let ((on-the-fly-project (not (member which vemv/available-projects))))
+  (let ((on-the-fly-project (not (member which (vemv/available-project-files)))))
     (vemv.project/reset)
 
     (when which
@@ -61,7 +61,7 @@
           (or vemv/project-root-dir
               (if on-the-fly-project
                   which
-                  (concat vemv-home "/" vemv/current-project))))
+                  (vemv/dir-for-project vemv/current-project))))
 
     ;; must set before (load), but if we do so, gpm loses its customization
     ;; should equal to vemv/project-root-dir unless project.clj is non-root

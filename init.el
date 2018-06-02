@@ -73,6 +73,7 @@
 
 (require 'emacs.d.overrides)
 
+(setq vemv/on-the-fly-projects nil)
 (setq vemv/all-projects vemv/available-projects)
 
 (require 'vemv.init)
