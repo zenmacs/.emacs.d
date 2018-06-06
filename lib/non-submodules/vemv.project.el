@@ -40,7 +40,8 @@
      (setq vemv/modifiers/secondary nil)
      (setq vemv/modifiers/tertiary nil)
      (setq vemv/clj-repl-name nil)
-     (setq vemv/cljs-repl-name nil)))
+     (setq vemv/cljs-repl-name nil)
+     (setq whitespace-line-column 131)))
 
 (vemv.project/reset)
 
@@ -107,6 +108,9 @@
     (setq vemv/modifiers/primary "C")
     (setq vemv/modifiers/secondary "M")
     (setq vemv/modifiers/tertiary "s")
+    
+    (call-interactively 'whitespace-mode)
+    (call-interactively 'whitespace-mode)
     
     (when switch-p
       (vemv/next-file-buffer)

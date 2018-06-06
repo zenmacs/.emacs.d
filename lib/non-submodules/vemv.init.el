@@ -92,10 +92,6 @@
                                   vemv/project-root-dir
                                   default-directory)))
 
-;; XXX should be per-project.
-;; when doing that improvement, keep in mind that whitespace-mode doesn't re-render by a mere `setq`
-;; (setq changes are only applied after doing `M-x whitespace-mode` twice)
-(setq whitespace-line-column 131)
 (setq whitespace-style '(face lines-tail))
 (global-whitespace-mode)
 
