@@ -1122,7 +1122,9 @@ inserting it at a new line."
   (kill-buffer (current-buffer))
   (when (and (eq (selected-window) vemv/main_window)
              (not (vemv/in-clojure-mode?)))
-    (vemv/next-file-buffer)))
+    (vemv/next-file-buffer))
+  (when (not (member (buffer-name (current-buffer)) (gethash vemv/current-project vemv/chosen-file-buffer-order)))
+    (switch-to-buffer vemv/file-buffer-fallback)))
 
 (defun vemv/noncloseable-buffer-p ()
   (-any? (lambda (x) (vemv/contains? (buffer-name) x))
