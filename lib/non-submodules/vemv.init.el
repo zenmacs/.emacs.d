@@ -400,3 +400,9 @@ of the buffer into a formatted string."
         (insert formatted))))
 
 (advice-add 'helm-ag--edit :after 'vemv/ag-replace)
+
+(advice-add 'cider-test-run-test :around 'vemv/apply-tests-verbosely)
+(advice-add 'cider-test-run-ns-tests :around 'vemv/apply-tests-verbosely)
+(advice-add 'cider-test-run-project-tests :around 'vemv/apply-tests-verbosely)
+(advice-add 'cider-test-rerun-failed-tests :around 'vemv/apply-tests-verbosely)
+(advice-add 'cider-test-show-report :around 'vemv/apply-tests-verbosely)

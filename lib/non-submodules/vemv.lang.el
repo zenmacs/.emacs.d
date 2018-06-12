@@ -30,6 +30,29 @@
              ((symbol-function 'yes-or-no-p) #'always-yes))
      ,@forms)))
 
+(defmacro vemv/verbosely (&rest forms)
+  `(let ((old vemv/verbose-mode))
+     (vemv/set-verbosity-to t)
+     ,@forms
+     (vemv/set-verbosity-to old)))
+
+(defun vemv/apply-verbosely (f &rest args)
+  (vemv/verbosely
+   (apply f args)))
+
+(setq vemv/apply-tests-verbosely-counter 0)
+
+(defun vemv/apply-tests-verbosely (f &rest args)
+  (let* ((old vemv/verbose-mode)
+         (counter vemv/apply-tests-verbosely-counter)
+         (setter (lambda (&rest _)
+                   (when (eq counter vemv/apply-tests-verbosely-counter)
+                     (vemv/set-verbosity-to old)
+                     (setq vemv/apply-tests-verbosely-counter (+ 1 vemv/apply-tests-verbosely-counter))))))
+    (vemv/set-verbosity-to t)
+    (advice-add 'cider-test-echo-summary :after setter)
+    (apply f args)))
+
 (defun vemv/echo (&rest xs)
   (let ((what (apply 'concat xs)))
     (setq inhibit-message nil)

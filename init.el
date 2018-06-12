@@ -12,8 +12,8 @@
   
   (setq vemv/verbose-mode (not vemv/should-start-in-verbose-mode))
 
-  (defun vemv/toggle-verbosity ()
-    (setq vemv/verbose-mode (not vemv/verbose-mode))
+  (defun vemv/set-verbosity-to (v)
+    (setq vemv/verbose-mode v)
     (setq inhibit-startup-message (not vemv/verbose-mode))
     (setq inhibit-message (not vemv/verbose-mode)) ;; Silence minibuffer
     
@@ -29,6 +29,9 @@
       (if vemv/verbose-mode
          (apply vemv/original-minibuffer-message args)
          nil)))
+  
+  (defun vemv/toggle-verbosity ()
+    (vemv/set-verbosity-to (not vemv/verbose-mode)))
   
   (vemv/toggle-verbosity)
   
