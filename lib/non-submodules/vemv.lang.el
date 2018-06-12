@@ -1422,26 +1422,33 @@ inserting it at a new line."
 (setq vemv/latest-clojure-test-ran nil)
 (setq vemv/latest-cljs-test-ran nil)
 
+(defun vemv/is-testing-ns ()
+  (let ((n (cider-current-ns t)))
+    (string-equal n (funcall cider-test-infer-test-ns n))))
+
 (defun vemv/test-this-ns ()
   "Runs the tests for the current namespace if its name contains 'test', or the latest ns that did."
   (interactive)
   (vemv/advice-nrepl (argless
                       (let* ((cljs (vemv/current-main-buffer-is-cljs))
                              (ns (vemv/current-ns))
-                             (chosen (if (vemv/contains? ns "test")
+                             (chosen (if (vemv/is-testing-ns)
                                          ns
-                                         (if cljs vemv/latest-cljs-test-ran
+                                         (if cljs
+                                             vemv/latest-cljs-test-ran
                                              vemv/latest-clojure-test-ran))))
                         (when chosen
                           (setq vemv/latest-clojure-test-ran chosen)
-                          (vemv/send (if cljs :cljs :clj)
-                                     nil
-                                     (concat (if (and cljs (vemv/contains? (vemv/current-ns) "smoke"))
-                                                 "(.reload js/location true) "
-                                                 "")
-                                             "(cljs.test/run-tests '"
-                                             chosen
-                                             ")")))))))
+                          (if clj
+                              (call-interactively 'cider-test-run-ns-tests)
+                              (vemv/send :cljs
+                                         nil
+                                         (concat (if (and cljs (vemv/contains? (vemv/current-ns) "smoke"))
+                                                     "(.reload js/location true) "
+                                                     "")
+                                                 "(cljs.test/run-tests '"
+                                                 chosen
+                                                 ")"))))))))
 
 (defun vemv/run-this-deftest ()
   "Assuming `point` is at a deftest name, it runs it"
