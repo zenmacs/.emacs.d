@@ -477,7 +477,7 @@ inserting it at a new line."
 (defun vemv/dir-for-project (which)
   (concat vemv-home "/" which))
 
-(defun vemv/available-project-files ()
+(defun vemv/projects-with-initialization-files ()
   (if-let (x (car (filter (lambda (x) (vemv/contains? x ".emacs.d.overrides")) load-path)))
     (mapcar 
       (lambda (x)
@@ -495,7 +495,7 @@ inserting it at a new line."
                                              (let ((dfp (vemv/dir-for-project x)))
                                                 (or (vemv/contains? default-directory dfp)
                                                     (vemv/contains? dfp default-directory))))
-                                           (vemv/available-project-files)))
+                                           (vemv/projects-with-initialization-files)))
                             default-directory)))
      (conj! vemv/on-the-fly-projects project-name)
      (setq vemv/all-projects `(,project-name ,@vemv/all-projects))

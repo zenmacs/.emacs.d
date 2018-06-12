@@ -46,7 +46,7 @@
 (vemv.project/reset)
 
 (defun vemv/refresh-current-project (which &optional switch-p)
-  (let ((on-the-fly-project (not (member which (vemv/available-project-files)))))
+  (let ((on-the-fly-project (not (member which (vemv/projects-with-initialization-files)))))
     (vemv.project/reset)
 
     (when which
@@ -59,10 +59,7 @@
     ;; XXX assert default value exists in filesystem
     ;; XXX the case statements are hardcoded. paremeterize
     (setq vemv/project-root-dir
-          (or vemv/project-root-dir
-              (if on-the-fly-project
-                  which
-                  (vemv/dir-for-project vemv/current-project))))
+          (or vemv/project-root-dir (vemv/dir-for-project vemv/current-project)))
 
     ;; must set before (load), but if we do so, gpm loses its customization
     ;; should equal to vemv/project-root-dir unless project.clj is non-root
