@@ -426,9 +426,10 @@ inserting it at a new line."
   (vemv/contains? (pr-str major-mode) "clojure"))
 
 (defun vemv/ciderable-p ()
-  (vemv/in-clojure-mode?)
-  (cider-connected-p)
-  vemv-cider-connected)
+  (and
+   (vemv/in-clojure-mode?)
+   (cider-connected-p)
+   vemv-cider-connected))
 
 (defun vemv/dumb-indent ()
   (interactive)
@@ -675,13 +676,14 @@ inserting it at a new line."
             (apply #'hs-hide-all ()))))))
 
 (defun vemv/show-clj-or-cljs-repl ()
-  (vemv/safe-select-window vemv/main_window)
-  (setq was (vemv/current-main-buffer-is-cljs))
-  (vemv/safe-select-window vemv/repl2)
-  (if was
-      (switch-to-buffer vemv/cljs-repl-name)
-      (switch-to-buffer vemv/clj-repl-name))
-  (vemv/safe-select-window vemv/main_window))
+  (when (vemv/ciderable-p) 
+    (vemv/safe-select-window vemv/main_window)
+    (setq was (vemv/current-main-buffer-is-cljs))
+    (vemv/safe-select-window vemv/repl2)
+    (if was
+        (switch-to-buffer vemv/cljs-repl-name)
+        (switch-to-buffer vemv/clj-repl-name))
+    (vemv/safe-select-window vemv/main_window)))
 
 (defun vemv/ensure-repl-visible ()
   (when (and (cider-connected-p) (string-equal cider-launched vemv/current-project))
@@ -994,8 +996,7 @@ inserting it at a new line."
   (interactive)
   (let ((b (or b (current-buffer))))
     (with-current-buffer b
-      (when (and (vemv/contains? (buffer-name b) ".clj")
-                 (cider-connected-p))
+      (when (vemv/ciderable-p)
         (vemv/save-position-before-formatting)
         (let ((old (substring-no-properties (buffer-string))))
           (save-excursion
@@ -1051,21 +1052,30 @@ inserting it at a new line."
       (vemv/echo "clean-project-namespaces done!")
       (vemv/echo "Remember: goog* libspec can be spuriously removed.")))
 
+(setq vemv/cljr-building-ast-cache? nil) ;; XXX implement on new clj-refactor.el release
+
 (defun vemv/load-clojure-buffer ()
   (interactive)
-  (if (vemv/current-main-buffer-is-cljs)
-    (vemv/send :cljs nil "(.reload js/location true)")
-    (progn
-     (vemv/save)
-     (vemv/save) ;; save autoformatting
-     (vemv/advice-nrepl)
-     (cider-load-buffer)
-     (replying-yes
-      (if vemv/using-component-reloaded-workflow
-          (cider-interactive-eval "(with-out-str (com.stuartsierra.component.user-helpers/reset))")
-          (cider-load-all-project-ns)))
-     (delay (argless (message "Reloaded!"))
-            0.1))))
+  (when (vemv/ciderable-p)
+      (if (vemv/current-main-buffer-is-cljs)
+          (vemv/send :cljs nil "(.reload js/location true)")
+          (progn
+            (vemv/save)
+            (vemv/save) ;; save autoformatting
+            (vemv/advice-nrepl)
+            (replying-yes
+             (if vemv/using-component-reloaded-workflow
+                 (if vemv/cljr-building-ast-cache?
+                     (message "Currently building AST cache. Wait a few seconds and try again.")
+                     (progn
+                       (cider-interactive-eval "(with-out-str (com.stuartsierra.component.user-helpers/reset))")
+                       (delay (argless (message "Reloaded!"))
+                              0.1)))
+                 (progn
+                   (cider-load-buffer)
+                   (cider-load-all-project-ns)
+                   (delay (argless (message "Reloaded!"))
+                          0.1))))))))
 
 (defun vemv/at-beginning-of-line-p ()
   (eq (point) (save-excursion (beginning-of-line) (point))))
@@ -1303,27 +1313,28 @@ inserting it at a new line."
 
 (defun vemv/clojure-init-or-send-sexpr ()
   (interactive)
-  (if (and (not cider-launched) vemv/using-nrepl)
-      (progn
-        (setq cider-launched vemv/current-project)
-        (setq vemv-cider-connecting t)
-        (setq vemv/running-project vemv/current-project)
-        (setq vemv/running-project-root-dir vemv/project-root-dir)
-        (setq vemv/running-project-type vemv/project-type)
-        (delay (argless (funcall vemv/project-initializers)
-                        (select-window vemv/main_window)
-                        (if (eq vemv/project-type :cljs)
-                            (cider-jack-in-clojurescript)
-                            (if vemv/cider-port
-                                (cider-connect "127.0.0.1" vemv/cider-port vemv/project-root-dir)
-                                (cider-jack-in))))
-               1))
-      (if vemv/using-nrepl
-          (if (cider-connected-p)
-              (if (vemv/current-main-buffer-is-cljs)
-                  (vemv/send :cljs)
-                  (vemv/send :clj)))
-          (vemv/send :shell))))
+  (when (vemv/in-clojure-mode?)
+      (if (and (not cider-launched) vemv/using-nrepl)
+          (progn
+            (setq cider-launched vemv/current-project)
+            (setq vemv-cider-connecting t)
+            (setq vemv/running-project vemv/current-project)
+            (setq vemv/running-project-root-dir vemv/project-root-dir)
+            (setq vemv/running-project-type vemv/project-type)
+            (delay (argless (funcall vemv/project-initializers)
+                            (select-window vemv/main_window)
+                            (if (eq vemv/project-type :cljs)
+                                (cider-jack-in-clojurescript)
+                                (if vemv/cider-port
+                                    (cider-connect "127.0.0.1" vemv/cider-port vemv/project-root-dir)
+                                    (cider-jack-in))))
+                   1))
+          (if vemv/using-nrepl
+              (if (cider-connected-p)
+                  (if (vemv/current-main-buffer-is-cljs)
+                      (vemv/send :cljs)
+                      (vemv/send :clj)))
+              (vemv/send :shell)))))
 
 (setq vemv/cider-prompt-for-symbol cider-prompt-for-symbol)
 
@@ -1429,26 +1440,27 @@ inserting it at a new line."
 (defun vemv/test-this-ns ()
   "Runs the tests for the current namespace if its name contains 'test', or the latest ns that did."
   (interactive)
-  (vemv/advice-nrepl (argless
-                      (let* ((cljs (vemv/current-main-buffer-is-cljs))
-                             (ns (vemv/current-ns))
-                             (chosen (if (vemv/is-testing-ns)
-                                         ns
-                                         (if cljs
-                                             vemv/latest-cljs-test-ran
-                                             vemv/latest-clojure-test-ran))))
-                        (when chosen
-                          (setq vemv/latest-clojure-test-ran chosen)
-                          (if clj
-                              (call-interactively 'cider-test-run-ns-tests)
-                              (vemv/send :cljs
-                                         nil
-                                         (concat (if (and cljs (vemv/contains? (vemv/current-ns) "smoke"))
-                                                     "(.reload js/location true) "
-                                                     "")
-                                                 "(cljs.test/run-tests '"
-                                                 chosen
-                                                 ")"))))))))
+  (when (vemv/in-clojure-mode?)
+    (vemv/advice-nrepl (argless
+                        (let* ((cljs (vemv/current-main-buffer-is-cljs))
+                               (ns (vemv/current-ns))
+                               (chosen (if (vemv/is-testing-ns)
+                                           ns
+                                           (if cljs
+                                               vemv/latest-cljs-test-ran
+                                               vemv/latest-clojure-test-ran))))
+                          (when chosen
+                            (setq vemv/latest-clojure-test-ran chosen)
+                            (if clj
+                                (call-interactively 'cider-test-run-ns-tests)
+                                (vemv/send :cljs
+                                           nil
+                                           (concat (if (and cljs (vemv/contains? (vemv/current-ns) "smoke"))
+                                                       "(.reload js/location true) "
+                                                       "")
+                                                   "(cljs.test/run-tests '"
+                                                   chosen
+                                                   ")")))))))))
 
 (defun vemv/run-this-deftest ()
   "Assuming `point` is at a deftest name, it runs it"
