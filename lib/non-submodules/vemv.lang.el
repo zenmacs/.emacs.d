@@ -556,7 +556,24 @@ inserting it at a new line."
   (vemv/safe-select-window vemv/main_window))
 
 (setq vemv/safe-show-current-file-in-project-explorer
-      (vemv/debounce 'vemv/safe-show-current-file-in-project-explorer* 0.8))
+  (vemv/debounce 'vemv/safe-show-current-file-in-project-explorer* 0.8))
+
+(defun vemv/maybe-change-project-graphically* ()
+  (vemv/next-file-buffer)
+  (vemv/previous-file-buffer)
+  (select-window vemv/project-explorer-window)
+  (let ((default-directory vemv/project-root-dir))
+    (call-interactively 'project-explorer-open))
+  (select-window vemv/repl2)
+  (unless (or cider-launched vemv-cider-connected (cider-connected-p))
+    (vemv/send :shell nil vemv/project-root-dir)
+    (delay (argless
+            (comint-clear-buffer)
+            (select-window vemv/main_window))
+           0.3)))
+
+(setq vemv/maybe-change-project-graphically
+  (vemv/debounce 'vemv/maybe-change-project-graphically* 0.3))
 
 (defun vemv/current-ns (&optional which-buffer)
   (with-current-buffer (buffer-name which-buffer)

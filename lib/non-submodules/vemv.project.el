@@ -110,18 +110,8 @@
     (call-interactively 'whitespace-mode)
     
     (when switch-p
-      (vemv/next-file-buffer)
-      (vemv/previous-file-buffer)
-      (select-window vemv/project-explorer-window)
-      (let ((default-directory vemv/project-root-dir))
-        (call-interactively 'project-explorer-open))
-      (select-window vemv/repl2)
-      (unless (or cider-launched vemv-cider-connected (cider-connected-p))
-        (vemv/send :shell nil vemv/project-root-dir)
-        (delay (argless
-                (comint-clear-buffer)
-                (select-window vemv/main_window))
-               0.3)))
+      (select-window vemv/project-explorer-window) ;; ensures the currently-selected project is visible
+      (funcall vemv/maybe-change-project-graphically))
 
     (when (not (gethash vemv/current-project vemv/chosen-file-buffer-order))
         (vemv/open-recent-file-for-this-project!))))
