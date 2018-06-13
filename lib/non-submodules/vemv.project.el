@@ -41,12 +41,25 @@
      (setq vemv/modifiers/tertiary nil)
      (setq vemv/clj-repl-name nil)
      (setq vemv/cljs-repl-name nil)
-     (setq whitespace-line-column 131)))
+     (setq whitespace-line-column 131)
+     ;; avoids expensive computation on mode-line
+     (setq vemv/cached-projects-with-initialization-files (vemv/projects-with-initialization-files))))
 
 (vemv.project/reset)
 
+(defun vemv/on-the-fly-project? (which &optional candidates)
+  (not (member which (or candidates (vemv/projects-with-initialization-files)))))
+
+(defun vemv/all-project-names ()
+  (let ((candidates vemv/cached-projects-with-initialization-files))
+    (mapcar (lambda (x)
+              (if (vemv/on-the-fly-project? x candidates)
+                  (cider-project-name x)
+                  x))
+            vemv/all-projects)))
+
 (defun vemv/refresh-current-project (which &optional switch-p)
-  (let ((on-the-fly-project (not (member which (vemv/projects-with-initialization-files)))))
+  (let ((on-the-fly-project (vemv/on-the-fly-project? which vemv/cached-projects-with-initialization-files)))
     (vemv.project/reset)
 
     (when which

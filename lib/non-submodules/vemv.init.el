@@ -102,7 +102,7 @@
       `(:eval (concat "  "
                       (propertize vemv/current-project 'face 'font-lock-keyword-face)
                       " | "
-                      (s-join " | " (cdr vemv/all-projects)))))
+                      (s-join " | " (cdr (vemv/all-project-names))))))
 
 (setq fiplr-ignored-globs
       ;; `directories` is semi-useless. do not alter but also do not bother adding entries
