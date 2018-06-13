@@ -1336,7 +1336,9 @@ inserting it at a new line."
             (setq vemv/running-project-type vemv/project-type)
             (delay (argless (funcall vemv/project-initializers)
                             (select-window vemv/main_window)
-                            (if (eq vemv/project-type :cljs)
+                            (if (or (eq vemv/project-type :cljs)
+                                    (vemv/current-main-buffer-is-cljs)
+                                    (vemv/contains? (buffer-string) "org.clojure/clojurescript"))
                                 (cider-jack-in-clojurescript)
                                 (if vemv/cider-port
                                     (cider-connect "127.0.0.1" vemv/cider-port vemv/project-root-dir)
