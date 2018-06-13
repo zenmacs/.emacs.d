@@ -699,7 +699,7 @@ inserting it at a new line."
     (when (and (vemv/in-clojure-mode?)
                (not vemv/ns-shown))
       (vemv/toggle-ns-hiding :after-file-open))
-    
+    (setq-local mode-line-format tabbed-line-format)
     (vemv/advice-nrepl)
     (vemv/ensure-repl-visible)))
 
@@ -726,11 +726,7 @@ inserting it at a new line."
                        (vemv/buffer-of-current-project? x))
                      (buffer-list)))
          (c (mapcar (lambda (x) (buffer-name x)) bs)))
-    (filter (lambda (filename)
-              ;; XXX better: keep a list of all files ever explicitly open in this session
-              (or (vemv/contains? filename ".clj")
-                  (vemv/contains? filename ".el")))
-            c)))
+    c))
 
 (setq vemv/chosen-file-buffer-order (vemv/hash-map))
 
@@ -837,21 +833,22 @@ inserting it at a new line."
 (setq vemv/file-buffer-fallback "*scratch*")
 
 (defun vemv/next-file-buffer ()
-  "Switch to the next buffer that contains a file opened by the user."
+  "Switch to the next buffer that contains a file opened by the user within this project"
   (interactive)
   (when (vemv/good-frame-p)
     (vemv/safe-select-window vemv/main_window))
   (vemv/clean-chosen-file-buffer-order)
-  (switch-to-buffer (or (second (gethash vemv/current-project vemv/chosen-file-buffer-order))
-                        (first (gethash vemv/current-project vemv/chosen-file-buffer-order))
-                        vemv/file-buffer-fallback))
+  (switch-to-buffer (let ((entry (gethash vemv/current-project vemv/chosen-file-buffer-order)))
+                      (or (second entry)
+                          (first entry)
+                          vemv/file-buffer-fallback)))
   (puthash vemv/current-project
            `(,@(cdr (gethash vemv/current-project vemv/chosen-file-buffer-order))
              ,(car (gethash vemv/current-project vemv/chosen-file-buffer-order)))
            vemv/chosen-file-buffer-order))
 
 (defun vemv/previous-file-buffer ()
-  "Switch to the previous buffer that contains a file opened by the user."
+  "Switch to the previous buffer that contains a file opened by the user within this project"
   (interactive)
   (when (vemv/good-frame-p)
     (vemv/safe-select-window vemv/main_window))
@@ -1271,11 +1268,11 @@ inserting it at a new line."
                              (second recents)
                              head))))
         (when (and the-file (file-truename the-file))
-          (vemv/open
-           (if (or (equal vemv/project-type :elisp)
-                    (vemv/contains? (file-truename the-file) vemv/project-clojure-dir)) ;; ensure nrepl opens a clojure context
-               the-file
-               vemv/default-clojure-file))))))
+          (vemv/open (if (or (equal vemv/project-type :elisp)
+                             (vemv/contains? (file-truename the-file)
+                                             vemv/project-clojure-dir)) ;; ensure nrepl opens a clojure context
+                         the-file
+                         vemv/default-clojure-file))))))
 
 (defun vemv/clojure-init ()
   (if (minibuffer-prompt)
