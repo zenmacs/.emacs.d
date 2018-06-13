@@ -98,7 +98,9 @@
 ;; no .#filenames
 (setq create-lockfiles nil)
 
-(setq pe/mode-line-format
+(setq pe/mode-line-format "")
+
+(setq vemv/pe/mode-line-format
       `(:eval (concat "  "
                       (propertize vemv/current-project 'face 'font-lock-keyword-face)
                       " | "
@@ -179,6 +181,15 @@
 (add-hook 'emacs-lisp-mode-hook
           (argless (call-interactively 'text-scale-increase)
                    (setq-local mode-line-format tabbed-line-format)))
+
+(add-hook 'cider-repl-mode-hook
+          (argless (setq-local mode-line-format vemv/pe/mode-line-format)))
+
+(add-hook 'ielm-mode-hook
+          (argless (setq-local mode-line-format vemv/pe/mode-line-format)))
+
+(add-hook 'shell-mode-hook
+          (argless (setq-local mode-line-format vemv/pe/mode-line-format)))
 
 (add-hook 'clojure-mode-hook
           (argless (call-interactively 'text-scale-increase)
