@@ -228,10 +228,11 @@ if they are contigous), and is side-effect free."
     (select-window x)))
 
 (defmacro vemv/save-window-excursion (&rest forms)
-  `(let ((current-window (selected-window)))
-     (save-excursion
-       ,@forms)
-     (vemv/safe-select-window current-window)))
+  `(let ((current-window (selected-window))
+         (v (save-excursion
+              ,@forms)))
+     (vemv/safe-select-window current-window)
+     v))
 
 (defun vemv/send (where &optional backward? content)
   "Copy the next sexp (or on non-nil backward? arg, the previous sexp) and its character trailer,
@@ -588,8 +589,8 @@ inserting it at a new line."
   (select-window vemv/project-explorer-window)
   (let ((default-directory vemv/project-root-dir))
     (call-interactively 'project-explorer-open))
-  (select-window vemv/repl2)
   (unless (or cider-launched vemv-cider-connected (cider-connected-p))
+    (select-window vemv/repl2)
     (vemv/send :shell nil vemv/project-root-dir)
     (delay (argless
             (comint-clear-buffer)
@@ -1288,13 +1289,18 @@ inserting it at a new line."
       (advice-add 'cider-new-error-buffer :after (lambda (&rest _)
                                                    (cider-interactive-eval "(prn *e)")
                                                    (delay (argless
-                                                           (vemv/safe-select-window vemv/repl2)
-                                                           (vemv/switch-to-buffer-in-any-frame vemv/clj-repl-name)
-                                                           (end-of-buffer)
-                                                           (paredit-backward)
-                                                           (paredit-backward))
-                                                          1)))
-      
+                                                           (when (vemv/buffer-of-current-running-project?
+                                                                  (vemv/save-window-excursion
+                                                                   (vemv/safe-select-window vemv/main_window)
+                                                                   (current-buffer)))
+                                                             (vemv/save-window-excursion
+                                                              (vemv/safe-select-window vemv/repl2)
+                                                              (vemv/switch-to-buffer-in-any-frame vemv/clj-repl-name)
+                                                              (end-of-buffer)
+                                                              (paredit-backward)
+                                                              (paredit-backward))))
+                                                          0.7)))
+
       (vemv/safe-select-window vemv/main_window)
       (vemv/open-recent-file-for-this-project!)))
 
