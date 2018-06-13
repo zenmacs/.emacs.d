@@ -37,7 +37,9 @@
             helm-map [(shift return)] (argless (interactive) (helm-select-nth-action 1))
             helm-map "C-a" 'vemv/helm-persistent-action-all
             emacs-lisp-mode-map "RET" 'newline-and-indent
-            emacs-lisp-mode-map "C-?" 'vemv/elisp-window-documentation))
+            emacs-lisp-mode-map "C-?" 'vemv/elisp-window-documentation
+            *fiplr-keymap* "<S-return>" 'exit-minibuffer ;; makes it equivalent to RET. Sometime I type S-RET due to muscle memory
+            ))
 
 ; basics reminder:
 ; c-space - set the mark
