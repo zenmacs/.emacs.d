@@ -503,7 +503,7 @@ inserting it at a new line."
 
 (defun vemv/dir-opened-from-home ()
   (let ((default-directory vemv-home))
-    (replace-regexp-in-string "\\.$" "" (ido-read-file-name ()))))
+    (replace-regexp-in-string "\\.$" "" (ido-read-directory-name ()))))
 
 (defun vemv/safely-open-pe-window ()
   (when (boundp 'vemv/project-explorer-window)
