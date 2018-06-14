@@ -8,10 +8,14 @@
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 
+(setq vemv/packages-refreshed nil)
+
 (dolist (package '(cider company queue fiplr clojure-mode clj-refactor
                          dash simpleclip helm-ag git-timemachine paren-face))
   (unless (package-installed-p package)
-    (package-refresh-contents)
+    (unless vemv/packages-refreshed
+      (package-refresh-contents)
+      (setq vemv/packages-refreshed t))
     (package-install package)))
 
 ;; Eases editing locally-modified packages.
