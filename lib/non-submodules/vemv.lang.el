@@ -1265,25 +1265,30 @@ inserting it at a new line."
             (-clone (gethash vemv/current-project vemv/chosen-file-buffer-order)))))
 
 (defun vemv/open-recent-file-for-this-project! ()
-  (when (and (boundp 'vemv/main_window)
-             (file-readable-p recentf-save-file)
-             (pos? (length recentf-list)))
-      (let* ((recents (filter (lambda (x) (vemv/contains? (file-truename x) vemv/project-root-dir))
-                              recentf-list))
-             (head (car (filter (lambda (x)
-                                  (or (vemv/contains? x ".clj")
-                                      (vemv/contains? x ".el")))
-                                recents)))
-             (the-file (ignore-errors
-                         (if (vemv/ends-with head "ido.last")
-                             (second recents)
-                             head))))
-        (when (and the-file (file-truename the-file))
-          (vemv/open (if (or (equal vemv/project-type :elisp)
-                             (vemv/contains? (file-truename the-file)
-                                             vemv/project-clojure-dir)) ;; ensure nrepl opens a clojure context
-                         the-file
-                         vemv/default-clojure-file))))))
+  (when (boundp 'vemv/main_window)
+    (let* ((recents (when (and (file-readable-p recentf-save-file)
+                               (pos? (length recentf-list)))
+                      (filter (lambda (x)
+                                (and x (vemv/contains? (file-truename x) vemv/project-root-dir)))
+                              recentf-list)))
+           (head (car (filter (lambda (x)
+                                (or (vemv/contains? x ".clj")
+                                    (vemv/contains? x ".el")))
+                              recents)))
+           (the-file (ignore-errors
+                       (if (vemv/ends-with head "ido.last")
+                           (second recents)
+                           head)))
+           (the-file (if (or (equal vemv/project-type :elisp)
+                             (and the-file
+                                  (file-exists-p the-file) ;; file-truename can make up nonexisting files
+                                  (vemv/contains? (file-truename the-file) ;; expand symlinks
+                                                  vemv/project-clojure-dir)))
+                         the-file ;; ensure nrepl opens a clojure context
+                         vemv/default-clojure-file))
+           (the-file (if the-file (file-truename the-file))))
+      (when (and the-file (file-exists-p the-file))
+        (vemv/open the-file)))))
 
 (defun vemv/clojure-init ()
   (if (minibuffer-prompt)
