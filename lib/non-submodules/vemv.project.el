@@ -68,22 +68,20 @@
                                      (cider-project-name which)
                                      which)))
     
-    ;;gpm defines its own,
+    ;; gpm defines its own,
     ;; trailing slash required
     ;; XXX assert default value exists in filesystem
-    ;; XXX the case statements are hardcoded. paremeterize
+    ;; XXX the case statements are hardcoded. parameterize
     (setq vemv/project-root-dir
           (or vemv/project-root-dir (vemv/dir-for-project vemv/current-project)))
-
-    ;; must set before (load), but if we do so, gpm loses its customization
-    ;; should equal to vemv/project-root-dir unless project.clj is non-root
-    (setq vemv/project-clojure-dir (or vemv/project-clojure-dir vemv/project-root-dir))
 
     (when (and which (not on-the-fly-project))
       (condition-case nil
           (load (concat "vemv.project." which))
         (error nil)))
 
+    (setq vemv/project-clojure-dir (or vemv/project-clojure-dir vemv/project-root-dir))
+    
     (setq vemv/project-type (or vemv/project-type :clj))
     
     (setq vemv/project-initializers (or vemv/project-initializers (lambda ())))
@@ -113,7 +111,7 @@
           (or
            vemv/default-clojure-file
            ;; XXX should be the first existing file: .clj, .cljs or .cljc
-           (concat vemv/project-clojure-dir "/src/" vemv/project-ns-prefix "/core.clj" (if (eq vemv/project-type :cljs) "s" ""))))
+           (concat vemv/project-clojure-dir "src/" vemv/project-ns-prefix "/core.clj" (if (eq vemv/project-type :cljs) "s" ""))))
 
     (setq vemv-cleaning-namespaces nil)
     (setq vemv/modifiers/primary "C")
