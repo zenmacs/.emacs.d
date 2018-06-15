@@ -225,9 +225,9 @@
 (add-hook 'cider-connected-hook
           (argless
            (delay (argless
-                   (vemv/show-clj-or-cljs-repl)
                    (setq vemv-cider-connecting nil)
                    (setq vemv-cider-connected t)
+                   (vemv/show-clj-or-cljs-repl)
                    (when (not vemv-cleaning-namespaces)
                      (vemv/advice-nrepl)))
                   2)))
