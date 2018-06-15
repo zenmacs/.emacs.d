@@ -104,6 +104,9 @@
 
 (setq pe/mode-line-format "")
 
+;; https://github.com/clojure-emacs/cider/issues/2327
+(setq cljr-warn-on-eval t)
+
 (setq vemv/pe/mode-line-format
       `(:eval (concat "  "
                       (propertize vemv/current-project 'face 'font-lock-keyword-face)
