@@ -42,6 +42,7 @@
      (setq vemv/clj-repl-name nil)
      (setq vemv/cljs-repl-name nil)
      (setq whitespace-line-column 131)
+     (setq vemv/clojure-reload-command nil)
      ;; avoids expensive computation on mode-line
      (setq vemv/cached-projects-with-initialization-files (vemv/projects-with-initialization-files))))
 

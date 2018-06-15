@@ -1076,7 +1076,8 @@ inserting it at a new line."
                  (if vemv/cljr-building-ast-cache?
                      (message "Currently building AST cache. Wait a few seconds and try again.")
                      (progn
-                       (cider-interactive-eval "(with-out-str (com.stuartsierra.component.user-helpers/reset))")
+                       (cider-interactive-eval (or vemv/clojure-reload-command
+                                                   "(with-out-str (com.stuartsierra.component.user-helpers/reset))"))
                        (delay (argless (message "Reloaded!"))
                               0.1)))
                  (progn
