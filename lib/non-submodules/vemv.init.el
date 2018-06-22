@@ -10,7 +10,7 @@
 
 (setq vemv/packages-refreshed nil)
 
-(dolist (package '(cider company queue fiplr clojure-mode clj-refactor
+(dolist (package '(cider company queue fiplr clojure-mode clj-refactor smartparens
                          dash simpleclip helm-ag git-timemachine paren-face))
   (unless (package-installed-p package)
     (unless vemv/packages-refreshed
@@ -53,6 +53,7 @@
 (require 'epl)
 (require 'pkg-info)
 (require 'spinner)
+(require 'ruby-mode)
 (require 'comint)
 (require 'es-lib)
 (require 'es-windows)
@@ -266,15 +267,6 @@
 (dolist (key vemv/key-bindings-to-dummy)
   (global-set-key key (argless)))
 
-(maphash (lambda (key _)
-           (let* ((keyboard-macro (if (stringp key)
-                                      (read-kbd-macro key)
-                                      key)))
-             (global-set-key
-              keyboard-macro
-              (argless (call-interactively (gethash key vemv/global-key-bindings))))))
-         vemv/global-key-bindings)
-
 (dolist (binding (vemv/partition 3 vemv/local-key-bindings))
   (define-key
     (car binding)
@@ -424,3 +416,22 @@ of the buffer into a formatted string."
 (advice-add 'cider-test-run-project-tests :around 'vemv/apply-tests-verbosely)
 (advice-add 'cider-test-rerun-failed-tests :around 'vemv/apply-tests-verbosely)
 (advice-add 'cider-test-show-report :around 'vemv/apply-tests-verbosely)
+
+(defun vemv/set-keys-for-scope (scope source)
+  (maphash (lambda (key _)
+             (let* ((keyboard-macro (if (stringp key)
+                                        (read-kbd-macro key)
+                                        key)))
+               (if (eq scope :global)
+                   (global-set-key keyboard-macro
+                                   (argless (call-interactively (gethash key source))))
+                   (define-key scope
+                     keyboard-macro
+                     (argless (call-interactively (gethash key source)))))))
+           source))
+
+(vemv/set-keys-for-scope :global vemv/global-key-bindings)
+
+(vemv/set-keys-for-scope clojure-mode-map vemv/clojure-key-bindings)
+
+(vemv/set-keys-for-scope ruby-mode-map vemv/ruby-key-bindings)

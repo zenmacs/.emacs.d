@@ -70,19 +70,21 @@ end
 
 def emit_setqs scope: 'global', modifier_mappings: {"primary" => 'C', "secondary" => 'M', "tertiary" => 's'}
   
-  result = "(provide 'vemv.shortcuts.global.base)\n;; generated with gen.rb\n"
+  result = "(provide 'vemv.shortcuts.#{scope}.base)\n;; generated with gen.rb\n"
   
   SPECIAL.each do |char|
     
     binding = "vemv/shortcuts/#{scope}/#{REPLACEMENTS[char]}"
+    value = scope == 'global' ? informative_stub(binding) : "vemv/shortcuts/global/#{REPLACEMENTS[char]}"
     result += %|
 ;; "#{char}"
-(setq #{binding} #{informative_stub binding})\n| unless SELF_INSERTING.include?(char)
+(setq #{binding} #{value})\n| unless SELF_INSERTING.include?(char)
 
     binding = "vemv/shortcuts/#{scope}/S-#{REPLACEMENTS[char]}"
+    value = scope == 'global' ? informative_stub(binding) : "vemv/shortcuts/global/S-#{REPLACEMENTS[char]}"
     result += %|
 ;; "S-#{char}"
-(setq #{binding} #{informative_stub binding})\n| unless (char.include?('[f') || DUALS.include?(char))
+(setq #{binding} #{value})\n| unless (char.include?('[f') || DUALS.include?(char))
     
   end
   
@@ -93,30 +95,39 @@ def emit_setqs scope: 'global', modifier_mappings: {"primary" => 'C', "secondary
       next if NO_C.include?(char) && modifier_mappings[modifier] == 'C'
       
       binding = "vemv/shortcuts/#{scope}/#{modifier}-#{REPLACEMENTS[char]}"
+      value = scope == 'global' ? informative_stub(binding) : "vemv/shortcuts/global/#{modifier}-#{REPLACEMENTS[char]}"
       result += %|
 ;; "#{modifier_mappings[modifier]}-#{char}"
-(setq #{binding} #{informative_stub binding})\n|
+(setq #{binding} #{value})\n|
       
       binding = "vemv/shortcuts/#{scope}/#{modifier}-S-#{REPLACEMENTS[char]}"
+      value = scope == 'global' ? informative_stub(binding) : "vemv/shortcuts/global/#{modifier}-S-#{REPLACEMENTS[char]}"
       result += %|
 ;; "#{modifier_mappings[modifier]}-S-#{char}"
-(setq #{binding} #{informative_stub binding})\n| unless DUALS.include?(char)
+(setq #{binding} #{value})\n| unless DUALS.include?(char)
     end
   end
   
-  File.write 'lib/non-submodules/vemv.shortcuts.global.base.el', result
+  File.write "lib/non-submodules/vemv.shortcuts.#{scope}.base.el", result
   
 end
 
-def emit_bindings scope='global', modifier_mappings: {"primary" => 'C', "secondary" => 'M', "tertiary" => 's'}
+def emit_bindings scope: 'global', modifier_mappings: {"primary" => 'C', "secondary" => 'M', "tertiary" => 's'}, variable_name: 'vemv/global-key-bindings', intro: false
   
-  result = %|(require 'vemv.lang)
+  result = ''
+  
+  if intro
+    result += %|(require 'vemv.lang)
 (provide 'vemv.data.bindings)
 (require 'vemv.shortcuts.global)
 (require 'vemv.shortcuts.clojure)
-;; generated with gen.rb
+(require 'vemv.shortcuts.ruby)
+;; generated with gen.rb|
+  end 
 
-(setq vemv/global-key-bindings
+result += %|
+
+(setq #{variable_name}
   (vemv/hash-map
 |
   
@@ -143,7 +154,13 @@ def emit_bindings scope='global', modifier_mappings: {"primary" => 'C', "seconda
   
   result += %|))|
   
-  File.write 'lib/non-submodules/vemv.data.bindings.el', result
+  fname = 'lib/non-submodules/vemv.data.bindings.el'
+  
+  if intro
+    File.write fname, result
+  else
+    File.write fname, result, File.size(fname), mode: 'a'
+  end
   
 end
 
@@ -172,4 +189,8 @@ def emit_to_remove scope='global', modifier_mappings: {"primary" => 'C', "second
 end
 
 emit_setqs
-emit_bindings
+emit_setqs scope: 'clojure'
+emit_setqs scope: 'ruby'
+emit_bindings intro: true
+emit_bindings scope: 'clojure', variable_name: 'vemv/clojure-key-bindings'
+emit_bindings scope: 'ruby', variable_name: 'vemv/ruby-key-bindings'
