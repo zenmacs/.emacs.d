@@ -125,12 +125,15 @@
                 "*.ru" "*.cache" "*.ts" "*.json5" "atob" "LICENSE-MIT" "public/assets/*" ".*"
                 "*.ls" "loose-envify" "errno" "*.flow" "*.properties" "*.extract-native-dependencies" "*.targets"
                 "*.sh" "*.ps1" "*.arcconfig" "Vagrantfile" "*.template" "*.nuspec" "*.emz" "1" "2" "*.svg"
-                "*.ttf" ".lein-repl-history" "*.scss" "*.cur" "profile" ".figwheel-compile-stamp" "*.woff" "*.eor"
+                "*.ttf" ".lein-repl-history" "*.cur" "profile" ".figwheel-compile-stamp" "*.woff" "*.eor"
                 "*.xml" "*.coffee" "*.lock" "*.markdown" "*.opts" "module-deps" ".nrepl-port" "repl-port"))))
 
 (setq company-idle-delay nil) ;; no autopopup
 
 (setq vemv/cljr-ast-load-counter 0)
+
+(setq js-indent-level 2)
+(setq css-indent-offset 2)
 
 (custom-set-variables
  '(xref-prompt-for-identifier nil)
@@ -189,12 +192,10 @@
 (add-to-list 'auto-mode-alist
              '("\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'" . ruby-mode))
 
-(add-hook 'ruby-mode-hook (argless (smartparens-mode)
-                                   (call-interactively 'text-scale-increase)))
+(add-hook 'ruby-mode-hook (argless (smartparens-mode)))
 
 (add-hook 'emacs-lisp-mode-hook
-          (argless (call-interactively 'text-scale-increase)
-                   (setq-local mode-line-format tabbed-line-format)))
+          (argless (setq-local mode-line-format tabbed-line-format)))
 
 (add-hook 'cider-repl-mode-hook
           (argless (setq-local mode-line-format vemv/pe/mode-line-format)))
@@ -205,9 +206,11 @@
 (add-hook 'shell-mode-hook
           (argless (setq-local mode-line-format vemv/pe/mode-line-format)))
 
+(dolist (mode (list 'emacs-lisp-mode-hook 'ruby-mode-hook 'clojure-mode-hook 'js-mode-hook 'css-mode-hook))
+  (add-hook mode (argless (call-interactively 'text-scale-increase))))
+
 (add-hook 'clojure-mode-hook
-          (argless (call-interactively 'text-scale-increase)
-                   (enable-paredit-mode)
+          (argless (enable-paredit-mode)
                    (clj-refactor-mode 1)
                    (paren-face-mode 1)
                    (undo-tree-mode)
