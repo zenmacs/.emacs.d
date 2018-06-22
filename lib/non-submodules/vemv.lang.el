@@ -1004,14 +1004,15 @@ inserting it at a new line."
   (interactive)
   (let ((b (or b (current-buffer))))
     (with-current-buffer b
-      (when (vemv/ciderable-p)
-        (vemv/save-position-before-formatting)
-        (let ((old (substring-no-properties (buffer-string))))
-          (save-excursion
-            (condition-case nil (cider-format-buffer)
-              (error
-               (erase-buffer)
-               (insert old))))))
+      (unless (or (eq clojure-indent-style :align-arguments) clojure-align-forms-automatically)
+        (when (vemv/ciderable-p)
+          (vemv/save-position-before-formatting)
+          (let ((old (substring-no-properties (buffer-string))))
+            (save-excursion
+              (condition-case nil (cider-format-buffer)
+                (error
+                 (erase-buffer)
+                 (insert old)))))))
       (save-buffer))))
 
 (defun vemv/save-all-clojure-buffers-for-this-project ()
@@ -1533,6 +1534,7 @@ inserting it at a new line."
     (load "vemv.shortcuts.global.base")
     (load "vemv.shortcuts.global")
     (load "vemv.shortcuts.clojure")
+    (load "vemv.shortcuts.ruby")
     (load "vemv.theme")
     (when (not was-verbose)
       (vemv/toggle-verbosity))
