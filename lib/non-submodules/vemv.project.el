@@ -86,7 +86,7 @@
 
     (setq vemv/project-clojure-dir (or vemv/project-clojure-dir vemv/project-root-dir))
     
-    (setq vemv/project-type (or vemv/project-type :clj))
+    (setq vemv/project-type (or vemv/project-type (if (file-exists-p (concat vemv/project-root-dir "Gemfile")) :ruby :clj)))
     
     (setq vemv/project-initializers (or vemv/project-initializers (lambda ())))
 
