@@ -1268,20 +1268,13 @@ inserting it at a new line."
 
 (defun vemv/open-recent-file-for-this-project! ()
   (when (boundp 'vemv/main_window)
-    (let* ((recents (when (and (file-readable-p recentf-save-file)
+    (let* ((the-file (when (and (file-readable-p recentf-save-file)
                                (pos? (length recentf-list)))
-                      (filter (lambda (x)
-                                (and x (vemv/contains? (file-truename x) vemv/project-root-dir)))
-                              recentf-list)))
-           (head (car (filter (lambda (x)
-                                (or (vemv/contains? x ".clj")
-                                    (vemv/contains? x ".el")))
-                              recents)))
-           (the-file (ignore-errors
-                       (if (vemv/ends-with head "ido.last")
-                           (second recents)
-                           head)))
-           (the-file (if (or (equal vemv/project-type :elisp)
+                      (car (filter (lambda (x)
+                                     (and x (vemv/contains? (file-truename x) vemv/project-root-dir)
+                                          (not (vemv/contains? (file-truename x) "ido.last"))))
+                               recentf-list))))
+           (the-file (if (or (not (vemv/in-clojure-mode?))
                              (and the-file
                                   (file-exists-p the-file) ;; file-truename can make up nonexisting files
                                   (vemv/contains? (file-truename the-file) ;; expand symlinks
