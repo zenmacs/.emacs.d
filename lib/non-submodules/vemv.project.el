@@ -85,6 +85,10 @@
         (error nil)))
 
     (setq vemv/project-clojure-dir (or vemv/project-clojure-dir vemv/project-root-dir))
+
+    (setq vemv/project-clojure-dir (concat vemv/project-clojure-dir (if (s-ends-with? "/" vemv/project-clojure-dir)
+                                                                        ""
+                                                                        "/")))
     
     (setq vemv/project-type (or vemv/project-type (if (file-exists-p (concat vemv/project-root-dir "Gemfile")) :ruby :clj)))
     
