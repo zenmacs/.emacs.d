@@ -125,7 +125,7 @@
                 "flask-server" "Makefile" "makefile" "*.txt" "*.yml" "*.html" "*ignore""*.*rc" "*.map"
                 "*.ico" "*.css" "*.erb" "Gemfile" "Rakefile" ".rspec" "*integration-testing*" "*node_modules*"
                 "*.workerjs" "*.MIT" "acorn" "AUTHORS" "*.APACHE2" "JSONStream" "babylon" "*.iml" "*.BSD" "*.log"
-                "*.ru"
+                "*.ru" "*.cache"
                 "*.ls" "loose-envify" "errno" "*.flow" "*.properties" "*.extract-native-dependencies" "*.targets"
                 "*.sh" "*.ps1" "*.arcconfig" "Vagrantfile" "*.template" "*.nuspec" "*.emz" "1" "2" "*.svg"
                 "*.ttf" ".lein-repl-history" "*.scss" "*.cur" "profile" ".figwheel-compile-stamp" "*.woff" "*.eor"
@@ -185,6 +185,15 @@
        '(:eval (when vemv-cider-connecting
                  (propertize "Connecting... " 'face 'vemv-cider-connection-face)))
        '(:eval (vemv/message-file-buffers-impl))))
+
+(add-to-list 'auto-mode-alist
+             '("\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'" . ruby-mode))
+
+(add-to-list 'auto-mode-alist
+             '("\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'" . ruby-mode))
+
+(add-hook 'ruby-mode-hook (argless (smartparens-mode)
+                                   (call-interactively 'text-scale-increase)))
 
 (add-hook 'emacs-lisp-mode-hook
           (argless (call-interactively 'text-scale-increase)
