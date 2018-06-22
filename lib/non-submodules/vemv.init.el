@@ -417,18 +417,19 @@ of the buffer into a formatted string."
 (advice-add 'cider-test-rerun-failed-tests :around 'vemv/apply-tests-verbosely)
 (advice-add 'cider-test-show-report :around 'vemv/apply-tests-verbosely)
 
-(defun vemv/set-keys-for-scope (scope source)
-  (maphash (lambda (key _)
+;; this is a defmacro so `M-x describe-key` doesn't show a giantic hash, freezing emacs
+(defmacro vemv/set-keys-for-scope (scope source)
+  `(maphash (lambda (key _)
              (let* ((keyboard-macro (if (stringp key)
                                         (read-kbd-macro key)
                                         key)))
-               (if (eq scope :global)
+               (if (eq ,scope :global)
                    (global-set-key keyboard-macro
-                                   (argless (call-interactively (gethash key source))))
-                   (define-key scope
+                                   (argless (call-interactively (gethash key ,source))))
+                   (define-key ,scope
                      keyboard-macro
-                     (argless (call-interactively (gethash key source)))))))
-           source))
+                     (argless (call-interactively (gethash key ,source)))))))
+           ,source))
 
 (vemv/set-keys-for-scope :global vemv/global-key-bindings)
 
