@@ -70,13 +70,15 @@
                                      (cider-project-name which)
                                      which)))
     
-    ;; gpm defines its own,
-    ;; trailing slash required
     ;; XXX assert default value exists in filesystem
     ;; XXX the case statements are hardcoded. parameterize
     (setq vemv/project-root-dir
           (or vemv/project-root-dir (vemv/dir-for-project vemv/current-project)))
 
+    (setq vemv/project-root-dir (concat vemv/project-root-dir (if (s-ends-with? "/" vemv/project-root-dir)
+                                                                  ""
+                                                                  "/")))
+    
     (when (and which (not on-the-fly-project))
       (condition-case nil
           (load (concat "vemv.project." which))
