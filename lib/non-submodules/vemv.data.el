@@ -14,12 +14,6 @@
                                     "\C-m" "\C-\\" "\C-h" "\C-r" [f10] "\M-e" "\M-!"
                                     "\M-\"" "\M-|" "\M-$" "\M-y" "\M-f" "\M-T" "\M-t"))
 
-;; XXX remove everything, and programatically
-(setq vemv/local-key-bindings-to-remove
-      (list (list paredit-mode-map "\C-d" "\C-k" "\C-j" "\M-\"" [127] (kbd ";")) ;; [127] stands for DEL, [27 127] is M-DEL.
-            (list comint-mode-map "\M-p")
-            (list undo-tree-map (kbd "C-/") (kbd "C-?"))))
-
 (setq vemv/key-bindings-to-dummy
       '([mouse-6] [mouse-7]
         [double-mouse-6] [double-mouse-7]

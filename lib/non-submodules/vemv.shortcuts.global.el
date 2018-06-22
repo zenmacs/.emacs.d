@@ -35,11 +35,13 @@
       vemv/shortcuts/global/primary-f               'vemv/search-in-this-buffer
       vemv/shortcuts/global/primary-j               'vemv/clojure-init-or-send-sexpr
       vemv/shortcuts/global/primary-k               'vemv/kill
+      vemv/shortcuts/global/primary-left            (vemv/safe-paredit-command 'paredit-forward-barf-sexp)
       vemv/shortcuts/global/primary-n               'vemv/new-frame
       vemv/shortcuts/global/primary-o               'vemv/open
       vemv/shortcuts/global/primary-p               'vemv/repeat-last-search-in-this-buffer
       vemv/shortcuts/global/primary-q               'save-buffers-kill-terminal
       vemv/shortcuts/global/primary-r               'vemv/test-this-ns
+      vemv/shortcuts/global/primary-right           (vemv/safe-paredit-command 'paredit-forward-slurp-sexp)
       vemv/shortcuts/global/primary-s               'vemv/save
       vemv/shortcuts/global/primary-semicolon       'toggle-truncate-lines
       vemv/shortcuts/global/primary-t               'vemv/fiplr
@@ -53,20 +55,20 @@
       vemv/shortcuts/global/right                   'right-char
       vemv/shortcuts/global/secondary-S-k           'vemv/kill-backward-copying-content
       vemv/shortcuts/global/secondary-a             'vemv/copy-sexpr-content-backward
-      vemv/shortcuts/global/secondary-backspace     'paredit-backward-kill-word
+      vemv/shortcuts/global/secondary-backspace     (vemv/safe-paredit-command 'paredit-backward-kill-word)
       vemv/shortcuts/global/secondary-backtick      'xref-pop-marker-stack
       vemv/shortcuts/global/secondary-colon         (argless (call-interactively 'eval-expression))
       vemv/shortcuts/global/secondary-k             'vemv/kill-backward
       vemv/shortcuts/global/secondary-left          'backward-word
-      vemv/shortcuts/global/secondary-left-bracket  'paredit-backward
+      vemv/shortcuts/global/secondary-left-bracket  (vemv/safe-paredit-command 'paredit-backward)
       vemv/shortcuts/global/secondary-next          'previous-buffer
       vemv/shortcuts/global/secondary-o             'vemv/open-at-project-root
       vemv/shortcuts/global/secondary-prior         'next-buffer
       vemv/shortcuts/global/secondary-RET           'vemv/toggle-ns-hiding
       vemv/shortcuts/global/secondary-right         'forward-word
-      vemv/shortcuts/global/secondary-right-bracket 'paredit-forward
+      vemv/shortcuts/global/secondary-right-bracket (vemv/safe-paredit-command 'paredit-forward)
       vemv/shortcuts/global/secondary-t             'vemv/open-file-via-fiplr-then-close-previous-buffer
-      vemv/shortcuts/global/secondary-up            'paredit-splice-sexp-killing-backward
+      vemv/shortcuts/global/secondary-up            (vemv/safe-paredit-command 'paredit-splice-sexp-killing-backward)
       vemv/shortcuts/global/secondary-x             'vemv/smex
       vemv/shortcuts/global/secondary-w             'vemv/close-all-other-file-buffers
       vemv/shortcuts/global/tertiary-RET            'vemv/load-clojure-buffer

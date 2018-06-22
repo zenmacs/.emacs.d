@@ -1524,7 +1524,6 @@ inserting it at a new line."
     (load "vemv.project")
     (load "vemv.lang")
     (load "vemv.data.bindings")
-    (load "vemv.shortcuts.global.base")
     (load "vemv.shortcuts.global")
     (load "vemv.shortcuts.clojure")
     (load "vemv.shortcuts.ruby")
@@ -1642,3 +1641,16 @@ inserting it at a new line."
   "Brings the sexpr located in the next line at the current one."
   (interactive)
   (just-one-space -1))
+
+(defun vemv/safe-paredit-command (command)
+  "Paredit commands over non-lisps can cause Emacs freezes"
+  (argless
+   (when (or (eq major-mode 'emacs-lisp-mode)
+             (eq major-mode 'clojure-mode)
+             (eq major-mode 'inferior-emacs-lisp-mode))
+     (call-interactively command))))
+
+(defun vemv/keyboard-macro (key)
+  (if (stringp key)
+      (read-kbd-macro key)
+      key))

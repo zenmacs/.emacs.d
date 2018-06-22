@@ -262,10 +262,10 @@
 
 ;; Important - remove keybindings before (vemv/initial-layout) so M-x cannot interrupt
 
-(dolist (key vemv/local-key-bindings-to-remove)
+(dolist (mode (list paredit-mode-map comint-mode-map undo-tree-map cider-mode-map))
   (mapc (lambda (arg)
-          (define-key (car key) arg nil))
-        (cdr key)))
+          (define-key mode (vemv/keyboard-macro arg) nil))
+        vemv/exhaustive-list-of-bindings-to-remove))
 
 (dolist (key vemv/key-bindings-to-remove)
   (global-unset-key key))
@@ -426,9 +426,7 @@ of the buffer into a formatted string."
 ;; this is a defmacro so `M-x describe-key` doesn't show a giantic hash, freezing emacs
 (defmacro vemv/set-keys-for-scope (scope source)
   `(maphash (lambda (key _)
-             (let* ((keyboard-macro (if (stringp key)
-                                        (read-kbd-macro key)
-                                        key)))
+             (let* ((keyboard-macro (vemv/keyboard-macro key)))
                (if (eq ,scope :global)
                    (global-set-key keyboard-macro
                                    (argless (call-interactively (gethash key ,source))))

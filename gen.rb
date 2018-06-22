@@ -122,7 +122,26 @@ def emit_bindings scope: 'global', modifier_mappings: {"primary" => 'C', "second
 (require 'vemv.shortcuts.global)
 (require 'vemv.shortcuts.clojure)
 (require 'vemv.shortcuts.ruby)
-;; generated with gen.rb|
+;; generated with gen.rb
+
+(setq vemv/exhaustive-list-of-bindings-to-remove (list|
+
+    
+  SPECIAL.each do |char|
+    left = char.include?('[f') ? "#{char}" : %|"#{char}"|
+    result += %| #{left}| unless SELF_INSERTING.include?(char)
+  end
+  
+  %w(primary secondary tertiary).each do |modifier|
+    (('a'..'z').to_a + (0..9).to_a.map(&:to_s) + SPECIAL).each do |char|
+      next if char.include?('[f')
+      next if NO_C.include?(char) && modifier_mappings[modifier] == 'C'
+      result += %| "#{modifier_mappings[modifier]}-#{char}"|
+      result += %| "#{modifier_mappings[modifier]}-S-#{char}"|
+    end
+  end
+
+result += %|))|
   end 
 
 result += %|
