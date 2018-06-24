@@ -108,12 +108,6 @@
 ;; https://github.com/clojure-emacs/cider/issues/2327
 (setq cljr-warn-on-eval t)
 
-(setq vemv/pe/mode-line-format
-      `(:eval (concat "  "
-                      (propertize vemv/current-project 'face 'font-lock-keyword-face)
-                      " | "
-                      (s-join " | " (cdr (vemv/all-project-names))))))
-
 (setq fiplr-ignored-globs
       ;; `directories` entries must be single-segment, i.e `/` doesn't work.
       '((directories (".git" ".svn" ".hg" ".bzr" "tools" "res-vagrant" ".paket" "doc" "bin" "assets" "public" "node_modules" "coverage"))
@@ -175,6 +169,9 @@
 
 (when (not vemv-cleaning-namespaces)
   (add-hook 'clojure-mode-hook 'hs-minor-mode))
+
+(setq vemv/pe/mode-line-format
+      `(:eval (vemv/pe/mode-line-format*)))
 
 (setq tabbed-line-format
       (list

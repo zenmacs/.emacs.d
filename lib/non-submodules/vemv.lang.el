@@ -802,6 +802,33 @@ inserting it at a new line."
                                                       (mouse-1 . ,sym)
                                                       (mouse-3 . ,close-sym)))))))
 
+(defun vemv/mode-line-for-project (project-name)
+  (let* ((sym (intern (concat project-name "-open")))
+         (close-sym (intern (concat project-name "-close"))))
+    (eval `(defun ,sym ()
+             (interactive)
+             (setq vemv/all-projects (cons ,project-name (-remove (lambda (x)
+                                                                   (string-equal x ,project-name))
+                                                                 vemv/all-projects)))
+             (vemv/force-refresh-project!)))
+    (eval `(defun ,close-sym ()
+             (interactive)
+             (when (member ,project-name vemv/on-the-fly-projects)
+               (setq vemv/all-projects (-remove (lambda (x)
+                                                  (string-equal x ,project-name))
+                                                vemv/all-projects))
+               (vemv/force-refresh-project!))))
+    (propertize project-name 'local-map `(keymap
+                                          (mode-line keymap
+                                                     (mouse-1 . ,sym)
+                                                     (mouse-3 . ,close-sym))))))
+
+(defun vemv/format-tabs (first rest)
+  (let* ((p (propertize first 'face 'font-lock-function-name-face))
+         (sep (propertize " | " 'face 'font-lock-line-and-column-face))
+         (all (cons p rest)))
+    (apply 'concat (-interpose sep all))))
+
 (defun vemv/message-file-buffers-impl ()
   (vemv/clean-chosen-file-buffer-order)
   (let* ((x (car (gethash vemv/current-project vemv/chosen-file-buffer-order))) 
@@ -816,12 +843,13 @@ inserting it at a new line."
                     (if (buffer-modified-p)
                         (concat first "*")
                         first))))
-         (rest (cdr (gethash vemv/current-project vemv/chosen-file-buffer-order)))
-         (the-rest (mapcar 'vemv/mode-line-for-buffer rest))
-         (p (propertize first 'face 'font-lock-function-name-face))
-         (sep (propertize " | " 'face 'font-lock-line-and-column-face))
-         (all (cons p the-rest)))
-    (apply 'concat (-interpose sep all))))
+         (rest (mapcar 'vemv/mode-line-for-buffer (cdr (gethash vemv/current-project vemv/chosen-file-buffer-order)))))
+    (vemv/format-tabs first rest)))
+
+(defun vemv/pe/mode-line-format* ()
+  (let* ((first vemv/current-project)
+         (rest (mapcar 'vemv/mode-line-for-project (cdr (vemv/all-project-names)))))
+    (vemv/format-tabs first rest)))
 
 (defun vemv/current-main-buffer-is-cljs ()
   (or (vemv/contains? (buffer-name) ".cljs")
@@ -1531,18 +1559,21 @@ inserting it at a new line."
                                               (member x vemv/on-the-fly-projects)))
                                         vemv/all-projects)))
 
+(defun vemv/force-refresh-project! ()
+  (vemv/refresh-current-project (car vemv/all-projects) :switch))
+
 (defun vemv/next-project ()
   (interactive)
   (vemv/refresh-available-projects)
   (setq vemv/all-projects `(,@(cdr vemv/all-projects) ,(car vemv/all-projects)))
-  (vemv/refresh-current-project (car vemv/all-projects) :switch))
+  (vemv/force-refresh-project!))
 
 (defun vemv/previous-project ()
   (interactive)
   (vemv/refresh-available-projects)
   (setq vemv/all-projects `(,(or (car (last vemv/all-projects)) (first vemv/all-projects))
                             ,@(butlast vemv/all-projects)))
-  (vemv/refresh-current-project (car vemv/all-projects) :switch))
+  (vemv/force-refresh-project!))
 
 (defun vemv/replace-regexp-entire-buffer (pattern replacement)
   "Perform regular-expression replacement throughout buffer."
