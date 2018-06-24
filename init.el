@@ -89,9 +89,18 @@
   (let ((default-directory "~/.emacs.d.overrides/"))
         (normal-top-level-add-subdirs-to-load-path)))
 
+(require 'vemv.packages)
 (require 'emacs.d.overrides)
 
 (setq vemv/on-the-fly-projects nil)
 (setq vemv/all-projects vemv/available-projects)
+(setq cider-launched nil)
+(setq vemv-cider-connecting nil)
+(setq vemv-cider-connected nil)
+(setq vemv/current-project (car vemv/all-projects))
+(setq vemv/running-project nil)
+(setq vemv/running-project-root-dir nil)
+(setq vemv/running-project-type nil)
 
 (require 'vemv.init)
+(load "vemv.theme") ;; prevent blue delimiter highlighting
