@@ -59,7 +59,7 @@
               (if (vemv/on-the-fly-project? x candidates)
                   (cider-project-name x)
                   x))
-            vemv/all-projects)))
+            (vemv/projects-for-workspace))))
 
 (defun vemv/refresh-current-project (which &optional switch-p)
   (let ((on-the-fly-project (vemv/on-the-fly-project? which vemv/cached-projects-with-initialization-files)))
@@ -137,4 +137,3 @@
         (vemv/open-recent-file-for-this-project!))))
 
 (vemv/refresh-current-project vemv/current-project)
-    

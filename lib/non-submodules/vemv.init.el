@@ -2,6 +2,7 @@
 
 (require 'vemv.lang)
 (require 'vemv.project)
+(require 'vemv.workspace)
 (require 'vemv.data)
 (require 'vemv.data.bindings)
 (require 'vemv.theme)
@@ -47,8 +48,6 @@
 
 ;; no .#filenames
 (setq create-lockfiles nil)
-
-(setq pe/mode-line-format "")
 
 ;; https://github.com/clojure-emacs/cider/issues/2327
 (setq cljr-warn-on-eval t)
@@ -114,6 +113,9 @@
 
 (when (not vemv-cleaning-namespaces)
   (add-hook 'clojure-mode-hook 'hs-minor-mode))
+
+(setq pe/mode-line-format
+      `(:eval (vemv/workspace-mode-line-format)))
 
 (setq vemv/pe/mode-line-format
       `(:eval (vemv/pe/mode-line-format*)))

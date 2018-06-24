@@ -30,8 +30,10 @@
     (setq vemv/verbose-mode v)
     (setq inhibit-startup-message (not vemv/verbose-mode))
     (setq inhibit-message (not vemv/verbose-mode)) ;; Silence minibuffer
-    
-    (setq debug-on-error nil) ;; NOTE: overly verbose, so it's always set to nil. Set manually if needed. (proof of verbosity: try to undo in a pristine buffer, with this line uncommented)
+
+    ;; NOTE: overly verbose, so it's always set to nil. Set manually if needed.
+    ;; (proof of verbosity: try to undo in a pristine buffer, with this line uncommented)
+    (setq debug-on-error nil)
     
     (setq debugger (if vemv/verbose-mode ;; Disable annoying *Backtrace* buffer
                      vemv/original-debugger
@@ -92,15 +94,20 @@
 (require 'vemv.packages)
 (require 'emacs.d.overrides)
 
+(defun vemv/set-available-projects! ()
+  (setq vemv/available-projects (-mapcat (lambda (x) (second x)) vemv/available-workspaces)))
+
+(vemv/set-available-projects!)
 (setq vemv/on-the-fly-projects nil)
-(setq vemv/all-projects vemv/available-projects)
 (setq cider-launched nil)
 (setq vemv-cider-connecting nil)
 (setq vemv-cider-connected nil)
-(setq vemv/current-project (car vemv/all-projects))
 (setq vemv/running-project nil)
 (setq vemv/running-project-root-dir nil)
 (setq vemv/running-project-type nil)
+(setq vemv/all-workspaces vemv/available-workspaces)
+(setq vemv/current-workspace (car vemv/all-workspaces))
+(setq vemv/current-project (car (second vemv/current-workspace)))
 
 (require 'vemv.init)
 (load "vemv.theme") ;; prevent blue delimiter highlighting
