@@ -304,12 +304,6 @@
 
 (put 'if 'lisp-indent-function nil)
 
-;; switches the expected input from "yes no" to "y n" on exit-without-save
-(defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
-  "Prevent annoying \"Active processes exist\" query when you quit Emacs."
-  (cl-letf (((symbol-function #'process-list) (lambda ())))
-    ad-do-it))
-
 (setq back-to-indentation-state nil)
 
 (defadvice back-to-indentation (around back-to-back)
@@ -371,12 +365,12 @@
 
 (global-set-key [kp-delete] 'delete-char) ;; OSX
 
-(setq               ;; http://www.emacswiki.org/emacs/BackupDirectory
- backup-by-copying t ;; don't clobber symlinks
- delete-old-versions t
- kept-new-versions 6
- kept-old-versions 2
- version-control t)
+;; http://www.emacswiki.org/emacs/BackupDirectory
+(setq backup-by-copying t
+      delete-old-versions t
+      kept-new-versions 6
+      kept-old-versions 2
+      version-control t)
 
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))

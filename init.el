@@ -1,5 +1,19 @@
 (package-initialize)
 
+(progn "Prevent dialogs asap, in case of error during initialization"
+
+  (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
+    "Prevent annoying \"Active processes exist\" query when you quit Emacs."
+    (cl-letf (((symbol-function #'process-list) (lambda ())))
+      ad-do-it))
+
+  ;; http://www.emacswiki.org/emacs/BackupDirectory
+  (setq backup-by-copying t
+        delete-old-versions t
+        kept-new-versions 6
+        kept-old-versions 2
+        version-control t))
+
 (setq vemv/original-debugger #'debug)
 (setq vemv/original-command-error-function #'command-error-default-function)
 (setq vemv/original-minibuffer-message #'minibuffer-message)
@@ -49,7 +63,8 @@
 
 (setq vemv-font (if (eq system-type 'darwin) "Monaco-12" "DejaVu Sans Mono-13"))
 
-(if (window-system) (set-face-attribute 'default nil :font vemv-font))
+(when (window-system)
+    (set-face-attribute 'default nil :font vemv-font))
 
 (setq vemv-home (getenv "HOME"))
 
