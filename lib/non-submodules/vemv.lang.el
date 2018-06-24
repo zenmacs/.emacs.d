@@ -115,6 +115,11 @@ ACC is an implementation detail - do not pass this parameter!"
              (or step n))
       (reverse acc)))
 
+(defun vemv/in-a-lisp-mode? ()
+  (or (eq major-mode 'emacs-lisp-mode)
+      (eq major-mode 'clojure-mode)
+      (eq major-mode 'inferior-emacs-lisp-mode)))
+
 (defun vemv/debounce (func &optional delay)
   (let*
       ((callee
@@ -1531,7 +1536,7 @@ inserting it at a new line."
                                              "])")))))))
 
 (defun vemv/maybe-indent-on-paste (content)
-  (when (and (vemv/in-clojure-mode?)
+  (when (and (vemv/in-a-lisp-mode?)
              (s-match "^\s*[\(|[|{]" content))
     (paredit-backward)
     (vemv/indent)))
@@ -1686,9 +1691,7 @@ inserting it at a new line."
 (defun vemv/safe-paredit-command (command)
   "Paredit commands over non-lisps can cause Emacs freezes"
   (argless
-   (when (or (eq major-mode 'emacs-lisp-mode)
-             (eq major-mode 'clojure-mode)
-             (eq major-mode 'inferior-emacs-lisp-mode))
+   (when (vemv/in-a-lisp-mode?)
      (call-interactively command))))
 
 (defun vemv/keyboard-macro (key)
