@@ -307,18 +307,40 @@ inserting it at a new line."
             (yank)
             (pop kill-ring)))))
 
-(defun vemv/kill (&optional backward? skip-save-to-clipboard?) ;; XXX kill comments FIXME can leave sexprs unmatched
-  "Deletes the next (or previous, on non-nil values of BACKWARD?) sexpr or comment (if there is one).
+(defun vemv/ensure-no-double-blank-newlines ()
+  (while (and (string-equal "\n" (vemv/current-line-contents))
+                  (string-equal "\n" (vemv/current-char-at-point -1))
+                  (string-equal "\n" (vemv/current-char-at-point -2)))
+        (delete-backward-char 1))
+  (while (and (string-equal "\n" (vemv/current-line-contents))
+              (string-equal "\n" (vemv/current-char-at-point 1)))
+    (delete-forward-char 1)))
+
+(defun vemv/kill (&optional backward? skip-save-to-clipboard?)
+  "Deletes the next sexpr (or previous, if BACKWARD?).
 
    Unlike paredit-kill, this function will only grab one sexpr (and no more, if they are contigous),
-   and it doesn't alter the kill-ring."
-  (interactive)
+   and it doesn't alter the kill-ring.
+  (interactive)"
+  (while (and (or (equal " " (vemv/current-char-at-point))
+                  (equal "\n" (vemv/current-char-at-point))
+                  (if backward?
+                      (or (equal " " (vemv/current-char-at-point -1))
+                          (equal "\n" (vemv/current-char-at-point -1)))
+                      nil))
+              (if backward?
+                  (or (equal " " (vemv/current-char-at-point -1))
+                      (equal "\n" (vemv/current-char-at-point -1)))
+                  t))
+    (if backward?
+        (delete-backward-char 1)
+        (delete-forward-char 1)))
   (when (eq (point)
             (save-excursion
               (if backward?
                   (progn
-                    (paredit-forward)
-                    (paredit-backward))
+                    (paredit-backward)
+                    (paredit-forward))
                   (progn
                     (paredit-forward)
                     (paredit-backward)))
@@ -326,7 +348,6 @@ inserting it at a new line."
     (ignore-errors
       (push-mark)
       (if backward? (paredit-backward) (paredit-forward))
-
       (let ((result (vemv/selected-region)))
         (delete-region (mark) (point))
         (while (and
@@ -335,6 +356,8 @@ inserting it at a new line."
           (paredit-forward-delete))
         (when (not skip-save-to-clipboard?)
           (simpleclip-set-contents result))
+        (ignore-errors
+          (vemv/ensure-no-double-blank-newlines))
         result))))
 
 (defun vemv/delete-backward (&optional cut?)
