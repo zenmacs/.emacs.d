@@ -45,3 +45,6 @@
                 (when (not (eq vemv/previous-buffer (current-buffer)))
                   (kill-buffer vemv/previous-buffer)))))
 
+(defun vemv/dir-opened-from-home ()
+  (let ((default-directory vemv-home))
+    (replace-regexp-in-string "\\.$" "" (ido-read-directory-name ()))))

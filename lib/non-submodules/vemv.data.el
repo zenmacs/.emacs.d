@@ -40,7 +40,6 @@
 ; M-: - eval lisp
 ; C-g - cancel command
 ; M-x - interactive command
-; C-x 0 - kill window without killing buffer
 ; M-x describe-key - resolve a key binding
 
 (global-set-key [mode-line mouse-3] 'nil) ;; prevent close-on-right-click

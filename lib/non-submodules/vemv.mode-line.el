@@ -66,6 +66,12 @@
                                                      (mouse-1 . ,sym)
                                                      (mouse-3 . ,close-sym))))))
 
+(defun vemv/format-tabs (first rest)
+  (let* ((p (propertize first 'face 'font-lock-function-name-face))
+         (sep (propertize " | " 'face 'font-lock-line-and-column-face))
+         (all (cons p rest)))
+    (apply 'concat (-interpose sep all))))
+
 (defun vemv/message-file-buffers-impl ()
   (vemv/clean-chosen-file-buffer-order)
   (let* ((x (car (gethash vemv/current-project vemv/chosen-file-buffer-order))) 

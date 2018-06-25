@@ -158,7 +158,6 @@ ACC is an implementation detail - do not pass this parameter!"
   (setcdr from (rest to))
   from)
 
-
 (defun vemv/selected-region ()
   "Returns the selected region as a string. Side effects free."
   (kill-ring-save (mark) (point))
@@ -180,21 +179,6 @@ ACC is an implementation detail - do not pass this parameter!"
       (switch-to-buffer buffer-name)
       (switch-to-buffer-other-frame buffer-name)))
 
-(defun vemv/sexpr-content (&optional backward?)
-  "Returns the content of the next (or previous, on non-nil values of BACKWARD?) sexpr, as a string.
-
-Unlike paredit-copy-as-kill, this function will only grab one sexpr (and no more even -
-if they are contigous), and is side-effect free."
-  (interactive)
-  (save-excursion
-    (push-mark)
-    (if backward? (paredit-backward) (paredit-forward))
-
-    (let ((result (vemv/selected-region)))
-      (pop-mark)
-      (if backward? (paredit-forward) (paredit-backward))
-      result)))
-
 (defun vemv/safe-select-window (x)
   (unless (minibuffer-prompt)
     (select-window x)))
@@ -205,114 +189,6 @@ if they are contigous), and is side-effect free."
               ,@forms)))
      (vemv/safe-select-window current-window)
      v))
-
-
-(defun vemv/duplicate (&optional backward?)
-  "Copies the current line (or sexpr, if point is at the beggining of one, or selection, if the region is active),
-inserting it at a new line."
-  (interactive)
-
-  (if (region-active-p)
-
-      (progn
-        (dotimes (i (- (region-end) (point)))
-          (forward-char))
-        (insert "\n" (vemv/selected-region) "\n"))
-      
-      (back-to-indentation)
-      
-      (if (some (lambda (char) (equal char (vemv/current-char-at-point)))
-                '("(" "[" "{" "<" "\""))
-          (progn
-            (let ((content (vemv/sexpr-content))
-                  (at-b (vemv/at-beginning-of-line-p)))
-              (paredit-forward)
-              (insert (concat (if at-b "\n\n" "\n") content))
-              (paredit-backward)
-              (beginning-of-line)
-              (indent-for-tab-command)))
-
-          (progn
-            (move-beginning-of-line 1)
-            (kill-line)
-            (yank)
-            (open-line 1)
-            (next-line 1)
-            (yank)
-            (pop kill-ring)))))
-
-(defun vemv/ensure-no-double-blank-newlines ()
-  (while (and (string-equal "\n" (vemv/current-line-contents))
-              (string-equal "\n" (vemv/current-char-at-point -1))
-              (string-equal "\n" (vemv/current-char-at-point -2)))
-    (delete-backward-char 1))
-  (while (and (string-equal "\n" (vemv/current-line-contents))
-              (string-equal "\n" (vemv/current-char-at-point 1)))
-    (delete-forward-char 1)))
-
-(defun vemv/kill (&optional backward? skip-save-to-clipboard?)
-  "Deletes the next sexpr (or previous, if BACKWARD?).
-
-   Unlike paredit-kill, this function will only grab one sexpr (and no more, if they are contigous),
-   and it doesn't alter the kill-ring.
-  (interactive)"
-  (while (and (or (equal " " (vemv/current-char-at-point))
-                  (equal "\n" (vemv/current-char-at-point))
-                  (if backward?
-                      (or (equal " " (vemv/current-char-at-point -1))
-                          (equal "\n" (vemv/current-char-at-point -1)))
-                      nil))
-              (if backward?
-                  (or (equal " " (vemv/current-char-at-point -1))
-                      (equal "\n" (vemv/current-char-at-point -1)))
-                  t))
-    (if backward?
-        (delete-backward-char 1)
-        (delete-forward-char 1)))
-  (when (eq (point)
-            (save-excursion
-              (if backward?
-                  (progn
-                    (paredit-backward)
-                    (paredit-forward))
-                  (progn
-                    (paredit-forward)
-                    (paredit-backward)))
-              (point)))
-    (ignore-errors
-      (push-mark)
-      (if backward? (paredit-backward) (paredit-forward))
-      (let ((result (vemv/selected-region)))
-        (delete-region (mark) (point))
-        (while (and
-                (equal " " (vemv/current-char-at-point))
-                (not (equal "\n" (vemv/current-char-at-point))))
-          (paredit-forward-delete))
-        (when (not skip-save-to-clipboard?)
-          (simpleclip-set-contents result))
-        (ignore-errors
-          (vemv/ensure-no-double-blank-newlines))
-        result))))
-
-(defun vemv/delete-backward (&optional cut?)
-  "Performs a paredit-backward-delete unless the region is active, in which case the selection gets unconditionally removed.
-
-   The removed value will be pushed to the kill-ring only on non-nil values of CUT?.
-
-   Unconditionally removing code may yield semantically wrong results, i.e. leaving sexprs unmatched.
-   I personally like this tradeoff - use with caution!"
-  (interactive)
-
-  (funcall (if cut?
-               'vemv/bounded-list/insert-at-head!
-               'vemv/bounded-list/insert-at-second-position!)
-           (if (region-active-p)
-               (progn (call-interactively 'kill-region)
-                      (if (not cut?) (pop kill-ring)))
-               
-               (paredit-backward-delete))
-           vemv/kill-list
-           vemv/kill-list-bound))
 
 (defun vemv/active-modes ()
   "Returns a list of the minor modes that are enabled in the current buffer."
@@ -399,91 +275,16 @@ inserting it at a new line."
    (cider-connected-p)
    vemv-cider-connected))
 
-(defun vemv/dumb-indent ()
-  (interactive)
-  (save-excursion
-    (while (not (some (lambda (char)
-                        (equal char (vemv/current-char-at-point)))
-                      '("(" "[" "{")))
-      (beginning-of-sexp))
-    (paredit-wrap-round)
-    (paredit-splice-sexp-killing-backward)))
-
-(defun vemv/cider-indent ()
-  (interactive)
-  (push-mark)
-  (paredit-forward)
-  (call-interactively 'cider-format-region)
-  (pop-mark)
-  (paredit-backward))
-
-(defun vemv/indent ()
-  "Indents the next sexpr."
-  (interactive)
-  (if (vemv/ciderable-p)
-      (vemv/cider-indent)
-      (vemv/dumb-indent)))
-
 (defun vemv/timestamp ()
   (truncate (float-time)))
 
-(defun vemv/dir-opened-from-home ()
-  (let ((default-directory vemv-home))
-    (replace-regexp-in-string "\\.$" "" (ido-read-directory-name ()))))
-
 (defun vemv/scratch-p ()
   (string-equal "*scratch*" (buffer-name (current-buffer))))
-
-(defun vemv/format-tabs (first rest)
-  (let* ((p (propertize first 'face 'font-lock-function-name-face))
-         (sep (propertize " | " 'face 'font-lock-line-and-column-face))
-         (all (cons p rest)))
-    (apply 'concat (-interpose sep all))))
 
 (defun vemv/current-main-buffer-is-cljs ()
   (or (vemv/contains? (buffer-name) ".cljs")
       (and (vemv/contains? (buffer-name) ".cljc")
            (eq vemv/project-type :cljs))))
-
-
-(defun vemv/home ()
-  "Moves the point to leftmost non-empty character in the current line."
-  (interactive)
-  (move-beginning-of-line 1)
-  (if (not (equal last-command 'vemv/home))
-      (while (some (lambda (char) (equal char (vemv/current-char-at-point)))
-                   '(" " "\t"))
-        (forward-char))))
-
-(defun vemv/end () ;; XXX doesn't honor region
-  "Moves the point to rightmost non-empty character in the current line.
-
-   Comments get ignored, this is, point will only move as long as its position still belongs to the code -
-   unless this command has been fired for the second time."
-  (interactive)
-  (if (equal last-command 'vemv/end)
-      (call-interactively 'move-end-of-line)
-      (let* ((line (vemv/current-line-contents))
-             (rev (vemv/reverse line))
-             (line_length (length line))
-             (movement (recur-let ((result 0))
-                                  (if (some (lambda (char) (equal char (substring line result (inc result))))
-                                            '(";" "\n"))
-                                      result
-                                      (recur (inc result))))))
-        (move-beginning-of-line 1)
-        (forward-char movement)
-        ;; there may exist empty space between code and comment:
-        (if (pos? movement)
-            (while (not (some (lambda (char) (equal char (vemv/current-char-at-point)))
-                              '(" ")))
-              (backward-char)))
-        (comm backward-char (recur-let ((result 0))
-                                       (if (or
-                                            (equal result line_length)
-                                            (equal " " (substring rev result (inc result))))
-                                           result
-                                           (recur (inc result))))))))
 
 (defun vemv/end-of-line-code ()
   (interactive "^")
@@ -528,15 +329,6 @@ inserting it at a new line."
           (progn "cursor is within string" nil)) ;; XXX
       (insert ";")
       (insert ";; ")))
-
-(defun vemv/copy-selection-or-next-sexpr ()
-  (let ((content (if (region-active-p)
-                     (vemv/selected-region)
-                     (vemv/sexpr-content))))
-    (when (region-active-p)
-      (call-interactively 'cua-set-mark))
-    (vemv/bounded-list/insert-at-head! content vemv/kill-list vemv/kill-list-bound)
-    (simpleclip-set-contents content)))
 
 (defun vemv/at-beginning-of-line-p ()
   (eq (point) (save-excursion (beginning-of-line) (point))))
@@ -616,38 +408,6 @@ inserting it at a new line."
 (defun vemv/repeat-last-search-in-this-buffer ()
   (interactive)
   (ignore-errors (search-forward vemv-last-search)))
-
-(defun vemv/copy-sexpr-content-backward ()
-  (interactive)
-  (kill-new (vemv/sexpr-content :backward)))
-
-(defun vemv/kill-backward ()
-  (interactive)
-  (vemv/kill :backward))
-
-(defun vemv/kill-backward-copying-content ()
-  (interactive)
-  (kill-new (vemv/kill :backward)))
-
-(defun vemv/onelineize ()
-  "Turns the current sexpr into a oneliner"
-  (let ((replacement (replace-regexp-in-string "[\s|\n]+" " " (vemv/sexpr-content))))
-    (vemv/kill)
-    (insert (concat replacement " "))
-    (when (string-equal " " (vemv/char-at-left))
-      (paredit-backward-delete))
-    (call-interactively 'paredit-backward)))
-
-(defun vemv/pull-next-sexpr ()
-  "Brings the sexpr located in the next line at the current one."
-  (interactive)
-  (just-one-space -1))
-
-(defun vemv/safe-paredit-command (command)
-  "Paredit commands over non-lisps can cause Emacs freezes"
-  (argless
-   (when (vemv/in-a-lisp-mode?)
-     (call-interactively command))))
 
 (defun vemv/keyboard-macro (key)
   (if (stringp key)
