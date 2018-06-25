@@ -38,35 +38,16 @@
                     (set-face-attribute 'default nil :font vemv-font)))
        1)
 
-(defun vemv/make-frame ()
-  (make-frame `((width . ,(frame-width)) (height . ,(frame-height)))))
-
-(defvar vemv/help-frame nil)
-
-(defmacro vemv/get-help-frame ()
-  `(if (and vemv/help-frame (terminal-live-p vemv/help-frame))
-       vemv/help-frame
-       (let ((frame (vemv/make-frame)))
-         (select-frame frame)
-         (vemv/maximize)
-         (setq vemv/help-frame frame))))
-
-(defun vemv/display-completion (buffer)
-  (vemv/safe-select-window vemv/main_window)
-  (set-window-buffer vemv/main_window buffer))
-
 (defun undo (&rest args)
   (interactive)
   (apply 'undo-tree-undo args))
 
-(delay
- (argless (setq vemv/project-explorer-initialized t))
- 12)
+(delay (argless (setq vemv/project-explorer-initialized t))
+       12)
 
-(delay
- ;; every 5 seconds. in practice, not so often b/c `vemv/refreshing-caches` (timestamp lock)
- (argless (run-with-timer 0 5 'vemv/refresh-file-caches))
- 60)
+;; every 5 seconds. in practice, not so often b/c `vemv/refreshing-caches` (timestamp lock)
+(delay (argless (run-with-timer 0 5 'vemv/refresh-file-caches))
+       60)
 
 (vemv/set-keys-for-scope :global vemv/global-key-bindings)
 

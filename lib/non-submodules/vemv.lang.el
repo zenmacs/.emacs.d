@@ -1703,3 +1703,7 @@ inserting it at a new line."
   (if (stringp key)
       (read-kbd-macro key)
       key))
+
+(defun vemv/display-completion (buffer)
+  (vemv/safe-select-window vemv/main_window)
+  (set-window-buffer vemv/main_window buffer))
