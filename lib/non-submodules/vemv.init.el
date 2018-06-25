@@ -9,6 +9,7 @@
 (require 'vemv.paredit)
 (require 'vemv.mode-line)
 (require 'vemv.helm)
+(require 'vemv.project-interaction)
 (require 'vemv.project)
 (require 'vemv.open)
 (require 'vemv.workspace)
