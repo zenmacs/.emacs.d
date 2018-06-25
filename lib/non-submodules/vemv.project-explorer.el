@@ -1,3 +1,7 @@
+;; -*- lexical-binding: t; -*-
+
+(setq lexical-binding t)
+
 (provide 'vemv.project-explorer)
 
 (defun vemv/refresh-pe-cache ()

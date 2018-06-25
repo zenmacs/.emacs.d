@@ -1,3 +1,7 @@
+;; -*- lexical-binding: t; -*-
+
+(setq lexical-binding t)
+
 (provide 'vemv.paredit)
 
 (setq vemv/kill-list-bound 10)

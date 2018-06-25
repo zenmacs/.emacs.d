@@ -1,3 +1,7 @@
+;; -*- lexical-binding: t; -*-
+
+(setq lexical-binding t)
+
 (provide 'vemv.clojure-interaction)
 
 (setq vemv/apply-tests-verbosely-counter 0)

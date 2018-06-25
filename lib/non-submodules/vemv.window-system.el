@@ -1,3 +1,7 @@
+;; -*- lexical-binding: t; -*-
+
+(setq lexical-binding t)
+
 (provide 'vemv.window-system)
 
 (defun vemv/initial-layout ()

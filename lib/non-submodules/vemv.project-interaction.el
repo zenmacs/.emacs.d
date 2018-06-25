@@ -1,3 +1,7 @@
+;; -*- lexical-binding: t; -*-
+
+(setq lexical-binding t)
+
 (provide 'vemv.project-interaction)
 
 (defun vemv/dir-for-project (which)

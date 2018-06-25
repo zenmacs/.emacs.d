@@ -1,3 +1,7 @@
+;; -*- lexical-binding: t; -*-
+
+(setq lexical-binding t)
+
 (require 'vemv.lang)
 (provide 'vemv.workspace)
 

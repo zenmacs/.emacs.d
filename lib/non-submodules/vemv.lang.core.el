@@ -1,5 +1,7 @@
 ;; -*- lexical-binding: t; -*-
 
+(setq lexical-binding t)
+
 (require 'recur)
 (require 'multi-methods)
 (provide 'vemv.lang.core)
