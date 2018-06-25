@@ -44,11 +44,6 @@
               (end-of-buffer))
           (vemv/safe-select-window sender)))))
 
-(defun vemv/open-at-project-root ()
-  (interactive)
-  (let ((default-directory vemv/project-root-dir))
-    (call-interactively 'vemv/open)))
-
 (defun vemv/dir-for-project (which)
   (concat vemv-home "/" which))
 
@@ -107,35 +102,6 @@
   (when (and b (buffer-file-name b))
     (vemv/contains? (file-truename (buffer-file-name b))
                     vemv/running-project-root-dir)))
-
-(defun vemv/after-file-open-without-project-explorer-highlighting ()
-  (interactive)
-  (vemv/safe-select-window vemv/main_window)
-  (when (vemv/buffer-of-current-project? (current-buffer))
-    (when (and (vemv/in-clojure-mode?)
-               (not vemv/ns-shown))
-      (vemv/toggle-ns-hiding :after-file-open))
-    (setq-local mode-line-format tabbed-line-format)
-    (vemv/advice-nrepl)
-    (vemv/ensure-repl-visible)))
-
-(defun vemv/after-file-open (&rest ignore)
-  (interactive)
-  (vemv/after-file-open-without-project-explorer-highlighting)
-  (funcall vemv/safe-show-current-file-in-project-explorer))
-
-(defun vemv/open (&optional filepath)
-  "Opens a file (from FILEPATH or the user input)."
-  (interactive)
-  (vemv/safe-select-window vemv/main_window)
-  (let ((file (buffer-name (or (and filepath (find-file filepath))
-                               (ido-find-file)))))) ;; magical let - do not unwrap!
-  (save-buffer)
-  (vemv/refresh-file-caches)
-  (vemv/safe-select-window vemv/main_window)
-  (vemv/after-file-open-without-project-explorer-highlighting)
-  (delay (argless (funcall vemv/safe-show-current-file-in-project-explorer))
-         20))
 
 (defun vemv/open_file_buffers ()
   (let* ((bs (filter (lambda (x)
@@ -197,22 +163,11 @@
   (interactive)
   (shell (concat "*shell-" (number-to-string (send! vemv/shell-id (lambda (a) (inc a)))) "*")))
 
-(defun vemv/fiplr (&optional opener)
-  (fiplr-find-file-in-directory vemv/project-fiplr-dir fiplr-ignored-globs (or opener #'find-file)))
-
 (defun vemv/save-all-buffers-for-this-project ()
   (mapcar (lambda (b)
             (when (and (vemv/buffer-of-current-project? b))
               (vemv/save b)))
           (vemv/all-buffers)))
-
-(defun vemv/open-file-via-fiplr-then-close-previous-buffer ()
-  (interactive)
-  (setq vemv/previous-buffer (current-buffer))
-  (vemv/fiplr (lambda (filename)
-                (find-file filename)
-                (when (not (eq vemv/previous-buffer (current-buffer)))
-                  (kill-buffer vemv/previous-buffer)))))
 
 (defun vemv/smex ()
   (when vemv/launched (smex)))

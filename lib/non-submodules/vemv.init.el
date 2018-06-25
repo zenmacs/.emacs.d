@@ -10,6 +10,7 @@
 (require 'vemv.mode-line)
 (require 'vemv.helm)
 (require 'vemv.project)
+(require 'vemv.open)
 (require 'vemv.workspace)
 (require 'vemv.data)
 (require 'vemv.data.bindings)
