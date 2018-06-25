@@ -3,6 +3,7 @@
 (setq lexical-binding t)
 
 (require 'vemv.lang)
+(require 'vemv.helm)
 (require 'vemv.project)
 (require 'vemv.workspace)
 (require 'vemv.data)
