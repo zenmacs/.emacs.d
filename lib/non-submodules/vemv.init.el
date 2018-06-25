@@ -10,6 +10,7 @@
 (require 'vemv.theme)
 (require 'vemv.setqs)
 (require 'vemv.hooks)
+(require 'vemv.keyboard-init)
 (provide 'vemv.init)
 
 (show-paren-mode 1)
@@ -25,30 +26,6 @@
 (global-hl-line-mode t)
 (global-whitespace-mode)
 (cua-mode 1) ;; initialized after customizing cua-remap-control-v
-
-(global-set-key (kbd "M-x") 'smex)
-
-;; Important - remove keybindings before (vemv/initial-layout) so M-x cannot interrupt
-
-(dolist (mode (list paredit-mode-map comint-mode-map undo-tree-map cider-mode-map))
-  (mapc (lambda (arg)
-          (define-key mode (vemv/keyboard-macro arg) nil))
-        vemv/exhaustive-list-of-bindings-to-remove))
-
-(dolist (key vemv/key-bindings-to-remove)
-  (global-unset-key key))
-
-(dolist (key vemv/key-bindings-to-dummy)
-  (global-set-key key (argless)))
-
-(dolist (binding (vemv/partition 3 vemv/local-key-bindings))
-  (define-key
-    (car binding)
-    (let ((k (second binding)))
-      (if (stringp k)
-          (read-kbd-macro k)
-          k))
-    (third binding)))
 
 (vemv/initial-layout)
 
@@ -82,8 +59,6 @@
   (interactive)
   (apply 'undo-tree-undo args))
 
-(global-set-key [kp-delete] 'delete-char) ;; OSX
-
 (delay
  (argless (setq vemv/project-explorer-initialized t))
  12)
@@ -92,18 +67,6 @@
  ;; every 5 seconds. in practice, not so often b/c `vemv/refreshing-caches` (timestamp lock)
  (argless (run-with-timer 0 5 'vemv/refresh-file-caches))
  60)
-
-;; this is a defmacro so `M-x describe-key` doesn't show a giantic hash, freezing emacs
-(defmacro vemv/set-keys-for-scope (scope source)
-  `(maphash (lambda (key _)
-             (let* ((keyboard-macro (vemv/keyboard-macro key)))
-               (if (eq ,scope :global)
-                   (global-set-key keyboard-macro
-                                   (argless (call-interactively (gethash key ,source))))
-                   (define-key ,scope
-                     keyboard-macro
-                     (argless (call-interactively (gethash key ,source)))))))
-           ,source))
 
 (vemv/set-keys-for-scope :global vemv/global-key-bindings)
 
