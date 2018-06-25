@@ -44,4 +44,5 @@
 (require 'clj-refactor)
 (require 'fiplr)
 (require 'helm-ag)
+(require 'desktop)
 (provide 'vemv.packages)

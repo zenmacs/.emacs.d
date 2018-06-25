@@ -31,3 +31,5 @@ ido.last
 /xkcd
 /.mc-lists.el
 /lib/non-submodules/init.el
+/.emacs.desktop.lock
+/emacs-desktop

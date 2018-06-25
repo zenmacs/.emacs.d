@@ -381,3 +381,5 @@ of the buffer into a formatted string."
 (vemv/set-keys-for-scope clojure-mode-map vemv/clojure-key-bindings)
 
 (vemv/set-keys-for-scope ruby-mode-map vemv/ruby-key-bindings)
+
+(require 'vemv.desktop)
