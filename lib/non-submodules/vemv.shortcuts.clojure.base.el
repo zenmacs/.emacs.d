@@ -4,38 +4,74 @@
 ;; "[f1]"
 (setq vemv/shortcuts/clojure/f1 vemv/shortcuts/global/f1)
 
+;; "<s-f1>"
+(setq vemv/shortcuts/clojure/S-f1 vemv/shortcuts/global/S-f1)
+
 ;; "[f10]"
 (setq vemv/shortcuts/clojure/f10 vemv/shortcuts/global/f10)
+
+;; "<s-f10>"
+(setq vemv/shortcuts/clojure/S-f10 vemv/shortcuts/global/S-f10)
 
 ;; "[f11]"
 (setq vemv/shortcuts/clojure/f11 vemv/shortcuts/global/f11)
 
+;; "<s-f11>"
+(setq vemv/shortcuts/clojure/S-f11 vemv/shortcuts/global/S-f11)
+
 ;; "[f12]"
 (setq vemv/shortcuts/clojure/f12 vemv/shortcuts/global/f12)
+
+;; "<s-f12>"
+(setq vemv/shortcuts/clojure/S-f12 vemv/shortcuts/global/S-f12)
 
 ;; "[f2]"
 (setq vemv/shortcuts/clojure/f2 vemv/shortcuts/global/f2)
 
+;; "<s-f2>"
+(setq vemv/shortcuts/clojure/S-f2 vemv/shortcuts/global/S-f2)
+
 ;; "[f3]"
 (setq vemv/shortcuts/clojure/f3 vemv/shortcuts/global/f3)
+
+;; "<s-f3>"
+(setq vemv/shortcuts/clojure/S-f3 vemv/shortcuts/global/S-f3)
 
 ;; "[f4]"
 (setq vemv/shortcuts/clojure/f4 vemv/shortcuts/global/f4)
 
+;; "<s-f4>"
+(setq vemv/shortcuts/clojure/S-f4 vemv/shortcuts/global/S-f4)
+
 ;; "[f5]"
 (setq vemv/shortcuts/clojure/f5 vemv/shortcuts/global/f5)
+
+;; "<s-f5>"
+(setq vemv/shortcuts/clojure/S-f5 vemv/shortcuts/global/S-f5)
 
 ;; "[f6]"
 (setq vemv/shortcuts/clojure/f6 vemv/shortcuts/global/f6)
 
+;; "<s-f6>"
+(setq vemv/shortcuts/clojure/S-f6 vemv/shortcuts/global/S-f6)
+
 ;; "[f7]"
 (setq vemv/shortcuts/clojure/f7 vemv/shortcuts/global/f7)
+
+;; "<s-f7>"
+(setq vemv/shortcuts/clojure/S-f7 vemv/shortcuts/global/S-f7)
 
 ;; "[f8]"
 (setq vemv/shortcuts/clojure/f8 vemv/shortcuts/global/f8)
 
+;; "<s-f8>"
+(setq vemv/shortcuts/clojure/S-f8 vemv/shortcuts/global/S-f8)
+
 ;; "[f9]"
 (setq vemv/shortcuts/clojure/f9 vemv/shortcuts/global/f9)
+
+;; "<s-f9>"
+(setq vemv/shortcuts/clojure/S-f9 vemv/shortcuts/global/S-f9)
 
 ;; "<backspace>"
 (setq vemv/shortcuts/clojure/backspace vemv/shortcuts/global/backspace)

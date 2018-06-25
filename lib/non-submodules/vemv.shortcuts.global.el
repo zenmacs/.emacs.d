@@ -8,6 +8,8 @@
       vemv/shortcuts/global/f11                     'vemv/maximize
       vemv/shortcuts/global/RET                     'newline-and-indent
       vemv/shortcuts/global/S-backspace             'vemv/force-backspace
+      vemv/shortcuts/global/S-f7                    'vemv/previous-workspace
+      vemv/shortcuts/global/S-f9                    'vemv/next-workspace
       vemv/shortcuts/global/f4                      nil
       vemv/shortcuts/global/f7                      'vemv/previous-project
       vemv/shortcuts/global/f8                      'vemv/after-file-open
@@ -61,6 +63,7 @@
       vemv/shortcuts/global/secondary-k             'vemv/kill-backward
       vemv/shortcuts/global/secondary-left          'backward-word
       vemv/shortcuts/global/secondary-left-bracket  (vemv/safe-paredit-command 'paredit-backward)
+      vemv/shortcuts/global/secondary-left-parens   (vemv/safe-paredit-command 'paredit-wrap-sexp)
       vemv/shortcuts/global/secondary-next          'previous-buffer
       vemv/shortcuts/global/secondary-o             'vemv/open-at-project-root
       vemv/shortcuts/global/secondary-prior         'next-buffer

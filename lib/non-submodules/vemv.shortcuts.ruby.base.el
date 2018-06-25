@@ -4,38 +4,74 @@
 ;; "[f1]"
 (setq vemv/shortcuts/ruby/f1 vemv/shortcuts/global/f1)
 
+;; "<s-f1>"
+(setq vemv/shortcuts/ruby/S-f1 vemv/shortcuts/global/S-f1)
+
 ;; "[f10]"
 (setq vemv/shortcuts/ruby/f10 vemv/shortcuts/global/f10)
+
+;; "<s-f10>"
+(setq vemv/shortcuts/ruby/S-f10 vemv/shortcuts/global/S-f10)
 
 ;; "[f11]"
 (setq vemv/shortcuts/ruby/f11 vemv/shortcuts/global/f11)
 
+;; "<s-f11>"
+(setq vemv/shortcuts/ruby/S-f11 vemv/shortcuts/global/S-f11)
+
 ;; "[f12]"
 (setq vemv/shortcuts/ruby/f12 vemv/shortcuts/global/f12)
+
+;; "<s-f12>"
+(setq vemv/shortcuts/ruby/S-f12 vemv/shortcuts/global/S-f12)
 
 ;; "[f2]"
 (setq vemv/shortcuts/ruby/f2 vemv/shortcuts/global/f2)
 
+;; "<s-f2>"
+(setq vemv/shortcuts/ruby/S-f2 vemv/shortcuts/global/S-f2)
+
 ;; "[f3]"
 (setq vemv/shortcuts/ruby/f3 vemv/shortcuts/global/f3)
+
+;; "<s-f3>"
+(setq vemv/shortcuts/ruby/S-f3 vemv/shortcuts/global/S-f3)
 
 ;; "[f4]"
 (setq vemv/shortcuts/ruby/f4 vemv/shortcuts/global/f4)
 
+;; "<s-f4>"
+(setq vemv/shortcuts/ruby/S-f4 vemv/shortcuts/global/S-f4)
+
 ;; "[f5]"
 (setq vemv/shortcuts/ruby/f5 vemv/shortcuts/global/f5)
+
+;; "<s-f5>"
+(setq vemv/shortcuts/ruby/S-f5 vemv/shortcuts/global/S-f5)
 
 ;; "[f6]"
 (setq vemv/shortcuts/ruby/f6 vemv/shortcuts/global/f6)
 
+;; "<s-f6>"
+(setq vemv/shortcuts/ruby/S-f6 vemv/shortcuts/global/S-f6)
+
 ;; "[f7]"
 (setq vemv/shortcuts/ruby/f7 vemv/shortcuts/global/f7)
+
+;; "<s-f7>"
+(setq vemv/shortcuts/ruby/S-f7 vemv/shortcuts/global/S-f7)
 
 ;; "[f8]"
 (setq vemv/shortcuts/ruby/f8 vemv/shortcuts/global/f8)
 
+;; "<s-f8>"
+(setq vemv/shortcuts/ruby/S-f8 vemv/shortcuts/global/S-f8)
+
 ;; "[f9]"
 (setq vemv/shortcuts/ruby/f9 vemv/shortcuts/global/f9)
+
+;; "<s-f9>"
+(setq vemv/shortcuts/ruby/S-f9 vemv/shortcuts/global/S-f9)
 
 ;; "<backspace>"
 (setq vemv/shortcuts/ruby/backspace vemv/shortcuts/global/backspace)

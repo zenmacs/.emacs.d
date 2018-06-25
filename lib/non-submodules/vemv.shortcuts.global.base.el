@@ -4,38 +4,74 @@
 ;; "[f1]"
 (setq vemv/shortcuts/global/f1 (argless (message "You pressed `vemv/shortcuts/global/f1`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "<s-f1>"
+(setq vemv/shortcuts/global/S-f1 (argless (message "You pressed `vemv/shortcuts/global/S-f1`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "[f10]"
 (setq vemv/shortcuts/global/f10 (argless (message "You pressed `vemv/shortcuts/global/f10`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "<s-f10>"
+(setq vemv/shortcuts/global/S-f10 (argless (message "You pressed `vemv/shortcuts/global/S-f10`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "[f11]"
 (setq vemv/shortcuts/global/f11 (argless (message "You pressed `vemv/shortcuts/global/f11`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "<s-f11>"
+(setq vemv/shortcuts/global/S-f11 (argless (message "You pressed `vemv/shortcuts/global/S-f11`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "[f12]"
 (setq vemv/shortcuts/global/f12 (argless (message "You pressed `vemv/shortcuts/global/f12`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "<s-f12>"
+(setq vemv/shortcuts/global/S-f12 (argless (message "You pressed `vemv/shortcuts/global/S-f12`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "[f2]"
 (setq vemv/shortcuts/global/f2 (argless (message "You pressed `vemv/shortcuts/global/f2`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "<s-f2>"
+(setq vemv/shortcuts/global/S-f2 (argless (message "You pressed `vemv/shortcuts/global/S-f2`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "[f3]"
 (setq vemv/shortcuts/global/f3 (argless (message "You pressed `vemv/shortcuts/global/f3`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "<s-f3>"
+(setq vemv/shortcuts/global/S-f3 (argless (message "You pressed `vemv/shortcuts/global/S-f3`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "[f4]"
 (setq vemv/shortcuts/global/f4 (argless (message "You pressed `vemv/shortcuts/global/f4`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "<s-f4>"
+(setq vemv/shortcuts/global/S-f4 (argless (message "You pressed `vemv/shortcuts/global/S-f4`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "[f5]"
 (setq vemv/shortcuts/global/f5 (argless (message "You pressed `vemv/shortcuts/global/f5`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "<s-f5>"
+(setq vemv/shortcuts/global/S-f5 (argless (message "You pressed `vemv/shortcuts/global/S-f5`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "[f6]"
 (setq vemv/shortcuts/global/f6 (argless (message "You pressed `vemv/shortcuts/global/f6`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "<s-f6>"
+(setq vemv/shortcuts/global/S-f6 (argless (message "You pressed `vemv/shortcuts/global/S-f6`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "[f7]"
 (setq vemv/shortcuts/global/f7 (argless (message "You pressed `vemv/shortcuts/global/f7`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "<s-f7>"
+(setq vemv/shortcuts/global/S-f7 (argless (message "You pressed `vemv/shortcuts/global/S-f7`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "[f8]"
 (setq vemv/shortcuts/global/f8 (argless (message "You pressed `vemv/shortcuts/global/f8`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "<s-f8>"
+(setq vemv/shortcuts/global/S-f8 (argless (message "You pressed `vemv/shortcuts/global/S-f8`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "[f9]"
 (setq vemv/shortcuts/global/f9 (argless (message "You pressed `vemv/shortcuts/global/f9`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "<s-f9>"
+(setq vemv/shortcuts/global/S-f9 (argless (message "You pressed `vemv/shortcuts/global/S-f9`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "<backspace>"
 (setq vemv/shortcuts/global/backspace (argless (message "You pressed `vemv/shortcuts/global/backspace`! For making this binding useful, customize it (you can find instructions at the wiki)")))

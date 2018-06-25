@@ -68,6 +68,10 @@ def informative_stub binding
   %|(argless (message "You pressed `#{binding}`! For making this binding useful, customize it (you can find instructions at the wiki)"))|
 end
 
+def super_combination_for char
+  char[/\[f\d+\]/] ? "<s-f#{char[/\d+/]}>" : "S-#{char}"
+end
+ 
 def emit_setqs scope: 'global', modifier_mappings: {"primary" => 'C', "secondary" => 'M', "tertiary" => 's'}
   
   result = "(provide 'vemv.shortcuts.#{scope}.base)\n;; generated with gen.rb\n"
@@ -83,8 +87,8 @@ def emit_setqs scope: 'global', modifier_mappings: {"primary" => 'C', "secondary
     binding = "vemv/shortcuts/#{scope}/S-#{REPLACEMENTS[char]}"
     value = scope == 'global' ? informative_stub(binding) : "vemv/shortcuts/global/S-#{REPLACEMENTS[char]}"
     result += %|
-;; "S-#{char}"
-(setq #{binding} #{value})\n| unless (char.include?('[f') || DUALS.include?(char))
+;; "#{super_combination_for char}"
+(setq #{binding} #{value})\n| unless DUALS.include?(char)
     
   end
   
@@ -154,9 +158,9 @@ result += %|
     command = "vemv/shortcuts/#{scope}/#{REPLACEMENTS[char]}"
     left = char.include?('[f') ? "#{char}" : %|"#{char}"|
     result += %|    #{left} (argless (if #{command} (funcall #{command})))\n| unless SELF_INSERTING.include?(char)
-    unless char.include?('[f') || DUALS.include?(char)
+    unless DUALS.include?(char)
       command = "vemv/shortcuts/#{scope}/S-#{REPLACEMENTS[char]}"
-      result += %|    "S-#{char}" (argless (if #{command} (funcall #{command})))\n|
+      result += %|    "#{super_combination_for char}" (argless (if #{command} (funcall #{command})))\n|
     end
   end
   
@@ -190,9 +194,7 @@ def emit_to_remove scope='global', modifier_mappings: {"primary" => 'C', "second
         r = []
         left = char.include?('[f') ? "#{char}" : %|"#{char}"|
         r << left
-        unless char.include?('[f')
-          r << "S-#{char}"
-        end
+        r << super_combination_for(char)
         r
       end),
       
