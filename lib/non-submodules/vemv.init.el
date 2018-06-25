@@ -6,6 +6,7 @@
 (require 'vemv.project-explorer)
 (require 'vemv.window-system)
 (require 'vemv.clojure-interaction)
+(require 'vemv.mode-line)
 (require 'vemv.helm)
 (require 'vemv.project)
 (require 'vemv.workspace)
