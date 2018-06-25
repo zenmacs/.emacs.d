@@ -657,3 +657,24 @@ inserting it at a new line."
 (defun vemv/display-completion (buffer)
   (vemv/safe-select-window vemv/main_window)
   (set-window-buffer vemv/main_window buffer))
+
+(defun vemv/replace-regexp-entire-buffer (pattern replacement)
+  "Perform regular-expression replacement throughout buffer."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward pattern nil t)
+      (replace-match replacement))))
+
+(defun vemv/bounded-list/insert-at-head! (x bounded-list bound)
+  (vemv/mutate-list-to bounded-list (cons x (-clone bounded-list)))
+  (vemv/mutate-list-to bounded-list (-take bound (-clone bounded-list)))
+  bounded-list)
+
+(defun vemv/bounded-list/insert-at-second-position! (x bounded-list bound)
+  (let ((head (car bounded-list)))
+    (vemv/mutate-list-to bounded-list (rest (-clone bounded-list)))
+    (vemv/mutate-list-to bounded-list (cons x (-clone bounded-list)))
+    (vemv/mutate-list-to bounded-list (cons head (-clone bounded-list)))
+    (vemv/mutate-list-to bounded-list (-take bound (-clone bounded-list)))
+    bounded-list))

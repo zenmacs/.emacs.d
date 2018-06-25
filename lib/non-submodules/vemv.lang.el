@@ -5,25 +5,6 @@
 
 ;; elisp gotchas: let vs. let* · last returns a list · "Wrong type argument: commandp" -> forgot interactive
 
-(defun vemv/bounded-list/insert-at-head! (x bounded-list bound)
-  (vemv/mutate-list-to bounded-list (cons x (-clone bounded-list)))
-  (vemv/mutate-list-to bounded-list (-take bound (-clone bounded-list)))
-  bounded-list)
-
-(defun vemv/bounded-list/insert-at-second-position! (x bounded-list bound)
-  (let ((head (car bounded-list)))
-    (vemv/mutate-list-to bounded-list (rest (-clone bounded-list)))
-    (vemv/mutate-list-to bounded-list (cons x (-clone bounded-list)))
-    (vemv/mutate-list-to bounded-list (cons head (-clone bounded-list)))
-    (vemv/mutate-list-to bounded-list (-take bound (-clone bounded-list)))
-    bounded-list))
-
-(setq vemv/kill-list-bound 10)
-
-;; The 10 last elements copied to the clipboard.
-;; I don't use kill-ring, since third-parties (e.g. paredit) can mess with it
-(setq vemv/kill-list (-repeat vemv/kill-list-bound nil))
-
 (defun vemv/send (where &optional backward? content)
   "Copy the next sexp (or on non-nil backward? arg, the previous sexp) and its character trailer,
   switch to the window that is assigned for REPL purposes, then it switch to the corresponding buffer
@@ -219,55 +200,11 @@
 (defun vemv/fiplr (&optional opener)
   (fiplr-find-file-in-directory vemv/project-fiplr-dir fiplr-ignored-globs (or opener #'find-file)))
 
-(setq vemv/line-before-formatting nil)
-(setq vemv/token-before-formatting nil)
-
-(defun vemv/save-position-before-formatting ()
-  (setq vemv/line-before-formatting (max 0 (- (vemv/current-line-number) 3)))
-  (setq vemv/token-before-formatting (vemv/sexpr-content)))
-
-;; XXX unused
-;; XXX should be per-buffer (see vemv/save-all-clojure-buffers-for-this-project)
-(defun vemv/restore-position-before-formatting ()
-  (beginning-of-buffer)
-  (dotimes (i vemv/line-before-formatting)
-    (next-line))
-  (ignore-errors (search-forward vemv/token-before-formatting))
-  (paredit-backward)
-  (back-to-indentation))
-
-(defun vemv/save (&optional b)
-  (interactive)
-  (let ((b (or b (current-buffer))))
-    (with-current-buffer b
-      (unless (or (eq clojure-indent-style :align-arguments) clojure-align-forms-automatically)
-        (when (vemv/ciderable-p)
-          (vemv/save-position-before-formatting)
-          (let ((old (substring-no-properties (buffer-string))))
-            (save-excursion
-              (condition-case nil (cider-format-buffer)
-                (error
-                 (erase-buffer)
-                 (insert old)))))))
-      (save-buffer))))
-
-(defun vemv/save-all-clojure-buffers-for-this-project () ;; XXX make not clojure-only
+(defun vemv/save-all-buffers-for-this-project ()
   (mapcar (lambda (b)
-            (when (and (vemv/contains? (buffer-name b) ".clj")
-                       (vemv/buffer-of-current-project? b))
+            (when (and (vemv/buffer-of-current-project? b))
               (vemv/save b)))
           (vemv/all-buffers)))
-
-(defun vemv/tab ()
-  (interactive)
-  (or (and (or
-            (vemv/in-indentation-point-p)
-            (vemv/non-completable-char-p))
-           (or (call-interactively 'indent-for-tab-command)
-               t))
-      (call-interactively 'company-complete)
-      (call-interactively 'company-dabbrev)))
-
 
 (defun vemv/open-file-via-fiplr-then-close-previous-buffer ()
   (interactive)
@@ -279,34 +216,6 @@
 
 (defun vemv/smex ()
   (when vemv/launched (smex)))
-
-(defun vemv/cut ()
-  (interactive)
-  (vemv/bounded-list/insert-at-head! (vemv/kill nil nil)
-                                     vemv/kill-list
-                                     vemv/kill-list-bound))
-
-(defun vemv/copy-inserting-at-kill-list ()
-  (interactive)
-  (vemv/bounded-list/insert-at-head! (vemv/copy-selection-or-next-sexpr)
-                                     vemv/kill-list
-                                     vemv/kill-list-bound))
-
-(defun vemv/maybe-indent-on-paste (content)
-  (when (and (vemv/in-a-lisp-mode?)
-             (s-match "^\s*[\(|[|{]" content))
-    (paredit-backward)
-    (vemv/indent)))
-
-(defun vemv/paste-from-clipboard ()
-  (let ((content (substring-no-properties (simpleclip-get-contents))))
-    (insert content)
-    (vemv/maybe-indent-on-paste content)))
-
-(defun vemv/paste-from-kill-list ()
-  (let ((content (car vemv/kill-list)))
-    (insert content)
-    (vemv/maybe-indent-on-paste content)))
 
 (defun vemv/emacs-reload ()
   (let ((was-verbose vemv/verbose-mode))
@@ -353,11 +262,3 @@
   (vemv/refresh-available-projects)
   (vemv/previous-project-within-workspace)
   (vemv/force-refresh-project!))
-
-(defun vemv/replace-regexp-entire-buffer (pattern replacement)
-  "Perform regular-expression replacement throughout buffer."
-  (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    (while (re-search-forward pattern nil t)
-      (replace-match replacement))))
