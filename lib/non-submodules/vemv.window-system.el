@@ -149,3 +149,51 @@
            (the-file (if the-file (file-truename the-file))))
       (when (and the-file (file-exists-p the-file))
         (vemv/open the-file)))))
+
+(defun vemv/maximize ()
+  "Maximize the current frame. Presumes an X-window environment."
+  (toggle-frame-maximized))
+
+(defun vemv/switch-to-buffer-in-any-frame (buffer-name)
+  (if (seq-contains (vemv/current-frame-buffers) buffer-name)
+      (switch-to-buffer buffer-name)
+      (switch-to-buffer-other-frame buffer-name)))
+
+(defun vemv/safe-select-window (x)
+  (unless (minibuffer-prompt)
+    (select-window x)))
+
+(defmacro vemv/save-window-excursion (&rest forms)
+  `(let ((current-window (selected-window))
+         (v (save-excursion
+              ,@forms)))
+     (vemv/safe-select-window current-window)
+     v))
+
+(defun vemv/active-modes ()
+  "Returns a list of the minor modes that are enabled in the current buffer."
+  (interactive)
+  (let ((active-modes))
+    (mapc (lambda (mode) (condition-case nil
+                             (if (and (symbolp mode) (symbol-value mode))
+                                 (add-to-list 'active-modes mode))
+                           (error nil)))
+          minor-mode-list)
+    active-modes))
+
+(defun vemv/new-frame ()
+  (interactive)
+  ;; in order to kill a frame, use the window system's standard exit (e.g. Alt-F4) command. The other frames won't close
+  (make-frame `((width . ,(frame-width)) (height . ,(frame-height)))))
+
+(defun vemv/next-window ()
+  "Switch to the next window."
+  (interactive)
+  (unless (minibuffer-prompt)
+    (vemv/safe-select-window (next-window))))
+
+(defun vemv/previous-window ()
+  "Switch to the previous window."
+  (interactive)
+  (unless (minibuffer-prompt)
+    (vemv/safe-select-window (previous-window))))

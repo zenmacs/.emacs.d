@@ -144,10 +144,6 @@ ACC is an implementation detail - do not pass this parameter!"
             (equal slice b-list))
           a-parted)))
 
-(defun vemv/maximize ()
-  "Maximize the current frame. Presumes an X-window environment."
-  (toggle-frame-maximized))
-
 (defun vemv/hash-map (&rest kvs)
   "Makes and returns a hash table out of its arguments."
   (let ((result (make-hash-table :test 'equal)))
@@ -159,61 +155,6 @@ ACC is an implementation detail - do not pass this parameter!"
   (setcar from (car to))
   (setcdr from (rest to))
   from)
-
-(defun vemv/selected-region ()
-  "Returns the selected region as a string. Side effects free."
-  (kill-ring-save (mark) (point))
-  (let ((result (substring-no-properties (car kill-ring))))
-    (pop kill-ring)
-    result))
-
-(defun vemv/current-frame-buffers ()
-  (mapcar #'buffer-name (mapcar #'window-buffer (window-list))))
-
-(defun vemv/all-buffers ()
-  (buffer-list))
-
-(defun vemv/all-buffer-names ()
-  (mapcar #'buffer-name (vemv/all-buffers)))
-
-(defun vemv/switch-to-buffer-in-any-frame (buffer-name)
-  (if (seq-contains (vemv/current-frame-buffers) buffer-name)
-      (switch-to-buffer buffer-name)
-      (switch-to-buffer-other-frame buffer-name)))
-
-(defun vemv/safe-select-window (x)
-  (unless (minibuffer-prompt)
-    (select-window x)))
-
-(defmacro vemv/save-window-excursion (&rest forms)
-  `(let ((current-window (selected-window))
-         (v (save-excursion
-              ,@forms)))
-     (vemv/safe-select-window current-window)
-     v))
-
-(defun vemv/active-modes ()
-  "Returns a list of the minor modes that are enabled in the current buffer."
-  (interactive)
-  (let ((active-modes))
-    (mapc (lambda (mode) (condition-case nil
-                             (if (and (symbolp mode) (symbol-value mode))
-                                 (add-to-list 'active-modes mode))
-                           (error nil)))
-          minor-mode-list)
-    active-modes))
-
-(defun vemv/next-window ()
-  "Switch to the next window."
-  (interactive)
-  (unless (minibuffer-prompt)
-    (vemv/safe-select-window (next-window))))
-
-(defun vemv/previous-window ()
-  "Switch to the previous window."
-  (interactive)
-  (unless (minibuffer-prompt)
-    (vemv/safe-select-window (previous-window))))
 
 (defun vemv/elisp-window-documentation ()
   "Displays the documentation for the symbol that is currently hovered by the point in a new window. Presumes emacs-lisp-mode."
@@ -240,122 +181,17 @@ ACC is an implementation detail - do not pass this parameter!"
   ":foo -> \"foo\""
   (substring (symbol-name arg) 1))
 
-(defun vemv/current-line-contents ()
-  "Returns the content of the line at which the point is currently located. Side effects free."
-  (interactive)
-  (let ((result (buffer-substring-no-properties (line-beginning-position 1) (line-beginning-position 2))))
-    (if (equal result "") ;; abstact away EOFs
-        "\n"
-        result)))
-
-(defun vemv/previous-line ()
-  (save-excursion
-    (call-interactively 'previous-line)
-    (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
-
-(defun vemv/current-line ()
-  (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
-
-(defun vemv/current-line-number ()
-  (1+ (count-lines 1 (point))))
-
-(defun vemv/current-char-at-point (&optional offset)
-  "Returns the character -as a string- hovered by the point, or a contiguous one, if an integer offset is specified."
-  (interactive)
-  (kill-ring-save (+ 1 (point) (or offset 0)) (+ (point) (or offset 0)))
-  (let ((result (substring-no-properties (car kill-ring))))
-    (pop kill-ring)
-    result))
-
-(defun vemv/in-clojure-mode? ()
-  ;; better: derived-mode-p
-  (vemv/contains? (pr-str major-mode) "clojure"))
-
-(defun vemv/ciderable-p ()
-  (and
-   (vemv/in-clojure-mode?)
-   (cider-connected-p)
-   vemv-cider-connected))
-
 (defun vemv/timestamp ()
   (truncate (float-time)))
 
 (defun vemv/scratch-p ()
   (string-equal "*scratch*" (buffer-name (current-buffer))))
 
-(defun vemv/current-main-buffer-is-cljs ()
-  (or (vemv/contains? (buffer-name) ".cljs")
-      (and (vemv/contains? (buffer-name) ".cljc")
-           (eq vemv/project-type :cljs))))
-
-(defun vemv/line-empty? (line)
-  (or (= 0 (length line))
-      (every (lambda (char) (= char 32)) line)))
-
-(defun vemv/at-beginning-of-line-p ()
-  (eq (point) (save-excursion (beginning-of-line) (point))))
-
-(defun vemv/at-end-of-line-p ()
-  (eq (point) (save-excursion (end-of-line) (point))))
-
-(defun vemv/char-at-left ()
-  (save-excursion
-    (push-mark)
-    (left-char)
-    (vemv/selected-region)))
-
-(defun vemv/chars-at-left ()
-  (save-excursion
-    (push-mark)
-    (move-beginning-of-line 1)
-    (vemv/selected-region)))
-
-(defun vemv/char-at-right ()
-  (save-excursion
-    (push-mark)
-    (right-char)
-    (vemv/selected-region)))
-
-(defun vemv/chars-at-right ()
-  (save-excursion
-    (push-mark)
-    (move-end-of-line 1)
-    (vemv/selected-region)))
-
 (defmacro vemv/measure-time (&rest body)
   "Measure the time it takes to evaluate BODY."
   `(let ((time (current-time)))
      ,@body
      (message "%.06f" (float-time (time-since time)))))
-
-(defun vemv/in-indentation-point-p ()
-  "Whether the cursor is in a point apt for triggering an indentation command."
-  
-  (or (vemv/at-beginning-of-line-p)
-      (every (lambda (x) (= x 32))
-             (vemv/chars-at-left))))
-
-(defun vemv/non-completable-char-p ()
-  "Whether the cursor is in a point predictably impossible to autocomplete"
-  (let ((current-char (vemv/current-char-at-point)))
-    (-any?
-     (lambda (x)
-       (string-equal x current-char))
-     (list "(" "[" "{" "#" "\""))))
-
-(defun vemv/search-in-this-buffer ()
-  (ignore-errors
-    (call-interactively 'search-forward)
-    (setq vemv-last-search (first minibuffer-history))))
-
-(defun vemv/new-frame ()
-  (interactive)
-  ;; in order to kill a frame, use the window system's standard exit (e.g. Alt-F4) command. The other frames won't close
-  (make-frame `((width . ,(frame-width)) (height . ,(frame-height)))))
-
-(defun vemv/repeat-last-search-in-this-buffer ()
-  (interactive)
-  (ignore-errors (search-forward vemv-last-search)))
 
 (defun vemv/keyboard-macro (key)
   (if (stringp key)
