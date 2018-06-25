@@ -7,6 +7,7 @@
 (require 'vemv.window-system)
 (require 'vemv.clojure-interaction)
 (require 'vemv.paredit)
+(require 'vemv.edit)
 (require 'vemv.mode-line)
 (require 'vemv.helm)
 (require 'vemv.project-interaction)
