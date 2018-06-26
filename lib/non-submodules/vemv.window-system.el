@@ -131,25 +131,6 @@
                   (vemv/close-this-buffer))))
             (-clone (gethash vemv/current-project vemv/chosen-file-buffer-order)))))
 
-(defun vemv/open-recent-file-for-this-project! ()
-  (when (boundp 'vemv/main_window)
-    (let* ((the-file (when (and (file-readable-p recentf-save-file)
-                                (pos? (length recentf-list)))
-                       (car (filter (lambda (x)
-                                      (and x (vemv/contains? (file-truename x) vemv/project-root-dir)
-                                           (not (vemv/contains? (file-truename x) "ido.last"))))
-                                    recentf-list))))
-           (the-file (if (or (not (vemv/in-clojure-mode?))
-                             (and the-file
-                                  (file-exists-p the-file) ;; file-truename can make up nonexisting files
-                                  (vemv/contains? (file-truename the-file) ;; expand symlinks
-                                                  vemv/project-clojure-dir)))
-                         the-file ;; ensure nrepl opens a clojure context
-                         vemv/default-clojure-file))
-           (the-file (if the-file (file-truename the-file))))
-      (when (and the-file (file-exists-p the-file))
-        (vemv/open the-file)))))
-
 (defun vemv/maximize ()
   "Maximize the current frame. Presumes an X-window environment."
   (toggle-frame-maximized))

@@ -152,3 +152,6 @@
   (vemv/refresh-available-projects)
   (vemv/previous-project-within-workspace)
   (vemv/force-refresh-project!))
+
+(defun vemv/clojure-project? ()
+  (vemv/contains? (vemv/keyword-to-string vemv/project-type) "clj"))

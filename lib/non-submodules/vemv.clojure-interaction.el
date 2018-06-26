@@ -234,7 +234,6 @@
         (setq cider-prompt-for-symbol vemv/cider-prompt-for-symbol)
         (vemv/advice-nrepl))))
 
-
 (defun vemv/clear-cider-repl-buffer (&optional no-recur)
   (interactive)
   (when (cider-connected-p)
