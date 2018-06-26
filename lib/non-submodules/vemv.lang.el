@@ -27,7 +27,7 @@
                                     (:cljs vemv/cljs-repl-name))))
           (if (not (seq-contains (vemv/all-buffer-names) destination-buffer))
               (vemv/echo "Can't eval in a different project!")
-              (vemv/safe-select-window vemv/repl2)
+              (vemv/safe-select-window vemv/repl-window)
               (switch-to-buffer destination-buffer)
 
               (end-of-buffer)

@@ -32,9 +32,9 @@
 
   (vemv/next-window)
 
-  (setq vemv/repl2 (selected-window))
+  (setq vemv/repl-window (selected-window))
 
-  (delay (argless (vemv/safe-select-window vemv/repl2)
+  (delay (argless (vemv/safe-select-window vemv/repl-window)
                   (ielm)
                   (switch-to-buffer "*shell-1*")
                   (enable-paredit-mode)
@@ -69,7 +69,7 @@
 
 (defun vemv/good-window-p ()
   (or (eq (selected-window) vemv/main_window)
-      (eq (selected-window) vemv/repl2)
+      (eq (selected-window) vemv/repl-window)
       (eq (selected-window) vemv/project-explorer-window)))
 
 (setq vemv/main_frame (selected-frame))
@@ -106,7 +106,7 @@
       (vemv/close-this-buffer))
   ;; buffer closing can change the selected window. compensate it:
   (if-let (unrelated-window (first (filter (lambda (w)
-                                             (not (seq-contains (list vemv/repl2 vemv/project-explorer-window vemv/main_window)
+                                             (not (seq-contains (list vemv/repl-window vemv/project-explorer-window vemv/main_window)
                                                                 w)))
                                            (window-list))))
       (select-window unrelated-window))

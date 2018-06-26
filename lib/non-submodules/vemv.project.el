@@ -130,7 +130,7 @@
     (call-interactively 'whitespace-mode)
     
     (when switch-p
-      (select-window vemv/repl2) ;; ensures the currently-selected project is visible
+      (select-window vemv/repl-window) ;; ensures the currently-selected project is visible
       (funcall vemv/maybe-change-project-graphically))
 
     (when (not (gethash vemv/current-project vemv/chosen-file-buffer-order))

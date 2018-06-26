@@ -43,7 +43,7 @@
   (let ((default-directory vemv/project-root-dir))
     (call-interactively 'project-explorer-open))
   (unless (or cider-launched vemv-cider-connected (cider-connected-p))
-    (select-window vemv/repl2)
+    (select-window vemv/repl-window)
     (if (eq vemv/project-type :elisp)
         (switch-to-buffer "*ielm*")
         (vemv/send :shell nil vemv/project-root-dir)

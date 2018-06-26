@@ -52,7 +52,7 @@
             (when (and (vemv/ciderable-p)
                        (vemv/figwheel-connected-p)
                        (not (string-equal (vemv/current-ns)
-                                          (vemv/current-ns (window-buffer vemv/repl2)))))
+                                          (vemv/current-ns (window-buffer vemv/repl-window)))))
               (cider-repl-set-ns (vemv/current-ns))))
           (when after
             (funcall after)))
@@ -88,7 +88,7 @@
   (when (vemv/ciderable-p) 
     (vemv/safe-select-window vemv/main_window)
     (setq was (vemv/current-main-buffer-is-cljs))
-    (vemv/safe-select-window vemv/repl2)
+    (vemv/safe-select-window vemv/repl-window)
     (if was
         (switch-to-buffer vemv/cljs-repl-name)
         (switch-to-buffer vemv/clj-repl-name))
@@ -109,7 +109,7 @@
       (let* ((files (filter (lambda (x)
                               (vemv/ends-with x ".cljs"))
                             (directory-files-recursively "/Users/vemv/gpm/src/horizon/src/" ".cljs"))))
-        (vemv/safe-select-window vemv/repl2)
+        (vemv/safe-select-window vemv/repl-window)
         (switch-to-buffer "*Messages*")
         (vemv/safe-select-window vemv/main_window)
         (vemv/open "/Users/vemv/gpm/src/horizon/project.clj")
@@ -182,7 +182,7 @@
                                                                    (vemv/safe-select-window vemv/main_window)
                                                                    (current-buffer)))
                                                              (vemv/save-window-excursion
-                                                              (vemv/safe-select-window vemv/repl2)
+                                                              (vemv/safe-select-window vemv/repl-window)
                                                               (vemv/switch-to-buffer-in-any-frame vemv/clj-repl-name)
                                                               (end-of-buffer)
                                                               (paredit-backward)
@@ -238,7 +238,7 @@
   (interactive)
   (when (cider-connected-p)
     (vemv/save-window-excursion
-     (select-window vemv/repl2)
+     (select-window vemv/repl-window)
      (end-of-buffer)
      (when (and (not no-recur)
                 (or (> (point-max) 5000) ;; b/c I think the code below is slow, can hang emacs
