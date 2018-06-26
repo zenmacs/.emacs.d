@@ -44,11 +44,13 @@
     (call-interactively 'project-explorer-open))
   (unless (or cider-launched vemv-cider-connected (cider-connected-p))
     (select-window vemv/repl2)
-    (vemv/send :shell nil vemv/project-root-dir)
-    (delay (argless
-            (comint-clear-buffer)
-            (select-window vemv/main_window))
-           0.3)))
+    (if (eq vemv/project-type :elisp)
+        (switch-to-buffer "*ielm*")
+        (vemv/send :shell nil vemv/project-root-dir)
+        (delay (argless
+                (comint-clear-buffer)
+                (select-window vemv/main_window))
+               0.3))))
 
 (setq vemv/maybe-change-project-graphically
       (vemv/debounce 'vemv/maybe-change-project-graphically* 0.3))

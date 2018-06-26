@@ -6,7 +6,8 @@
 
 (defun vemv/initial-layout ()
   
-  (if (window-system) (vemv/maximize))
+  (when (window-system)
+      (vemv/maximize))
 
   (split-window-vertically)
   (enlarge-window 8)
@@ -34,6 +35,7 @@
   (setq vemv/repl2 (selected-window))
 
   (delay (argless (vemv/safe-select-window vemv/repl2)
+                  (ielm)
                   (switch-to-buffer "*shell-1*")
                   (enable-paredit-mode)
                   (vemv/safe-select-window vemv/main_window)
