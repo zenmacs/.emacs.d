@@ -73,21 +73,23 @@
     (apply 'concat (-interpose sep all))))
 
 (defun vemv/message-file-buffers-impl ()
-  (vemv/clean-chosen-file-buffer-order)
-  (let* ((x (car (gethash vemv/current-project vemv/chosen-file-buffer-order))) 
-         (first (if (vemv/contains? x ".clj")
-                    (if (vemv/contains? x "project.clj")
-                        x
-                        (vemv/abbreviate-ns (or (ignore-errors (cider-current-ns))
-                                                x)))
-                    x))
-         (first (when x
-                  (with-current-buffer (get-buffer x)
-                    (if (buffer-modified-p)
-                        (concat first "*")
-                        first))))
-         (rest (mapcar 'vemv/mode-line-for-buffer (cdr (gethash vemv/current-project vemv/chosen-file-buffer-order)))))
-    (vemv/format-tabs first rest)))
+  (if (string-equal (buffer-name) "*scratch*")
+      ""
+      (vemv/clean-chosen-file-buffer-order)
+      (let* ((x (car (gethash vemv/current-project vemv/chosen-file-buffer-order))) 
+             (first (if (vemv/contains? x ".clj")
+                        (if (vemv/contains? x "project.clj")
+                            x
+                            (vemv/abbreviate-ns (or (ignore-errors (cider-current-ns))
+                                                    x)))
+                        x))
+             (first (when x
+                      (with-current-buffer (get-buffer x)
+                        (if (buffer-modified-p)
+                            (concat first "*")
+                            first))))
+             (rest (mapcar 'vemv/mode-line-for-buffer (cdr (gethash vemv/current-project vemv/chosen-file-buffer-order)))))
+        (vemv/format-tabs first rest))))
 
 (defun vemv/pe/mode-line-format* ()
   (let* ((first vemv/current-project)
