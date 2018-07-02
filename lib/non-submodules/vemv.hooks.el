@@ -17,7 +17,8 @@
 (add-hook 'shell-mode-hook
           (argless (setq-local mode-line-format vemv/pe/mode-line-format)))
 
-(dolist (mode (list 'emacs-lisp-mode-hook 'ruby-mode-hook 'clojure-mode-hook 'js-mode-hook 'css-mode-hook 'html-mode-hook))
+(dolist (mode (list 'emacs-lisp-mode-hook 'ruby-mode-hook 'clojure-mode-hook
+                    'js-mode-hook 'css-mode-hook 'html-mode-hook 'haml-mode-hook))
   (add-hook mode (argless (call-interactively 'text-scale-increase))))
 
 (add-hook 'clojure-mode-hook

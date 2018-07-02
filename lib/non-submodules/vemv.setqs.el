@@ -183,7 +183,13 @@
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 
-(setq company-dabbrev-char-regexp "\\sw\\|-")
+(setq company-dabbrev-char-regexp "\\sw\\|_\\|-")
+
+;; https://github.com/company-mode/company-mode/issues/808
+(setq company-backends (-remove (lambda (x)
+                                  (and (listp x)
+                                       (equal (car x) 'company-dabbrev-code)))
+                                company-backends))
 
 ;; monkeypatch for https://github.com/clojure-emacs/cider/issues/2102
 (defun cider--format-buffer (formatter)

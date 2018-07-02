@@ -27,6 +27,10 @@
       (list clojure-mode-map  ";" 'vemv/semicolon
             clojure-mode-map "<tab>" 'vemv/tab
             emacs-lisp-mode-map "<tab>" 'vemv/tab
+            ruby-mode-map "<tab>" 'vemv/tab
+            html-mode-map "<tab>" 'vemv/tab
+            js-mode-map "<tab>" 'vemv/tab
+            haml-mode-map "<tab>" 'vemv/tab
             emacs-lisp-mode-map  ";" 'vemv/semicolon
             helm-map [(shift return)] (argless (interactive) (helm-select-nth-action 1))
             helm-map "C-a" 'vemv/helm-persistent-action-all
