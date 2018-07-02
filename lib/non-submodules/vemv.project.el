@@ -62,7 +62,8 @@
             (vemv/projects-for-workspace))))
 
 (defun vemv/refresh-current-project (which &optional switch-p)
-  (let ((on-the-fly-project (vemv/on-the-fly-project? which vemv/cached-projects-with-initialization-files)))
+  (let ((old-project-type vemv/project-type)
+        (on-the-fly-project (vemv/on-the-fly-project? which vemv/cached-projects-with-initialization-files)))
     (vemv.project/reset)
 
     (when which
@@ -133,6 +134,9 @@
       (select-window vemv/repl-window) ;; ensures the currently-selected project is visible
       (funcall vemv/maybe-change-project-graphically))
 
+    (when (not (equal vemv/project-type old-project-type))
+      (load "vemv.theme"))
+    
     (when (not (gethash vemv/current-project vemv/chosen-file-buffer-order))
         (vemv/open-recent-file-for-this-project!))))
 

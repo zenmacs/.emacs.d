@@ -100,7 +100,7 @@
  `(font-lock-function-name-face ((t (:foreground ,vemv-colors/yellow :bold t))))
 
  ;; used for special forms and macros. also for def - which is annoying
- `(font-lock-keyword-face ((t (:foreground ,vemv-colors/lighter-yellow))))
+ `(font-lock-keyword-face ((t (:foreground ,(if (eq :ruby vemv/project-type) vemv-default-foreground-color vemv-colors/lighter-yellow)))))
  `(font-lock-preprocessor-face ((t (:foreground ,vemv-colors/keyword-green)))) ;; Java
  `(font-lock-regexp-grouping-backslash ((t (:foreground ,vemv-colors/yellow))))
  `(font-lock-regexp-grouping-construct ((t (:foreground ,vemv-colors/blue))))
@@ -110,7 +110,9 @@
  `(font-lock-type-face ((t (:foreground ,vemv-default-foreground-color-very-slightly-darker
                                         :background ,vemv-default-background-color-slightly-darker))))
 
- `(font-lock-variable-name-face ((t (:foreground ,vemv-colors/yellow :bold t))))
+ `(font-lock-variable-name-face ((t ,(if (eq :ruby vemv/project-type)
+                                         `(:foreground ,vemv-default-foreground-color)
+                                         `(:foreground ,vemv-colors/yellow :bold t)))))
  `(font-lock-warning-face ((t (:bold t :foreground "Pink"))))
 
  `(gui-element ((t (:background "#484848" :foreground "#96CBFE"))))
@@ -191,7 +193,9 @@
 
  `(yas/field-highlight-face ((t (:background "deep pink" :foreground "black"))))
 
- `(show-paren-match-face ((t (:background ,vemv-colors/pink :foreground ,vemv-default-foreground-color))))
+ `(show-paren-match-face ((t ,(if (eq :ruby vemv/project-type)
+                                  `(:foreground ,vemv-default-foreground-color :background "#7A3555")
+                                  `(:background ,vemv-colors/pink :foreground ,vemv-default-foreground-color)))))
 
  `(helm-candidate-number ((t (:inherit helm-header))))
  `(helm-candidate-number-suspended ((t (:inherit helm-header))))
