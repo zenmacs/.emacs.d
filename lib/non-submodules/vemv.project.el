@@ -41,6 +41,7 @@
      (setq vemv/modifiers/tertiary nil)
      (setq vemv/clj-repl-name nil)
      (setq vemv/cljs-repl-name nil)
+     (setq comment-indent-function 'comment-indent-default)
      (setq clojure-indent-style :always-align)
      (setq clojure-align-forms-automatically nil)
      (setq whitespace-line-column 131)

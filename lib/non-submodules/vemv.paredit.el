@@ -306,3 +306,19 @@ inserting it at a new line."
     (when (string-equal " " (vemv/char-at-left))
       (paredit-backward-delete))
     (call-interactively 'paredit-backward)))
+
+(defun vemv/normal-indentation ()
+  "https://stackoverflow.com/a/14196835/569050"
+  (if (and (looking-at "\\s<\\s<\\(\\s<\\)?")
+           (or (match-end 1) (/= (current-column) (current-indentation))))
+      0
+      (let ((curr (save-excursion
+                    (end-of-line)
+                    (insert "\n")
+                    (call-interactively 'indent-for-tab-command)
+                    (let ((v (current-indentation)))
+                      (vemv/delete-only-this-line)
+                      v))))
+        (when (or (/= (current-column) curr)
+                  (and (> comment-add 0) (looking-at "\\s<\\(\\S<\\|\\'\\)")))
+          curr))))

@@ -43,14 +43,17 @@
                            (bolp))
                        (end-of-line)))))
 
-(defun vemv/delete-this-line ()
-  "Deletes the entire current line regardless of its contents, and any preceding empty lines."
-  (interactive)
+(defun vemv/delete-only-this-line ()
   (end-of-line)
   (cua-set-mark)
   (previous-line)
   (end-of-line)
-  (call-interactively 'kill-region)
+  (call-interactively 'kill-region))
+
+(defun vemv/delete-this-line ()
+  "Deletes the entire current line regardless of its contents, and any preceding empty lines."
+  (interactive)
+  (vemv/delete-only-this-line)
   (let ((line (vemv/current-line)))
     (if (and (vemv/line-empty? line)
              (vemv/line-empty? (vemv/previous-line)))
