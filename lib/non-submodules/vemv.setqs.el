@@ -27,7 +27,7 @@
       ;; `directories` entries must be single-segment, i.e `/` doesn't work.
       '((directories (".git" "tmp" ".svn" ".hg" ".bzr" "tools" "res-vagrant"
                       ".paket" "doc" "bin" "assets" "public" "node_modules" "coverage"))
-        (files (".#*" "*~" "*.so" "*.jpg" "*.png" "*.gif" "*.pdf" "*.gz" "*.zip" "*.js" "*.DS_Store"
+        (files (".#*" "*~" "*.so" "*.jpg" "*.png" "*.gif" "*.pdf" "*.gz" "*.zip" "*.DS_Store"
                 "*.md" "*.gitgnore" "*.scssc" "*.keep" "*.json" "LICENSE" "LICENCE" "license" "*.patch"
                 "flask-server" "Makefile" "makefile" "*.txt" "*ignore""*.*rc" "*.map" ".last-compilation-digest-development"
                 "*.ico" "Gemfile" "Rakefile" ".rspec" "*integration-testing*" "*node_modules*" "webpack" ".editorconfig" "*.pid"
