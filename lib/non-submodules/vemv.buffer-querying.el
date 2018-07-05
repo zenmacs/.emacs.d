@@ -127,4 +127,4 @@
     (-any?
      (lambda (x)
        (string-equal x current-char))
-     (list "(" "[" "{" "#" "\""))))
+     (list ";" "(" "[" "{" "#" "\""))))
