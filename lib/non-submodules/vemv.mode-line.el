@@ -73,8 +73,8 @@
     (apply 'concat (-interpose sep all))))
 
 (defun vemv/message-file-buffers-impl ()
-  (if (string-equal (buffer-name) "*scratch*")
-      ""
+  (if (not (vemv/buffer-of-current-project? (current-buffer)))
+      (buffer-name)
       (vemv/clean-chosen-file-buffer-order)
       (let* ((x (car (gethash vemv/current-project vemv/chosen-file-buffer-order))) 
              (first (if (vemv/contains? x ".clj")
