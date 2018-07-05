@@ -5,8 +5,6 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq initial-scratch-message "")
 
-(setq require-final-newline 't)
-
 (setq cider-repl-display-help-banner' nil)
 (setq ido-show-dot-for-dired t)
 

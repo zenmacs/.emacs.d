@@ -41,6 +41,7 @@
      (setq vemv/modifiers/tertiary nil)
      (setq vemv/clj-repl-name nil)
      (setq vemv/cljs-repl-name nil)
+     (setq vemv/no-newline-at-eof nil)
      (setq comment-indent-function 'comment-indent-default)
      (setq clojure-indent-style :always-align)
      (setq clojure-align-forms-automatically nil)
@@ -139,6 +140,6 @@
       (load "vemv.theme"))
     
     (when (not (gethash vemv/current-project vemv/chosen-file-buffer-order))
-        (vemv/open-recent-file-for-this-project!))))
+      (vemv/open-recent-file-for-this-project!))))
 
 (vemv/refresh-current-project vemv/current-project)

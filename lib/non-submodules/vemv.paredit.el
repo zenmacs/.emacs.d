@@ -29,7 +29,8 @@
 
 (defun vemv/save (&optional b)
   (interactive)
-  (let ((b (or b (current-buffer))))
+  (let ((b (or b (current-buffer)))
+        (require-final-newline (not vemv/no-newline-at-eof)))
     (with-current-buffer b
       (unless (or (eq clojure-indent-style :align-arguments) clojure-align-forms-automatically)
         (when (vemv/ciderable-p)
@@ -40,6 +41,11 @@
                 (error
                  (erase-buffer)
                  (insert old)))))))
+      (when vemv/no-newline-at-eof
+        (save-excursion
+          (end-of-buffer)
+          (while (string-equal (vemv/current-char-at-point) "\n")
+            (delete-backward-char 1))))
       (save-buffer))))
 
 (defun vemv/tab ()

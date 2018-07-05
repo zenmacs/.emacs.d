@@ -53,10 +53,17 @@
 (defun vemv/current-char-at-point (&optional offset)
   "Returns the character -as a string- hovered by the point, or a contiguous one, if an integer offset is specified."
   (interactive)
-  (kill-ring-save (+ 1 (point) (or offset 0)) (+ (point) (or offset 0)))
-  (let ((result (substring-no-properties (car kill-ring))))
-    (pop kill-ring)
-    result))
+  (let ((s (buffer-size)))
+    (if (eq s 0)
+        ""
+        (let* ((o (or offset 0))
+               (beg (+ (point) o))
+               (end (+ beg 1))
+               (end (if (> end s) s end))
+               (_ (kill-ring-save beg end))
+               (result (substring-no-properties (car kill-ring))))
+          (pop kill-ring)
+          result))))
 
 (defun vemv/in-clojure-mode? ()
   ;; better: derived-mode-p
