@@ -8,8 +8,8 @@
 
 (setq vemv/packages-refreshed nil)
 
-(dolist (package '(cider company queue fiplr clojure-mode clj-refactor smartparens
-                         dash simpleclip helm-ag git-timemachine paren-face haml-mode))
+(dolist (package '(company queue fiplr smartparens
+                   dash simpleclip helm-ag git-timemachine paren-face haml-mode))
   (unless (package-installed-p package)
     (unless vemv/packages-refreshed
       (package-refresh-contents)
@@ -44,6 +44,7 @@
 (require 'paredit)
 (require 'undo-tree)
 (require 's)
+(require 'cider)
 (require 'clj-refactor)
 (require 'fiplr)
 (require 'helm-ag)
