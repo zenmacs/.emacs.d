@@ -33,3 +33,4 @@ ido.last
 /lib/non-submodules/init.el
 /.emacs.desktop.lock
 /emacs-desktop
+/smex-items
