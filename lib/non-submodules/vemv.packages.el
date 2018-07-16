@@ -9,7 +9,7 @@
 (setq vemv/packages-refreshed nil)
 
 (dolist (package '(edn inflections hydra company queue fiplr smartparens yasnippet multiple-cursors
-                   dash simpleclip helm-ag git-timemachine paren-face haml-mode))
+                   dash simpleclip helm-ag git-timemachine paren-face haml-mode ruby-end))
   (unless (package-installed-p package)
     (unless vemv/packages-refreshed
       (package-refresh-contents)

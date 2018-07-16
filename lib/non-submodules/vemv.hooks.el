@@ -3,7 +3,8 @@
 (when (not vemv-cleaning-namespaces)
   (add-hook 'clojure-mode-hook 'hs-minor-mode))
 
-(add-hook 'ruby-mode-hook (argless (smartparens-mode)))
+(add-hook 'ruby-mode-hook (argless (smartparens-mode)
+                                   (ruby-end-mode)))
 
 (add-hook 'emacs-lisp-mode-hook
           (argless (setq-local mode-line-format tabbed-line-format)))
