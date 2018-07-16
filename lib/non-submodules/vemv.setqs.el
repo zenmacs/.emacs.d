@@ -44,6 +44,9 @@
 
 (setq js-indent-level 2)
 (setq css-indent-offset 2)
+(setq sh-basic-offset 2)
+(setq sh-indentation 2)
+(setq smie-indent-basic 2)
 
 (custom-set-variables
  '(xref-prompt-for-identifier nil)
