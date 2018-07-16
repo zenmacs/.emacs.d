@@ -12,6 +12,7 @@
     (when (and (vemv/in-clojure-mode?)
                (not vemv/ns-shown))
       (vemv/toggle-ns-hiding :after-file-open))
+    (vemv/clean-chosen-file-buffer-order)
     (setq-local mode-line-format tabbed-line-format)
     (vemv/advice-nrepl)
     (vemv/ensure-repl-visible)))
