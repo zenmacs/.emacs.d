@@ -115,7 +115,7 @@
       (progn
         (switch-to-buffer file)
         (puthash vemv/current-project
-                 `(file ,@(butlast (gethash vemv/current-project vemv/chosen-file-buffer-order)))
+                 `(,file ,@(butlast (gethash vemv/current-project vemv/chosen-file-buffer-order)))
                  vemv/chosen-file-buffer-order))
     (switch-to-buffer vemv/file-buffer-fallback)))
 
