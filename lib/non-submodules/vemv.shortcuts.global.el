@@ -32,6 +32,9 @@
       vemv/shortcuts/global/primary-b               'vemv/duplicate
       vemv/shortcuts/global/primary-backspace       'vemv/delete-this-line
       vemv/shortcuts/global/primary-backtick        'other-frame
+      vemv/shortcuts/global/primary-bang            (argless
+                                                     (replying-yes
+                                                      (revert-buffer)))
       vemv/shortcuts/global/primary-down            'forward-paragraph
       vemv/shortcuts/global/primary-equal           'mark-whole-buffer
       vemv/shortcuts/global/primary-f               'vemv/search-in-this-buffer
