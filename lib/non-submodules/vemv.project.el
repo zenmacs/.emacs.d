@@ -32,7 +32,7 @@
      (setq vemv/project-root-dir nil)
      (setq vemv/project-clojure-dir nil)
      (setq vemv/project-fiplr-dir nil)
-     (setq vemv/project-ns-prefix  nil)
+     (setq vemv/project-ns-prefix nil)
      (setq vemv/repl-identifier nil)
      (setq vemv/default-clojure-file nil)
      (setq vemv-cleaning-namespaces nil)
@@ -78,15 +78,16 @@
           (or vemv/project-root-dir (if on-the-fly-project
                                         which
                                         (vemv/dir-for-project vemv/current-project))))
-
-    (setq vemv/project-root-dir (concat vemv/project-root-dir (if (s-ends-with? "/" vemv/project-root-dir)
-                                                                  ""
-                                                                  "/")))
     
     (when (and which (not on-the-fly-project))
       (condition-case nil
           (load (concat "vemv.project." which))
         (error nil)))
+
+    ;; Ensures correct `vemv/safe-show-current-file-in-project-explorer` functioning
+    (setq vemv/project-root-dir (concat vemv/project-root-dir (if (s-ends-with? "/" vemv/project-root-dir)
+                                                                  ""
+                                                                  "/")))
     
     (unless (file-exists-p vemv/project-root-dir)
       (vemv/echo (concat "vemv/project-root-dir doesn't exist: " vemv/project-root-dir)))
