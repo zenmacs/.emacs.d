@@ -92,10 +92,16 @@
   (just-one-space -1))
 
 (defun vemv/safe-paredit-command (command)
-  "Paredit commands over non-lisps can cause Emacs freezes"
+  "* Paredit commands over non-lisps can cause Emacs freezes.
+   * `vemv/normal-indentation` can delete code while unwrapping sexprs."
   (argless
    (when (vemv/in-a-lisp-mode?)
-     (call-interactively command))))
+     (let* ((old comment-indent-function)
+            (new 'comment-indent-default)
+            (comment-indent-function new))
+       (setq comment-indent-function new)
+       (call-interactively command)
+       (setq comment-indent-function old)))))
 
 (defun vemv/sexpr-content (&optional backward?)
   "Returns the content of the next (or previous, on non-nil values of BACKWARD?) sexpr, as a string.
