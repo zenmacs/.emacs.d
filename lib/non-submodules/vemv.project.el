@@ -76,7 +76,9 @@
     ;; XXX assert default value exists in filesystem
     ;; XXX the case statements are hardcoded. parameterize
     (setq vemv/project-root-dir
-          (or vemv/project-root-dir (vemv/dir-for-project vemv/current-project)))
+          (or vemv/project-root-dir (if on-the-fly-project
+                                        which
+                                        (vemv/dir-for-project vemv/current-project))))
 
     (setq vemv/project-root-dir (concat vemv/project-root-dir (if (s-ends-with? "/" vemv/project-root-dir)
                                                                   ""
