@@ -100,6 +100,9 @@
        '(:eval (vemv/message-file-buffers-impl))))
 
 (add-to-list 'auto-mode-alist
+             '("\\.js.erb$" . js-mode))
+
+(add-to-list 'auto-mode-alist
              '("\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'" . ruby-mode))
 
 (add-to-list 'auto-mode-alist
