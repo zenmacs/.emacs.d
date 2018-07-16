@@ -73,7 +73,6 @@
                                      (cider-project-name which)
                                      which)))
     
-    ;; XXX assert default value exists in filesystem
     ;; XXX the case statements are hardcoded. parameterize
     (setq vemv/project-root-dir
           (or vemv/project-root-dir (if on-the-fly-project
@@ -88,7 +87,10 @@
       (condition-case nil
           (load (concat "vemv.project." which))
         (error nil)))
-
+    
+    (unless (file-exists-p vemv/project-root-dir)
+      (vemv/echo (concat "vemv/project-root-dir doesn't exist: " vemv/project-root-dir)))
+    
     (setq vemv/project-clojure-dir (or vemv/project-clojure-dir vemv/project-root-dir))
 
     (setq vemv/project-clojure-dir (concat vemv/project-clojure-dir (if (s-ends-with? "/" vemv/project-clojure-dir)
