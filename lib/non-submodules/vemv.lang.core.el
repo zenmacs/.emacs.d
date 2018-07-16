@@ -105,7 +105,9 @@ ACC is an implementation detail - do not pass this parameter!"
 (defun vemv/in-a-lisp-mode? ()
   (or (eq major-mode 'emacs-lisp-mode)
       (eq major-mode 'clojure-mode)
+      (eq major-mode 'clojurec-mode)
       (eq major-mode 'clojurescript-mode)
+      (eq major-mode 'cider-repl-mode)
       (eq major-mode 'inferior-emacs-lisp-mode)))
 
 (defun vemv/debounce (func &optional delay)
