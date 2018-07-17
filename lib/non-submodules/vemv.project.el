@@ -121,7 +121,10 @@
     (if vemv/cider-port
         (setq vemv/clj-repl-name (concat "*cider-repl 127.0.0.1*"))
         (setq vemv/clj-repl-name (concat "*cider-repl " vemv/repl-identifier "*")))
-    (setq vemv/cljs-repl-name (concat "*cider-repl " vemv/repl-identifier "(cljs)*"))
+
+    (if "using cider 0.16"
+        (setq vemv/cljs-repl-name (concat "*cider-repl CLJS " vemv/repl-identifier "*"))
+        (setq vemv/cljs-repl-name (concat "*cider-repl " vemv/repl-identifier "(cljs)*")))
 
     (setq vemv/default-clojure-file
           (or
