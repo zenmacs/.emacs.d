@@ -39,6 +39,8 @@
      (setq vemv/modifiers/primary nil)
      (setq vemv/modifiers/secondary nil)
      (setq vemv/modifiers/tertiary nil)
+     ;; https://github.com/clojure-emacs/cider/issues/2327
+     (setq cljr-warn-on-eval t)
      (setq vemv/clj-repl-name nil)
      (setq vemv/cljs-repl-name nil)
      (setq vemv/no-newline-at-eof nil)

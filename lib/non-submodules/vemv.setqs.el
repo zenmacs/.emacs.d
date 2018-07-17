@@ -20,9 +20,6 @@
 ;; no .#filenames
 (setq create-lockfiles nil)
 
-;; https://github.com/clojure-emacs/cider/issues/2327
-(setq cljr-warn-on-eval t)
-
 (setq fiplr-ignored-globs
       ;; `directories` entries must be single-segment, i.e `/` doesn't work.
       '((directories (".git" "tmp" ".svn" ".hg" ".bzr" "tools" "res-vagrant"
@@ -69,8 +66,7 @@
  '(cljr-project-clean-prompt nil)
  '(cljr-favor-private-function nil)
  '(cljr-auto-clean-ns nil)
- '(cljr-libspec-whitelist '("^cljsns" "^slingshot.test" "^monger.joda-time" "^monger.json" "^cljsjs" "leongersen.*"))
- '(cljr-warn-on-eval nil))
+ '(cljr-libspec-whitelist '("^cljsns" "^slingshot.test" "^monger.joda-time" "^monger.json" "^cljsjs" "leongersen.*")))
 
 (defun cider-repl--banner () "")
 
