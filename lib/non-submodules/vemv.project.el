@@ -21,17 +21,17 @@
     (load (concat "vemv.project." vemv/current-project))
   (error nil))
 
-;; XXX document the meaning of each of these?
 (defmacro vemv.project/reset ()
   `(progn
      (set-variable 'cider-lein-parameters vemv/initial-cider-lein-parameters)
-     (setq vemv/project-type nil)
+     (setq vemv/project-type nil) ;; :clj, :cljs (these two have an effect), or any other keyword (with the only purpose of preventing :clj/:cljs effects)
      (setq vemv/using-component-reloaded-workflow nil) ;; whether the project uses com.stuartsierra.component.user-helpers
+     (setq vemv/clojure-reload-command nil) ;; The command, as a string, to reload code if `vemv/using-component-reloaded-workflow`.
      (setq vemv/cider-port nil)
-     (setq vemv/project-initializers nil)
-     (setq vemv/project-root-dir nil)
-     (setq vemv/project-clojure-dir nil)
-     (setq vemv/project-fiplr-dir nil)
+     (setq vemv/project-initializers nil) ;; an argless lambda which can run arbitrary code on CIDER connection
+     (setq vemv/project-root-dir nil) ;; Where a project is located
+     (setq vemv/project-clojure-dir nil) ;; Within a project, a directory that contains the Leiningen project. Leave unset if it equals `vemv/project-root-dir`
+     (setq vemv/project-fiplr-dir nil) ;; The dir within which fiplr completions will be performed. Normally unnecessary.
      (setq vemv/project-ns-prefix nil)
      (setq vemv/repl-identifier nil)
      (setq vemv/default-clojure-file nil)
@@ -39,8 +39,7 @@
      (setq vemv/modifiers/primary nil)
      (setq vemv/modifiers/secondary nil)
      (setq vemv/modifiers/tertiary nil)
-     ;; https://github.com/clojure-emacs/cider/issues/2327
-     (setq cljr-warn-on-eval t)
+     (setq cljr-warn-on-eval t) ;; https://github.com/clojure-emacs/cider/issues/2327
      (setq vemv/clj-repl-name nil)
      (setq vemv/cljs-repl-name nil)
      (setq vemv/no-newline-at-eof nil)
@@ -48,7 +47,6 @@
      (setq clojure-indent-style :always-align)
      (setq clojure-align-forms-automatically nil)
      (setq whitespace-line-column 131)
-     (setq vemv/clojure-reload-command nil)
      ;; avoids expensive computation on mode-line
      (setq vemv/cached-projects-with-initialization-files (vemv/projects-with-initialization-files))))
 
