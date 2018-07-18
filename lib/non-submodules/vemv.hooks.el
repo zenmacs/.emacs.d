@@ -67,6 +67,9 @@
                 (let ((mark-even-if-inactive transient-mark-mode))
                   (indent-region (region-beginning) (region-end) nil))))))
 
+(advice-add 'vemv/jump-to-clojure-definition :after 'vemv/clean-chosen-file-buffer-order)
+(advice-add 'xref-pop-marker-stack :after 'vemv/clean-chosen-file-buffer-order)
+
 (advice-add 'helm-ag--edit :after 'vemv/ag-replace)
 
 (advice-add 'cider-test-run-test :around 'vemv/apply-tests-verbosely)
