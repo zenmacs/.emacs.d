@@ -100,7 +100,9 @@
 (defun vemv/pull-next-sexpr ()
   "Brings the sexpr located in the next line at the current one."
   (interactive)
-  (just-one-space -1))
+  (just-one-space -1)
+  (backward-up-list)
+  (vemv/indent))
 
 (defun vemv/safe-paredit-command (command)
   "* Paredit commands over non-lisps can cause Emacs freezes.
