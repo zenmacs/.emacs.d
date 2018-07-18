@@ -38,11 +38,14 @@
 
 (add-hook 'kill-emacs-hook 'vemv/desktop-save)
 
-(mapcar (lambda (e)
-          (let ((x (first e))
-                (n (second e)))
-            (ignore-errors
-              (find-file-noselect x)
-              (with-current-buffer (get-file-buffer x)
-                (goto-char n)))))
-        (vemv/files-from-previous-session))
+(defun vemv/open-files-from-last-session! ()
+  "Open every file that was open the last time Emacs was closed."
+  (mapcar (lambda (e)
+            (let ((x (first e))
+                  (n (second e)))
+              (ignore-errors
+                (when (file-exists-p x)
+                  (find-file-noselect x)
+                  (with-current-buffer (get-file-buffer x)
+                    (goto-char n))))))
+          (vemv/files-from-previous-session)))
