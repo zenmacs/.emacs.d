@@ -131,7 +131,8 @@
               (unless (string-equal b root)
                 (with-current-buffer b
                   (vemv/close-this-buffer))))
-            (-clone (gethash vemv/current-project vemv/chosen-file-buffer-order)))))
+            (-clone (gethash vemv/current-project vemv/chosen-file-buffer-order)))
+    (vemv/next-file-buffer)))
 
 (defun vemv/maximize ()
   "Maximize the current frame. Presumes an X-window environment."
