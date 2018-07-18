@@ -92,6 +92,7 @@
       vemv/shortcuts/global/tertiary-s              'vemv/save-all-buffers-for-this-project
       vemv/shortcuts/global/tertiary-v              'vemv/paste-from-kill-list
       vemv/shortcuts/global/tertiary-w              'vemv/close-all-file-buffers
+      vemv/shortcuts/global/tertiary-x              'vemv/dumb-cut
       vemv/shortcuts/global/up                      'previous-line)
 
 ;; other S-RET syntaxes don't work. TODO: abstract away this

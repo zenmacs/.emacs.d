@@ -58,7 +58,18 @@
       (call-interactively 'company-complete)
       (call-interactively 'company-dabbrev)))
 
+(defun vemv/dumb-cut ()
+  "Cuts the current selection, regardless of paredit boundaries"
+  (when (region-active-p)
+    (let ((content (vemv/selected-region)))
+      (call-interactively 'kill-region)
+      (vemv/bounded-list/insert-at-head! content 
+                                         vemv/kill-list
+                                         vemv/kill-list-bound)
+      (simpleclip-set-contents content))))
+
 (defun vemv/cut ()
+  "Cuts via vemv/kill, i.e. taking into account paredit boundaries"
   (interactive)
   (vemv/bounded-list/insert-at-head! (vemv/kill nil nil)
                                      vemv/kill-list
