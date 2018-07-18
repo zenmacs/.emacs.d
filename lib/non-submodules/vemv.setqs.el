@@ -184,7 +184,7 @@
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 
-(setq company-dabbrev-char-regexp "\\sw\\|_\\|-")
+(setq company-dabbrev-char-regexp "\\sw\\|_\\|-\\|!\\|\\?\\|*\\|+")
 
 ;; https://github.com/company-mode/company-mode/issues/808
 (setq company-backends (-remove (lambda (x)
