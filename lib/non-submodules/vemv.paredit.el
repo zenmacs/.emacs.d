@@ -30,16 +30,18 @@
 (defun vemv/save (&optional b)
   (interactive)
   (let ((b (or b (current-buffer)))
+        ;; for `save-buffer`:
         (require-final-newline (not vemv/no-newline-at-eof)))
     (with-current-buffer b
-      (when (vemv/cider-formattable-p)
-        (vemv/save-position-before-formatting)
-        (let ((old (substring-no-properties (buffer-string))))
-          (save-excursion
-            (condition-case nil (cider-format-buffer)
-              (error
-               (erase-buffer)
-               (insert old))))))
+      (if (not (vemv/cider-formattable-p))
+          (delete-trailing-whitespace)
+          (vemv/save-position-before-formatting)
+          (let ((old (substring-no-properties (buffer-string))))
+            (save-excursion
+              (condition-case nil (cider-format-buffer)
+                (error
+                 (erase-buffer)
+                 (insert old))))))
       (when vemv/no-newline-at-eof
         (save-excursion
           (end-of-buffer)
