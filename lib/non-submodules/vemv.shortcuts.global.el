@@ -23,7 +23,7 @@
       vemv/shortcuts/global/primary-8               'vemv/toggle-verbosity
       vemv/shortcuts/global/primary-S-f             (argless
                                                      (let ((default-directory vemv/project-clojure-dir))
-                                                       (call-interactively 'helm-do-ag)))
+                                                       (helm-do-ag (ido-read-directory-name "Where: "))))
       vemv/shortcuts/global/primary-S-n             (argless
                                                      (let ((f (vemv/new-frame)))
                                                        (select-frame f)
