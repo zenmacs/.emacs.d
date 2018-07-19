@@ -61,10 +61,3 @@
         (progn
           (next-line)
           (back-to-indentation)))))
-
-(defun vemv/semicolon ()
-  (interactive)
-  (if (or (equal (vemv/current-char-at-point) ";")
-          (progn "cursor is within string" nil)) ;; XXX
-      (insert ";")
-      (insert ";; ")))

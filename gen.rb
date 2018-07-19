@@ -133,7 +133,9 @@ def emit_bindings scope: 'global', modifier_mappings: {"primary" => 'C', "second
     
   SPECIAL.each do |char|
     left = char.include?('[f') ? "#{char}" : %|"#{char}"|
-    result += %| #{left}| unless SELF_INSERTING.include?(char)
+    if !SELF_INSERTING.include?(char) || [';'].include?(char)
+      result += %| #{left}|
+    end
   end
   
   %w(primary secondary tertiary).each do |modifier|
