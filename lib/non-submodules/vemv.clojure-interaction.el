@@ -6,6 +6,17 @@
 
 (setq vemv/apply-tests-verbosely-counter 0)
 
+(defun vemv/ciderable-p ()
+  (and
+   (vemv/in-clojure-mode?)
+   (cider-connected-p)
+   vemv-cider-connected))
+
+(defun vemv/cider-formattable-p ()
+  (and (vemv/ciderable-p)
+       (not (eq clojure-indent-style :align-arguments))
+       (not clojure-align-forms-automatically)))
+
 (defun vemv/apply-tests-verbosely (f &rest args)
   (let* ((old vemv/verbose-mode)
          (counter vemv/apply-tests-verbosely-counter)

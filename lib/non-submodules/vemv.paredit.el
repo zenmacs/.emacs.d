@@ -32,15 +32,14 @@
   (let ((b (or b (current-buffer)))
         (require-final-newline (not vemv/no-newline-at-eof)))
     (with-current-buffer b
-      (unless (or (eq clojure-indent-style :align-arguments) clojure-align-forms-automatically)
-        (when (vemv/ciderable-p)
-          (vemv/save-position-before-formatting)
-          (let ((old (substring-no-properties (buffer-string))))
-            (save-excursion
-              (condition-case nil (cider-format-buffer)
-                (error
-                 (erase-buffer)
-                 (insert old)))))))
+      (when (vemv/cider-formattable-p)
+        (vemv/save-position-before-formatting)
+        (let ((old (substring-no-properties (buffer-string))))
+          (save-excursion
+            (condition-case nil (cider-format-buffer)
+              (error
+               (erase-buffer)
+               (insert old))))))
       (when vemv/no-newline-at-eof
         (save-excursion
           (end-of-buffer)
@@ -102,19 +101,26 @@
   (interactive)
   (just-one-space -1)
   (backward-up-list)
-  (vemv/indent))
+  (vemv/indent)
+  (beginning-of-line-text))
 
-(defun vemv/safe-paredit-command (command)
+(defmacro vemv/paredit-safely (&rest body)
   "* Paredit commands over non-lisps can cause Emacs freezes.
    * `vemv/normal-indentation` can delete code while unwrapping sexprs."
-  (argless
-   (when (vemv/in-a-lisp-mode?)
+  `(when (vemv/in-a-lisp-mode?)
      (let* ((old comment-indent-function)
             (new 'comment-indent-default)
-            (comment-indent-function new))
-       (setq comment-indent-function new)
-       (call-interactively command)
-       (setq comment-indent-function old)))))
+            (comment-indent-function new)
+            (_ (setq comment-indent-function new))
+            (v (progn
+                 ,@body)))
+       (setq comment-indent-function old)
+       v)))
+
+(defun vemv/safe-paredit-command (command)
+  (argless
+   (vemv/paredit-safely
+    (call-interactively command))))
 
 (defun vemv/sexpr-content (&optional backward?)
   "Returns the content of the next (or previous, on non-nil values of BACKWARD?) sexpr, as a string.
@@ -238,15 +244,33 @@ inserting it at a new line."
            vemv/kill-list
            vemv/kill-list-bound))
 
+(defun vemv/backward-up-list ()
+  "Like backward-up-list, but doesn't complain if invoked at ( itself"
+  (while (not (some (lambda (char)
+                      (equal char (vemv/current-char-at-point)))
+                    '("(" "[" "{")))
+    (beginning-of-sexp)))
+
 (defun vemv/dumb-indent ()
   (interactive)
-  (save-excursion
-    (while (not (some (lambda (char)
-                        (equal char (vemv/current-char-at-point)))
-                      '("(" "[" "{")))
-      (beginning-of-sexp))
-    (paredit-wrap-round)
-    (paredit-splice-sexp-killing-backward)))
+  (vemv/paredit-safely
+   (vemv/backward-up-list)
+   (paredit-wrap-sexp)
+   (paredit-splice-sexp-killing-backward))
+  (when (eq comment-indent-function 'vemv/normal-indentation)
+    (let* ((initial-line (vemv/current-line-number))
+           (final-line (save-excursion
+                         (vemv/paredit-safely
+                          (paredit-forward)
+                          (vemv/current-line-number)))))
+      (goto-line initial-line)
+      (while (not (eq (vemv/current-line-number)
+                      final-line))
+        (progn
+          (beginning-of-line)
+          (call-interactively 'indent-for-tab-command)
+          (next-line)))
+      (goto-line initial-line))))
 
 (defun vemv/cider-indent ()
   (interactive)
@@ -259,7 +283,7 @@ inserting it at a new line."
 (defun vemv/indent ()
   "Indents the next sexpr."
   (interactive)
-  (if (vemv/ciderable-p)
+  (if (vemv/cider-formattable-p)
       (vemv/cider-indent)
       (vemv/dumb-indent)))
 
@@ -334,16 +358,21 @@ inserting it at a new line."
 
 (defun vemv/normal-indentation ()
   "https://stackoverflow.com/a/14196835/569050"
-  (if (and (looking-at "\\s<\\s<\\(\\s<\\)?")
-           (or (match-end 1) (/= (current-column) (current-indentation))))
-      0
-      (let ((curr (save-excursion
-                    (end-of-line)
-                    (insert "\n")
-                    (call-interactively 'indent-for-tab-command)
-                    (let ((v (current-indentation)))
-                      (vemv/delete-only-this-line)
-                      v))))
-        (when (or (/= (current-column) curr)
-                  (and (> comment-add 0) (looking-at "\\s<\\(\\S<\\|\\'\\)")))
-          curr))))
+  (let ((c (current-buffer))
+        (m major-mode)
+        (p (point)))
+    (if (and (looking-at "\\s<\\s<\\(\\s<\\)?")
+             (or (match-end 1) (/= (current-column) (current-indentation))))
+        0
+        (let ((curr (with-temp-buffer
+                      (insert-buffer-substring c)
+                      (when (vemv/in-a-clojure-mode? m)
+                        (clojure-mode))
+                      (goto-char p)
+                      (end-of-line)
+                      (insert "\n")
+                      (call-interactively 'indent-for-tab-command)
+                      (current-indentation))))
+          (when (or (/= (current-column) curr)
+                    (and (> comment-add 0) (looking-at "\\s<\\(\\S<\\|\\'\\)")))
+            curr)))))

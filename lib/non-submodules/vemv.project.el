@@ -32,9 +32,9 @@
      (setq vemv/project-root-dir nil) ;; Where a project is located
      (setq vemv/project-clojure-dir nil) ;; Within a project, a directory that contains the Leiningen project. Leave unset if it equals `vemv/project-root-dir`
      (setq vemv/project-fiplr-dir nil) ;; The dir within which fiplr completions will be performed. Normally unnecessary.
-     (setq vemv/project-ns-prefix nil)
-     (setq vemv/repl-identifier nil)
-     (setq vemv/default-clojure-file nil)
+     (setq vemv/project-ns-prefix nil) ;; The prefix that every namespace in this project shares. Will be ommitted from each tab reprsenting a file/ns.
+     (setq vemv/repl-identifier nil) ;; The name that CIDER assigns to the project in its repls. Normally well-inferred; use this setting as a workaround.
+     (setq vemv/default-clojure-file nil) ;; The file that will be open with the project, if no files were open for this project last time you quit Emacs.
      (setq vemv-cleaning-namespaces nil)
      (setq vemv/modifiers/primary nil)
      (setq vemv/modifiers/secondary nil)

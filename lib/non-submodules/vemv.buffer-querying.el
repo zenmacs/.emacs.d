@@ -4,6 +4,19 @@
 
 (provide 'vemv.buffer-querying)
 
+(defun vemv/in-a-clojure-mode? (&optional m)
+  (let ((mode (or m major-mode)))
+    (or (eq mode 'clojure-mode)
+        (eq mode 'clojurec-mode)
+        (eq mode 'clojurescript-mode)
+        (eq mode 'cider-repl-mode))))
+
+(defun vemv/in-a-lisp-mode? (&optional m)
+  (let ((mode (or m major-mode)))
+    (or (vemv/in-a-clojure-mode? mode)
+        (eq mode 'emacs-lisp-mode)
+        (eq mode 'inferior-emacs-lisp-mode))))
+
 (defun vemv/selected-region ()
   "Returns the selected region as a string. Side effects free."
   (kill-ring-save (mark) (point))
@@ -48,7 +61,9 @@
   (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
 
 (defun vemv/current-line-number ()
-  (1+ (count-lines 1 (point))))
+  (save-excursion
+    (beginning-of-line)
+    (1+ (count-lines 1 (point)))))
 
 (defun vemv/current-char-at-point (&optional offset)
   "Returns the character -as a string- hovered by the point, or a contiguous one, if an integer offset is specified."
@@ -68,12 +83,6 @@
 (defun vemv/in-clojure-mode? ()
   ;; better: derived-mode-p
   (vemv/contains? (pr-str major-mode) "clojure"))
-
-(defun vemv/ciderable-p ()
-  (and
-   (vemv/in-clojure-mode?)
-   (cider-connected-p)
-   vemv-cider-connected))
 
 (defun vemv/current-main-buffer-is-cljs ()
   (or (vemv/contains? (buffer-name) ".cljs")
