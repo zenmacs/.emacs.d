@@ -5,7 +5,7 @@
 (provide 'vemv.window-system)
 
 (defun vemv/initial-layout ()
-  
+
   (when (window-system)
       (vemv/maximize))
 

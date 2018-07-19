@@ -64,7 +64,7 @@
   (when (region-active-p)
     (let ((content (vemv/selected-region)))
       (call-interactively 'kill-region)
-      (vemv/bounded-list/insert-at-head! content 
+      (vemv/bounded-list/insert-at-head! content
                                          vemv/kill-list
                                          vemv/kill-list-bound)
       (simpleclip-set-contents content))))
@@ -150,9 +150,9 @@ inserting it at a new line."
         (dotimes (i (- (region-end) (point)))
           (forward-char))
         (insert "\n" (vemv/selected-region) "\n"))
-      
+
       (back-to-indentation)
-      
+
       (if (some (lambda (char) (equal char (vemv/current-char-at-point)))
                 '("(" "[" "{" "<" "\""))
           (progn
@@ -241,7 +241,7 @@ inserting it at a new line."
            (if (region-active-p)
                (progn (call-interactively 'kill-region)
                       (if (not cut?) (pop kill-ring)))
-               
+
                (paredit-backward-delete))
            vemv/kill-list
            vemv/kill-list-bound))

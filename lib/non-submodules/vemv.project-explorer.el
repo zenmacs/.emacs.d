@@ -49,7 +49,7 @@
   (let ((fallback (argless (funcall vemv/safe-show-current-file-in-project-explorer))))
     (if (minibuffer-prompt)
         (delay fallback 1)
-        
+
         (vemv/refresh-file-caches)
         (vemv/safe-select-window vemv/main_window)
         (if (minibuffer-prompt)
@@ -68,19 +68,19 @@
                        (final-fragments (mapcar (lambda (x)
                                                   (concat (s-join "" (cons projname (-interpose "/" x))) "/"))
                                                 expanded-fragments)))
-                  
+
                   (vemv/safe-select-window vemv/project-explorer-window)
                   ;; (pe/fold-all) ;; necessary in principle, skip it for performance. seems to work fine.
                   (beginning-of-buffer)
-                  
+
                   (seq-doseq (f (butlast final-fragments))
                     (while (not (string-equal f (pe/current-directory)))
                       (next-line))
                     (pe/return))
-                  
+
                   (while (not (string-equal (s-chop-suffix "/" (first (last final-fragments))) (pe/get-filename)))
                     (next-line))
-                  
+
                   (end-of-line))))))))
 
 (defun vemv/safe-show-current-file-in-project-explorer* ()

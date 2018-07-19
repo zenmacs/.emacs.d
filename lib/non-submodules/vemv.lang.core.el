@@ -112,7 +112,7 @@ ACC is an implementation detail - do not pass this parameter!"
          (t `',func)))
        (delay (if (not delay) 0.100 delay))
        (timer (intern (concat "timer-" (symbol-name func)))))
-    
+
     (progn
       (set timer nil)
       `(lambda

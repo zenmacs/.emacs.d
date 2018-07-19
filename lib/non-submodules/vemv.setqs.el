@@ -108,7 +108,7 @@
   (setq cider-cljs-lein-repl
         (if vemv/using-nrepl
             "(do (require 'figwheel-sidecar.repl-api)
-               
+
                (try
                  (require 'figwheel-sidecar.system)
                  (alter-var-root #'figwheel-sidecar.system/repl-function-docs (constantly \"Results: Stored in vars *1, *2, *3, *e holds last exception object\"))

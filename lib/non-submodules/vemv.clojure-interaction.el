@@ -96,7 +96,7 @@
             (apply #'hs-hide-all ()))))))
 
 (defun vemv/show-clj-or-cljs-repl ()
-  (when (vemv/ciderable-p) 
+  (when (vemv/ciderable-p)
     (vemv/safe-select-window vemv/main_window)
     (setq was (vemv/current-main-buffer-is-cljs))
     (vemv/safe-select-window vemv/repl-window)
@@ -177,7 +177,7 @@
 (defun vemv/clojure-init ()
   (if (minibuffer-prompt)
       (delay 'vemv/clojure-init 1)
-      
+
       (advice-add 'pe/show-buffer :after 'vemv/after-file-open)
       (advice-add 'vemv/fiplr :after 'vemv/after-file-open)
       ;; (advice-add 'vemv/open :after 'vemv/after-file-open) ;; I don't remember why I disabled this

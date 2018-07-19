@@ -9,7 +9,7 @@
 
 (defun vemv/projects-with-initialization-files ()
   (if-let (x (car (filter (lambda (x) (vemv/contains? x ".emacs.d.overrides")) load-path)))
-      (mapcar 
+      (mapcar
        (lambda (x)
          (s-replace ".el" "" (s-replace "vemv.project." "" x)))
        (-remove (lambda (x)

@@ -70,8 +70,8 @@
     (setq-local vemv-current-line (vemv/current-line-number))
     (call-interactively 'helm-execute-persistent-action)
     (call-interactively 'helm-next-line))
-  
+
   ;; Jump to the last file, so one ensures that:
   ;;   helm is closed. Less steps
-  ;;   the open files are shown. Helm likes to jump back to *scratch* after completion 
+  ;;   the open files are shown. Helm likes to jump back to *scratch* after completion
   (helm-select-nth-action 1))

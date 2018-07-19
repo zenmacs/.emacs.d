@@ -71,13 +71,13 @@ end
 def super_combination_for char
   char[/\[f\d+\]/] ? "<s-f#{char[/\d+/]}>" : "S-#{char}"
 end
- 
+
 def emit_setqs scope: 'global', modifier_mappings: {"primary" => 'C', "secondary" => 'M', "tertiary" => 's'}
-  
+
   result = "(provide 'vemv.shortcuts.#{scope}.base)\n;; generated with gen.rb\n"
-  
+
   SPECIAL.each do |char|
-    
+
     binding = "vemv/shortcuts/#{scope}/#{REPLACEMENTS[char]}"
     value = scope == 'global' ? informative_stub(binding) : "vemv/shortcuts/global/#{REPLACEMENTS[char]}"
     result += %|
@@ -89,21 +89,21 @@ def emit_setqs scope: 'global', modifier_mappings: {"primary" => 'C', "secondary
     result += %|
 ;; "#{super_combination_for char}"
 (setq #{binding} #{value})\n| unless DUALS.include?(char)
-    
+
   end
-  
+
   %w(primary secondary tertiary).each do |modifier|
     (('a'..'z').to_a + (0..9).to_a.map(&:to_s) + SPECIAL).each do |char|
-      
+
       next if char.include?('[f')
       next if NO_C.include?(char) && modifier_mappings[modifier] == 'C'
-      
+
       binding = "vemv/shortcuts/#{scope}/#{modifier}-#{REPLACEMENTS[char]}"
       value = scope == 'global' ? informative_stub(binding) : "vemv/shortcuts/global/#{modifier}-#{REPLACEMENTS[char]}"
       result += %|
 ;; "#{modifier_mappings[modifier]}-#{char}"
 (setq #{binding} #{value})\n|
-      
+
       binding = "vemv/shortcuts/#{scope}/#{modifier}-S-#{REPLACEMENTS[char]}"
       value = scope == 'global' ? informative_stub(binding) : "vemv/shortcuts/global/#{modifier}-S-#{REPLACEMENTS[char]}"
       result += %|
@@ -111,15 +111,15 @@ def emit_setqs scope: 'global', modifier_mappings: {"primary" => 'C', "secondary
 (setq #{binding} #{value})\n| unless DUALS.include?(char)
     end
   end
-  
+
   File.write "lib/non-submodules/vemv.shortcuts.#{scope}.base.el", result
-  
+
 end
 
 def emit_bindings scope: 'global', modifier_mappings: {"primary" => 'C', "secondary" => 'M', "tertiary" => 's'}, variable_name: 'vemv/global-key-bindings', intro: false
-  
+
   result = ''
-  
+
   if intro
     result += %|(require 'vemv.lang)
 (provide 'vemv.data.bindings)
@@ -130,14 +130,14 @@ def emit_bindings scope: 'global', modifier_mappings: {"primary" => 'C', "second
 
 (setq vemv/exhaustive-list-of-bindings-to-remove (list|
 
-    
+
   SPECIAL.each do |char|
     left = char.include?('[f') ? "#{char}" : %|"#{char}"|
     if !SELF_INSERTING.include?(char) || [';'].include?(char)
       result += %| #{left}|
     end
   end
-  
+
   %w(primary secondary tertiary).each do |modifier|
     (('a'..'z').to_a + (0..9).to_a.map(&:to_s) + SPECIAL).each do |char|
       next if char.include?('[f')
@@ -148,14 +148,14 @@ def emit_bindings scope: 'global', modifier_mappings: {"primary" => 'C', "second
   end
 
 result += %|))|
-  end 
+  end
 
 result += %|
 
 (setq #{variable_name}
   (vemv/hash-map
 |
-  
+
   SPECIAL.each do |char|
     command = "vemv/shortcuts/#{scope}/#{REPLACEMENTS[char]}"
     left = char.include?('[f') ? "#{char}" : %|"#{char}"|
@@ -165,7 +165,7 @@ result += %|
       result += %|    "#{super_combination_for char}" (argless (if #{command} (funcall #{command})))\n|
     end
   end
-  
+
   %w(primary secondary tertiary).each do |modifier|
     (('a'..'z').to_a + (0..9).to_a.map(&:to_s) + SPECIAL).each do |char|
       next if char.include?('[f')
@@ -176,22 +176,22 @@ result += %|
       result += %|    "#{modifier_mappings[modifier]}-S-#{char}" (argless (if #{s_command} (funcall #{s_command})))\n|
     end
   end
-  
+
   result += %|))|
-  
+
   fname = 'lib/non-submodules/vemv.data.bindings.el'
-  
+
   if intro
     File.write fname, result
   else
     File.write fname, result, File.size(fname), mode: 'a'
   end
-  
+
 end
 
 def emit_to_remove scope='global', modifier_mappings: {"primary" => 'C', "secondary" => 'M', "tertiary" => 's'}
   result = (
-    
+
       [(SPECIAL.map do |char|
         r = []
         left = char.include?('[f') ? "#{char}" : %|"#{char}"|
@@ -199,7 +199,7 @@ def emit_to_remove scope='global', modifier_mappings: {"primary" => 'C', "second
         r << super_combination_for(char)
         r
       end),
-      
+
       (%w(primary secondary tertiary).map do |modifier|
         (('a'..'z').to_a + (0..9).to_a.map(&:to_s) + SPECIAL).map do |char|
           next if char.include?('[f')

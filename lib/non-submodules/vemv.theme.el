@@ -48,8 +48,8 @@
 (custom-theme-set-faces
  'vemv
 
- `(parenthesis ((t (:foreground "#c0c0c0")))) 
- 
+ `(parenthesis ((t (:foreground "#c0c0c0"))))
+
  `(term-color-black      ((t (:foreground ,vemv-default-foreground-color :background ,vemv-default-background-color))))
  `(term-color-red        ((t (:foreground ,vemv-default-foreground-color :background ,vemv-default-background-color))))
  `(term-color-green      ((t (:foreground ,vemv-default-foreground-color :background ,vemv-default-background-color))))

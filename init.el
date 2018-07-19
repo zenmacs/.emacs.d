@@ -21,9 +21,9 @@
 (progn "Stuff that needs to be performed immediately, for a visually pleasant startup"
 
   (setq-default line-spacing 1) ;; NOTE: might mess up the echo area
-  
+
   (setq vemv/should-start-in-verbose-mode nil)
-  
+
   (setq vemv/verbose-mode (not vemv/should-start-in-verbose-mode))
 
   (defun vemv/set-verbosity-to (v)
@@ -34,7 +34,7 @@
     ;; NOTE: overly verbose, so it's always set to nil. Set manually if needed.
     ;; (proof of verbosity: try to undo in a pristine buffer, with this line uncommented)
     (setq debug-on-error nil)
-    
+
     (setq debugger (if vemv/verbose-mode ;; Disable annoying *Backtrace* buffer
                      vemv/original-debugger
                      (lambda (&rest _))))
@@ -45,12 +45,12 @@
       (if vemv/verbose-mode
          (apply vemv/original-minibuffer-message args)
          nil)))
-  
+
   (defun vemv/toggle-verbosity ()
     (vemv/set-verbosity-to (not vemv/verbose-mode)))
-  
+
   (vemv/toggle-verbosity)
-  
+
   (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
   (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
   (if (fboundp 'menu-bar-mode) (menu-bar-mode -1)))

@@ -125,7 +125,7 @@
 
 (defun vemv/in-indentation-point-p ()
   "Whether the cursor is in a point apt for triggering an indentation command."
-  
+
   (or (vemv/at-beginning-of-line-p)
       (every (lambda (x) (= x 32))
              (vemv/chars-at-left))))
