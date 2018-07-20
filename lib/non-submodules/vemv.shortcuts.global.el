@@ -22,6 +22,7 @@
       vemv/shortcuts/global/primary-6               'vemv/emacs-reload
       vemv/shortcuts/global/primary-8               'vemv/toggle-verbosity
       vemv/shortcuts/global/primary-S-f             (argless
+                                                     (vemv/safe-select-window vemv/main_window)
                                                      (let ((default-directory vemv/project-clojure-dir))
                                                        (helm-do-ag (ido-read-directory-name "Where: "))))
       vemv/shortcuts/global/primary-S-n             (argless

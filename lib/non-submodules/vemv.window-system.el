@@ -82,6 +82,7 @@
 
 (defun vemv/close-this-frame ()
   (delete-frame (selected-frame) t))
+
 (defun vemv/stop-using-minibuffer (&optional callback)
   "kill the minibuffer"
   (condition-case nil
