@@ -193,9 +193,15 @@
 
  `(yas/field-highlight-face ((t (:background "deep pink" :foreground "black"))))
 
+ ;; Emacs 25:
  `(show-paren-match-face ((t ,(if (eq :ruby vemv/project-type)
                                   `(:foreground ,vemv-default-foreground-color :background "#7A3555")
                                   `(:background ,vemv-colors/pink :foreground ,vemv-default-foreground-color)))))
+
+ ;; Emacs 26:
+ `(show-paren-match ((t ,(if (eq :ruby vemv/project-type)
+                             `(:foreground ,vemv-default-foreground-color :background "#7A3555")
+                             `(:background ,vemv-colors/pink :foreground ,vemv-default-foreground-color)))))
 
  `(helm-candidate-number ((t (:inherit helm-header))))
  `(helm-candidate-number-suspended ((t (:inherit helm-header))))

@@ -110,4 +110,3 @@
 (setq vemv/current-project (car (second vemv/current-workspace)))
 
 (require 'vemv.init)
-(load "vemv.theme") ;; prevent blue delimiter highlighting
