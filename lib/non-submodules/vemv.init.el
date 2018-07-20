@@ -66,6 +66,4 @@
 
 (vemv/set-keys-for-scope ruby-mode-map vemv/ruby-key-bindings)
 
-(require 'vemv.desktop)
-
 (vemv/open-files-from-last-session!)

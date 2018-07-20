@@ -209,3 +209,10 @@ ACC is an implementation detail - do not pass this parameter!"
     (vemv/mutate-list-to bounded-list (cons head (-clone bounded-list)))
     (vemv/mutate-list-to bounded-list (-take bound (-clone bounded-list)))
     bounded-list))
+
+(defun vemv/hash-map-to-list (hash-table)
+  (let (result)
+    (maphash (lambda (k v)
+               (push (list k v) result))
+             hash-table)
+    result))

@@ -74,6 +74,19 @@
 
 (setq vemv/chosen-file-buffer-order (vemv/hash-map))
 
+(setq vemv/chosen-file-buffer-order-as-list nil)
+
+(defun vemv/refresh-chosen-file-buffer-order-as-list! ()
+  (setq vemv/chosen-file-buffer-order-as-list
+        (mapcar (lambda (e)
+                  (let* ((proj (car e))
+                         (buffnames (reverse (mapcar (lambda (b)
+                                                        (with-current-buffer (get-buffer b)
+                                                          (buffer-file-name)))
+                                                      (second e)))))
+                    (list proj buffnames)))
+                (vemv/hash-map-to-list vemv/chosen-file-buffer-order))))
+
 (defun vemv/clean-chosen-file-buffer-order ()
   "Removes closed buffers from vemv/chosen-file-buffer-order"
   (let* ((curr (buffer-name (current-buffer)))
@@ -85,7 +98,8 @@
              (filter (lambda (x)
                        (member x actually-open))
                      final)
-             vemv/chosen-file-buffer-order)))
+             vemv/chosen-file-buffer-order)
+    (vemv/refresh-chosen-file-buffer-order-as-list!)))
 
 (setq vemv/file-buffer-fallback "*scratch*")
 
@@ -102,7 +116,8 @@
   (puthash vemv/current-project
            `(,@(cdr (gethash vemv/current-project vemv/chosen-file-buffer-order))
              ,(car (gethash vemv/current-project vemv/chosen-file-buffer-order)))
-           vemv/chosen-file-buffer-order))
+           vemv/chosen-file-buffer-order)
+  (vemv/refresh-chosen-file-buffer-order-as-list!))
 
 (defun vemv/previous-file-buffer ()
   "Switch to the previous buffer that contains a file opened by the user within this project"
@@ -117,7 +132,8 @@
         (puthash vemv/current-project
                  `(,file ,@(butlast (gethash vemv/current-project vemv/chosen-file-buffer-order)))
                  vemv/chosen-file-buffer-order))
-    (switch-to-buffer vemv/file-buffer-fallback)))
+    (switch-to-buffer vemv/file-buffer-fallback))
+  (vemv/refresh-chosen-file-buffer-order-as-list!))
 
 (defun vemv/save-all-buffers-for-this-project ()
   (mapcar (lambda (b)
