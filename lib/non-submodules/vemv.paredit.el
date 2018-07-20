@@ -272,7 +272,8 @@ inserting it at a new line."
           (beginning-of-line)
           (call-interactively 'indent-for-tab-command)
           (next-line)))
-      (goto-line initial-line))))
+      (goto-line initial-line)
+      (beginning-of-line-text))))
 
 (defun vemv/cider-indent ()
   (interactive)
