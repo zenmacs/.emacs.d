@@ -7,6 +7,8 @@
 
 (package-initialize)
 
+(add-to-list 'same-window-buffer-names "*Compile-Log*")
+
 (setq vemv/packages-refreshed nil)
 
 (dolist (package '(edn inflections hydra company queue fiplr smartparens yasnippet multiple-cursors
