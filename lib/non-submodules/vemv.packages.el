@@ -1,9 +1,10 @@
 ;;; -*- lexical-binding: t -*-
 
 (require 'package)
+
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+
 (package-initialize)
 
 (setq vemv/packages-refreshed nil)

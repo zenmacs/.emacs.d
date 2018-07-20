@@ -35,7 +35,7 @@ I am aware of this weakness. Be assured, dear reader, that if this project takes
 ## Getting started
 
 * Watch the video so you know what to expect.
-* Get Emacs 25 (26 unsupported at the moment)
+* Get Emacs 25 (or 26).
 * Possibly, disable unnecessary OS system shortcuts (example: `Control + left`) which may take precedence over Emacs.
 * Backup and remove `~/.emacs.d` if that directory existed already
 * Clone the repo into `~`, so Emacs will pick up `~/.emacs.d` on startup
