@@ -81,9 +81,10 @@
         (mapcar (lambda (e)
                   (let* ((proj (car e))
                          (buffnames (reverse (mapcar (lambda (b)
-                                                        (with-current-buffer (get-buffer b)
-                                                          (buffer-file-name)))
-                                                      (second e)))))
+                                                       (with-current-buffer (get-buffer b)
+                                                         (buffer-file-name)))
+                                                     (-remove 'nil?
+                                                              (second e))))))
                     (list proj buffnames)))
                 (vemv/hash-map-to-list vemv/chosen-file-buffer-order))))
 
