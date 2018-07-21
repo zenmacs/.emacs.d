@@ -4,7 +4,7 @@
 
 ;; Important - remove keybindings before (vemv/initial-layout) so M-x cannot interrupt
 
-(dolist (mode (list paredit-mode-map comint-mode-map undo-tree-map cider-mode-map))
+(dolist (mode (list paredit-mode-map undo-tree-map cider-mode-map))
   (mapc (lambda (arg)
           (define-key mode (vemv/keyboard-macro arg) nil))
         vemv/exhaustive-list-of-bindings-to-remove))
