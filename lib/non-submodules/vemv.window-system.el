@@ -45,11 +45,12 @@
   (vemv/next-window)
   (message ""))
 
-(defun vemv/close-this-buffer ()
+(defun vemv/close-this-buffer (&optional noswitch)
   (setq-local vemv/ns-shown nil)
   (kill-buffer (current-buffer))
   (vemv/clean-chosen-file-buffer-order)
-  (when (eq (selected-window) vemv/main_window)
+  (when (and (not noswitch)
+             (eq (selected-window) vemv/main_window))
     (switch-to-buffer (let ((entry (gethash vemv/current-project vemv/chosen-file-buffer-order)))
                         (or (first entry)
                             (second entry)
@@ -132,7 +133,7 @@
     (mapcar (lambda (b)
               (unless (string-equal b root)
                 (with-current-buffer b
-                  (vemv/close-this-buffer))))
+                  (vemv/close-this-buffer :noswitch))))
             (-clone (gethash vemv/current-project vemv/chosen-file-buffer-order)))
     (vemv/next-file-buffer)))
 
