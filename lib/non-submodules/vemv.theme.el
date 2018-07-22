@@ -28,6 +28,7 @@
   :group 'vemv)
 
 (setq vemv-default-autocomplete-popup-background-color "#A2A2A2")
+(setq vemv-default-autocomplete-popup-background-color-lighter "#cccccc")
 (setq vemv-default-autocomplete-popup-foreground-color "#333333")
 
 (setq vemv-default-background-color "#4D575F")
@@ -154,6 +155,8 @@
  `(company-tooltip ((t (:background ,vemv-default-autocomplete-popup-background-color
                                      :foreground ,vemv-default-autocomplete-popup-foreground-color
                                      :slant normal :weight normal)))) ;; main
+ `(company-tooltip-mouse ((t (:background ,vemv-default-autocomplete-popup-background-color-lighter
+                              :foreground ,vemv-default-autocomplete-popup-foreground-color))))
  `(company-tooltip-search ((t (:background ,vemv-default-autocomplete-popup-background-color
                                             :foreground ,vemv-default-autocomplete-popup-foreground-color
                                             :slant normal
