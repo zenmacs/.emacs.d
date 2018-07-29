@@ -26,7 +26,7 @@
 
 (setq fiplr-ignored-globs
       ;; `directories` entries must be single-segment, i.e `/` doesn't work.
-      '((directories (".git" "tmp" ".svn" ".hg" ".bzr" "tools" "res-vagrant"
+      '((directories (".git" "tmp" ".svn" ".hg" ".bzr" "tools" "res-vagrant" "resources" ".lumo-cache"
                       ".paket" "doc" "bin" "assets" "public" "node_modules" "coverage"))
         (files (".#*" "*~" "*.so" "*.jpg" "*.png" "*.gif" "*.pdf" "*.gz" "*.zip" "*.DS_Store"
                 "*.md" "*.gitgnore" "*.scssc" "*.keep" "*.json" "LICENSE" "LICENCE" "license" "*.patch"
