@@ -23,7 +23,8 @@
       vemv/shortcuts/global/primary-8               'vemv/toggle-verbosity
       vemv/shortcuts/global/primary-S-f             (argless
                                                      (vemv/safe-select-window vemv/main_window)
-                                                     (let ((default-directory vemv/project-clojure-dir))
+                                                     (let ((default-directory vemv/project-clojure-dir)
+                                                           (require-final-newline (not vemv/no-newline-at-eof)))
                                                        (helm-do-ag (ido-read-directory-name "Where: "))))
       vemv/shortcuts/global/primary-S-n             (argless
                                                      (let ((f (vemv/new-frame)))
