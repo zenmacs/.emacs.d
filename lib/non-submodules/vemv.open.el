@@ -26,8 +26,11 @@
   "Opens a file (from FILEPATH or the user input)."
   (interactive)
   (vemv/safe-select-window vemv/main_window)
-  (let ((file (buffer-name (or (and filepath (find-file filepath))
-                               (ido-find-file)))))) ;; magical let - do not unwrap!
+  (let* ((default-directory (if (vemv/contains? (buffer-file-name) vemv/project-root-dir)
+                                default-directory
+                                vemv/project-clojure-dir))
+         (file (buffer-name (or (and filepath (find-file filepath))
+                                (ido-find-file)))))) ;; magical let - do not unwrap!
   (save-buffer)
   (vemv/refresh-file-caches)
   (vemv/safe-select-window vemv/main_window)
