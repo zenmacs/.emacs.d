@@ -108,18 +108,16 @@
 (add-to-list 'auto-mode-alist
              '("\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'" . ruby-mode))
 
-(when (not vemv-cleaning-namespaces)
-  (setq cider-cljs-lein-repl
-        (if vemv/using-nrepl
-            "(do (require 'figwheel-sidecar.repl-api)
+(setq vemv/default-cider-cljs-lein-repl
+      "(do (require 'figwheel-sidecar.repl-api)
 
-               (try
-                 (require 'figwheel-sidecar.system)
-                 (alter-var-root #'figwheel-sidecar.system/repl-function-docs (constantly \"Results: Stored in vars *1, *2, *3, *e holds last exception object\"))
-                 (catch Throwable e))
-               (figwheel-sidecar.repl-api/start-figwheel!)
-               (figwheel-sidecar.repl-api/cljs-repl))"
-            "")))
+          (try
+           (require 'figwheel-sidecar.system)
+           (alter-var-root #'figwheel-sidecar.system/repl-function-docs
+                           (constantly \"Results: Stored in vars *1, *2, *3, *e holds last exception object\"))
+           (catch Throwable e))
+        (figwheel-sidecar.repl-api/start-figwheel!)
+        (figwheel-sidecar.repl-api/cljs-repl))")
 
 (set-default 'truncate-lines t)
 (setq-default save-place t)

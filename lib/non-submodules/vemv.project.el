@@ -48,7 +48,9 @@
      (setq clojure-align-forms-automatically nil)
      (setq whitespace-line-column 131)
      ;; avoids expensive computation on mode-line
-     (setq vemv/cached-projects-with-initialization-files (vemv/projects-with-initialization-files))))
+     (setq vemv/cached-projects-with-initialization-files (vemv/projects-with-initialization-files))
+     (when (not vemv-cleaning-namespaces)
+       (setq cider-cljs-lein-repl vemv/default-cider-cljs-lein-repl))))
 
 (vemv.project/reset)
 
