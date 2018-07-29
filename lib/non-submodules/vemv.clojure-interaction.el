@@ -307,3 +307,8 @@
                                              "(cljs.test/run-block ["
                                              chosen
                                              "])")))))))
+
+(defun vemv/dumb-cljs-test ()
+  "Needs M-x cider-load-buffer first"
+  (interactive)
+  (vemv/send :cljs nil (concat "(cljs.test/run-tests '" (vemv/current-ns) ")")))
