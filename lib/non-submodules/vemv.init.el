@@ -3,6 +3,7 @@
 (setq lexical-binding t)
 
 (require 'vemv.lang)
+(require 'vemv.setqs)
 (require 'vemv.project-explorer)
 (require 'vemv.window-system)
 (require 'vemv.open)
@@ -19,7 +20,6 @@
 (require 'vemv.data)
 (require 'vemv.data.bindings)
 (require 'vemv.theme)
-(require 'vemv.setqs)
 (require 'vemv.hooks)
 (require 'vemv.keyboard-init)
 (provide 'vemv.init)
