@@ -13,6 +13,10 @@
                                      vemv/project-root-dir
                                      default-directory)))
 
+(setq pe/omit-regex (mapconcat 'identity
+                                    (list "^#" "~$" "^node_modules$")
+                                    "\\|"))
+
 (add-to-list 'exec-path (concat vemv-home "/bin"))
 
 (setq whitespace-style '(face lines-tail))
