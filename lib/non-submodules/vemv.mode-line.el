@@ -62,10 +62,12 @@
                (interactive)
                (when (vemv/close-project-within-workspace ,project-name)
                  (vemv/force-refresh-project!)))))
-    (propertize project-name 'local-map `(keymap
-                                          (mode-line keymap
-                                                     (mouse-1 . ,sym)
-                                                     (mouse-3 . ,close-sym))))))
+    (propertize (cider-project-name project-name)
+                'local-map
+                `(keymap
+                  (mode-line keymap
+                             (mouse-1 . ,sym)
+                             (mouse-3 . ,close-sym))))))
 
 (defun vemv/format-tabs (first rest)
   (let* ((p (propertize first 'face 'font-lock-function-name-face))
@@ -92,6 +94,6 @@
         (vemv/format-tabs first rest))))
 
 (defun vemv/pe/mode-line-format* ()
-  (let* ((first vemv/current-project)
-         (rest (mapcar 'vemv/mode-line-for-project (cdr (vemv/all-project-names)))))
+  (let* ((first (cider-project-name vemv/current-project))
+         (rest (mapcar 'vemv/mode-line-for-project (cdr (vemv/all-project-names :no-prettify)))))
     (concat "  " (vemv/format-tabs first rest))))

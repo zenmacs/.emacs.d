@@ -103,7 +103,10 @@
                                      projects)))
                (setq vemv/all-workspaces
                      (cons (list name newval)
-                           (cdr vemv/all-workspaces))))
+                           (cdr vemv/all-workspaces)))
+               (setq vemv/on-the-fly-projects (filter (lambda (x)
+                                                        (not (string-equal x project-name)))
+                                                      vemv/on-the-fly-projects)))
              t)))
 
 (defun vemv/projects-for-workspace (&optional which)

@@ -66,4 +66,7 @@
 
 (vemv/set-keys-for-scope ruby-mode-map vemv/ruby-key-bindings)
 
+(assert (eq (length vemv/available-projects)
+            (length (-uniq vemv/available-projects))))
+
 (vemv/open-files-from-last-session!)

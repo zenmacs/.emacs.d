@@ -9,10 +9,6 @@
 ;; - infer project from currently open file
 ;; - use inferred value as implicit argument to these defuns
 
-;; ~/.emacs.d.overrides/lib/emacs.d.overrides.el must have a value such as:
-;; `(setq vemv/available-projects '("gpm" "ventas" "jumbo" "assign" "overrides" "emacs"))`,
-;; where each identifier corresponds with a .el file (example: `vemv.project.gpm.el`)
-
 (defun vemv/root-marker ()
   "A string that proves that a project is a full directory, rather than a project id (name - like 'gpm')"
   "/Users")
@@ -47,27 +43,26 @@
      (setq clojure-indent-style :always-align)
      (setq clojure-align-forms-automatically nil)
      (setq whitespace-line-column 131)
-     ;; avoids expensive computation on mode-line
-     (setq vemv/cached-projects-with-initialization-files (vemv/projects-with-initialization-files))
      (when (not vemv-cleaning-namespaces)
        (setq cider-cljs-lein-repl vemv/default-cider-cljs-lein-repl))))
 
 (vemv.project/reset)
 
-(defun vemv/on-the-fly-project? (which &optional candidates)
-  (not (member which (or candidates (vemv/projects-with-initialization-files)))))
+(defun vemv/on-the-fly-project? (which)
+  "An on-the-fly project is one that was opened via a command.
+At opening time, it was ensured that that project didn't belong to vemv/available-projects."
+  (member which vemv/on-the-fly-projects))
 
-(defun vemv/all-project-names ()
-  (let ((candidates vemv/cached-projects-with-initialization-files))
-    (mapcar (lambda (x)
-              (if (vemv/on-the-fly-project? x candidates)
-                  (cider-project-name x)
-                  x))
-            (vemv/projects-for-workspace))))
+(defun vemv/all-project-names (&optional no-prettify)
+  (mapcar (lambda (x)
+            (if (and (not no-prettify) (vemv/on-the-fly-project? x))
+                (cider-project-name x)
+                x))
+          (vemv/projects-for-workspace)))
 
 (defun vemv/refresh-current-project (which &optional switch-p)
   (let ((old-project-type vemv/project-type)
-        (on-the-fly-project (vemv/on-the-fly-project? which vemv/cached-projects-with-initialization-files)))
+        (on-the-fly-project (vemv/on-the-fly-project? which)))
     (vemv.project/reset)
 
     (when which

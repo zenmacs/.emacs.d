@@ -111,11 +111,15 @@
                 (or (-elem-index (car b) crit) 99999999)))
            target-list)))
 
+(setq vemv/on-the-fly-projects nil)
+
 (defun vemv/set-available-projects! ()
-  (setq vemv/available-projects (-mapcat (lambda (x) (second x)) vemv/available-workspaces)))
+  (setq vemv/available-projects (-mapcat (lambda (x) (second x)) vemv/available-workspaces))
+  (setq vemv/on-the-fly-projects (filter (lambda (x)
+                                           (not (member x vemv/available-projects)))
+                                         vemv/on-the-fly-projects)))
 
 (vemv/set-available-projects!)
-(setq vemv/on-the-fly-projects nil)
 (setq cider-launched nil)
 (setq vemv-cider-connecting nil)
 (setq vemv-cider-connected nil)

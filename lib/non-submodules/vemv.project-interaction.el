@@ -7,6 +7,10 @@
 (defun vemv/dir-for-project (which)
   (concat vemv-home "/" which))
 
+(defun vemv/projects-enabled-in-config ()
+  "The projects that are enabled in .emacs.d.overrides.el and were `load`-ed into the system."
+  (-flatten (mapcar 'second vemv/available-workspaces)))
+
 (defun vemv/projects-with-initialization-files ()
   (if-let (x (car (filter (lambda (x) (vemv/contains? x ".emacs.d.overrides")) load-path)))
       (mapcar
@@ -16,7 +20,14 @@
                   (member x (list "." ".." "emacs.d.overrides.el")))
                 (directory-files x)))))
 
+(defun vemv/projects-from-central-config-or-dedicated-files ()
+  "The set of projects that are either defined (and enabled) in .emacs.d.overrides.el,
+   or have a dedicated .el file"
+  (-uniq (-concat (vemv/projects-with-initialization-files)
+                  (vemv/projects-enabled-in-config))))
+
 (defun vemv/open-project ()
+  "Can open a project without configuration whatsoever, or a disabled project (in overrides.el) with(out) a dedicated .el file"
   (interactive)
   (load "emacs.d.overrides")
   (vemv/set-available-projects!)
@@ -24,13 +35,17 @@
    (let* ((chosen-workspace (ido-completing-read "In which workspace should the project be opened? " (vemv/workspace-names)))
           (_ (assert (member chosen-workspace (vemv/workspace-names))))
           (default-directory (vemv/dir-opened-from-home))
-          (project-name (or (car (filter (lambda (x)
-                                           (let ((dfp (vemv/dir-for-project x)))
-                                             (or (vemv/contains? default-directory dfp)
-                                                 (vemv/contains? dfp default-directory))))
-                                         (vemv/projects-with-initialization-files)))
-                            default-directory)))
-     (conj! vemv/on-the-fly-projects project-name)
+          (found (-find (lambda (x)
+                          (let ((dfp (vemv/dir-for-project x)))
+                            (or (vemv/contains? default-directory dfp)
+                                (vemv/contains? dfp default-directory))))
+                        (vemv/projects-from-central-config-or-dedicated-files)))
+          (project-name (or found default-directory)))
+     (assert (not (member project-name vemv/available-projects)))
+     (assert (not (member project-name (vemv/projects-for-workspace))))
+     (conj! vemv/on-the-fly-projects (if found
+                                         found
+                                         default-directory))
      (vemv/set-workspace (vemv/find-workspace chosen-workspace)
                          :skip-refresh)
      (vemv/add-project-to-current-workspace project-name)
