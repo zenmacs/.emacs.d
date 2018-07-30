@@ -146,10 +146,10 @@ inserting it at a new line."
 
   (if (region-active-p)
 
-      (progn
+      (let ((content (vemv/selected-region)))
         (dotimes (i (- (region-end) (point)))
           (forward-char))
-        (insert "\n" (vemv/selected-region) "\n"))
+        (insert content))
 
       (back-to-indentation)
 
