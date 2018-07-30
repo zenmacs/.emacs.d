@@ -18,6 +18,8 @@
       vemv/shortcuts/global/left                    'left-char
       vemv/shortcuts/global/next                    'cua-scroll-up
       vemv/shortcuts/global/primary-1               'vemv/onelineize
+      vemv/shortcuts/global/primary-2               (argless
+                                                     (call-interactively 'goto-line))
       vemv/shortcuts/global/primary-3               'vemv/indent ;; NOTE: don't wrap it in vemv/safe-paredit-command, it already does so internally.
       vemv/shortcuts/global/primary-6               'vemv/emacs-reload
       vemv/shortcuts/global/primary-8               'vemv/toggle-verbosity
