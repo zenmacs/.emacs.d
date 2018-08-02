@@ -33,7 +33,7 @@
 	url = https://github.com/sabof/es-windows.git
 [submodule "lib/cider"]
 	path = lib/cider
-	url = https://github.com/clojure-emacs/cider.git
+	url = https://github.com/vemv/cider.git
 [submodule "lib/clojure-mode"]
 	path = lib/clojure-mode
 	url = https://github.com/vemv/clojure-mode.git
