@@ -77,6 +77,7 @@
 (advice-add 'cider-test-run-project-tests :around 'vemv/apply-tests-verbosely)
 (advice-add 'cider-test-rerun-failed-tests :around 'vemv/apply-tests-verbosely)
 (advice-add 'cider-test-show-report :around 'vemv/apply-tests-verbosely)
+(advice-add 'cider-test-execute :around 'vemv/apply-tests-verbosely)
 
 (defun hack-local-variables-confirm (f &rest args)
   "Disables annoying dialog 'The local variables list in :x contains values that may not be safe"
