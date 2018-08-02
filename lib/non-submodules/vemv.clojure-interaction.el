@@ -207,6 +207,19 @@
       (vemv/safe-select-window vemv/main_window)
       (vemv/open-recent-file-for-this-project!)))
 
+(defun vemv/is-cljs-project? ()
+  (or (eq vemv/project-type :cljs)
+      (vemv/current-main-buffer-is-cljs)
+      (if-let ((p (vemv/project-dot-clj-file)))
+          (let* ((was-open (get-file-buffer p))
+                 (_ (unless was-open
+                      (find-file-noselect p)))
+                 (ret (with-current-buffer (get-file-buffer p)
+                        (vemv/contains? (buffer-string) "org.clojure/clojurescript"))))
+            (unless was-open
+              (kill-buffer (get-file-buffer p)))
+            ret))))
+
 (defun vemv/clojure-init-or-send-sexpr ()
   (interactive)
   (when (vemv/in-clojure-mode?)
@@ -219,9 +232,7 @@
           (setq vemv/running-project-type vemv/project-type)
           (delay (argless (funcall vemv/project-initializers)
                           (select-window vemv/main_window)
-                          (if (or (eq vemv/project-type :cljs)
-                                  (vemv/current-main-buffer-is-cljs)
-                                  (vemv/contains? (buffer-string) "org.clojure/clojurescript"))
+                          (if (vemv/is-cljs-project?)
                               (cider-jack-in-clojurescript)
                               (if vemv/cider-port
                                   (cider-connect "127.0.0.1" vemv/cider-port vemv/project-root-dir)

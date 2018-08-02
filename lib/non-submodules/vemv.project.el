@@ -49,6 +49,11 @@
 
 (vemv.project/reset)
 
+(defun vemv/project-dot-clj-file ()
+  (let ((f (concat vemv/project-clojure-dir "project.clj")))
+    (when (file-exists-p f)
+      f)))
+
 (defun vemv/on-the-fly-project? (which)
   "An on-the-fly project is one that was opened via a command.
 At opening time, it was ensured that that project didn't belong to vemv/available-projects."
