@@ -63,11 +63,13 @@
                "project-explorer"
                "shell-1"
                "cider-repl"
+               "cider-test-report"
                "scratch")))
 
 (defun vemv/good-buffer-p ()
-  (-any? (lambda (x) (vemv/contains? (buffer-name) x))
-         (list ".clj" ".el")))
+  (or (vemv/buffer-of-current-project? (current-buffer))
+      (member (buffer-file-name)
+              (flatten (mapcar 'second vemv/chosen-file-buffer-order-as-list)))))
 
 (defun vemv/good-window-p ()
   (or (eq (selected-window) vemv/main_window)
@@ -101,23 +103,26 @@
   (if (or (and (vemv/good-buffer-p)
                (vemv/good-window-p))
           (and (not (vemv/good-buffer-p))
-               (not (vemv/noncloseable-buffer-p)))
-          (and (vemv/good-buffer-p)
                (not (vemv/noncloseable-buffer-p))
-               (not (vemv/good-window-p))
-               (vemv/good-frame-p)))
+               (vemv/good-window-p)))
       (vemv/close-this-buffer))
   ;; buffer closing can change the selected window. compensate it:
-  (if-let (unrelated-window (first (filter (lambda (w)
-                                             (not (seq-contains (list vemv/repl-window vemv/project-explorer-window vemv/main_window)
-                                                                w)))
-                                           (window-list))))
+  (if-let (unrelated-window (-find (lambda (w)
+                                     (not (seq-contains (list vemv/repl-window
+                                                              vemv/project-explorer-window
+                                                              vemv/main_window)
+                                                        w)))
+                                   (window-list)))
       (select-window unrelated-window))
-  (unless (< (length (vemv/current-frame-buffers)) 2)
-    (unless (vemv/good-window-p)
-      (vemv/close-this-window)))
-  (unless (vemv/good-frame-p)
-    (vemv/close-this-frame)))
+  (let* ((foreign-frame (not (vemv/good-frame-p)))
+         (window-count (length (window-list)))
+         (skip-closing-frame (and foreign-frame (> window-count 1))))
+    (unless (< (length (vemv/current-frame-buffers)) 2)
+      (unless (vemv/good-window-p)
+        (vemv/close-this-window)))
+    (unless (or (vemv/good-frame-p)
+                skip-closing-frame)
+      (vemv/close-this-frame))))
 
 (defun vemv/close-all-file-buffers ()
   (interactive)
