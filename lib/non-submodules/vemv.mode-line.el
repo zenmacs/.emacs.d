@@ -19,36 +19,37 @@
     (concat fname (if fname "." "") (s-join "." onechars) (if (> (length onechars) 0) "." "") name)))
 
 (defun vemv/mode-line-for-buffer (buffer-name)
-  (if (vemv/contains? buffer-name "project.clj")
-      buffer-name
-      (let* ((is-clj (vemv/contains? buffer-name ".clj"))
-             (buf (get-buffer buffer-name))
-             (sym (intern (concat "vemv/mode-line-for-buffer/" (buffer-file-name buf) "-open")))
-             (close-sym (intern (concat "vemv/mode-line-for-buffer/" (buffer-file-name buf) "-close")))
-             (namespace (if is-clj
+  (let* ((is-project-dot-clj (vemv/contains? buffer-name "project.clj"))
+         (is-clj (vemv/contains? buffer-name ".clj"))
+         (buf (get-buffer buffer-name))
+         (sym (intern (concat "vemv/mode-line-for-buffer/" (buffer-file-name buf) "-open")))
+         (close-sym (intern (concat "vemv/mode-line-for-buffer/" (buffer-file-name buf) "-close")))
+         (namespace (if is-project-dot-clj
+                        "project.clj"
+                        (if is-clj
                             (vemv/abbreviate-ns (with-current-buffer buffer-name
                                                   (or (ignore-errors
                                                         (cider-current-ns))
-                                                      buffer-name)))))
-             (is-modified (with-current-buffer buffer-name (buffer-modified-p)))
-             (shortname (concat (if is-clj namespace buffer-name)
-                                (if is-modified "*" ""))))
-        (unless (fboundp sym)
-          (eval `(defun ,sym ()
-                   (interactive)
-                   ()
-                   (vemv/safe-select-window vemv/main_window)
-                   (switch-to-buffer ,buffer-name)
-                   (vemv/clean-chosen-file-buffer-order)
-                   (vemv/after-file-open)))
-          (eval `(defun ,close-sym ()
-                   (interactive)
-                   (kill-buffer ,buffer-name)
-                   (vemv/clean-chosen-file-buffer-order))))
-        (propertize shortname 'local-map `(keymap
-                                           (mode-line keymap
-                                                      (mouse-1 . ,sym)
-                                                      (mouse-3 . ,close-sym)))))))
+                                                      buffer-name))))))
+         (is-modified (with-current-buffer buffer-name (buffer-modified-p)))
+         (shortname (concat (if is-clj namespace buffer-name)
+                            (if is-modified "*" ""))))
+    (unless (fboundp sym)
+      (eval `(defun ,sym ()
+               (interactive)
+               ()
+               (vemv/safe-select-window vemv/main_window)
+               (switch-to-buffer ,buffer-name)
+               (vemv/clean-chosen-file-buffer-order)
+               (vemv/after-file-open)))
+      (eval `(defun ,close-sym ()
+               (interactive)
+               (kill-buffer ,buffer-name)
+               (vemv/clean-chosen-file-buffer-order))))
+    (propertize shortname 'local-map `(keymap
+                                       (mode-line keymap
+                                                  (mouse-1 . ,sym)
+                                                  (mouse-3 . ,close-sym))))))
 
 (defun vemv/mode-line-for-project (project-name)
   (let* ((sym (intern (concat "vemv/mode-line-for-project/" project-name "-open")))
