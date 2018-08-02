@@ -12,7 +12,7 @@
 
 (defmacro argless (&rest forms)
   "Shortcut for (lambda () (interactive) ,@forms)"
-  `(lambda () (interactive) ,@forms))
+  `(lambda (&rest _) (interactive) ,@forms))
 
 (defmacro if-let (binding &rest forms)
   "Usage: (if-let (x (some-computation))
