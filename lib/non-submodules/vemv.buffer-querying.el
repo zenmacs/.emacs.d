@@ -82,7 +82,7 @@
 
 (defun vemv/in-clojure-mode? ()
   ;; better: derived-mode-p
-  (vemv/contains? (pr-str major-mode) "clojure"))
+  (vemv/in-a-clojure-mode?))
 
 (defun vemv/current-main-buffer-is-cljs ()
   (or (vemv/contains? (buffer-name) ".cljs")
