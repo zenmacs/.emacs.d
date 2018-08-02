@@ -72,15 +72,29 @@
 (setq vemv/maybe-change-project-graphically
       (vemv/debounce 'vemv/maybe-change-project-graphically* 0.3))
 
-(defun vemv/buffer-of-current-project? (b)
+(defun vemv/buffer-of-current-project? (b &optional other-candidates)
   (when (and b (buffer-file-name b))
-    (vemv/contains? (file-truename (buffer-file-name b))
-                    vemv/project-root-dir)))
+    (let* ((tn (file-truename (buffer-file-name b))))
+      (-find (lambda (x)
+               (vemv/contains? tn x))
+             (cons vemv/project-root-dir other-candidates)))))
 
-(defun vemv/buffer-of-current-running-project? (b)
+(defun vemv/buffer-of-current-project-or-parent? (b)
+  (vemv/buffer-of-current-project? b vemv/parent-project-root-dirs))
+
+(defun vemv/buffer-of-current-running-project? (b &optional candidates)
   (when (and b (buffer-file-name b))
-    (vemv/contains? (file-truename (buffer-file-name b))
-                    vemv/running-project-root-dir)))
+    (let ((tn (file-truename (buffer-file-name b))))
+      (-find (lambda (x)
+               (vemv/contains? tn x))
+             (cons vemv/running-project-root-dir candidates)))))
+
+(defun vemv/buffer-of-current-running-project-or-children? (b)
+  (vemv/buffer-of-current-running-project? b
+                                           (when (-find (lambda (x)
+                                                          (string-equal x vemv/running-project-root-dir))
+                                                        vemv/parent-project-root-dirs)
+                                             (list vemv/project-root-dir))))
 
 (defun vemv/open_file_buffers ()
   (let* ((bs (filter (lambda (x)

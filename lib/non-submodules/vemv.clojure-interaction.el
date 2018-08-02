@@ -58,15 +58,18 @@
   (interactive)
   (delay (argless
           (unless (or (vemv/scratch-p)
-                      (not (vemv/buffer-of-current-running-project? (current-buffer)))
+                      (not (vemv/buffer-of-current-running-project-or-children? (current-buffer)))
                       (and (eq vemv/running-project-type :clj) (vemv/current-main-buffer-is-cljs)))
             (when (and (vemv/ciderable-p)
                        (vemv/figwheel-connected-p)
                        (not (string-equal (vemv/current-ns)
                                           (vemv/current-ns (window-buffer vemv/repl-window)))))
-              (cider-repl-set-ns (vemv/current-ns))))
-          (when after
-            (funcall after)))
+              (cider-repl-set-ns (vemv/current-ns))
+              (cider-interactive-eval (concat "(try (clojure.core/require '"
+                                              (vemv/current-ns)
+                                              ") (catch Throwable _))")))
+            (when after
+              (funcall after))))
          1))
 
 (setq vemv/debounced-advice-nrepl (vemv/debounce 'vemv/advice-nrepl* 0.8))

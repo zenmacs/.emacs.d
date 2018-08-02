@@ -8,7 +8,7 @@
 (defun vemv/after-file-open-without-project-explorer-highlighting ()
   (interactive)
   (vemv/safe-select-window vemv/main_window)
-  (when (vemv/buffer-of-current-project? (current-buffer))
+  (when (vemv/buffer-of-current-project-or-parent? (current-buffer))
     (when (and (vemv/in-clojure-mode?)
                (not vemv/ns-shown))
       (vemv/toggle-ns-hiding :after-file-open))

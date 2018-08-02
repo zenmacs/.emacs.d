@@ -18,14 +18,19 @@
                          (vemv/sexpr-content backward?)))))
     (if (equal where :emacs)
         (eval (read content))
-        (let ((sender (selected-window))
-              (destination-buffer (case where
-                                    (:cider the-cider-buffer-name)
-                                    (:ielm "*ielm*")
-                                    (:shell "*shell-1*")
-                                    (:clj vemv/clj-repl-name)
-                                    (:cljs vemv/cljs-repl-name))))
-          (if (not (seq-contains (vemv/all-buffer-names) destination-buffer))
+        (let* ((sender (selected-window))
+               (destination-buffer (case where
+                                     (:cider the-cider-buffer-name)
+                                     (:ielm "*ielm*")
+                                     (:shell "*shell-1*")
+                                     (:clj vemv/clj-repl-name)
+                                     (:cljs vemv/cljs-repl-name)))
+               (foreign? (not (seq-contains (vemv/all-buffer-names) destination-buffer)))
+               (destination-buffer (if foreign?
+                                       (buffer-name (window-buffer vemv/repl-window))
+                                       destination-buffer)))
+          (if (and foreign?
+                   (not vemv/parent-project-root-dirs)) ;; implementation could be more accurate, does the job for now
               (vemv/echo "Can't eval in a different project!")
               (vemv/safe-select-window vemv/repl-window)
               (switch-to-buffer destination-buffer)
