@@ -25,15 +25,16 @@
       vemv/shortcuts/global/primary-8               'vemv/toggle-verbosity
       vemv/shortcuts/global/primary-S-f             (argless
                                                      (vemv/safe-select-window vemv/main_window)
-                                                     (let ((default-directory vemv/project-clojure-dir)
-                                                           (require-final-newline (not vemv/no-newline-at-eof)))
-                                                       (helm-do-ag (ido-read-directory-name "Where: "))))
+                                                     (let* ((default-directory vemv/project-clojure-dir)
+                                                            (require-final-newline (not vemv/no-newline-at-eof))
+                                                            (where (ido-read-directory-name "Where: ")))
+                                                       (assert (file-exists-p where))
+                                                       (helm-do-ag where)))
       vemv/shortcuts/global/primary-S-n             (argless
                                                      (let ((f (vemv/new-frame)))
                                                        (select-frame f)
                                                        (switch-to-buffer "*Messages*")))
       vemv/shortcuts/global/primary-S-r             'vemv/run-this-deftest
-      vemv/shortcuts/global/primary-S-y             'vemv/abort-ag
       vemv/shortcuts/global/primary-S-z             'undo-tree-redo
       vemv/shortcuts/global/primary-SPC             'cua-set-mark
       vemv/shortcuts/global/primary-a               'vemv/copy-selection-or-next-sexpr
@@ -62,7 +63,6 @@
       vemv/shortcuts/global/primary-up              'backward-paragraph
       vemv/shortcuts/global/primary-v               'vemv/paste-from-clipboard
       vemv/shortcuts/global/primary-w               'vemv/close-this
-      vemv/shortcuts/global/primary-y               'vemv/ag-replace
       vemv/shortcuts/global/primary-z               'undo-tree-undo
       vemv/shortcuts/global/prior                   'cua-scroll-down
       vemv/shortcuts/global/right                   'right-char

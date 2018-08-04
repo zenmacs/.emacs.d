@@ -216,3 +216,12 @@ ACC is an implementation detail - do not pass this parameter!"
                (push (list k v) result))
              hash-table)
     result))
+
+(defun vemv/read-from-minibuffer (&optional prompt)
+  "Catches C-g as nil"
+  (interactive)
+  (let* ((inhibit-quit t)
+         (output (with-local-quit
+                   (read-from-minibuffer (or prompt "=> ")))))
+    (or output
+        (setq quit-flag nil))))

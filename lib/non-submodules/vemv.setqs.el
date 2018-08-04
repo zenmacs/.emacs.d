@@ -206,3 +206,5 @@ of the buffer into a formatted string."
         (when (not formatted) (vemv/echo "Buffer has broken syntax, cannot format"))
         (erase-buffer)
         (insert formatted))))
+
+(setq helm-display-header-line nil)

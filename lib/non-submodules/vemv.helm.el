@@ -4,27 +4,35 @@
 
 (provide 'vemv.helm)
 
-;; `-u foo`: case-sensitive
-;; `-i foo`: case-insensitive
-;; Pasting must be done with tertiary-v
-;; C-S: mark occurrence
-;; RET: for choosing where to search
-;; TAB: generally never use.
-;; RET: edit marked ocurrences (or all, by default)
-;; S-RET: goto file
 (defun vemv/ag-replace (&rest _)
   (interactive)
   (with-current-buffer "*helm-ag-edit*"
-    (let* ((search (replace-regexp-in-string "^\-[u|i] " "" helm-ag--last-query))
-           (replacement (read-from-minibuffer (concat "Replacement for `" search "`: "))))
-      (when (and replacement (not (string-equal replacement "")))
-        (vemv/replace-regexp-entire-buffer search replacement)
-        (call-interactively 'helm-ag--edit-commit)
-        (vemv/echo "Replaced!")))))
+    (let* ((search (replace-regexp-in-string "^\-[s|i|Q]+ " "" helm-ag--last-query))
+           (replacement (vemv/read-from-minibuffer (concat "Replacement for `" search "`: "))))
+      (if (not replacement)
+          (helm-ag--exit-from-edit-mode)
+          (vemv/replace-regexp-entire-buffer search replacement)
+          (call-interactively 'helm-ag--edit-commit)
+          (vemv/echo "Replaced!")))))
 
-(defun vemv/abort-ag ()
-  (interactive)
-  (vemv/stop-using-minibuffer 'helm-ag--exit-from-edit-mode))
+(comm
+
+ ;; these break two things:
+ ;; - when no buffers are open and I C-a, I won't see the opened buffers until I vemv/next-file-buffer
+ ;; - S-RET.
+ ;; The original intent was that on C-A, the currently-open buffer is still the current one.
+
+ (defun helm-ag--persistent-action (candidate)
+   "For find-file-noselect"
+   (let ((find-func (if helm-ag-use-temp-buffer
+                        #'helm-ag--open-file-with-temp-buffer
+                        #'find-file-noselect)))
+     (helm-ag--find-file-action candidate find-func (helm-ag--search-this-file-p) t)
+          (helm-highlight-current-line)))
+
+ (defun helm-ag--action-find-file (candidate)
+   "For find-file-noselect"
+   (helm-ag--find-file-action candidate 'find-file-noselect (helm-ag--search-this-file-p))))
 
 ;; redefine for having just one action
 
@@ -62,16 +70,104 @@
 
 (defun vemv/helm-persistent-action-all ()
   (interactive)
-  (call-interactively 'helm-beginning-of-buffer)
-  (setq-local vemv-current-line (vemv/current-line-number))
-  (setq-local vemv-last-line (save-excursion (call-interactively 'helm-end-of-buffer) (vemv/current-line-number)))
-  (call-interactively 'helm-beginning-of-buffer)
-  (dotimes (i 200) ; while (not (eq vemv-current-line vemv-last-line))
-    (setq-local vemv-current-line (vemv/current-line-number))
-    (call-interactively 'helm-execute-persistent-action)
-    (call-interactively 'helm-next-line))
+  (call-interactively 'helm-end-of-buffer)
+  (let* ((currently-open (window-buffer vemv/main_window))
+         (vemv-last-line (helm-candidate-number-at-point)))
 
-  ;; Jump to the last file, so one ensures that:
-  ;;   helm is closed. Less steps
-  ;;   the open files are shown. Helm likes to jump back to *scratch* after completion
-  (helm-select-nth-action 1))
+    (call-interactively 'helm-beginning-of-buffer)
+    (dotimes (i (max 0 (- vemv-last-line 1)))
+      (call-interactively 'helm-execute-persistent-action)
+      (call-interactively 'helm-next-line))
+
+    ;; Jump to the last file, so one ensures that:
+    ;;   helm is closed. Less steps
+    ;;   the open files are shown. Helm likes to jump back to *scratch* after completion
+    (helm-select-nth-action 1)))
+
+(setq helm-mode-line-string "")
+
+(defun helm-next-page (&rest v)
+  "Rebinds C-v"
+  (interactive)
+  (vemv/paste-from-clipboard))
+
+(defun helm-ag--previous-file ()
+  "Rebinds <left>"
+  (interactive)
+  (left-char))
+
+(defun helm-ag--next-file ()
+  "Rebinds <right>"
+  (interactive)
+  (right-char))
+
+(defun helm-do-ag--helm ()
+  "Adds a :prompt option"
+  (let ((search-dir (if (not (helm-ag--windows-p))
+                        helm-ag--default-directory
+                        (if (helm-do-ag--target-one-directory-p helm-ag--default-target)
+                            (car helm-ag--default-target)
+                            helm-ag--default-directory))))
+    (helm-attrset 'name (helm-ag--helm-header search-dir)
+                  helm-source-do-ag)
+    (helm :sources '(helm-source-do-ag) :buffer "*helm-ag*" :keymap helm-do-ag-map
+          :input (or (helm-ag--marked-input t)
+                     (helm-ag--insert-thing-at-point helm-ag-insert-at-point))
+          :history 'helm-ag--helm-history
+          :prompt "(`-s ` prefix: case-sensitive; `-i `: case-insensitive; `-Q `: literal search) Pattern: ")))
+
+(defun helm-ag--edit (_candidate)
+  "Customizes header-line-format"
+  (let* ((helm-buf-dir (or helm-ag--default-directory
+                           helm-ag--last-default-directory
+                           default-directory))
+         (default-directory helm-buf-dir))
+    (with-current-buffer (get-buffer-create "*helm-ag-edit*")
+      (erase-buffer)
+      (setq-local helm-ag--default-directory helm-buf-dir)
+      (unless (helm-ag--vimgrep-option)
+        (setq-local helm-ag--search-this-file-p
+                    (assoc-default 'search-this-file (helm-get-current-source))))
+      (let (buf-content)
+        (with-current-buffer (get-buffer "*helm-ag*")
+          (goto-char (point-min))
+          (forward-line 1)
+          (let* ((body-start (point))
+                 (marked-lines (cl-loop for ov in (overlays-in body-start (point-max))
+                                        when (eq 'helm-visible-mark (overlay-get ov 'face))
+                                        return (helm-marked-candidates))))
+            (if (not marked-lines)
+                (setq buf-content (buffer-substring-no-properties
+                                   body-start (point-max)))
+                (setq buf-content (concat (string-join marked-lines "\n") "\n")))))
+        (insert buf-content)
+        (add-text-properties (point-min) (point-max)
+                             '(read-only t rear-nonsticky t front-sticky t))
+        (let ((inhibit-read-only t)
+              (regexp (helm-ag--match-line-regexp)))
+          (setq header-line-format
+                " RET (if prompted) or C-c C-c (otherwise): perform replacement.")
+          (goto-char (point-min))
+          (while (re-search-forward regexp nil t)
+            (let ((file-line-begin (match-beginning 4))
+                  (file-line-end (match-end 4))
+                  (body-begin (match-beginning 3))
+                  (body-end (match-end 3)))
+              (add-text-properties file-line-begin file-line-end
+                                   '(face font-lock-function-name-face
+                                          intangible t))
+              (remove-text-properties body-begin body-end '(read-only t))
+              (set-text-properties body-end (1+ body-end)
+                                   '(read-only t rear-nonsticky t))))))))
+  (other-window 1)
+  (switch-to-buffer (get-buffer "*helm-ag-edit*"))
+  (goto-char (point-min))
+  (setq next-error-function 'compilation-next-error-function)
+  (setq-local compilation-locs (make-hash-table :test 'equal :weakness 'value))
+  (use-local-map helm-ag-edit-map))
+
+(defsubst helm-ag--helm-header (dir)
+  "Places C-a tip"
+  (if helm-ag--buffer-search
+      "Search Buffers"
+      "S-RET: open file. C-a: open all files. C-SPC: mark occurrence. RET: edit marked (or all) ocurrences for replacement"))
