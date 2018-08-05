@@ -54,7 +54,8 @@
   (or (and (or
             (vemv/in-indentation-point-p)
             (vemv/non-completable-char-p))
-           (or (call-interactively 'indent-for-tab-command)
+           (or (let ((last-command nil))
+                 (call-interactively 'indent-for-tab-command))
                t))
       (call-interactively 'company-complete)
       (call-interactively 'company-dabbrev)))
