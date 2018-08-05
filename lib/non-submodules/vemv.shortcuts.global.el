@@ -23,13 +23,7 @@
       vemv/shortcuts/global/primary-3               'vemv/indent ;; NOTE: don't wrap it in vemv/safe-paredit-command, it already does so internally.
       vemv/shortcuts/global/primary-6               'vemv/emacs-reload
       vemv/shortcuts/global/primary-8               'vemv/toggle-verbosity
-      vemv/shortcuts/global/primary-S-f             (argless
-                                                     (vemv/safe-select-window vemv/main_window)
-                                                     (let* ((default-directory vemv/project-clojure-dir)
-                                                            (require-final-newline (not vemv/no-newline-at-eof))
-                                                            (where (ido-read-directory-name "Where: ")))
-                                                       (assert (file-exists-p where))
-                                                       (helm-do-ag where)))
+      vemv/shortcuts/global/primary-S-f             'vemv/helm-search-and-replace
       vemv/shortcuts/global/primary-S-n             (argless
                                                      (let ((f (vemv/new-frame)))
                                                        (select-frame f)

@@ -4,6 +4,14 @@
 
 (provide 'vemv.helm)
 
+(defun vemv/helm-search-and-replace ()
+  (vemv/safe-select-window vemv/main_window)
+  (let* ((default-directory vemv/project-clojure-dir)
+         (require-final-newline (not vemv/no-newline-at-eof))
+         (where (ido-read-directory-name "Where: ")))
+    (assert (file-exists-p where))
+    (helm-do-ag where)))
+
 (setq helm-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map minibuffer-local-map)
