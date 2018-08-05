@@ -13,8 +13,10 @@
                                      vemv/project-root-dir
                                      default-directory)))
 
+;; Without this, performance can freeze.
+;; `public`: for Rails' `public/assets`
 (setq pe/omit-regex (mapconcat 'identity
-                                    (list "^#" "~$" "^node_modules$")
+                                    (list "^#" "~$" "^node_modules$" "tmp" ".git$" ".sass-cache" ".lumo-cache" "target" "auto-save-list" "project-explorer-cache" "public")
                                     "\\|"))
 
 (add-to-list 'exec-path (concat vemv-home "/bin"))
