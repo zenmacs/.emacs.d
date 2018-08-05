@@ -308,7 +308,6 @@
                                                                (concat "(cljs.test/run-tests '"
                                                                        chosen
                                                                        ")"))
-                                                    (vemv/echo chosen)
                                                     (cider-test-execute chosen nil nil))))))))))
 
 (defun vemv/run-this-deftest ()

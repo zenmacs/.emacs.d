@@ -88,6 +88,7 @@
  `(cider-repl-stdout-face ((t (:foreground ,vemv-default-foreground-color-very-slightly-darker))))
  `(cider-stacktrace-error-class-face ((t (:foreground ,vemv-error-foreground-color))))
  `(cider-stacktrace-ns-face ((t (:foreground "white"))))
+ `(cider-test-success-face ((t (:background ,vemv-colors/keyword-green :foreground ,vemv-default-autocomplete-popup-foreground-color))))
 
  `(font-lock-builtin-face ((t (:foreground ,vemv-default-foreground-color))))
 
