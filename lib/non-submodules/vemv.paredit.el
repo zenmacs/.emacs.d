@@ -108,16 +108,10 @@
   (beginning-of-line-text))
 
 (defmacro vemv/paredit-safely (&rest body)
-  "* Paredit commands over non-lisps can cause Emacs freezes.
-   * `vemv/normal-indentation` can delete code while unwrapping sexprs."
+  "Paredit commands over non-lisps can cause Emacs freezes."
   `(when (vemv/in-a-lisp-mode?)
-     (let* ((old comment-indent-function)
-            (new 'comment-indent-default)
-            (comment-indent-function new)
-            (_ (setq comment-indent-function new))
-            (v (progn
+     (let* ((v (progn
                  ,@body)))
-       (setq comment-indent-function old)
        v)))
 
 (defun vemv/safe-paredit-command (command)
