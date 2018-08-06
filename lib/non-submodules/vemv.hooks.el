@@ -35,6 +35,8 @@
 
 (add-hook 'ielm-mode-hook 'enable-paredit-mode)
 
+(add-hook 'haml-mode-hook 'highlight-indent-guides-mode)
+
 (add-hook 'cider-connected-hook
           (argless
            (delay (argless

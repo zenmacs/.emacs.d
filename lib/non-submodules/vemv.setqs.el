@@ -1,55 +1,124 @@
 (provide 'vemv.setqs)
 
-(setq vc-follow-symlinks t)
-(setq-default indent-tabs-mode nil)
 (fset 'yes-or-no-p 'y-or-n-p)
-(setq initial-scratch-message "")
+(put 'if 'lisp-indent-function nil)
 
-(setq cider-repl-display-help-banner' nil)
-(setq ido-show-dot-for-dired t)
+(setq-default truncate-lines t)
+(setq-default save-place t)
+(setq-default indent-tabs-mode nil)
+(setq-default mode-line-format
+              (list "  "
+                    '(:eval (when (and (buffer-file-name) (buffer-modified-p)) "*"))
+                    '(:eval (buffer-name))
+                    " "
+                    '(:eval (when (buffer-file-name) (propertize "%l:%c" 'face 'font-lock-line-and-column-face)))))
+
+(setq locale-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+
+(add-to-list 'exec-path (concat vemv-home "/bin"))
+
+(add-to-list 'auto-mode-alist
+             '("\\.js.erb$" . js-mode))
+
+(add-to-list 'auto-mode-alist
+             '("\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'" . ruby-mode))
+
+(add-to-list 'auto-mode-alist
+             '("\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'" . ruby-mode))
+
+;; Prevents annoying popups
+(add-to-list 'special-display-buffer-names '("*xref*" vemv/display-completion))
+(add-to-list 'special-display-buffer-names '("*Help*" vemv/display-completion))
+(add-to-list 'special-display-buffer-names '("*Ido Completions*" vemv/display-completion))
+(add-to-list 'special-display-buffer-names '("*Diff*" vemv/display-completion))
 
 (setq pe/project-root-function (lambda (&rest _)
                                  (if (vemv/buffer-of-current-project? (current-buffer))
                                      vemv/project-root-dir
                                      default-directory)))
 
-;; Without this, performance can freeze.
-;; `public`: for Rails' `public/assets`
-(setq pe/omit-regex (mapconcat 'identity
-                                    (list "^#" "~$" "^node_modules$" "tmp" ".git$" ".sass-cache" ".lumo-cache" "target" "auto-save-list" "project-explorer-cache" "public")
-                                    "\\|"))
+(setq pe/mode-line-format
+      `(:eval (vemv/workspace-mode-line-format)))
 
-(add-to-list 'exec-path (concat vemv-home "/bin"))
+(setq vemv/pe/mode-line-format
+      `(:eval (vemv/pe/mode-line-format*)))
 
-(setq whitespace-style '(face lines-tail))
+(setq tabbed-line-format
+      (list
+       '(:eval (concat (propertize "  %l:%c " 'face 'font-lock-line-and-column-face)
+                       (when (and (not vemv-cider-connecting) (not vemv-cider-connected))
+                         (propertize "Disconnected " 'face 'font-lock-line-and-column-face))
+                       (when vemv/verbose-mode (propertize "Verbose " 'face 'font-lock-line-and-column-face))))
+       '(:eval (when vemv-cider-connecting
+                 (propertize "Connecting... " 'face 'vemv-cider-connection-face)))
+       '(:eval (vemv/message-file-buffers-impl))))
 
-;; no .#filenames
-(setq create-lockfiles nil)
+;; http://www.emacswiki.org/emacs/BackupDirectory
+(setq backup-by-copying t
+      delete-old-versions t
+      kept-new-versions 6
+      kept-old-versions 2
+      version-control t)
 
-(setq fiplr-ignored-globs
-      ;; `directories` entries must be single-segment, i.e `/` doesn't work.
-      '((directories (".git" "tmp" ".svn" ".hg" ".bzr" "tools" "res-vagrant" "resources" ".lumo-cache"
-                      ".paket" "doc" "bin" "assets" "public" "node_modules" "coverage"))
-        (files (".#*" "*~" "*.so" "*.jpg" "*.png" "*.gif" "*.pdf" "*.gz" "*.zip" "*.DS_Store"
-                "*.md" "*.gitgnore" "*.scssc" "*.keep" "*.json" "LICENSE" "LICENCE" "license" "*.patch"
-                "flask-server" "Makefile" "makefile" "*.txt" "*ignore""*.*rc" "*.map" ".last-compilation-digest-development"
-                "*.ico" "Gemfile" "Rakefile" ".rspec" "*integration-testing*" "*node_modules*" "webpack" ".editorconfig" "*.pid"
-                "*.workerjs" "*.MIT" "acorn" "AUTHORS" "*.APACHE2" "JSONStream" "babylon" "*.iml" "*.BSD" "*.log"
-                "*.ru" "*.cache" "*.ts" "*.json5" "atob" "LICENSE-MIT" "public/assets/*" ".*"
-                "*.ls" "loose-envify" "errno" "*.flow" "*.properties" "*.extract-native-dependencies" "*.targets"
-                "*.sh" "*.ps1" "*.arcconfig" "Vagrantfile" "*.template" "*.nuspec" "*.emz" "1" "2" "*.svg"
-                "*.ttf" ".lein-repl-history" "*.cur" "profile" ".figwheel-compile-stamp" "*.woff" "*.eor"
-                "*.xml" "*.coffee" "*.lock" "*.markdown" "*.opts" "module-deps" ".nrepl-port" "repl-port"))))
+;; https://github.com/company-mode/company-mode/issues/808
+(setq company-backends (-remove (lambda (x)
+                                  (and (listp x)
+                                       (equal (car x) 'company-dabbrev-code)))
+                                company-backends))
 
-(setq company-idle-delay nil) ;; no autopopup
-
-(setq vemv/cljr-ast-load-counter 0)
-
-(setq js-indent-level 2)
-(setq css-indent-offset 2)
-(setq sh-basic-offset 2)
-(setq sh-indentation 2)
-(setq smie-indent-basic 2)
+(setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
+      auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
+      back-to-indentation-state nil
+      backup-directory-alist `((".*" . ,temporary-file-directory))
+      backup-directory-alist `((".*" . ,temporary-file-directory))
+      cider-repl-display-help-banner' nil
+      cider-repl-pop-to-buffer-on-connect nil
+      cider-show-error-buffer nil
+      clojure-indent-style ':always-align
+      column-number-mode t
+      company-dabbrev-char-regexp "\\sw\\|_\\|-\\|!\\|\\?\\|*\\|+"
+      company-idle-delay nil ;; no autopopup
+      confirm-nonexistent-file-or-buffer nil
+      create-lockfiles nil ;; no .#filenames
+      css-indent-offset 2
+      custom-file "~/.emacs.d/custom.el"
+      delete-by-moving-to-trash nil
+      echo-keystrokes 0.02
+      helm-display-header-line nil
+      highlight-indent-guides-character ?·
+      highlight-indent-guides-method 'character
+      highlight-indent-guides-responsive 'top
+      ido-auto-merge-delay-time 99999 ;; prevents annoying folder switching. might be handy: (setq ido-max-directory-size 100000)
+      ido-show-dot-for-dired t
+      inhibit-startup-message t
+      initial-scratch-message ""
+      js-indent-level 2
+      mouse-buffer-menu-maxlen 99999
+      mouse-buffer-menu-mode-mult 1
+      mouse-wheel-follow-mouse 't      ;; scroll window under mouse
+      mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
+      mouse-wheel-scroll-amount '(4 ((shift) . 4))
+      nrepl-hide-special-buffers t
+      redisplay-dont-pause t
+      require-final-newline t
+      ruby-insert-encoding-magic-comment nil
+      scroll-step 1
+      sh-basic-offset 2
+      sh-indentation 2
+      shift-select-mode nil
+      smie-indent-basic 2
+      transient-mark-mode t
+      truncate-partial-width-windows nil
+      vc-follow-symlinks t
+      vemv/cljr-ast-load-counter 0
+      vemv/launched nil
+      visible-bell nil ;; disable flickering
+      whitespace-style '(face lines-tail)
+      x-select-enable-clipboard t)
 
 (custom-set-variables
  '(xref-prompt-for-identifier nil)
@@ -76,126 +145,6 @@
 
 (defun cider-repl--banner () "")
 
-(setq clojure-indent-style ':always-align)
-
-(setq-default mode-line-format
-              (list "  "
-                    '(:eval (when (and (buffer-file-name) (buffer-modified-p)) "*"))
-                    '(:eval (buffer-name))
-                    " "
-                    '(:eval (when (buffer-file-name) (propertize "%l:%c" 'face 'font-lock-line-and-column-face)))))
-
-(setq pe/mode-line-format
-      `(:eval (vemv/workspace-mode-line-format)))
-
-(setq vemv/pe/mode-line-format
-      `(:eval (vemv/pe/mode-line-format*)))
-
-(setq tabbed-line-format
-      (list
-       '(:eval (concat (propertize "  %l:%c " 'face 'font-lock-line-and-column-face)
-                       (when (and (not vemv-cider-connecting) (not vemv-cider-connected))
-                         (propertize "Disconnected " 'face 'font-lock-line-and-column-face))
-                       (when vemv/verbose-mode (propertize "Verbose " 'face 'font-lock-line-and-column-face))))
-       '(:eval (when vemv-cider-connecting
-                 (propertize "Connecting... " 'face 'vemv-cider-connection-face)))
-       '(:eval (vemv/message-file-buffers-impl))))
-
-(add-to-list 'auto-mode-alist
-             '("\\.js.erb$" . js-mode))
-
-(add-to-list 'auto-mode-alist
-             '("\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'" . ruby-mode))
-
-(add-to-list 'auto-mode-alist
-             '("\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'" . ruby-mode))
-
-(setq vemv/default-cider-cljs-lein-repl
-      "(do (require 'figwheel-sidecar.repl-api)
-
-          (try
-           (require 'figwheel-sidecar.system)
-           (alter-var-root #'figwheel-sidecar.system/repl-function-docs
-                           (constantly \"Results: Stored in vars *1, *2, *3, *e holds last exception object\"))
-           (catch Throwable e))
-        (figwheel-sidecar.repl-api/start-figwheel!)
-        (figwheel-sidecar.repl-api/cljs-repl))")
-
-(set-default 'truncate-lines t)
-(setq-default save-place t)
-
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
-
-(setq mouse-wheel-scroll-amount '(4 ((shift) . 4)))
-(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
-(setq mouse-wheel-follow-mouse 't)       ;; scroll window under mouse
-(setq scroll-step 1)
-
-(setq nrepl-hide-special-buffers t)
-(setq cider-repl-pop-to-buffer-on-connect nil)
-(setq cider-show-error-buffer nil)
-
-(setq vemv/launched nil)
-
-(setq custom-file "~/.emacs.d/custom.el")
-
-(setq visible-bell nil) ;; disable flickering
-(setq ido-auto-merge-delay-time 99999) ;; prevents annoying folder switching. might be handy: (setq ido-max-directory-size 100000)
-
-(setq mouse-buffer-menu-maxlen 99999)
-(setq mouse-buffer-menu-mode-mult 1)
-
-(put 'if 'lisp-indent-function nil)
-
-(setq back-to-indentation-state nil)
-
-(setq redisplay-dont-pause t
-      column-number-mode t
-      echo-keystrokes 0.02
-      inhibit-startup-message t
-      transient-mark-mode t
-      shift-select-mode nil
-      require-final-newline t
-      truncate-partial-width-windows nil
-      delete-by-moving-to-trash nil
-      confirm-nonexistent-file-or-buffer nil
-      x-select-enable-clipboard t)
-
-(setq locale-coding-system 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(set-selection-coding-system 'utf-8)
-(prefer-coding-system 'utf-8)
-
-;; Prevents annoying popups
-(add-to-list 'special-display-buffer-names '("*Help*" vemv/display-completion))
-(add-to-list 'special-display-buffer-names '("*Ido Completions*" vemv/display-completion))
-(add-to-list 'special-display-buffer-names '("*Diff*" vemv/display-completion))
-
-;; http://www.emacswiki.org/emacs/BackupDirectory
-(setq backup-by-copying t
-      delete-old-versions t
-      kept-new-versions 6
-      kept-old-versions 2
-      version-control t)
-
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
-
-(setq company-dabbrev-char-regexp "\\sw\\|_\\|-\\|!\\|\\?\\|*\\|+")
-
-;; https://github.com/company-mode/company-mode/issues/808
-(setq company-backends (-remove (lambda (x)
-                                  (and (listp x)
-                                       (equal (car x) 'company-dabbrev-code)))
-                                company-backends))
-
 ;; monkeypatch for https://github.com/clojure-emacs/cider/issues/2102
 (defun cider--format-buffer (formatter)
   "Format the contents of the current buffer.
@@ -209,4 +158,34 @@ of the buffer into a formatted string."
         (erase-buffer)
         (insert formatted))))
 
-(setq helm-display-header-line nil)
+(setq fiplr-ignored-globs
+      ;; `directories` entries must be single-segment, i.e `/` doesn't work.
+      '((directories (".git" "tmp" ".svn" ".hg" ".bzr" "tools" "res-vagrant" "resources" ".lumo-cache"
+                      ".paket" "doc" "bin" "assets" "public" "node_modules" "coverage"))
+        (files (".#*" "*~" "*.so" "*.jpg" "*.png" "*.gif" "*.pdf" "*.gz" "*.zip" "*.DS_Store"
+                "*.md" "*.gitgnore" "*.scssc" "*.keep" "*.json" "LICENSE" "LICENCE" "license" "*.patch"
+                "flask-server" "Makefile" "makefile" "*.txt" "*ignore""*.*rc" "*.map" ".last-compilation-digest-development"
+                "*.ico" "Gemfile" "Rakefile" ".rspec" "*integration-testing*" "*node_modules*" "webpack" ".editorconfig" "*.pid"
+                "*.workerjs" "*.MIT" "acorn" "AUTHORS" "*.APACHE2" "JSONStream" "babylon" "*.iml" "*.BSD" "*.log"
+                "*.ru" "*.cache" "*.ts" "*.json5" "atob" "LICENSE-MIT" "public/assets/*" ".*"
+                "*.ls" "loose-envify" "errno" "*.flow" "*.properties" "*.extract-native-dependencies" "*.targets"
+                "*.sh" "*.ps1" "*.arcconfig" "Vagrantfile" "*.template" "*.nuspec" "*.emz" "1" "2" "*.svg"
+                "*.ttf" ".lein-repl-history" "*.cur" "profile" ".figwheel-compile-stamp" "*.woff" "*.eor"
+                "*.xml" "*.coffee" "*.lock" "*.markdown" "*.opts" "module-deps" ".nrepl-port" "repl-port"))))
+
+;; Without this, performance can freeze.
+;; `public`: for Rails' `public/assets`
+(setq pe/omit-regex (mapconcat 'identity
+                               (list "^#" "~$" "^node_modules$" "tmp" ".git$" ".sass-cache" ".lumo-cache" "target" "auto-save-list" "project-explorer-cache" "public")
+                               "\\|"))
+
+(setq vemv/default-cider-cljs-lein-repl
+      "(do (require 'figwheel-sidecar.repl-api)
+
+          (try
+           (require 'figwheel-sidecar.system)
+           (alter-var-root #'figwheel-sidecar.system/repl-function-docs
+                           (constantly \"Results: Stored in vars *1, *2, *3, *e holds last exception object\"))
+           (catch Throwable e))
+        (figwheel-sidecar.repl-api/start-figwheel!)
+        (figwheel-sidecar.repl-api/cljs-repl))")
