@@ -74,16 +74,16 @@
 (setq vemv-home (getenv "HOME"))
 
 (defun vemv-source (filename)
-  (mapcar
-   (lambda (x)
-     (let* ((xy (s-split "=" (s-chop-prefix "+" x)))
-            (x (car xy))
-            (y (car (last xy))))
-        (setenv (s-chop-prefix "declare -x " x)
-                (s-replace "\"" "" y))))
-   (-filter (lambda (x) (vemv/starts-with x "+"))
-            (s-split "\n"
-                     (shell-command-to-string (concat "diff -u  <(true; export) <(source " filename "; export) | tail -n +4"))))))
+  (mapcar (lambda (x)
+            (let* ((xy (s-split "=" (s-chop-prefix "+" x)))
+                   (x (car xy))
+                   (y (car (last xy))))
+              (setenv (s-chop-prefix "declare -x " x)
+                      (s-replace "\"" "" y))))
+          (-filter (lambda (x)
+                     (vemv/starts-with x "+"))
+                   (s-split "\n"
+                            (shell-command-to-string (concat "diff -u  <(true; export) <(source " filename "; export) | tail -n +4"))))))
 
 (setenv "SHELL" "/bin/zsh")
 (setenv "PATH" (concat (getenv "PATH") ":" vemv-home "/bin"))
@@ -115,7 +115,7 @@
 (setq vemv/on-the-fly-projects nil)
 
 (defun vemv/set-available-projects! ()
-  (setq vemv/available-projects (-mapcat (lambda (x) (second x)) vemv/available-workspaces))
+  (setq vemv/available-projects (-mapcat 'second vemv/available-workspaces))
   (setq vemv/on-the-fly-projects (filter (lambda (x)
                                            (not (member x vemv/available-projects)))
                                          vemv/on-the-fly-projects)))

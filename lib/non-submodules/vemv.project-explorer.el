@@ -46,7 +46,8 @@
 
 (defun vemv/show-current-file-in-project-explorer-unsafe ()
   (interactive)
-  (let ((fallback (argless (funcall vemv/safe-show-current-file-in-project-explorer))))
+  (let ((fallback (argless
+                   (funcall vemv/safe-show-current-file-in-project-explorer))))
     (if (minibuffer-prompt)
         (delay fallback 1)
 
@@ -58,10 +59,15 @@
             (vemv/ensure-project-is-displayed!)
             (let ((buffer-truename (file-truename (buffer-file-name))))
               (when (vemv/contains? buffer-truename vemv/project-root-dir)
-                (let* ((buffer-fragments (-remove (lambda (x) (string-equal x "")) (split-string buffer-truename "/")))
-                       (projname (pe/project-root-function-default)) ;; "/Users/vemv/gpm"
-                       (project-fragments (-remove (lambda (x) (string-equal x "")) (split-string projname "/")))
-                       (fragments (-drop (length project-fragments) buffer-fragments))
+                (let* ((buffer-fragments (-remove (lambda (x)
+                                                    (string-equal x ""))
+                                                 (split-string buffer-truename "/")))
+                       (projname (pe/project-root-function-default))
+                       (project-fragments (-remove (lambda (x)
+                                                     (string-equal x ""))
+                                                   (split-string projname "/")))
+                       (fragments (-drop (length project-fragments)
+                                         buffer-fragments))
                        (expanded-fragments (mapcar* (lambda (x y)
                                                       (-take x y))
                                                     (number-sequence 1 (length fragments)) (-repeat (length fragments) fragments)))
@@ -70,7 +76,7 @@
                                                 expanded-fragments)))
 
                   (vemv/safe-select-window vemv/project-explorer-window)
-                  ;; (pe/fold-all) ;; necessary in principle, skip it for performance. seems to work fine.
+                  (pe/fold-all) ;; can be skipped as it's somewhat expensive. But a well-tuned `pe/omit-regex' will make it acceptable
                   (beginning-of-buffer)
 
                   (seq-doseq (f (butlast final-fragments))
@@ -78,7 +84,8 @@
                       (next-line))
                     (pe/return))
 
-                  (while (not (string-equal (s-chop-suffix "/" (first (last final-fragments))) (pe/get-filename)))
+                  (while (not (string-equal (s-chop-suffix "/" (first (last final-fragments)))
+                                            (pe/get-filename)))
                     (next-line))
 
                   (end-of-line))))))))

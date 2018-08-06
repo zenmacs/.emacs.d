@@ -151,7 +151,8 @@ inserting it at a new line."
 
       (back-to-indentation)
 
-      (if (some (lambda (char) (equal char (vemv/current-char-at-point)))
+      (if (some (lambda (char)
+                  (equal char (vemv/current-char-at-point)))
                 '("(" "[" "{" "<" "\""))
           (progn
             (let ((content (vemv/sexpr-content))
@@ -293,7 +294,8 @@ inserting it at a new line."
   (interactive)
   (move-beginning-of-line 1)
   (if (not (equal last-command 'vemv/home))
-      (while (some (lambda (char) (equal char (vemv/current-char-at-point)))
+      (while (some (lambda (char)
+                     (equal char (vemv/current-char-at-point)))
                    '(" " "\t"))
         (forward-char))))
 
@@ -309,7 +311,8 @@ inserting it at a new line."
              (rev (vemv/reverse line))
              (line_length (length line))
              (movement (recur-let ((result 0))
-                                  (if (some (lambda (char) (equal char (substring line result (inc result))))
+                                  (if (some (lambda (char)
+                                              (equal char (substring line result (inc result))))
                                             '(";" "\n"))
                                       result
                                       (recur (inc result))))))
@@ -317,7 +320,8 @@ inserting it at a new line."
         (forward-char movement)
         ;; there may exist empty space between code and comment:
         (if (pos? movement)
-            (while (not (some (lambda (char) (equal char (vemv/current-char-at-point)))
+            (while (not (some (lambda (char)
+                                (equal char (vemv/current-char-at-point)))
                               '(" ")))
               (backward-char)))
         (comm backward-char (recur-let ((result 0))

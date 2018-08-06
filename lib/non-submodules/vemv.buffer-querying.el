@@ -37,10 +37,11 @@
   "Returns a list of the minor modes that are enabled in the current buffer."
   (interactive)
   (let ((active-modes))
-    (mapc (lambda (mode) (condition-case nil
-                             (if (and (symbolp mode) (symbol-value mode))
-                                 (add-to-list 'active-modes mode))
-                           (error nil)))
+    (mapc (lambda (mode)
+            (condition-case nil
+                (if (and (symbolp mode) (symbol-value mode))
+                    (add-to-list 'active-modes mode))
+              (error nil)))
           minor-mode-list)
     active-modes))
 
@@ -91,7 +92,9 @@
 
 (defun vemv/line-empty? (line)
   (or (= 0 (length line))
-      (every (lambda (char) (= char 32)) line)))
+      (every (lambda (char)
+               (= char 32))
+             line)))
 
 (defun vemv/at-beginning-of-line-p ()
   (eq (point) (save-excursion (beginning-of-line) (point))))
@@ -127,13 +130,13 @@
   "Whether the cursor is in a point apt for triggering an indentation command."
 
   (or (vemv/at-beginning-of-line-p)
-      (every (lambda (x) (= x 32))
+      (every (lambda (x)
+               (= x 32))
              (vemv/chars-at-left))))
 
 (defun vemv/non-completable-char-p ()
   "Whether the cursor is in a point predictably impossible to autocomplete"
   (let ((current-char (vemv/current-char-at-point)))
-    (-any?
-     (lambda (x)
-       (string-equal x current-char))
-     (list ";" "(" "[" "{" "#" "\""))))
+    (-any? (lambda (x)
+             (string-equal x current-char))
+           (list ";" "(" "[" "{" "#" "\""))))

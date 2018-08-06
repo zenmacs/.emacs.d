@@ -25,7 +25,8 @@
 ;; `ln -s` the relevant file to ~/.emacs.d/elpa/the-package
 ;; rm ~/.emacs.d/elpa/the-package/foo.elc
 ;; restart emacs.
-(add-hook 'compilation-finish-functions (lambda (b _) (kill-buffer b)))
+(add-hook 'compilation-finish-functions (lambda (b _)
+                                          (kill-buffer b)))
 (byte-recompile-directory (expand-file-name "~/.emacs.d/elpa") 0)
 
 (require 'saveplace)

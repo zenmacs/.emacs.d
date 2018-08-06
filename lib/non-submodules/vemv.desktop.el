@@ -22,11 +22,10 @@
   (ignore-errors
     (-flatten (mapcar 'second (eval
                                (third
-                                (car
-                                 (-filter (lambda (x)
-                                            (and (listp x)
-                                                 (equal `(setq vemv/chosen-file-buffer-order-as-list) (-take 2 x))))
-                                          (vemv.desktop/desktop-file-contents)))))))))
+                                (-find (lambda (x)
+                                         (and (listp x)
+                                              (equal `(setq vemv/chosen-file-buffer-order-as-list) (-take 2 x))))
+                                       (vemv.desktop/desktop-file-contents))))))))
 
 (defun vemv/files-from-previous-session ()
   (ignore-errors

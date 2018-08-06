@@ -57,7 +57,8 @@
                             vemv/file-buffer-fallback)))))
 
 (defun vemv/noncloseable-buffer-p ()
-  (-any? (lambda (x) (vemv/contains? (buffer-name) x))
+  (-any? (lambda (x)
+           (vemv/contains? (buffer-name) x))
          (list vemv/clj-repl-name
                vemv/cljs-repl-name
                "project-explorer"
@@ -166,10 +167,11 @@
   "Returns a list of the minor modes that are enabled in the current buffer."
   (interactive)
   (let ((active-modes))
-    (mapc (lambda (mode) (condition-case nil
-                             (if (and (symbolp mode) (symbol-value mode))
-                                 (add-to-list 'active-modes mode))
-                           (error nil)))
+    (mapc (lambda (mode)
+            (condition-case nil
+                (if (and (symbolp mode) (symbol-value mode))
+                    (add-to-list 'active-modes mode))
+              (error nil)))
           minor-mode-list)
     active-modes))
 

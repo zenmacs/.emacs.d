@@ -6,9 +6,9 @@
 (provide 'vemv.workspace)
 
 (defun vemv/find-workspace (name)
-  (car (filter (lambda (x)
-                 (string-equal (car x) name))
-               vemv/all-workspaces)))
+  (-find (lambda (x)
+           (string-equal (car x) name))
+         vemv/all-workspaces))
 
 (defun vemv/set-workspace (&optional to skip-refresh reverse)
   (let* ((old vemv/current-workspace)

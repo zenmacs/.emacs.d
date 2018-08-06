@@ -12,13 +12,14 @@
   (-flatten (mapcar 'second vemv/available-workspaces)))
 
 (defun vemv/projects-with-initialization-files ()
-  (if-let (x (car (filter (lambda (x) (vemv/contains? x ".emacs.d.overrides")) load-path)))
-      (mapcar
-       (lambda (x)
-         (s-replace ".el" "" (s-replace "vemv.project." "" x)))
-       (-remove (lambda (x)
-                  (member x (list "." ".." "emacs.d.overrides.el")))
-                (directory-files x)))))
+  (if-let (x (-find (lambda (x)
+                      (vemv/contains? x ".emacs.d.overrides"))
+                    load-path))
+      (mapcar (lambda (x)
+                (s-replace ".el" "" (s-replace "vemv.project." "" x)))
+              (-remove (lambda (x)
+                         (member x (list "." ".." "emacs.d.overrides.el")))
+                       (directory-files x)))))
 
 (defun vemv/projects-from-central-config-or-dedicated-files ()
   "The set of projects that are either defined (and enabled) in .emacs.d.overrides.el,
@@ -100,7 +101,7 @@
   (let* ((bs (filter (lambda (x)
                        (vemv/buffer-of-current-project? x))
                      (buffer-list)))
-         (c (mapcar (lambda (x) (buffer-name x)) bs)))
+         (c (mapcar 'buffer-name bs)))
     c))
 
 (setq vemv/chosen-file-buffer-order (vemv/hash-map))
@@ -125,7 +126,9 @@
   (let* ((curr (buffer-name (current-buffer)))
          (actually-open (vemv/open_file_buffers))
          (all (-distinct (-concat (gethash vemv/current-project vemv/chosen-file-buffer-order) actually-open)))
-         (all-without-curr (-remove (lambda (x) (string-equal x curr)) all))
+         (all-without-curr (-remove (lambda (x)
+                                      (string-equal x curr))
+                                    all))
          (final (cons curr all-without-curr)))
     (puthash vemv/current-project
              (filter (lambda (x)

@@ -12,7 +12,9 @@
 
 (defmacro argless (&rest forms)
   "Shortcut for (lambda () (interactive) ,@forms)"
-  `(lambda (&rest _) (interactive) ,@forms))
+  `(lambda (&rest _)
+     (interactive)
+     ,@forms))
 
 (defmacro if-let (binding &rest forms)
   "Usage: (if-let (x (some-computation))
@@ -115,8 +117,7 @@ ACC is an implementation detail - do not pass this parameter!"
 
     (progn
       (set timer nil)
-      `(lambda
-         (&rest args)
+      `(lambda (&rest args)
          (progn
            (if
             (and (vectorp ,timer) (not (aref ,timer 0)))
@@ -125,8 +126,7 @@ ACC is an implementation detail - do not pass this parameter!"
             ,timer
             (run-at-time
              ,delay nil
-             (lambda
-               (params)
+             (lambda (params)
                (apply ,callee params))
              args)))))))
 

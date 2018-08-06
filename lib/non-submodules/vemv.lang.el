@@ -53,7 +53,10 @@
 
 (defun sh ()
   (interactive)
-  (shell (concat "*shell-" (number-to-string (send! vemv/shell-id (lambda (a) (inc a)))) "*")))
+  (shell (concat "*shell-"
+                 (number-to-string (send! vemv/shell-id (lambda (a)
+                                                          (inc a))))
+                 "*")))
 
 (defun vemv/smex ()
   (when vemv/launched (smex)))
