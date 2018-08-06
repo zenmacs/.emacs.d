@@ -14,10 +14,11 @@
 (dolist (package '(edn inflections hydra company queue fiplr smartparens yasnippet multiple-cursors
                    dash simpleclip helm-ag git-timemachine paren-face haml-mode ruby-end highlight-indent-guides))
   (unless (package-installed-p package)
-    (unless vemv/packages-refreshed
-      (package-refresh-contents)
-      (setq vemv/packages-refreshed t))
-    (package-install package)))
+    (vemv/verbosely
+     (unless vemv/packages-refreshed
+       (package-refresh-contents)
+       (setq vemv/packages-refreshed t))
+     (package-install package))))
 
 ;; Eases editing locally-modified packages.
 ;; Example:

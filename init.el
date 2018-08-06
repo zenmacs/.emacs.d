@@ -92,6 +92,16 @@
   (let ((default-directory "~/.emacs.d.overrides/"))
         (normal-top-level-add-subdirs-to-load-path)))
 
+(defmacro vemv/verbosely (&rest forms)
+  `(let ((old vemv/verbose-mode))
+     (vemv/set-verbosity-to t)
+     ,@forms
+     (vemv/set-verbosity-to old)))
+
+(defun vemv/apply-verbosely (f &rest args)
+  (vemv/verbosely
+   (apply f args)))
+
 (require 'vemv.lang.core)
 (require 'vemv.packages)
 (require 'emacs.d.overrides)

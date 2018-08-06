@@ -32,16 +32,6 @@
                ((symbol-function 'yes-or-no-p) #'always-yes))
        ,@forms)))
 
-(defmacro vemv/verbosely (&rest forms)
-  `(let ((old vemv/verbose-mode))
-     (vemv/set-verbosity-to t)
-     ,@forms
-     (vemv/set-verbosity-to old)))
-
-(defun vemv/apply-verbosely (f &rest args)
-  (vemv/verbosely
-   (apply f args)))
-
 (defun vemv/echo (&rest xs)
   (let ((what (apply 'concat xs)))
     (setq inhibit-message nil)
