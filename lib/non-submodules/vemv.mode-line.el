@@ -19,11 +19,14 @@
     (concat fname (if fname "." "") (s-join "." onechars) (if (> (length onechars) 0) "." "") name)))
 
 (defun vemv/mode-line-for-buffer (buffer-name)
-  (let* ((is-project-dot-clj (vemv/contains? buffer-name "project.clj"))
+  (let* ((buf (get-buffer buffer-name))
+         (bfn (buffer-file-name buf))
+         (is-project-dot-clj (vemv/contains? buffer-name "project.clj"))
          (is-clj (vemv/contains? buffer-name ".clj"))
-         (buf (get-buffer buffer-name))
-         (sym (intern (concat "vemv/mode-line-for-buffer/" (buffer-file-name buf) "-open")))
-         (close-sym (intern (concat "vemv/mode-line-for-buffer/" (buffer-file-name buf) "-close")))
+         (is-rails-view (or (vemv/contains? bfn ".haml")
+                      (vemv/contains? bfn ".erb")))
+         (sym (intern (concat "vemv/mode-line-for-buffer/" bfn "-open")))
+         (close-sym (intern (concat "vemv/mode-line-for-buffer/" bfn "-close")))
          (namespace (if is-project-dot-clj
                         "project.clj"
                         (if is-clj
@@ -32,7 +35,11 @@
                                                         (cider-current-ns))
                                                       buffer-name))))))
          (is-modified (with-current-buffer buffer-name (buffer-modified-p)))
-         (shortname (concat (if is-clj namespace buffer-name)
+         (shortname (concat (if is-clj
+                                namespace
+                                (if is-rails-view
+                                    (s-join "/" (-take-last 2 (s-split "/" bfn)))
+                                    buffer-name))
                             (if is-modified "*" ""))))
     (unless (fboundp sym)
       (eval `(defun ,sym ()
