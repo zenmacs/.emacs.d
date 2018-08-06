@@ -4,13 +4,23 @@
 
 (provide 'vemv.helm)
 
-(defun vemv/helm-search-and-replace ()
+(defun vemv/helm-search-and-replace (&optional follow)
+  (vemv/set-helm-ag-source follow)
   (vemv/safe-select-window vemv/main_window)
-  (let* ((default-directory vemv/project-clojure-dir)
+  (helm-attrset 'follow (when follow 1) helm-ag-source)
+  (helm-attrset 'follow (when follow 1) helm-source-do-ag)
+  (setq helm-follow-mode-persistent follow)
+  (let* ((helm-ag-use-temp-buffer follow)
+         (default-directory vemv/project-clojure-dir)
          (require-final-newline (not vemv/no-newline-at-eof))
          (where (ido-read-directory-name "Where: ")))
     (assert (file-exists-p where))
     (helm-do-ag where)))
+
+(defun vemv/helm-search-and-replace-with-previews ()
+  "Performs a vemv/helm-search-and-replace, but with helm 'follow' mode, namely there's a preview of each ocurrence
+(as a temporary buffer), so one can see a larger context."
+  (vemv/helm-search-and-replace t))
 
 (setq helm-map
   (let ((map (make-sparse-keymap)))
@@ -19,7 +29,7 @@
     (define-key map [(shift return)]   (argless
                                         (interactive)
                                         (helm-select-nth-action 1)))
-    (define-key map (kbd "C-a")      'vemv/helm-persistent-action-all)
+    (define-key map (kbd "C-a")        'vemv/helm-persistent-action-all)
     (define-key map (kbd "<down>")     'helm-next-line)
     (define-key map (kbd "<up>")       'helm-previous-line)
     (define-key map (kbd "<prior>")    'helm-previous-page)
@@ -97,32 +107,30 @@
        "Edit search results" #'helm-ag--edit
        "Open file"           #'helm-ag--action-find-file))
 
-;; redefine for using the redefined helm-ag--actions
+(defun vemv/set-helm-ag-source (follow)
+  "Parameterizes :follow and customizes helm-ag--actions"
+  (setq helm-ag-source
+        (helm-build-in-buffer-source "The Silver Searcher"
+          :init 'helm-ag--init
+          :real-to-display 'helm-ag--candidate-transformer
+          :persistent-action 'helm-ag--persistent-action
+          :fuzzy-match helm-ag-fuzzy-match
+          :action helm-ag--actions
+          :candidate-number-limit 9999
+          :keymap helm-ag-map
+          :follow follow))
 
-(setq helm-ag-source
-      (helm-build-in-buffer-source "The Silver Searcher"
-        :init 'helm-ag--init
-        :real-to-display 'helm-ag--candidate-transformer
-        :persistent-action 'helm-ag--persistent-action
-        :fuzzy-match helm-ag-fuzzy-match
-        :action helm-ag--actions
-        :candidate-number-limit 9999
-        :keymap helm-ag-map
-        :follow (and helm-follow-mode-persistent 1)))
-
-;; same
-
-(setq helm-source-do-ag
-      (helm-build-async-source "The Silver Searcher"
-        :init 'helm-ag--do-ag-set-command
-        :candidates-process 'helm-ag--do-ag-candidate-process
-        :persistent-action  'helm-ag--persistent-action
-        :action helm-ag--actions
-        :nohighlight t
-        :requires-pattern 3
-        :candidate-number-limit 9999
-        :keymap helm-do-ag-map
-        :follow (and helm-follow-mode-persistent 1)))
+  (setq helm-source-do-ag
+        (helm-build-async-source "The Silver Searcher"
+          :init 'helm-ag--do-ag-set-command
+          :candidates-process 'helm-ag--do-ag-candidate-process
+          :persistent-action  'helm-ag--persistent-action
+          :action helm-ag--actions
+          :nohighlight t
+          :requires-pattern 3
+          :candidate-number-limit 9999
+          :keymap helm-do-ag-map
+          :follow follow)))
 
 (defun vemv/helm-persistent-action-all ()
   (interactive)

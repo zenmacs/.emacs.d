@@ -23,6 +23,7 @@
       vemv/shortcuts/global/primary-3               'vemv/indent ;; NOTE: don't wrap it in vemv/safe-paredit-command, it already does so internally.
       vemv/shortcuts/global/primary-6               'vemv/emacs-reload
       vemv/shortcuts/global/primary-8               'vemv/toggle-verbosity
+      vemv/shortcuts/global/primary-S-d             'vemv/helm-search-and-replace-with-previews
       vemv/shortcuts/global/primary-S-f             'vemv/helm-search-and-replace
       vemv/shortcuts/global/primary-S-n             (argless
                                                      (let ((f (vemv/new-frame)))
