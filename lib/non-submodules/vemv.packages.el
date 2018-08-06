@@ -34,6 +34,7 @@
 (require 'smex)
 (require 'company)
 (require 'cider)
+(electric-indent-mode -1)
 (require 'epl)
 (require 'pkg-info)
 (require 'spinner)
