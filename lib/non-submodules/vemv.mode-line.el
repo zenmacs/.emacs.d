@@ -20,7 +20,13 @@
          (onechars (mapcar (lambda (x)
                              (vemv.abbreviate-ns/format-intermediate-fragment x))
                            base)))
-    (concat fname (if fname "." "") (s-join "." onechars) (if (> (length onechars) 0) "." "") name)))
+    (concat fname
+            (if fname "." "")
+            (s-join "." onechars)
+            (if (> (length onechars) 0)
+                "."
+                "")
+            name)))
 
 (defun vemv/mode-line-for-buffer (buffer-name)
   (let* ((buf (get-buffer buffer-name))
