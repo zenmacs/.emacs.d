@@ -18,7 +18,8 @@
 (setq vemv/original-command-error-function #'command-error-default-function)
 (setq vemv/original-minibuffer-message #'minibuffer-message)
 
-(progn "Stuff that needs to be performed immediately, for a visually pleasant startup"
+(progn
+  "Stuff that needs to be performed immediately, for a visually pleasant startup"
 
   (setq-default line-spacing 1) ;; NOTE: might mess up the echo area
 
@@ -63,7 +64,9 @@
   (setq mac-option-modifier 'meta)
   (setq mac-command-modifier 'control))
 
-(setq vemv-font (if (eq system-type 'darwin) "Monaco-12" "DejaVu Sans Mono-13"))
+(setq vemv-font (if (eq system-type 'darwin)
+                    "Monaco-12"
+                    "DejaVu Sans Mono-13"))
 
 (when (window-system)
     (set-face-attribute 'default nil :font vemv-font))
@@ -78,11 +81,9 @@
             (y (car (last xy))))
         (setenv (s-chop-prefix "declare -x " x)
                 (s-replace "\"" "" y))))
-   (-filter
-    (lambda (x) (vemv/starts-with x "+"))
-    (s-split
-     "\n"
-     (shell-command-to-string (concat "diff -u  <(true; export) <(source " filename "; export) | tail -n +4"))))))
+   (-filter (lambda (x) (vemv/starts-with x "+"))
+            (s-split "\n"
+                     (shell-command-to-string (concat "diff -u  <(true; export) <(source " filename "; export) | tail -n +4"))))))
 
 (setenv "SHELL" "/bin/zsh")
 (setenv "PATH" (concat (getenv "PATH") ":" vemv-home "/bin"))
