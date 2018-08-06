@@ -10,32 +10,34 @@
 
 (defun vemv.desktop/ordered-workspaces-list ()
   (ignore-errors
-    (eval
-     (third
-      (car
-       (-filter (lambda (x)
-                  (and (listp x)
-                       (equal `(setq vemv/all-workspaces) (-take 2 x))))
-                (vemv.desktop/desktop-file-contents)))))))
+    (->> (vemv.desktop/desktop-file-contents)
+         (-filter (lambda (x)
+                    (and (listp x)
+                         (equal `(setq vemv/all-workspaces) (-take 2 x)))))
+         car
+         third
+         eval)))
 
 (defun vemv.desktop/ordered-file-buffers-list ()
   (ignore-errors
-    (-flatten (mapcar 'second (eval
-                               (third
-                                (-find (lambda (x)
-                                         (and (listp x)
-                                              (equal `(setq vemv/chosen-file-buffer-order-as-list) (-take 2 x))))
-                                       (vemv.desktop/desktop-file-contents))))))))
+    (->> (vemv.desktop/desktop-file-contents)
+         (-find (lambda (x)
+                  (and (listp x)
+                       (equal `(setq vemv/chosen-file-buffer-order-as-list) (-take 2 x)))))
+         (third)
+         (eval)
+         (mapcar 'second)
+         (-flatten))))
 
 (defun vemv/files-from-previous-session ()
   (ignore-errors
-    (mapcar (lambda (x)
-              (list (nth 2 x) (nth 6 x)))
-            (-filter (lambda (x)
-                       (and (listp x)
-                            (eq 'desktop-create-buffer (car x))
-                            (not (vemv/contains? (third x) ".gz"))))
-                     (vemv.desktop/desktop-file-contents)))))
+    (->> (vemv.desktop/desktop-file-contents)
+         (-filter (lambda (x)
+                    (and (listp x)
+                         (eq 'desktop-create-buffer (car x))
+                         (not (vemv/contains? (third x) ".gz")))))
+         (mapcar (lambda (x)
+                   (list (nth 2 x) (nth 6 x)))))))
 
 (setq desktop-path '("~/.emacs.d/"))
 
@@ -62,14 +64,15 @@
 
 (defun vemv/open-files-from-last-session! ()
   "Open every file that was open the last time Emacs was closed."
-  (mapcar (lambda (e)
-            (let ((x (first e))
-                  (n (second e)))
-              (ignore-errors
-                (when (file-exists-p x)
-                  (find-file-noselect x)
-                  (with-current-buffer (get-file-buffer x)
-                    (goto-char n)
-                    (vemv/clean-chosen-file-buffer-order))))))
-          (vemv/sort-car-by-car (vemv/files-from-previous-session)
-                                (mapcar 'list (vemv.desktop/ordered-file-buffers-list)))))
+  (->> (vemv.desktop/ordered-file-buffers-list)
+       (mapcar 'list)
+       (vemv/sort-car-by-car (vemv/files-from-previous-session))
+       (mapcar (lambda (e)
+                 (let ((x (first e))
+                       (n (second e)))
+                   (ignore-errors
+                     (when (file-exists-p x)
+                       (find-file-noselect x)
+                       (with-current-buffer (get-file-buffer x)
+                         (goto-char n)
+                         (vemv/clean-chosen-file-buffer-order)))))))))

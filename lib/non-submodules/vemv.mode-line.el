@@ -95,6 +95,8 @@
         (vemv/format-tabs (car all) (cdr all)))))
 
 (defun vemv/pe/mode-line-format* ()
-  (let* ((first (cider-project-name vemv/current-project))
-         (rest (mapcar 'vemv/mode-line-for-project (cdr (vemv/all-project-names :no-prettify)))))
-    (concat "  " (vemv/format-tabs first rest))))
+  (->> (vemv/all-project-names :no-prettify)
+       cdr
+       (mapcar 'vemv/mode-line-for-project)
+       (vemv/format-tabs (cider-project-name vemv/current-project))
+       (concat "  ")))

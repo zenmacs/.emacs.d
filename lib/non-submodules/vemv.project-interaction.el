@@ -15,17 +15,19 @@
   (if-let (x (-find (lambda (x)
                       (vemv/contains? x ".emacs.d.overrides"))
                     load-path))
-      (mapcar (lambda (x)
-                (s-replace ".el" "" (s-replace "vemv.project." "" x)))
-              (-remove (lambda (x)
-                         (member x (list "." ".." "emacs.d.overrides.el")))
-                       (directory-files x)))))
+      (->> x
+           directory-files
+           (-remove (lambda (x)
+                      (member x (list "." ".." "emacs.d.overrides.el"))))
+           (mapcar (lambda (x)
+                     (s-replace ".el" "" (s-replace "vemv.project." "" x)))))))
 
 (defun vemv/projects-from-central-config-or-dedicated-files ()
   "The set of projects that are either defined (and enabled) in .emacs.d.overrides.el,
    or have a dedicated .el file"
-  (-uniq (-concat (vemv/projects-with-initialization-files)
-                  (vemv/projects-enabled-in-config))))
+  (->> (vemv/projects-enabled-in-config)
+       (-concat (vemv/projects-with-initialization-files))
+       -uniq))
 
 (defun vemv/open-project ()
   "Can open a project without configuration whatsoever, or a disabled project (in overrides.el) with(out) a dedicated .el file"
@@ -76,9 +78,10 @@
 (defun vemv/buffer-of-current-project? (b &optional other-candidates)
   (when (and b (buffer-file-name b))
     (let* ((tn (file-truename (buffer-file-name b))))
-      (-find (lambda (x)
-               (vemv/contains? tn x))
-             (cons vemv/project-root-dir other-candidates)))))
+      (->> other-candidates
+           (cons vemv/project-root-dir)
+           (-find (lambda (x)
+                    (vemv/contains? tn x)))))))
 
 (defun vemv/buffer-of-current-project-or-parent? (b)
   (vemv/buffer-of-current-project? b vemv/parent-project-root-dirs))
@@ -86,9 +89,10 @@
 (defun vemv/buffer-of-current-running-project? (b &optional candidates)
   (when (and b (buffer-file-name b))
     (let ((tn (file-truename (buffer-file-name b))))
-      (-find (lambda (x)
-               (vemv/contains? tn x))
-             (cons vemv/running-project-root-dir candidates)))))
+      (->> candidates
+           (cons vemv/running-project-root-dir)
+           (-find (lambda (x)
+                    (vemv/contains? tn x)))))))
 
 (defun vemv/buffer-of-current-running-project-or-children? (b)
   (vemv/buffer-of-current-running-project? b
@@ -98,11 +102,9 @@
                                              (list vemv/project-root-dir))))
 
 (defun vemv/open_file_buffers ()
-  (let* ((bs (filter (lambda (x)
-                       (vemv/buffer-of-current-project? x))
-                     (buffer-list)))
-         (c (mapcar 'buffer-name bs)))
-    c))
+  (->> (buffer-list)
+       (filter 'vemv/buffer-of-current-project?)
+       (mapcar 'buffer-name)))
 
 (setq vemv/chosen-file-buffer-order (vemv/hash-map))
 

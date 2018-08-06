@@ -73,18 +73,6 @@
 
 (setq vemv-home (getenv "HOME"))
 
-(defun vemv-source (filename)
-  (mapcar (lambda (x)
-            (let* ((xy (s-split "=" (s-chop-prefix "+" x)))
-                   (x (car xy))
-                   (y (car (last xy))))
-              (setenv (s-chop-prefix "declare -x " x)
-                      (s-replace "\"" "" y))))
-          (-filter (lambda (x)
-                     (vemv/starts-with x "+"))
-                   (s-split "\n"
-                            (shell-command-to-string (concat "diff -u  <(true; export) <(source " filename "; export) | tail -n +4"))))))
-
 (setenv "SHELL" "/bin/zsh")
 (setenv "PATH" (concat (getenv "PATH") ":" vemv-home "/bin"))
 
@@ -107,7 +95,21 @@
 (require 'emacs.d.overrides)
 (require 'desktop)
 (require 'vemv.desktop)
+(require 'dash)
 (require 's)
+
+(defun vemv-source (filename)
+  (->> (concat "diff -u  <(true; export) <(source " filename "; export) | tail -n +4")
+       (shell-command-to-string)
+       (s-split "\n")
+       (-filter (lambda (x)
+                  (vemv/starts-with x "+")))
+       (mapcar (lambda (x)
+                 (let* ((xy (s-split "=" (s-chop-prefix "+" x)))
+                        (x (car xy))
+                        (y (car (last xy))))
+                   (setenv (s-chop-prefix "declare -x " x)
+                           (s-replace "\"" "" y)))))))
 
 (defun vemv/sort-list-by-list (target-list criterion-list)
   (-sort (lambda (a b)

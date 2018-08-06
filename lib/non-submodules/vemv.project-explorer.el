@@ -84,7 +84,7 @@
                       (next-line))
                     (pe/return))
 
-                  (while (not (string-equal (s-chop-suffix "/" (first (last final-fragments)))
+                  (while (not (string-equal (->> final-fragments last first (s-chop-suffix "/"))
                                             (pe/get-filename)))
                     (next-line))
 
