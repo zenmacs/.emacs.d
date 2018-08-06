@@ -76,9 +76,13 @@
 (setenv "SHELL" "/bin/zsh")
 (setenv "PATH" (concat (getenv "PATH") ":" vemv-home "/bin"))
 
-(when (file-exists-p "~/.emacs.d.overrides/")
-  (let ((default-directory "~/.emacs.d.overrides/"))
-        (normal-top-level-add-subdirs-to-load-path)))
+(require 'cl) ;; for assert
+
+(let ((default-directory "~/.emacs.d.overrides/"))
+  (assert (file-exists-p default-directory)
+          nil
+          (concat default-directory " not found. Please follow the readme here: https://github.com/vemv/.emacs.d"))
+  (normal-top-level-add-subdirs-to-load-path))
 
 (defmacro vemv/verbosely (&rest forms)
   `(let ((old vemv/verbose-mode))
