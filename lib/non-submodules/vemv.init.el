@@ -63,6 +63,7 @@
 (vemv/set-keys-for-scope :global vemv/global-key-bindings)
 (vemv/set-keys-for-scope clojure-mode-map vemv/clojure-key-bindings)
 (vemv/set-keys-for-scope ruby-mode-map vemv/ruby-key-bindings)
+(vemv/set-keys-for-scope haml-mode-map vemv/ruby-key-bindings)
 
 (assert (eq (length vemv/available-projects)
             (length (-uniq vemv/available-projects))))
