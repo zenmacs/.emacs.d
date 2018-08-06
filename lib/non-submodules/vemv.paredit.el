@@ -29,12 +29,15 @@
 
 (defun vemv/save (&optional b)
   (interactive)
-  (let ((b (or b (current-buffer)))
-        ;; for `save-buffer`:
-        (require-final-newline (not vemv/no-newline-at-eof)))
+  (let* ((b (or b (current-buffer)))
+         (dc (string-equal "dc" (car vemv/current-workspace)))
+         ;; for `save-buffer`:
+         (require-final-newline (and (not vemv/no-newline-at-eof)
+                                     (not dc))))
     (with-current-buffer b
       (if (not (vemv/cider-formattable-p))
-          (delete-trailing-whitespace)
+          (unless dc
+            (delete-trailing-whitespace))
           (vemv/save-position-before-formatting)
           (let ((old (substring-no-properties (buffer-string))))
             (save-excursion
