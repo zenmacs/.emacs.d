@@ -49,6 +49,9 @@
 
 (add-hook 'cider-repl-mode-hook #'paredit-mode)
 
+;; for when one opens a file via the terminal
+(add-hook 'buffer-list-update-hook 'vemv/clean-chosen-file-buffer-order)
+
 (defadvice back-to-indentation (around back-to-back)
   (if (eq last-command this-command)
       (progn
