@@ -35,6 +35,7 @@
 (add-to-list 'special-display-buffer-names '("*Help*" vemv/display-completion))
 (add-to-list 'special-display-buffer-names '("*Ido Completions*" vemv/display-completion))
 (add-to-list 'special-display-buffer-names '("*Diff*" vemv/display-completion))
+(add-to-list 'sp-no-reindent-after-kill-modes 'haml-mode)
 
 (setq pe/project-root-function (lambda (&rest _)
                                  (if (vemv/buffer-of-current-project? (current-buffer))

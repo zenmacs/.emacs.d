@@ -55,4 +55,5 @@
 (require 'fiplr)
 (require 'helm-ag)
 (require 'desktop)
+(require 'smartparens-config)
 (provide 'vemv.packages)
