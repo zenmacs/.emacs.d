@@ -34,7 +34,7 @@
          (is-project-dot-clj (vemv/contains? buffer-name "project.clj"))
          (is-clj (vemv/contains? buffer-name ".clj"))
          (is-rails-view (or (vemv/contains? bfn ".haml")
-                      (vemv/contains? bfn ".erb")))
+                            (vemv/contains? bfn ".erb")))
          (sym (intern (concat "vemv/mode-line-for-buffer/" bfn "-open")))
          (close-sym (intern (concat "vemv/mode-line-for-buffer/" bfn "-close")))
          (namespace (if is-project-dot-clj
@@ -44,7 +44,8 @@
                                                   (or (ignore-errors
                                                         (cider-current-ns))
                                                       buffer-name))))))
-         (is-modified (with-current-buffer buffer-name (buffer-modified-p)))
+         (is-modified (with-current-buffer buffer-name
+                        (buffer-modified-p)))
          (shortname (concat (if is-clj
                                 namespace
                                 (if is-rails-view
