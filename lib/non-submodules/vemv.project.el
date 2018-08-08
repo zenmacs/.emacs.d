@@ -40,7 +40,9 @@
      (setq vemv/clj-repl-name nil)
      (setq vemv/cljs-repl-name nil)
      (setq vemv/no-newline-at-eof nil)
-     (setq comment-indent-function 'comment-indent-default)
+     (setq vemv/comment-indent-function 'comment-indent-default)
+     (setq comment-indent-function vemv/comment-indent-function)
+     (setq-default comment-indent-function vemv/comment-indent-function)
      (setq clojure-indent-style :always-align)
      (setq clojure-align-forms-automatically nil)
      (setq whitespace-line-column 131)
@@ -86,6 +88,9 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
       (condition-case nil
           (load (concat "vemv.project." which))
         (error nil)))
+
+    (setq comment-indent-function vemv/comment-indent-function)
+    (setq-default comment-indent-function vemv/comment-indent-function)
 
     ;; Ensures correct `vemv/safe-show-current-file-in-project-explorer` functioning
     (setq vemv/project-root-dir (concat vemv/project-root-dir (if (s-ends-with? "/" vemv/project-root-dir)
