@@ -31,6 +31,7 @@
              '("\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'" . ruby-mode))
 
 ;; Prevents annoying popups
+(add-to-list 'special-display-buffer-names '("*Messages*" vemv/display-completion))
 (add-to-list 'special-display-buffer-names '("*xref*" vemv/display-completion))
 (add-to-list 'special-display-buffer-names '("*Help*" vemv/display-completion))
 (add-to-list 'special-display-buffer-names '("*Ido Completions*" vemv/display-completion))
