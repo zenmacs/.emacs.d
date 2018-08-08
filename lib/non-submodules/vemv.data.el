@@ -26,6 +26,8 @@
 (setq vemv/local-key-bindings
       (list clojure-mode-map  ";" 'vemv/semicolon
             clojure-mode-map "<tab>" 'vemv/tab
+            ;; XXX backtab not handled by gen.rb
+            clojure-mode-map "<backtab>" 'vemv/message-clojure-doc
             emacs-lisp-mode-map "<tab>" 'vemv/tab
             ruby-mode-map "<tab>" 'vemv/tab
             html-mode-map "<tab>" 'vemv/tab

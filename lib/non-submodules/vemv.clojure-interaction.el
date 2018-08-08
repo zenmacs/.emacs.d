@@ -260,6 +260,28 @@
         (setq cider-prompt-for-symbol vemv/cider-prompt-for-symbol)
         (vemv/advice-nrepl))))
 
+(defun vemv/message-clojure-doc ()
+  (interactive)
+  (if (vemv/ciderable-p)
+      (let* ((curr-token (cider-symbol-at-point 'look-back))
+             (cider-prompt-for-symbol nil)
+             (h (ignore-errors
+                  (cider-var-info curr-token))))
+        (if h
+            (let* ((a (nrepl-dict-get h "arglists-str"))
+                   (d (nrepl-dict-get h "doc")))
+              (vemv/echo (concat (when a (concat a "\n\n"))
+                                 (->> d
+                                      (s-split "\n\n")
+                                      (mapcar (lambda (x)
+                                                (->> x
+                                                     (s-split "\n")
+                                                     (mapcar 's-trim)
+                                                     (s-join "\n"))))
+                                      (s-join "\n\n")))))
+            (vemv/echo "No docs found.")))
+      (vemv/echo "Not connected.")))
+
 (defun vemv/clear-cider-repl-buffer (&optional no-recur)
   (interactive)
   (when (cider-connected-p)
