@@ -66,8 +66,8 @@
                                           (vemv/current-ns (window-buffer vemv/repl-window)))))
               (cider-repl-set-ns (vemv/current-ns))
               (cider-interactive-eval (concat "(try (clojure.core/require '"
-                                              (vemv/current-ns)
-                                              ") (catch Throwable _))")))
+                                                      (vemv/current-ns)
+                                                      ") (catch java.lang.Throwable _))")))
             (when after
               (funcall after))))
          1))
@@ -190,7 +190,7 @@
       (advice-add 'helm-ag--action-find-file :after 'vemv/after-file-open)
       (advice-add 'cider-new-error-buffer :after (lambda (&rest _)
                                                    (cider-interactive-eval "(try (clojure.core/prn clojure.core/*e)
-                                                                              (catch Throwable e))")
+                                                                              (catch java.lang.Throwable e))")
                                                    (delay (argless
                                                            (when (vemv/buffer-of-current-running-project?
                                                                   (vemv/save-window-excursion
