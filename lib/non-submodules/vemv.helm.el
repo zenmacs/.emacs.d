@@ -4,18 +4,24 @@
 
 (provide 'vemv.helm)
 
+(defmacro vemv/with-helm-follow (follow &rest body)
+  (declare (indent defun))
+  `(progn
+     (vemv/set-helm-ag-source ,follow)
+     (helm-attrset 'follow (when ,follow 1) helm-ag-source)
+     (helm-attrset 'follow (when ,follow 1) helm-source-do-ag)
+     (setq helm-follow-mode-persistent ,follow)
+     (let* ((helm-ag-use-temp-buffer ,follow))
+       ,@body)))
+
 (defun vemv/helm-search-and-replace (&optional follow)
-  (vemv/set-helm-ag-source follow)
   (vemv/safe-select-window vemv/main_window)
-  (helm-attrset 'follow (when follow 1) helm-ag-source)
-  (helm-attrset 'follow (when follow 1) helm-source-do-ag)
-  (setq helm-follow-mode-persistent follow)
-  (let* ((helm-ag-use-temp-buffer follow)
-         (default-directory vemv/project-clojure-dir)
-         (require-final-newline (not vemv/no-newline-at-eof))
-         (where (ido-read-directory-name "Where: ")))
-    (assert (file-exists-p where))
-    (helm-do-ag where)))
+  (vemv/with-helm-follow follow
+    (let* ((default-directory vemv/project-clojure-dir)
+           (require-final-newline (not vemv/no-newline-at-eof))
+           (where (ido-read-directory-name "Where: ")))
+      (assert (file-exists-p where))
+      (helm-do-ag where))))
 
 (defun vemv/helm-search-and-replace-with-previews ()
   "Performs a vemv/helm-search-and-replace, but with helm 'follow' mode, namely there's a preview of each ocurrence

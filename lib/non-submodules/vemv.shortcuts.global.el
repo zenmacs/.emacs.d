@@ -85,7 +85,9 @@
       vemv/shortcuts/global/tertiary-a              'vemv/copy-inserting-at-kill-list
       vemv/shortcuts/global/tertiary-backtick       'vemv/jump-to-clojure-definition
       vemv/shortcuts/global/tertiary-end            'end-of-buffer
-      vemv/shortcuts/global/tertiary-f              'helm-do-ag-this-file
+      vemv/shortcuts/global/tertiary-f              (argless
+                                                     (vemv/with-helm-follow nil
+                                                       (call-interactively 'helm-do-ag-this-file)))
       vemv/shortcuts/global/tertiary-home           'beginning-of-buffer
       vemv/shortcuts/global/tertiary-j              'cider-eval-sexp-at-point
       vemv/shortcuts/global/tertiary-k              'vemv/cut
