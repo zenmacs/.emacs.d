@@ -290,25 +290,23 @@
   (interactive)
   (when (vemv/in-clojure-mode?)
     (vemv/advice-nrepl (argless
-                        (cider-load-buffer nil
-                                           (argless
-                                            (let* ((cljs (vemv/current-main-buffer-is-cljs))
-                                                   (ns (vemv/current-ns))
-                                                   (inferred (funcall cider-test-infer-test-ns ns))
-                                                   (chosen (if (vemv/is-testing-ns ns inferred)
-                                                               ns
-                                                               (if cljs
-                                                                   vemv/latest-cljs-test-ran
-                                                                   vemv/latest-clojure-test-ran))))
-                                              (when chosen
-                                                (setq vemv/latest-clojure-test-ran chosen)
-                                                (if cljs
-                                                    (vemv/send :cljs
-                                                               nil
-                                                               (concat "(cljs.test/run-tests '"
-                                                                       chosen
-                                                                       ")"))
-                                                    (cider-test-execute chosen nil nil))))))))))
+                        (let* ((cljs (vemv/current-main-buffer-is-cljs))
+                               (ns (vemv/current-ns))
+                               (inferred (funcall cider-test-infer-test-ns ns))
+                               (chosen (if (vemv/is-testing-ns ns inferred)
+                                           ns
+                                           (if cljs
+                                               vemv/latest-cljs-test-ran
+                                               vemv/latest-clojure-test-ran))))
+                          (when chosen
+                            (setq vemv/latest-clojure-test-ran chosen)
+                            (if cljs
+                                (vemv/send :cljs
+                                           nil
+                                           (concat "(cljs.test/run-tests '"
+                                                   chosen
+                                                   ")"))
+                                (cider-test-execute chosen nil nil))))))))
 
 (defun vemv/run-this-deftest ()
   "Assuming `point` is at a deftest name, it runs it"
