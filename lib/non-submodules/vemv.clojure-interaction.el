@@ -245,19 +245,16 @@
                     (vemv/send :clj)))
             (vemv/send :shell)))))
 
-(setq vemv/cider-prompt-for-symbol cider-prompt-for-symbol)
-
 (defun vemv/jump-to-clojure-definition ()
   (interactive)
   (if (not (vemv/in-clojure-mode?))
       (call-interactively 'xref-find-definitions)
       (let* ((curr-token (cider-symbol-at-point 'look-back))
-             (curr-token-is-qualified-kw (vemv/starts-with curr-token "::")))
-        (setq cider-prompt-for-symbol nil)
+             (curr-token-is-qualified-kw (vemv/starts-with curr-token "::"))
+             (cider-prompt-for-symbol nil))
         (if curr-token-is-qualified-kw
             (call-interactively 'cider-find-keyword)
             (cider-find-var))
-        (setq cider-prompt-for-symbol vemv/cider-prompt-for-symbol)
         (vemv/advice-nrepl))))
 
 (defun vemv/message-clojure-doc ()
