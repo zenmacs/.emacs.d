@@ -266,16 +266,18 @@
                   (cider-var-info curr-token))))
         (if h
             (let* ((a (nrepl-dict-get h "arglists-str"))
-                   (d (nrepl-dict-get h "doc")))
-              (vemv/echo (concat (when a (concat a "\n\n"))
-                                 (->> d
-                                      (s-split "\n\n")
-                                      (mapcar (lambda (x)
-                                                (->> x
-                                                     (s-split "\n")
-                                                     (mapcar 's-trim)
-                                                     (s-join "\n"))))
-                                      (s-join "\n\n")))))
+                   (d (-some->> (nrepl-dict-get h "doc")
+                                (s-split "\n\n")
+                                (mapcar (lambda (x)
+                                          (->> x
+                                               (s-split "\n")
+                                               (mapcar 's-trim)
+                                               (s-join "\n"))))
+                                (s-join "\n\n"))))
+              (vemv/echo (concat a
+                                 (if (and a d)
+                                     "\n\n")
+                                 d)))
             (vemv/echo "No docs found.")))
       (vemv/echo "Not connected.")))
 
