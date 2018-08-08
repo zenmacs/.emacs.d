@@ -115,11 +115,13 @@
     (setq vemv/chosen-file-buffer-order-as-list
           (mapcar (lambda (e)
                     (let* ((proj (car e))
-                           (buffnames (reverse (mapcar (lambda (b)
-                                                         (with-current-buffer (get-buffer b)
-                                                           (buffer-file-name)))
-                                                       (-remove 'nil?
-                                                                (second e))))))
+                           (buffnames (->> e
+                                           second
+                                           (-remove 'nil?)
+                                           (mapcar (lambda (b)
+                                                     (with-current-buffer (get-buffer b)
+                                                       (buffer-file-name))))
+                                           (reverse))))
                       (list proj buffnames)))
                   (vemv/hash-map-to-list vemv/chosen-file-buffer-order)))))
 
