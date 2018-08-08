@@ -185,25 +185,26 @@ inserting it at a new line."
               (string-equal "\n" (vemv/current-char-at-point 1)))
     (delete-forward-char 1)))
 
-(defun vemv/kill (&optional backward? skip-save-to-clipboard?)
+(defun vemv/kill (&optional backward? skip-save-to-clipboard? skip-kill-whitespace?)
   "Deletes the next sexpr (or previous, if BACKWARD?).
 
    Unlike paredit-kill, this function will only grab one sexpr (and no more, if they are contigous),
    and it doesn't alter the kill-ring.
   (interactive)"
-  (while (and (or (equal " " (vemv/current-char-at-point))
-                  (equal "\n" (vemv/current-char-at-point))
-                  (if backward?
-                      (or (equal " " (vemv/current-char-at-point -1))
-                          (equal "\n" (vemv/current-char-at-point -1)))
-                      nil))
-              (if backward?
-                  (or (equal " " (vemv/current-char-at-point -1))
-                      (equal "\n" (vemv/current-char-at-point -1)))
-                  t))
-    (if backward?
-        (delete-backward-char 1)
-        (delete-forward-char 1)))
+  (unless skip-kill-whitespace?
+    (while (and (or (equal " " (vemv/current-char-at-point))
+                    (equal "\n" (vemv/current-char-at-point))
+                    (if backward?
+                        (or (equal " " (vemv/current-char-at-point -1))
+                            (equal "\n" (vemv/current-char-at-point -1)))
+                        nil))
+                (if backward?
+                    (or (equal " " (vemv/current-char-at-point -1))
+                        (equal "\n" (vemv/current-char-at-point -1)))
+                    t))
+      (if backward?
+          (delete-backward-char 1)
+          (delete-forward-char 1))))
   (when (eq (point)
             (save-excursion
               (if backward?
@@ -219,14 +220,16 @@ inserting it at a new line."
       (if backward? (paredit-backward) (paredit-forward))
       (let ((result (vemv/selected-region)))
         (delete-region (mark) (point))
-        (while (and
-                (equal " " (vemv/current-char-at-point))
-                (not (equal "\n" (vemv/current-char-at-point))))
-          (paredit-forward-delete))
+        (unless skip-kill-whitespace?
+          (while (and
+                  (equal " " (vemv/current-char-at-point))
+                  (not (equal "\n" (vemv/current-char-at-point))))
+            (paredit-forward-delete)))
         (when (not skip-save-to-clipboard?)
           (simpleclip-set-contents result))
-        (ignore-errors
-          (vemv/ensure-no-double-blank-newlines))
+        (unless skip-kill-whitespace?
+          (ignore-errors
+            (vemv/ensure-no-double-blank-newlines)))
         result))))
 
 (defun vemv/delete-backward (&optional cut?)
@@ -358,8 +361,9 @@ inserting it at a new line."
 
 (defun vemv/onelineize ()
   "Turns the current sexpr into a oneliner"
+  (interactive)
   (let ((replacement (replace-regexp-in-string "[\s|\n]+" " " (vemv/sexpr-content))))
-    (vemv/kill)
+    (vemv/kill nil t t)
     (insert (concat replacement " "))
     (when (string-equal " " (vemv/char-at-left))
       (paredit-backward-delete))
@@ -415,3 +419,20 @@ inserting it at a new line."
            (beginning-of-line)
            (call-interactively 'indent-for-tab-command)
            (end-of-line))))))
+
+(setq vemv/thread-message
+      "Press 1 to thread-first,\n      2 to fully thread-first,\n      3 to thread-last, or\n      4 to fully thread-last:\n\n")
+
+(defun vemv/thread ()
+  (interactive)
+  (let* ((choices (string-to-list "1234"))
+         (choice (read-char-choice vemv/thread-message choices)))
+    (case choice
+      (?1 (clojure-thread-first-all t))
+      (?2 (clojure-thread-first-all nil))
+      (?3 (clojure-thread-last-all t))
+      (?4 (clojure-thread-last-all nil)))
+    (unless (eq (read-char-choice "Press any of (1, 2, 3, 4) to `vemv/onelineize` the result, or RET for leaving it as-is:"
+                                  (cons 13 choices))
+                13)
+      (vemv/onelineize))))
