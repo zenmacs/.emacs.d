@@ -162,6 +162,10 @@
       (switch-to-buffer buffer-name)
       (switch-to-buffer-other-frame buffer-name)))
 
+(defun vemv/safe-select-frame ()
+  (unless (eq (selected-frame) vemv/main_frame)
+    (switch-to-buffer-other-frame (window-buffer vemv/main_window))))
+
 (defun vemv/safe-select-window (x)
   (unless (minibuffer-prompt)
     (select-window x)))

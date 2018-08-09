@@ -25,6 +25,7 @@
 (defun vemv/open (&optional filepath)
   "Opens a file (from FILEPATH or the user input)."
   (interactive)
+  (vemv/safe-select-frame)
   (vemv/safe-select-window vemv/main_window)
   (let* ((default-directory (if (vemv/contains? (buffer-file-name) vemv/project-root-dir)
                                 default-directory
