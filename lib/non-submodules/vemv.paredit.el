@@ -88,9 +88,12 @@
   "Brings the sexpr located in the next line at the current one."
   (interactive)
   (just-one-space -1)
-  (backward-up-list)
-  (vemv/indent)
-  (beginning-of-line-text))
+  (while (progn (right-char)
+                (-find (lambda (x)
+                         (vemv/ends-with (vemv/chars-at-left) x))
+                       `(" )" " ]" " }")))
+    (left-char)
+    (backward-delete-char 1)))
 
 (defmacro vemv/paredit-safely (&rest body)
   "* Paredit commands over non-lisps can cause Emacs freezes.
