@@ -53,6 +53,7 @@
 ;; disabled, seems to mess up tabs
 ;; (add-hook 'buffer-list-update-hook 'vemv/clean-chosen-file-buffer-order)
 
+;; https://stackoverflow.com/questions/14243583/semantic-movement-across-a-line
 (defadvice back-to-indentation (around back-to-back)
   (if (eq last-command this-command)
       (progn
@@ -75,6 +76,22 @@
 
 (advice-add 'vemv/jump-to-clojure-definition :after 'vemv/clean-chosen-file-buffer-order)
 (advice-add 'xref-pop-marker-stack :after 'vemv/clean-chosen-file-buffer-order)
+
+(setq vemv/clicking-left-click nil)
+
+(defun vemv/pe/left-click (f &rest args)
+  (let ((vemv/clicking-left-click t))
+    (apply f args)))
+
+(defun vemv/pe/middle-click (x)
+  (when (not vemv/clicking-left-click)
+    (kill-buffer (window-buffer vemv/main_window)))
+  t)
+
+;; Thanks to these, by clicking middle click one closes the current file before opening the chosen one.
+;; On macOS: fn + click.
+(advice-add 'pe/left-click ':around 'vemv/pe/left-click)
+(advice-add 'pe/middle-click ':before 'vemv/pe/middle-click)
 
 (advice-add 'helm-ag--edit :after 'vemv/ag-replace)
 

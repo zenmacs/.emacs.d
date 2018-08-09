@@ -178,7 +178,8 @@ of the buffer into a formatted string."
 ;; Without this, performance can freeze.
 ;; `public`: for Rails' `public/assets`
 (setq pe/omit-regex (mapconcat 'identity
-                               (list "^#" "~$" "^node_modules$" "tmp" ".git$" ".sass-cache" ".lumo-cache" "target" "auto-save-list" "project-explorer-cache" "public")
+                               (list "^#" "~$" "^node_modules$" "tmp" ".git$" ".sass-cache"
+                                     ".lumo-cache" "target" "auto-save-list" "project-explorer-cache" "public")
                                "\\|"))
 
 (setq vemv/default-cider-cljs-lein-repl
