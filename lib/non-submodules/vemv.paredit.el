@@ -35,16 +35,11 @@
          (require-final-newline (and (not vemv/no-newline-at-eof)
                                      (not dc))))
     (with-current-buffer b
-      (if (not (vemv/cider-formattable-p))
-          (unless dc
-            (delete-trailing-whitespace))
-          (vemv/save-position-before-formatting)
-          (let ((old (substring-no-properties (buffer-string))))
-            (save-excursion
-              (condition-case nil (cider-format-buffer)
-                (error
-                 (erase-buffer)
-                 (insert old))))))
+      (unless dc
+        (delete-trailing-whitespace))
+      (call-interactively 'mark-whole-buffer)
+      (let ((last-command nil))
+        (call-interactively 'indent-for-tab-command))
       (when vemv/no-newline-at-eof
         (save-excursion
           (end-of-buffer)
@@ -281,20 +276,10 @@ inserting it at a new line."
       (goto-line initial-line)
       (beginning-of-line-text))))
 
-(defun vemv/cider-indent ()
-  (interactive)
-  (push-mark)
-  (paredit-forward)
-  (call-interactively 'cider-format-region)
-  (pop-mark)
-  (paredit-backward))
-
 (defun vemv/indent ()
   "Indents the next sexpr."
   (interactive)
-  (if (vemv/cider-formattable-p)
-      (vemv/cider-indent)
-      (vemv/dumb-indent)))
+  (vemv/dumb-indent))
 
 (defun vemv/home ()
   "Moves the point to leftmost non-empty character in the current line."
