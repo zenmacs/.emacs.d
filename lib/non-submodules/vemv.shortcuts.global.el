@@ -96,6 +96,9 @@
       vemv/shortcuts/global/tertiary-o              'vemv/open-project
       vemv/shortcuts/global/tertiary-right          'vemv/next-file-buffer
       vemv/shortcuts/global/tertiary-s              'vemv/save-all-buffers-for-this-project
+      vemv/shortcuts/global/tertiary-t              (argless
+                                                     (vemv/close-all-file-buffers)
+                                                     (vemv/fiplr))
       vemv/shortcuts/global/tertiary-v              'vemv/paste-from-kill-list
       vemv/shortcuts/global/tertiary-w              'vemv/close-all-file-buffers
       vemv/shortcuts/global/tertiary-x              'vemv/dumb-cut
