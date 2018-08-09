@@ -41,6 +41,7 @@
                                                      (replying-yes
                                                       (revert-buffer)))
       vemv/shortcuts/global/primary-down            'forward-paragraph
+      vemv/shortcuts/global/primary-e               'vemv/send
       vemv/shortcuts/global/primary-equal           'mark-whole-buffer
       vemv/shortcuts/global/primary-f               'vemv/search-in-this-buffer
       vemv/shortcuts/global/primary-j               'vemv/clojure-init-or-send-sexpr
@@ -67,6 +68,7 @@
       vemv/shortcuts/global/secondary-backspace     (vemv/safe-paredit-command 'paredit-backward-kill-word)
       vemv/shortcuts/global/secondary-backtick      'xref-pop-marker-stack
       vemv/shortcuts/global/secondary-colon         (argless (call-interactively 'eval-expression))
+      vemv/shortcuts/global/secondary-e             (argless (vemv/send nil t))
       vemv/shortcuts/global/secondary-k             'vemv/kill-backward
       vemv/shortcuts/global/secondary-left          'backward-word
       vemv/shortcuts/global/secondary-left-bracket  (vemv/safe-paredit-command 'paredit-backward)
@@ -84,12 +86,16 @@
       vemv/shortcuts/global/tertiary-RET            'vemv/load-clojure-buffer
       vemv/shortcuts/global/tertiary-a              'vemv/copy-inserting-at-kill-list
       vemv/shortcuts/global/tertiary-backtick       'vemv/jump-to-clojure-definition
+      vemv/shortcuts/global/tertiary-e              (argless (vemv/send nil nil nil :no-return))
       vemv/shortcuts/global/tertiary-end            'end-of-buffer
       vemv/shortcuts/global/tertiary-f              (argless
                                                      (vemv/with-helm-follow nil
                                                        (call-interactively 'helm-do-ag-this-file)))
       vemv/shortcuts/global/tertiary-home           'beginning-of-buffer
-      vemv/shortcuts/global/tertiary-j              'cider-eval-sexp-at-point
+      vemv/shortcuts/global/tertiary-j              (argless
+                                                     (if (vemv/in-a-clojure-mode?)
+                                                         (cider-eval-sexp-at-point)
+                                                         (vemv/send :emacs)))
       vemv/shortcuts/global/tertiary-k              'vemv/cut
       vemv/shortcuts/global/tertiary-left           'vemv/previous-file-buffer
       vemv/shortcuts/global/tertiary-left-bracket   'vemv/pull-next-sexpr
