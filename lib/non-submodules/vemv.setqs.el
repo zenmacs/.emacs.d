@@ -2,6 +2,7 @@
 
 (fset 'yes-or-no-p 'y-or-n-p)
 (put 'if 'lisp-indent-function nil)
+(put-clojure-indent 'with 1)
 
 (setq-default truncate-lines t)
 (setq-default save-place t)
