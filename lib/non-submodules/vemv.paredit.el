@@ -10,26 +10,12 @@
 ;; I don't use kill-ring, since third-parties (e.g. paredit) can mess with it
 (setq vemv/kill-list (-repeat vemv/kill-list-bound nil))
 
-(setq vemv/line-before-formatting nil)
-(setq vemv/token-before-formatting nil)
-
-(defun vemv/save-position-before-formatting ()
-  (setq vemv/line-before-formatting (max 0 (- (vemv/current-line-number) 3)))
-  (setq vemv/token-before-formatting (vemv/sexpr-content)))
-
-;; XXX unused
-;; XXX should be per-buffer (see vemv/save-all-buffers-for-this-project)
-(defun vemv/restore-position-before-formatting ()
-  (beginning-of-buffer)
-  (dotimes (i vemv/line-before-formatting)
-    (next-line))
-  (ignore-errors (search-forward vemv/token-before-formatting))
-  (paredit-backward)
-  (back-to-indentation))
-
 (defun vemv/save (&optional b)
   (interactive)
-  (let* ((b (or b (current-buffer)))
+  (let* ((line (vemv/current-line-number))
+         ;; for `indent-for-tab-command`:
+         (last-command nil)
+         (b (or b (current-buffer)))
          (dc (string-equal "dc" (car vemv/current-workspace)))
          ;; for `save-buffer`:
          (require-final-newline (and (not vemv/no-newline-at-eof)
@@ -38,8 +24,9 @@
       (unless dc
         (delete-trailing-whitespace))
       (call-interactively 'mark-whole-buffer)
-      (let ((last-command nil))
-        (call-interactively 'indent-for-tab-command))
+      (call-interactively 'indent-for-tab-command)
+      (goto-line line)
+      (vemv/end-of-line-code* nil)
       (when vemv/no-newline-at-eof
         (save-excursion
           (end-of-buffer)

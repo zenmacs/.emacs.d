@@ -26,18 +26,21 @@
       (progn (call-interactively 'kill-region))
       (delete-region (dec (point)) (point))))
 
+(defun vemv/end-of-line-code* (skip-last-step)
+  (let* ((bolpos (progn (beginning-of-line) (point)))
+         (eolpos (progn (end-of-line) (point))))
+    (if (comment-search-backward bolpos t)
+        (search-backward-regexp comment-start-skip bolpos 'noerror))
+    (skip-syntax-backward " " bolpos)
+    (unless skip-last-step
+      (while (member (vemv/char-at-left)
+                     `(" " ";" "/" "#"))
+        (left-char)))))
+
 (defun vemv/end-of-line-code (skip-last-step)
   (interactive "^")
   (save-match-data
-    (let* ((bolpos (progn (beginning-of-line) (point)))
-           (eolpos (progn (end-of-line) (point))))
-      (if (comment-search-backward bolpos t)
-          (search-backward-regexp comment-start-skip bolpos 'noerror))
-      (skip-syntax-backward " " bolpos)
-      (unless skip-last-step
-        (while (member (vemv/char-at-left)
-                       `(" " ";" "/" "#"))
-          (left-char))))))
+    (vemv/end-of-line-code* skip-last-step)))
 
 (defun vemv/end-of-line-or-code ()
   (interactive "^")
