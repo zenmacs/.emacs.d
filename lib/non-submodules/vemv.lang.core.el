@@ -46,7 +46,10 @@
 
 (defun delay (f &optional seconds)
   "Calls f in one or SECONDS seconds."
-  (run-at-time (concat (int-to-string (or seconds 1)) " seconds") nil f))
+  (-> (or seconds 1)
+      (int-to-string)
+      (concat " seconds")
+      (run-at-time nil f)))
 
 (defmacro conj! (seq item) ;; Functionality doesn't require a macro - setq does as it is a special form.
   `(setq ,seq (cons ,item ,seq)))

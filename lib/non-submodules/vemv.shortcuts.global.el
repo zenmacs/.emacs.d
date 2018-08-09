@@ -20,7 +20,8 @@
       vemv/shortcuts/global/primary-1               'vemv/onelineize
       vemv/shortcuts/global/primary-2               (argless
                                                      (call-interactively 'goto-line))
-      vemv/shortcuts/global/primary-3               'vemv/indent ;; NOTE: don't wrap it in vemv/safe-paredit-command, it already does so internally.
+      ;; NOTE: don't wrap it in vemv/safe-paredit-command, it already does so internally:
+      vemv/shortcuts/global/primary-3               'vemv/indent
       vemv/shortcuts/global/primary-6               'vemv/emacs-reload
       vemv/shortcuts/global/primary-4               'vemv/thread
       vemv/shortcuts/global/primary-8               'vemv/toggle-verbosity
@@ -111,7 +112,13 @@
       vemv/shortcuts/global/up                      'previous-line)
 
 ;; other S-RET syntaxes don't work. TODO: abstract away this
-(global-set-key [(shift return)] 'vemv/clear-cider-repl-buffer)
+(global-set-key [(shift return)] (argless
+                                  (if (vemv/in-a-clojure-mode?)
+                                      (vemv/clear-cider-repl-buffer)
+                                      (when (vemv/in-a-lisp-mode?)
+                                        (vemv/save-window-excursion
+                                         (vemv/safe-select-window vemv/repl-window)
+                                         (comint-clear-buffer))))))
 
 ;; same here. control-ret is interpreted as s-return rather than as tertiary-RET
 (global-set-key [(s return)] 'vemv/load-clojure-buffer)

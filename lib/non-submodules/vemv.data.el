@@ -28,6 +28,11 @@
             clojure-mode-map "<tab>" 'vemv/tab
             ;; XXX backtab not handled by gen.rb
             clojure-mode-map "<backtab>" 'vemv/message-clojure-doc
+            emacs-lisp-mode-map "<backtab>" (argless
+                                             (ignore-errors
+                                               (replying-yes
+                                                (vemv/verbosely
+                                                 (-some-> (symbol-at-point) documentation message)))))
             emacs-lisp-mode-map "<tab>" 'vemv/tab
             ruby-mode-map "<tab>" 'vemv/tab
             html-mode-map "<tab>" 'vemv/tab
