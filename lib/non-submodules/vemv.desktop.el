@@ -1,11 +1,14 @@
 ;; "https://www.emacswiki.org/emacs?action=browse;oldid=DeskTop;id=Desktop#toc5"
 (provide 'vemv.desktop)
 
+(defun vemv/slurp (fname)
+  (with-temp-buffer
+    (insert-file-contents fname)
+    (buffer-string)))
+
 (defun vemv.desktop/desktop-file-contents ()
   (read (concat "(list "
-                (with-temp-buffer
-                  (insert-file-contents (concat vemv-home "/.emacs.d/emacs-desktop"))
-                  (buffer-string))
+                (vemv/slurp (concat vemv-home "/.emacs.d/emacs-desktop"))
                 ")")))
 
 (defun vemv.desktop/ordered-workspaces-list ()

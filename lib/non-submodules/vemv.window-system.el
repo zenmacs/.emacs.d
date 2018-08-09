@@ -47,7 +47,11 @@
 
 (defun vemv/close-this-buffer (&optional noswitch)
   (setq-local vemv/ns-shown nil)
-  (kill-buffer (current-buffer))
+  (if (and (buffer-file-name)
+           (string-equal (buffer-string) (vemv/slurp (buffer-file-name))))
+      (replying-yes
+       (kill-buffer (current-buffer)))
+      (kill-buffer (current-buffer)))
   (vemv/clean-chosen-file-buffer-order)
   (when (and (not noswitch)
              (eq (selected-window) vemv/main_window))
