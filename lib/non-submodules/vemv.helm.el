@@ -29,47 +29,47 @@
   (vemv/helm-search-and-replace t))
 
 (setq helm-map
-  (let ((map (make-sparse-keymap)))
-    (set-keymap-parent map minibuffer-local-map)
-    (define-key map (kbd "<tab>")      (argless))
-    (define-key map [(shift return)]   (argless
-                                        (interactive)
-                                        (helm-select-nth-action 1)))
-    (define-key map (kbd "C-a")        'vemv/helm-persistent-action-all)
-    (define-key map (kbd "<down>")     'helm-next-line)
-    (define-key map (kbd "<up>")       'helm-previous-line)
-    (define-key map (kbd "<prior>")    'helm-previous-page)
-    (define-key map (kbd "<next>")     'helm-next-page)
-    (define-key map (kbd "<C-v>")      'vemv/paste-from-clipboard)
-    (define-key map (kbd "C-g")        'helm-keyboard-quit)
-    (define-key map (kbd "<right>")    'right-char)
-    (define-key map (kbd "<left>")     'left-char)
-    (define-key map (kbd "<RET>")      'helm-maybe-exit-minibuffer)
-    (define-key map (kbd "C-j")        'helm-execute-persistent-action)
-    (define-key map (kbd "C-SPC")      'helm-toggle-visible-mark)
-    (define-key map (kbd "M-[")        nil)
-    (define-key map (kbd "C-k")        'helm-delete-minibuffer-contents)
-    (define-key map (kbd "C-x C-f")    'helm-quit-and-find-file)
-    (define-key map (kbd "C-s")        'undefined)
-    (define-key map (kbd "M-s")        'undefined)
-    (define-key map (kbd "C-;")        'helm-toggle-truncate-line)
-    ;; Allow to eval keymap without errors.
-    (define-key map [f1] nil)
-    (define-key map (kbd "C-h C-h")    'undefined)
-    (define-key map (kbd "C-h h")      'undefined)
-    (helm-define-key-with-subkeys map
-      (kbd "C-w") ?\C-w 'helm-yank-text-at-point
-      '((?\C-_ . helm-undo-yank-text-at-point)))
-    ;; Use `describe-mode' key in `global-map'.
-    (cl-dolist (k (where-is-internal 'describe-mode global-map))
-      (define-key map k 'helm-help))
-    (define-key map (kbd "C-c ?")    'helm-help)
-    map))
+      (let ((map (make-sparse-keymap)))
+        (set-keymap-parent map minibuffer-local-map)
+        (define-key map (kbd "<tab>")      (argless))
+        (define-key map [(shift return)]   (argless
+                                            (interactive)
+                                            (helm-select-nth-action 1)))
+        (define-key map (kbd "C-a")        'vemv/helm-persistent-action-all)
+        (define-key map (kbd "<down>")     'helm-next-line)
+        (define-key map (kbd "<up>")       'helm-previous-line)
+        (define-key map (kbd "<prior>")    'helm-previous-page)
+        (define-key map (kbd "<next>")     'helm-next-page)
+        (define-key map (kbd "<C-v>")      'vemv/paste-from-clipboard)
+        (define-key map (kbd "C-g")        'helm-keyboard-quit)
+        (define-key map (kbd "<right>")    'right-char)
+        (define-key map (kbd "<left>")     'left-char)
+        (define-key map (kbd "<RET>")      'helm-maybe-exit-minibuffer)
+        (define-key map (kbd "C-j")        'helm-execute-persistent-action)
+        (define-key map (kbd "C-SPC")      'helm-toggle-visible-mark)
+        (define-key map (kbd "M-[")        nil)
+        (define-key map (kbd "C-k")        'helm-delete-minibuffer-contents)
+        (define-key map (kbd "C-x C-f")    'helm-quit-and-find-file)
+        (define-key map (kbd "C-s")        'undefined)
+        (define-key map (kbd "M-s")        'undefined)
+        (define-key map (kbd "C-;")        'helm-toggle-truncate-line)
+        ;; Allow to eval keymap without errors.
+        (define-key map [f1] nil)
+        (define-key map (kbd "C-h C-h")    'undefined)
+        (define-key map (kbd "C-h h")      'undefined)
+        (helm-define-key-with-subkeys map
+          (kbd "C-w") ?\C-w 'helm-yank-text-at-point
+          '((?\C-_ . helm-undo-yank-text-at-point)))
+        ;; Use `describe-mode' key in `global-map'.
+        (cl-dolist (k (where-is-internal 'describe-mode global-map))
+          (define-key map k 'helm-help))
+        (define-key map (kbd "C-c ?")    'helm-help)
+        map))
 
 (setq helm-ag-map
-  (let ((map (make-sparse-keymap)))
-    (set-keymap-parent map helm-map)
-    map))
+      (let ((map (make-sparse-keymap)))
+        (set-keymap-parent map helm-map)
+        map))
 
 (setq helm-do-ag-map
       (let ((map (make-sparse-keymap)))
@@ -100,7 +100,7 @@
                         #'helm-ag--open-file-with-temp-buffer
                         #'find-file-noselect)))
      (helm-ag--find-file-action candidate find-func (helm-ag--search-this-file-p) t)
-          (helm-highlight-current-line)))
+     (helm-highlight-current-line)))
 
  (defun helm-ag--action-find-file (candidate)
    "For find-file-noselect"

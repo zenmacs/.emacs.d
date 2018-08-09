@@ -150,31 +150,31 @@
 
  `(ac-completion-face ((t (:foreground "darkgray" :underline t :slant normal :weight normal))))
  `(ac-candidate-face ((t (:background ,vemv-default-autocomplete-popup-background-color :foreground "black"
-                                       :slant normal :weight normal))))
+                                      :slant normal :weight normal))))
  `(ac-selection-face ((t (:background "deep pink" :foreground "black" :slant normal :weight normal))))
 
  `(company-tooltip ((t (:background ,vemv-default-autocomplete-popup-background-color
-                                     :foreground ,vemv-default-autocomplete-popup-foreground-color
-                                     :slant normal :weight normal)))) ;; main
+                                    :foreground ,vemv-default-autocomplete-popup-foreground-color
+                                    :slant normal :weight normal)))) ;; main
  `(company-tooltip-mouse ((t (:background ,vemv-default-autocomplete-popup-background-color-lighter
-                              :foreground ,vemv-default-autocomplete-popup-foreground-color))))
+                                          :foreground ,vemv-default-autocomplete-popup-foreground-color))))
  `(company-tooltip-search ((t (:background ,vemv-default-autocomplete-popup-background-color
-                                            :foreground ,vemv-default-autocomplete-popup-foreground-color
-                                            :slant normal
-                                            :weight normal)))) ;; the 'match' so far
+                                           :foreground ,vemv-default-autocomplete-popup-foreground-color
+                                           :slant normal
+                                           :weight normal)))) ;; the 'match' so far
  `(company-tooltip-annotation ((t (:background ,vemv-default-autocomplete-popup-background-color
-                                                :foreground ,vemv-default-autocomplete-popup-foreground-color
-                                                :slant normal
-                                                :weight normal))))
+                                               :foreground ,vemv-default-autocomplete-popup-foreground-color
+                                               :slant normal
+                                               :weight normal))))
  `(company-tooltip-annotation-selection ((t (:background ,vemv-default-autocomplete-popup-background-color
-                                                          :foreground ,vemv-default-autocomplete-popup-foreground-color
-                                                          :slant normal :weight normal))))
+                                                         :foreground ,vemv-default-autocomplete-popup-foreground-color
+                                                         :slant normal :weight normal))))
  `(company-tooltip-common-selection ((t (:background "deep pink"
                                                      :foreground ,vemv-default-autocomplete-popup-foreground-color
                                                      :slant normal :weight normal))))
  `(company-tooltip-common ((t (:background ,vemv-default-autocomplete-popup-background-color
-                                            :foreground ,vemv-default-autocomplete-popup-foreground-color
-                                            :slant normal :weight normal))))
+                                           :foreground ,vemv-default-autocomplete-popup-foreground-color
+                                           :slant normal :weight normal))))
  `(company-tooltip-selection ((t (:background "deep pink" :foreground ,vemv-default-autocomplete-popup-foreground-color
                                               :slant normal
                                               :weight normal)))) ;; the completion that one is currently choosing
@@ -189,7 +189,7 @@
 
  `(popup-isearch-match ((t (:background "black" :foreground "deep pink" :slant normal :weight normal))))
  `(popup-tip-face ((t (:background ,vemv-default-autocomplete-popup-foreground-color
-                                    :foreground "whitepnpnn" :slant normal :weight normal))))
+                                   :foreground "whitepnpnn" :slant normal :weight normal))))
  `(popup-scroll-bar-foreground-face ((t (:background "#0A0A0A"))))
  `(popup-scroll-bar-background-face ((t (:background ,vemv-default-autocomplete-popup-foreground-color))))
 
@@ -221,7 +221,7 @@
  `(helm-match ((t (:foreground ,vemv-colors/keyword-green :background ,vemv-default-autocomplete-popup-foreground-color))))
  `(helm-match-item ((t (:foreground ,vemv-colors/keyword-green))))
  `(helm-moccur-buffer ((t (:foreground ,vemv-default-foreground-color-very-slightly-darker
-                                        :background ,vemv-default-background-color-slightly-darker))))
+                                       :background ,vemv-default-background-color-slightly-darker))))
  `(helm-selection ((t (:background ,vemv-default-background-color-slightly-darker))))
  `(helm-selection ((t (:background "#7A3555" :foreground ,vemv-default-foreground-color))))
  `(helm-separator ((t (:foreground ,vemv-colors/lighter-yellow))))

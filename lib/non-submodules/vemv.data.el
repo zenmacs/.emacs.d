@@ -39,11 +39,11 @@
             *fiplr-keymap* "<S-return>" 'exit-minibuffer ;; makes it equivalent to RET. Sometime I type S-RET due to muscle memory
             ))
 
-; basics reminder:
-; c-space - set the mark
-; M-: - eval lisp
-; C-g - cancel command
-; M-x - interactive command
-; M-x describe-key - resolve a key binding
+;; basics reminder:
+;; c-space - set the mark
+;; M-: - eval lisp
+;; C-g - cancel command
+;; M-x - interactive command
+;; M-x describe-key - resolve a key binding
 
 (global-set-key [mode-line mouse-3] 'nil) ;; prevent close-on-right-click

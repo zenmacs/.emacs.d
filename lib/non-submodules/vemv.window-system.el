@@ -7,7 +7,7 @@
 (defun vemv/initial-layout ()
 
   (when (window-system)
-      (vemv/maximize))
+    (vemv/maximize))
 
   (split-window-vertically)
   (enlarge-window 8)

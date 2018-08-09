@@ -61,8 +61,8 @@
                                           (vemv/current-ns (window-buffer vemv/repl-window)))))
               (cider-repl-set-ns (vemv/current-ns))
               (cider-interactive-eval (concat "(try (clojure.core/require '"
-                                                      (vemv/current-ns)
-                                                      ") (catch java.lang.Throwable _))")))
+                                              (vemv/current-ns)
+                                              ") (catch java.lang.Throwable _))")))
             (when after
               (funcall after))))
          1))
@@ -295,7 +295,7 @@
 (setq vemv/latest-clojure-test-ran nil)
 (setq vemv/latest-cljs-test-ran nil)
 
-; XXX better impl: is ns inside :source-paths?
+;; XXX better impl: is ns inside :source-paths?
 (defun vemv/is-testing-ns (&optional n inferred)
   (let* ((n (or n (cider-current-ns t))))
     (or (string-equal n (or inferred (funcall cider-test-infer-test-ns n)))

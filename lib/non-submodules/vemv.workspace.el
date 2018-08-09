@@ -39,9 +39,9 @@
                (vemv/set-workspace (vemv/find-workspace ,workspace-name))
                (force-mode-line-update))))
     (propertize workspace-name 'local-map `(keymap
-                                          (mode-line keymap
-                                                     (mouse-1 . ,sym)
-                                                     (mouse-3 . ,close-sym))))))
+                                            (mode-line keymap
+                                                       (mouse-1 . ,sym)
+                                                       (mouse-3 . ,close-sym))))))
 
 (defun vemv/workspace-mode-line-format ()
   (let* ((first (car vemv/current-workspace))
@@ -87,8 +87,8 @@
          (name (car curr))
          (projects (second curr))
          (newval (cons project-name (-remove (lambda (x)
-                                                (string-equal x project-name))
-                                              projects))))
+                                               (string-equal x project-name))
+                                             projects))))
     (setq vemv/all-workspaces
           (cons (list name newval)
                 (cdr vemv/all-workspaces)))))

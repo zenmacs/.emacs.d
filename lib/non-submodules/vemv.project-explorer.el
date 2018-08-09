@@ -61,7 +61,7 @@
               (when (vemv/contains? buffer-truename vemv/project-root-dir)
                 (let* ((buffer-fragments (-remove (lambda (x)
                                                     (string-equal x ""))
-                                                 (split-string buffer-truename "/")))
+                                                  (split-string buffer-truename "/")))
                        (projname (pe/project-root-function-default))
                        (project-fragments (-remove (lambda (x)
                                                      (string-equal x ""))

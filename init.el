@@ -1,6 +1,7 @@
 (package-initialize)
 
-(progn "Prevent dialogs asap, in case of error during initialization"
+(progn
+  "Prevent dialogs asap, in case of error during initialization"
 
   (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
     "Prevent annoying \"Active processes exist\" query when you quit Emacs."
@@ -37,15 +38,15 @@
     (setq debug-on-error nil)
 
     (setq debugger (if vemv/verbose-mode ;; Disable annoying *Backtrace* buffer
-                     vemv/original-debugger
-                     (lambda (&rest _))))
+                       vemv/original-debugger
+                       (lambda (&rest _))))
     (setq command-error-function (if vemv/verbose-mode ;; Silence "End of buffer" messages
-                                    vemv/original-command-error-function
-                                    (lambda (&rest _))))
+                                     vemv/original-command-error-function
+                                     (lambda (&rest _))))
     (defun minibuffer-message (&rest args) ;; Silence "No matching parenthesis found"
       (if vemv/verbose-mode
-         (apply vemv/original-minibuffer-message args)
-         nil)))
+          (apply vemv/original-minibuffer-message args)
+          nil)))
 
   (defun vemv/toggle-verbosity ()
     (vemv/set-verbosity-to (not vemv/verbose-mode)))
@@ -57,7 +58,7 @@
   (if (fboundp 'menu-bar-mode) (menu-bar-mode -1)))
 
 (let ((default-directory "~/.emacs.d/lib"))
-      (normal-top-level-add-subdirs-to-load-path))
+  (normal-top-level-add-subdirs-to-load-path))
 
 (when (eq system-type 'darwin)
   (setq mac-control-modifier 'super)
@@ -69,7 +70,7 @@
                     "DejaVu Sans Mono-13"))
 
 (when (window-system)
-    (set-face-attribute 'default nil :font vemv-font))
+  (set-face-attribute 'default nil :font vemv-font))
 
 (setq vemv-home (getenv "HOME"))
 

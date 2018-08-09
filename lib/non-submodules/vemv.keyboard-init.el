@@ -29,11 +29,11 @@
 ;; this is a defmacro so `M-x describe-key` doesn't show a giantic hash, freezing emacs
 (defmacro vemv/set-keys-for-scope (scope source)
   `(maphash (lambda (key _)
-             (let* ((keyboard-macro (vemv/keyboard-macro key)))
-               (if (eq ,scope :global)
-                   (global-set-key keyboard-macro
-                                   (argless (call-interactively (gethash key ,source))))
-                   (define-key ,scope
-                     keyboard-macro
-                     (argless (call-interactively (gethash key ,source)))))))
-           ,source))
+              (let* ((keyboard-macro (vemv/keyboard-macro key)))
+                (if (eq ,scope :global)
+                    (global-set-key keyboard-macro
+                                    (argless (call-interactively (gethash key ,source))))
+                    (define-key ,scope
+                      keyboard-macro
+                      (argless (call-interactively (gethash key ,source)))))))
+            ,source))
