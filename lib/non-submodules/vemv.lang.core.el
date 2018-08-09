@@ -33,10 +33,12 @@
        ,@forms)))
 
 (defun vemv/echo (&rest xs)
-  (let ((what (apply 'concat xs)))
-    (setq inhibit-message nil)
-    (message what)
-    (setq inhibit-message t)
+  (let ((what (->> xs
+                   (mapcar 'pr-str)
+                   (-interpose " ")
+                   (apply 'concat))))
+    (vemv/verbosely
+     (message what))
     what))
 
 (defun pr-str (x)
