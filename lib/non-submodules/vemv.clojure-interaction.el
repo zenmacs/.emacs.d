@@ -150,27 +150,30 @@
 
 (defun vemv/load-clojure-buffer ()
   (interactive)
-  (when (vemv/ciderable-p)
-    (if (vemv/current-main-buffer-is-cljs)
-        (vemv/send :cljs nil "(.reload js/location true)")
-        (progn
-          (vemv/save)
-          (vemv/save) ;; save autoformatting
-          (vemv/advice-nrepl)
-          (replying-yes
-           (if vemv/using-component-reloaded-workflow
-               (if vemv/cljr-building-ast-cache?
-                   (message "Currently building AST cache. Wait a few seconds and try again.")
-                   (progn
-                     (cider-interactive-eval (or vemv/clojure-reload-command
-                                                 "(with-out-str (com.stuartsierra.component.user-helpers/reset))"))
-                     (delay (argless (message "Reloaded!"))
-                            0.1)))
-               (progn
-                 (cider-load-buffer)
-                 (cider-load-all-project-ns)
-                 (delay (argless (message "Reloaded!"))
-                        0.1))))))))
+  (if (vemv/ciderable-p)
+      (if (vemv/current-main-buffer-is-cljs)
+          (vemv/send :cljs nil "(.reload js/location true)")
+          (progn
+            (vemv/save)
+            (vemv/advice-nrepl)
+            (replying-yes
+             (if vemv/using-component-reloaded-workflow
+                 (if vemv/cljr-building-ast-cache?
+                     (message "Currently building AST cache. Wait a few seconds and try again.")
+                     (progn
+                       (cider-interactive-eval (or vemv/clojure-reload-command
+                                                   "(with-out-str (com.stuartsierra.component.user-helpers/reset))"))
+                       (delay (argless (message "Reloaded!"))
+                              0.1)))
+                 (progn
+                   (cider-load-buffer)
+                   (cider-load-all-project-ns)
+                   (delay (argless (message "Reloaded!"))
+                          0.1))))))
+      (if (vemv/in-a-lisp-mode?)
+          (progn
+            (vemv/save)
+            (call-interactively 'eval-buffer)))))
 
 (defun vemv/clojure-init ()
   (if (minibuffer-prompt)
