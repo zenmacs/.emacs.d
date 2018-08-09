@@ -44,6 +44,7 @@
      (setq comment-indent-function vemv/comment-indent-function)
      (setq-default comment-indent-function vemv/comment-indent-function)
      (setq clojure-indent-style :always-align)
+     (put-clojure-indent 'as-> 2)
      (setq clojure-align-forms-automatically nil)
      (setq whitespace-line-column 131)
      (when (not vemv-cleaning-namespaces)

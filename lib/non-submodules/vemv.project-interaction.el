@@ -176,10 +176,9 @@
   (vemv/refresh-chosen-file-buffer-order-as-list!))
 
 (defun vemv/save-all-buffers-for-this-project ()
-  (mapcar (lambda (b)
-            (when (and (vemv/buffer-of-current-project? b))
-              (vemv/save b)))
-          (vemv/all-buffers)))
+  (->> (vemv/all-buffers)
+       (filter 'vemv/buffer-of-current-project?)
+       (mapcar 'vemv/save)))
 
 (defun vemv/should-show-project? (x)
   (or (string-equal x vemv/current-project)
