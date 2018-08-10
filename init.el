@@ -33,20 +33,22 @@
     (setq inhibit-startup-message (not vemv/verbose-mode))
     (setq inhibit-message (not vemv/verbose-mode)) ;; Silence minibuffer
 
-    ;; NOTE: overly verbose, so it's always set to nil. Set with M-x toggle-debug-on-error if needed.
-    ;; (proof of verbosity: try to undo in a pristine buffer, with this line uncommented)
-    (setq debug-on-error nil)
+    (unless vemv/should-start-in-verbose-mode ;; allow debugging issues with `kill -USR2 $emacs_pid`
 
-    (setq debugger (if vemv/verbose-mode ;; Disable annoying *Backtrace* buffer
-                       vemv/original-debugger
-                       (lambda (&rest _))))
-    (setq command-error-function (if vemv/verbose-mode ;; Silence "End of buffer" messages
-                                     vemv/original-command-error-function
-                                     (lambda (&rest _))))
-    (defun minibuffer-message (&rest args) ;; Silence "No matching parenthesis found"
-      (if vemv/verbose-mode
-          (apply vemv/original-minibuffer-message args)
-          nil)))
+      ;; NOTE: overly verbose, so it's always set to nil. Set with M-x toggle-debug-on-error if needed.
+      ;; (proof of verbosity: try to undo in a pristine buffer, with this line uncommented)
+      (setq debug-on-error nil)
+
+      (setq debugger (if vemv/verbose-mode ;; Disable annoying *Backtrace* buffer
+                         vemv/original-debugger
+                         (lambda (&rest _))))
+      (setq command-error-function (if vemv/verbose-mode ;; Silence "End of buffer" messages
+                                       vemv/original-command-error-function
+                                       (lambda (&rest _))))
+      (defun minibuffer-message (&rest args) ;; Silence "No matching parenthesis found"
+        (if vemv/verbose-mode
+            (apply vemv/original-minibuffer-message args)
+            nil))))
 
   (defun vemv/toggle-verbosity ()
     (vemv/set-verbosity-to (not vemv/verbose-mode)))
