@@ -33,7 +33,7 @@
     (setq inhibit-startup-message (not vemv/verbose-mode))
     (setq inhibit-message (not vemv/verbose-mode)) ;; Silence minibuffer
 
-    ;; NOTE: overly verbose, so it's always set to nil. Set manually if needed.
+    ;; NOTE: overly verbose, so it's always set to nil. Set with M-x toggle-debug-on-error if needed.
     ;; (proof of verbosity: try to undo in a pristine buffer, with this line uncommented)
     (setq debug-on-error nil)
 

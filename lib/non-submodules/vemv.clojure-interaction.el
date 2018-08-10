@@ -218,6 +218,25 @@
               (kill-buffer (get-file-buffer p)))
             ret))))
 
+(defun cider-repl-set-type (&optional type)
+  "Backported from https://github.com/clojure-emacs/cider/issues/1976"
+  (interactive)
+  (let ((type (or type (completing-read
+                        (format "Set REPL type (currently `%s') to: "
+                                cider-repl-type)
+                        '("clj" "cljs")))))
+    (setq cider-repl-type type)))
+
+(defun cider-connect-clojurescript (port)
+  "Forked from https://github.com/clojure-emacs/cider/issues/1976"
+  (interactive)
+  (let ((cider-repl-type "cljs"))
+    (when-let* ((conn (cider-connect "127.0.0.1" port vemv/project-root-dir)))
+      (let ((b (get-buffer "*cider-repl 127.0.0.1*")))
+        (with-current-buffer b
+          (setq cider-repl-type "cljs")
+          (cider-create-sibling-cljs-repl b))))))
+
 (defun vemv/clojure-init-or-send-sexpr ()
   (interactive)
   (when (vemv/in-clojure-mode?)
@@ -231,7 +250,9 @@
           (delay (argless (funcall vemv/project-initializers)
                           (select-window vemv/main_window)
                           (if (vemv/is-cljs-project?)
-                              (cider-jack-in-clojurescript)
+                              (if vemv/cider-port
+                                  (cider-connect-clojurescript vemv/cider-port)
+                                  (cider-jack-in-clojurescript))
                               (if vemv/cider-port
                                   (cider-connect "127.0.0.1" vemv/cider-port vemv/project-root-dir)
                                   (cider-jack-in))))
