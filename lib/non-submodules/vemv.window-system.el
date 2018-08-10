@@ -48,6 +48,7 @@
 (defun vemv/close-this-buffer (&optional noswitch)
   (setq-local vemv/ns-shown nil)
   (if (and (buffer-file-name)
+           (file-exists-p (buffer-file-name))
            (string-equal (buffer-string) (vemv/slurp (buffer-file-name))))
       (replying-yes
        (kill-buffer (current-buffer)))
