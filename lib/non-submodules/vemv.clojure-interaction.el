@@ -242,6 +242,11 @@
   (when (vemv/in-clojure-mode?)
     (if (and (not cider-launched) vemv/using-nrepl)
         (progn
+          (require 'cider)
+          (require 'clj-refactor)
+          (electric-indent-mode -1)
+          (clj-refactor-mode 1)
+          (cljr-add-keybindings-with-prefix "C-0")
           (setq cider-launched vemv/current-project)
           (setq vemv-cider-connecting t)
           (setq vemv/running-project vemv/current-project)

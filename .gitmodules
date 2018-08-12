@@ -12,7 +12,7 @@
 	url = https://github.com/VincentToups/emacs-utils.git
 [submodule "lib/project-explorer"]
 	path = lib/project-explorer
-	url = https://github.com/sabof/project-explorer.git
+	url = https://github.com/vemv/project-explorer.git
 [submodule "lib/es-lib"]
 	path = lib/es-lib
 	url = https://github.com/sabof/es-lib.git

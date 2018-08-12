@@ -163,3 +163,7 @@
   (setq vemv/current-project (car (second vemv/current-workspace)))
 
   (require 'vemv.init))
+
+(defun display-startup-echo-area-message ())
+
+(message (concat "\n------------------------------ Emacs loaded in: " (emacs-init-time) " ------------------------------\n"))

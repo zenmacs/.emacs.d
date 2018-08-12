@@ -2,6 +2,7 @@
 
 (setq lexical-binding t)
 
+(require 'helm-ag)
 (provide 'vemv.helm)
 
 (defmacro vemv/with-helm-follow (follow &rest body)

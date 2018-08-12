@@ -33,27 +33,30 @@
 (require 'popup)
 (require 'smex)
 (require 'company)
-(require 'cider)
-(electric-indent-mode -1)
 (require 'epl)
-(require 'pkg-info)
 (require 'spinner)
-(require 'ruby-mode)
-(require 'haml-mode)
-(require 'js)
 (require 'comint)
 (require 'es-lib)
 (require 'es-windows)
 (require 'project-explorer)
 (require 'paredit)
-(require 'undo-tree)
 (require 's)
-(require 'cider)
-(require 'clj-refactor)
 (require 'fiplr)
-(require 'helm-ag)
 (require 'desktop)
 (require 'smartparens-config)
+
+(autoload 'haml-mode "haml-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.haml$" . haml-mode))
+
+(autoload 'js "js-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.js$" . js-mode))
+(add-to-list 'auto-mode-alist '("\\.js.erb$" . js-mode))
+
+(add-to-list 'auto-mode-alist
+             '("\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'" . ruby-mode))
+
+(add-to-list 'auto-mode-alist
+             '("\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'" . ruby-mode))
 
 ;; Eases editing locally-modified packages.
 ;; Also makes things faster.

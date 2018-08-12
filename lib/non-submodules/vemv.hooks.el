@@ -1,10 +1,16 @@
+;; -*- lexical-binding: t; -*-
+
+(setq lexical-binding t)
+
 (provide 'vemv.hooks)
 
 (when (not vemv-cleaning-namespaces)
   (add-hook 'clojure-mode-hook 'hs-minor-mode))
 
 (add-hook 'ruby-mode-hook (argless (smartparens-mode)
-                                   (ruby-end-mode)))
+                                   (ruby-end-mode)
+                                   (vemv/set-keys-for-scope ruby-mode-map vemv/ruby-key-bindings)
+                                   (define-key ruby-mode-map [tab] 'vemv/tab)))
 
 (add-hook 'emacs-lisp-mode-hook
           (argless (setq-local mode-line-format tabbed-line-format)))
@@ -24,10 +30,7 @@
 
 (add-hook 'clojure-mode-hook
           (argless (enable-paredit-mode)
-                   (clj-refactor-mode 1)
                    (paren-face-mode 1)
-                   (undo-tree-mode)
-                   (cljr-add-keybindings-with-prefix "C-0")
                    (global-set-key (kbd "C-r") 'vemv/test-this-ns) ;; must be defined there. TODO: define all clojure bindings here
                    (setq-local mode-line-format tabbed-line-format)))
 
@@ -36,6 +39,13 @@
 (add-hook 'ielm-mode-hook 'enable-paredit-mode)
 
 (add-hook 'haml-mode-hook 'highlight-indent-guides-mode)
+
+(add-hook 'haml-mode-hook (argless
+                           (vemv/set-keys-for-scope haml-mode-map vemv/ruby-key-bindings)
+                           (define-key haml-mode-map [tab] 'vemv/tab)))
+
+(add-hook 'js-mode-hook (argless
+                         (define-key js-mode-map [tab] 'vemv/tab)))
 
 (add-hook 'cider-connected-hook
           (argless

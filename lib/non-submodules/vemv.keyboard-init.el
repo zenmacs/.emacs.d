@@ -1,13 +1,22 @@
+;; -*- lexical-binding: t; -*-
+
+(setq lexical-binding t)
+
 (provide 'vemv.keyboard-init)
 
 (global-set-key (kbd "M-x") 'smex)
 
 ;; Important - remove keybindings before (vemv/initial-layout) so M-x cannot interrupt
 
-(dolist (mode (list paredit-mode-map undo-tree-map cider-mode-map))
+(dolist (mode (list paredit-mode-map))
   (mapc (lambda (arg)
           (define-key mode (vemv/keyboard-macro arg) nil))
         vemv/exhaustive-list-of-bindings-to-remove))
+
+(add-hook 'cider-mode-hook
+          (mapc (lambda (arg)
+                  (define-key cider-mode-map (vemv/keyboard-macro arg) nil))
+                vemv/exhaustive-list-of-bindings-to-remove))
 
 (dolist (key vemv/key-bindings-to-remove)
   (global-unset-key key))

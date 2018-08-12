@@ -22,15 +22,6 @@
 
 (add-to-list 'exec-path (concat vemv-home "/bin"))
 
-(add-to-list 'auto-mode-alist
-             '("\\.js.erb$" . js-mode))
-
-(add-to-list 'auto-mode-alist
-             '("\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'" . ruby-mode))
-
-(add-to-list 'auto-mode-alist
-             '("\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'" . ruby-mode))
-
 ;; Prevents annoying popups
 (add-to-list 'special-display-buffer-names '("*Messages*" vemv/display-completion))
 (add-to-list 'special-display-buffer-names '("*xref*" vemv/display-completion))

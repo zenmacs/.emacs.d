@@ -25,14 +25,20 @@
       vemv/shortcuts/global/primary-6               'vemv/emacs-reload
       vemv/shortcuts/global/primary-4               'vemv/thread
       vemv/shortcuts/global/primary-8               'vemv/toggle-verbosity
-      vemv/shortcuts/global/primary-S-d             'vemv/helm-search-and-replace-with-previews
-      vemv/shortcuts/global/primary-S-f             'vemv/helm-search-and-replace
+      vemv/shortcuts/global/primary-S-d             (argless
+                                                     (require 'vemv.helm)
+                                                     (vemv/helm-search-and-replace-with-previews))
+      vemv/shortcuts/global/primary-S-f             (argless
+                                                     (require 'vemv.helm)
+                                                     (vemv/helm-search-and-replace))
       vemv/shortcuts/global/primary-S-n             (argless
                                                      (let ((f (vemv/new-frame)))
                                                        (select-frame f)
                                                        (switch-to-buffer "*Messages*")))
       vemv/shortcuts/global/primary-S-r             'vemv/run-this-deftest
-      vemv/shortcuts/global/primary-S-z             'undo-tree-redo
+      vemv/shortcuts/global/primary-S-z             (argless
+                                                     (require 'vemv.undo)
+                                                     (call-interactively 'undo-tree-redo))
       vemv/shortcuts/global/primary-SPC             'cua-set-mark
       vemv/shortcuts/global/primary-a               'vemv/copy-selection-or-next-sexpr
       vemv/shortcuts/global/primary-b               'vemv/duplicate
@@ -61,7 +67,9 @@
       vemv/shortcuts/global/primary-up              'backward-paragraph
       vemv/shortcuts/global/primary-v               'vemv/paste-from-clipboard
       vemv/shortcuts/global/primary-w               'vemv/close-this
-      vemv/shortcuts/global/primary-z               'undo-tree-undo
+      vemv/shortcuts/global/primary-z               (argless
+                                                     (require 'vemv.undo)
+                                                     (call-interactively 'undo-tree-undo))
       vemv/shortcuts/global/prior                   'cua-scroll-down
       vemv/shortcuts/global/right                   'right-char
       vemv/shortcuts/global/secondary-S-k           'vemv/kill-backward-copying-content
@@ -90,8 +98,9 @@
       vemv/shortcuts/global/tertiary-e              (argless (vemv/send nil nil nil :no-return))
       vemv/shortcuts/global/tertiary-end            'end-of-buffer
       vemv/shortcuts/global/tertiary-f              (argless
+                                                     (require 'vemv.helm)
                                                      (vemv/with-helm-follow nil
-                                                       (call-interactively 'helm-do-ag-this-file)))
+                                                                            (call-interactively 'helm-do-ag-this-file)))
       vemv/shortcuts/global/tertiary-home           'beginning-of-buffer
       vemv/shortcuts/global/tertiary-j              (argless
                                                      (if (vemv/in-a-clojure-mode?)
