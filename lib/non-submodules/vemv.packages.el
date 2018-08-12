@@ -15,7 +15,7 @@
 
 (setq vemv/packages-refreshed nil)
 
-(dolist (package '(edn inflections hydra company queue fiplr smartparens yasnippet multiple-cursors
+(dolist (package '(edn inflections hydra company queue fiplr smartparens yasnippet multiple-cursors benchmark-init
                        dash simpleclip helm-ag git-timemachine paren-face haml-mode ruby-end highlight-indent-guides))
   (unless (package-installed-p package)
     (vemv/verbosely
@@ -23,6 +23,10 @@
        (package-refresh-contents)
        (setq vemv/packages-refreshed t))
      (package-install package))))
+
+;; M-x benchmark-init/show-durations-tabulated / M-x benchmark-init/show-durations-tree
+(require 'benchmark-init)
+(add-hook 'after-init-hook 'benchmark-init/deactivate)
 
 (require 'saveplace)
 (require 'dash)
