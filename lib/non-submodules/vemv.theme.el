@@ -3,6 +3,7 @@
 ;;   m-x describe-theme
 ;;   (buffer-string)
 
+(require 'vemv.project)
 (provide 'vemv.theme)
 
 (set-face-background 'comint-highlight-prompt "#4D575F")
@@ -16,6 +17,7 @@
 (setq vemv-colors/yellow "#FFE33B")
 (setq vemv-colors/lighter-yellow "#ffe444")
 (setq vemv-colors/pink "#D93273")
+(setq vemv-colors/purple "#7A3555")
 
 (defface font-lock-line-and-column-face
   `((t :foreground "#696969"))
@@ -34,6 +36,7 @@
 (setq vemv-default-background-color "#4D575F")
 (setq vemv-default-background-color-slightly-darker "#404950")
 (setq vemv-default-foreground-color "#F5F5F5")
+(setq vemv-default-foreground-color-much-darker "#a8a8a8")
 (setq vemv-default-foreground-color-very-slightly-darker "#ededed")
 (setq vemv-error-foreground-color vemv-default-foreground-color)
 
@@ -118,7 +121,7 @@
  `(font-lock-warning-face ((t (:bold t :foreground "Pink"))))
 
  `(gui-element ((t (:background "#484848" :foreground "#96CBFE"))))
- `(region ((t (:background "#7A3555"))))
+ `(region ((t (:background ,vemv-colors/purple))))
  `(mode-line ((t (:background "gray10" :foreground "#B6B6B6"))))
  `(mode-line-inactive ((t (:background "gray10" :foreground "#696969"))))
 
@@ -199,12 +202,12 @@
 
  ;; Emacs 25:
  `(show-paren-match-face ((t ,(if (eq :ruby vemv/project-type)
-                                  `(:foreground ,vemv-default-foreground-color :background "#7A3555")
+                                  `(:foreground ,vemv-default-foreground-color :background ,vemv-colors/purple)
                                 `(:background ,vemv-colors/pink :foreground ,vemv-default-foreground-color)))))
 
  ;; Emacs 26:
  `(show-paren-match ((t ,(if (eq :ruby vemv/project-type)
-                             `(:foreground ,vemv-default-foreground-color :background "#7A3555")
+                             `(:foreground ,vemv-default-foreground-color :background ,vemv-colors/purple)
                            `(:background ,vemv-colors/pink :foreground ,vemv-default-foreground-color)))))
 
  `(helm-candidate-number ((t (:inherit helm-header))))
@@ -223,7 +226,7 @@
  `(helm-moccur-buffer ((t (:foreground ,vemv-default-foreground-color-very-slightly-darker
                                        :background ,vemv-default-background-color-slightly-darker))))
  `(helm-selection ((t (:background ,vemv-default-background-color-slightly-darker))))
- `(helm-selection ((t (:background "#7A3555" :foreground ,vemv-default-foreground-color))))
+ `(helm-selection ((t (:background ,vemv-colors/purple :foreground ,vemv-default-foreground-color))))
  `(helm-separator ((t (:foreground ,vemv-colors/lighter-yellow))))
  `(helm-source-header ((t (:inherit helm-header :bold t))))
  `(helm-visible-mark ((t (:background "#D93273" :foreground ,vemv-default-foreground-color))))

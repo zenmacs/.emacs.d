@@ -37,7 +37,13 @@
 
 (add-hook 'ielm-mode-hook 'enable-paredit-mode)
 
-(add-hook 'haml-mode-hook 'highlight-indent-guides-mode)
+(add-hook 'haml-mode-hook (argless
+                           (require 'highlight-indent-guides)
+                           (setq highlight-indent-guides-auto-enabled nil)
+                           (set-face-foreground 'highlight-indent-guides-character-face vemv-default-foreground-color-much-darker)
+                           (set-face-background 'highlight-indent-guides-top-character-face vemv-colors/purple)
+                           (set-face-foreground 'highlight-indent-guides-top-character-face vemv-colors/purple)
+                           (highlight-indent-guides-mode)))
 
 (add-hook 'haml-mode-hook (argless
                            (vemv/set-keys-for-scope haml-mode-map vemv/ruby-key-bindings)

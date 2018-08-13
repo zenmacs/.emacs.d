@@ -1,3 +1,4 @@
+(require 'vemv.theme)
 (provide 'vemv.setqs)
 
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -172,14 +173,3 @@ of the buffer into a formatted string."
                                (list "^#" "~$" "^node_modules$" "tmp" ".git$" ".sass-cache"
                                      ".lumo-cache" "target" "auto-save-list" "project-explorer-cache" "public")
                                "\\|"))
-
-(setq vemv/default-cider-cljs-lein-repl
-      "(do (require 'figwheel-sidecar.repl-api)
-
-          (try
-           (require 'figwheel-sidecar.system)
-           (alter-var-root #'figwheel-sidecar.system/repl-function-docs
-                           (constantly \"Results: Stored in vars *1, *2, *3, *e holds last exception object\"))
-           (catch Throwable e))
-        (figwheel-sidecar.repl-api/start-figwheel!)
-        (figwheel-sidecar.repl-api/cljs-repl))")
