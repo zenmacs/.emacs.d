@@ -52,7 +52,7 @@
            (string-equal (buffer-string) (vemv/slurp (buffer-file-name))))
       (replying-yes
        (kill-buffer (current-buffer)))
-      (kill-buffer (current-buffer)))
+    (kill-buffer (current-buffer)))
   (vemv/clean-chosen-file-buffer-order)
   (when (and (not noswitch)
              (eq (selected-window) vemv/main_window))
@@ -161,7 +161,7 @@
 (defun vemv/switch-to-buffer-in-any-frame (buffer-name)
   (if (seq-contains (vemv/current-frame-buffers) buffer-name)
       (switch-to-buffer buffer-name)
-      (switch-to-buffer-other-frame buffer-name)))
+    (switch-to-buffer-other-frame buffer-name)))
 
 (defun vemv/safe-select-frame ()
   (unless (eq (selected-frame) vemv/main_frame)

@@ -1,7 +1,6 @@
 (provide 'vemv.setqs)
 
 (fset 'yes-or-no-p 'y-or-n-p)
-(put 'if 'lisp-indent-function nil)
 (put-clojure-indent 'with 1)
 
 (setq-default truncate-lines t)
@@ -33,7 +32,7 @@
 (setq pe/project-root-function (lambda (&rest _)
                                  (if (vemv/buffer-of-current-project? (current-buffer))
                                      vemv/project-root-dir
-                                     default-directory)))
+                                   default-directory)))
 
 (setq pe/mode-line-format
       `(:eval (vemv/workspace-mode-line-format)))
@@ -149,8 +148,8 @@ of the buffer into a formatted string."
          (formatted (funcall formatter original)))
     (if (or (not formatted) (equal original formatted))
         (when (not formatted) (vemv/echo "Buffer has broken syntax, cannot format"))
-        (erase-buffer)
-        (insert formatted))))
+      (erase-buffer)
+      (insert formatted))))
 
 (setq fiplr-ignored-globs
       ;; `directories` entries must be single-segment, i.e `/` doesn't work.

@@ -114,7 +114,7 @@
 
  `(font-lock-variable-name-face ((t ,(if (eq :ruby vemv/project-type)
                                          `(:foreground ,vemv-default-foreground-color)
-                                         `(:foreground ,vemv-colors/yellow :bold t)))))
+                                       `(:foreground ,vemv-colors/yellow :bold t)))))
  `(font-lock-warning-face ((t (:bold t :foreground "Pink"))))
 
  `(gui-element ((t (:background "#484848" :foreground "#96CBFE"))))
@@ -200,12 +200,12 @@
  ;; Emacs 25:
  `(show-paren-match-face ((t ,(if (eq :ruby vemv/project-type)
                                   `(:foreground ,vemv-default-foreground-color :background "#7A3555")
-                                  `(:background ,vemv-colors/pink :foreground ,vemv-default-foreground-color)))))
+                                `(:background ,vemv-colors/pink :foreground ,vemv-default-foreground-color)))))
 
  ;; Emacs 26:
  `(show-paren-match ((t ,(if (eq :ruby vemv/project-type)
                              `(:foreground ,vemv-default-foreground-color :background "#7A3555")
-                             `(:background ,vemv-colors/pink :foreground ,vemv-default-foreground-color)))))
+                           `(:background ,vemv-colors/pink :foreground ,vemv-default-foreground-color)))))
 
  `(helm-candidate-number ((t (:inherit helm-header))))
  `(helm-candidate-number-suspended ((t (:inherit helm-header))))

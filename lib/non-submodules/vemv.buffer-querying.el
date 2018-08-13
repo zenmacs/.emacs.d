@@ -51,7 +51,7 @@
   (let ((result (buffer-substring-no-properties (line-beginning-position 1) (line-beginning-position 2))))
     (if (equal result "") ;; abstact away EOFs
         "\n"
-        result)))
+      result)))
 
 (defun vemv/previous-line ()
   (save-excursion
@@ -72,14 +72,14 @@
   (let ((s (buffer-size)))
     (if (eq s 0)
         ""
-        (let* ((o (or offset 0))
-               (beg (+ (point) o))
-               (end (+ beg 1))
-               (end (if (> end s) s end))
-               (_ (kill-ring-save beg end))
-               (result (substring-no-properties (car kill-ring))))
-          (pop kill-ring)
-          result))))
+      (let* ((o (or offset 0))
+             (beg (+ (point) o))
+             (end (+ beg 1))
+             (end (if (> end s) s end))
+             (_ (kill-ring-save beg end))
+             (result (substring-no-properties (car kill-ring))))
+        (pop kill-ring)
+        result))))
 
 (defun vemv/in-clojure-mode? ()
   ;; better: derived-mode-p

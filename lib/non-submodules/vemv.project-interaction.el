@@ -50,7 +50,7 @@
      (assert (not (member project-name (vemv/projects-for-workspace))))
      (conj! vemv/on-the-fly-projects (if found
                                          found
-                                         default-directory))
+                                       default-directory))
      (vemv/set-workspace (vemv/find-workspace chosen-workspace)
                          :skip-refresh)
      (vemv/add-project-to-current-workspace project-name)
@@ -66,11 +66,11 @@
     (select-window vemv/repl-window)
     (if (eq vemv/project-type :elisp)
         (switch-to-buffer "*ielm*")
-        (vemv/send :shell nil vemv/project-root-dir)
-        (delay (argless
-                (comint-clear-buffer)
-                (select-window vemv/main_window))
-               0.3))))
+      (vemv/send :shell nil vemv/project-root-dir)
+      (delay (argless
+              (comint-clear-buffer)
+              (select-window vemv/main_window))
+             0.3))))
 
 (setq vemv/maybe-change-project-graphically
       (vemv/debounce 'vemv/maybe-change-project-graphically* 0.3))

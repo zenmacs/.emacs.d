@@ -17,14 +17,14 @@
   (if (region-active-p)
       (progn (call-interactively 'kill-region)
              (pop kill-ring))
-      (paredit-backward-delete)))
+    (paredit-backward-delete)))
 
 (defun vemv/force-backspace ()
   "Performs a deletion, overriding paredit safeguards"
   (interactive)
   (if (region-active-p)
       (progn (call-interactively 'kill-region))
-      (delete-region (dec (point)) (point))))
+    (delete-region (dec (point)) (point))))
 
 (defun vemv/end-of-line-code* (skip-last-step)
   (let* ((bolpos (progn (beginning-of-line) (point)))
@@ -73,6 +73,6 @@
     (if (and (vemv/line-empty? line)
              (vemv/line-empty? (vemv/previous-line)))
         (vemv/delete-this-line)
-        (progn
-          (next-line)
-          (back-to-indentation)))))
+      (progn
+        (next-line)
+        (back-to-indentation)))))

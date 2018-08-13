@@ -36,17 +36,17 @@
        (not (vemv/current-main-buffer-is-cljs))
        (not (string-equal vemv/current-project "gpm")))
       t
-      (condition-case nil
-          (with-current-buffer vemv/clj-repl-name
-            (progn (cider-nrepl-sync-request:eval "(require 'dev.formatting.watch)")
-                   (if (string-equal (nrepl-dict-get (cider-nrepl-sync-request:eval "(dev.formatting.watch/currently-connected?)")
-                                                     "value")
-                                     "true")
-                       (progn
-                         (setq vemv/figwheel-connected-p-already t)
-                         t)
-                       nil)))
-        (error nil))))
+    (condition-case nil
+        (with-current-buffer vemv/clj-repl-name
+          (progn (cider-nrepl-sync-request:eval "(require 'dev.formatting.watch)")
+                 (if (string-equal (nrepl-dict-get (cider-nrepl-sync-request:eval "(dev.formatting.watch/currently-connected?)")
+                                                   "value")
+                                   "true")
+                     (progn
+                       (setq vemv/figwheel-connected-p-already t)
+                       t)
+                   nil)))
+      (error nil))))
 
 
 (defun vemv/advice-nrepl* (&optional after)
@@ -79,19 +79,19 @@
       (setq-local vemv/ns-shown (if after-file-open
                                     (if vemv/ns-shown
                                         vemv/ns-shown
-                                        nil)
-                                    (if vemv/ns-shown
-                                        nil
-                                        curr-buff-name)))
+                                      nil)
+                                  (if vemv/ns-shown
+                                      nil
+                                    curr-buff-name)))
       (if vemv/ns-shown
           (hs-show-all)
-          (let* ((hs-block-start-regexp "(ns")
-                 (hs-block-end-regexp ")")
-                 (hs-hide-comments-when-hiding-all nil)
-                 (hs-adjust-block-beginning (lambda (initial)
-                                              (save-excursion
-                                                (point)))))
-            (apply #'hs-hide-all ()))))))
+        (let* ((hs-block-start-regexp "(ns")
+               (hs-block-end-regexp ")")
+               (hs-hide-comments-when-hiding-all nil)
+               (hs-adjust-block-beginning (lambda (initial)
+                                            (save-excursion
+                                              (point)))))
+          (apply #'hs-hide-all ()))))))
 
 (defun vemv/show-clj-or-cljs-repl ()
   (when (vemv/ciderable-p)
@@ -100,7 +100,7 @@
     (vemv/safe-select-window vemv/repl-window)
     (if was
         (switch-to-buffer vemv/cljs-repl-name)
-        (switch-to-buffer vemv/clj-repl-name))
+      (switch-to-buffer vemv/clj-repl-name))
     (vemv/safe-select-window vemv/main_window)))
 
 (defun vemv/ensure-repl-visible ()
@@ -115,36 +115,36 @@
 (defun vemv/clean-project-namespaces ()
   (if (not vemv-cleaning-namespaces)
       (vemv/echo "vemv-cleaning-namespaces set to false!")
-      (let* ((files (filter (lambda (x)
-                              (vemv/ends-with x ".cljs"))
-                            (directory-files-recursively "/Users/vemv/gpm/src/horizon/src/" ".cljs"))))
-        (vemv/safe-select-window vemv/repl-window)
-        (switch-to-buffer "*Messages*")
+    (let* ((files (filter (lambda (x)
+                            (vemv/ends-with x ".cljs"))
+                          (directory-files-recursively "/Users/vemv/gpm/src/horizon/src/" ".cljs"))))
+      (vemv/safe-select-window vemv/repl-window)
+      (switch-to-buffer "*Messages*")
+      (vemv/safe-select-window vemv/main_window)
+      (vemv/open "/Users/vemv/gpm/src/horizon/project.clj")
+      (seq-doseq (filename files)
         (vemv/safe-select-window vemv/main_window)
-        (vemv/open "/Users/vemv/gpm/src/horizon/project.clj")
-        (seq-doseq (filename files)
-          (vemv/safe-select-window vemv/main_window)
-          (vemv/open filename)
-          (setq lexical-binding t)
-          (setq whitespace-line-column 240)
-          (cljr-clean-ns)
-          (beginning-of-buffer)
-          (while (re-search-forward "(:require[^\-]" nil t)
-            (replace-match "(:require\n"))
-          (beginning-of-buffer)
-          (while (re-search-forward "(:require\-macros[^\n]" nil t)
-            (replace-match "(:require\-macros\n"))
-          (beginning-of-buffer)
-          (while (re-search-forward "(:import[^\-]" nil t)
-            (replace-match "(:import\n"))
-          (beginning-of-buffer)
-          (while (re-search-forward "(:use\-macros[^\n]" nil t)
-            (replace-match "(:use\-macros\n"))
-          (vemv/save)
-          (vemv/save)
-          (vemv/close-this-buffer)))
-      (vemv/echo "clean-project-namespaces done!")
-      (vemv/echo "Remember: goog* libspec can be spuriously removed.")))
+        (vemv/open filename)
+        (setq lexical-binding t)
+        (setq whitespace-line-column 240)
+        (cljr-clean-ns)
+        (beginning-of-buffer)
+        (while (re-search-forward "(:require[^\-]" nil t)
+          (replace-match "(:require\n"))
+        (beginning-of-buffer)
+        (while (re-search-forward "(:require\-macros[^\n]" nil t)
+          (replace-match "(:require\-macros\n"))
+        (beginning-of-buffer)
+        (while (re-search-forward "(:import[^\-]" nil t)
+          (replace-match "(:import\n"))
+        (beginning-of-buffer)
+        (while (re-search-forward "(:use\-macros[^\n]" nil t)
+          (replace-match "(:use\-macros\n"))
+        (vemv/save)
+        (vemv/save)
+        (vemv/close-this-buffer)))
+    (vemv/echo "clean-project-namespaces done!")
+    (vemv/echo "Remember: goog* libspec can be spuriously removed.")))
 
 (setq vemv/cljr-building-ast-cache? nil) ;; XXX implement on new clj-refactor.el release
 
@@ -153,57 +153,57 @@
   (if (vemv/ciderable-p)
       (if (vemv/current-main-buffer-is-cljs)
           (vemv/send :cljs nil "(.reload js/location true)")
-          (progn
-            (vemv/save)
-            (vemv/advice-nrepl)
-            (replying-yes
-             (if vemv/using-component-reloaded-workflow
-                 (if vemv/cljr-building-ast-cache?
-                     (message "Currently building AST cache. Wait a few seconds and try again.")
-                     (progn
-                       (cider-interactive-eval (or vemv/clojure-reload-command
-                                                   "(with-out-str (com.stuartsierra.component.user-helpers/reset))"))
-                       (delay (argless (message "Reloaded!"))
-                              0.1)))
+        (progn
+          (vemv/save)
+          (vemv/advice-nrepl)
+          (replying-yes
+           (if vemv/using-component-reloaded-workflow
+               (if vemv/cljr-building-ast-cache?
+                   (message "Currently building AST cache. Wait a few seconds and try again.")
                  (progn
-                   (cider-load-buffer)
-                   (cider-load-all-project-ns)
+                   (cider-interactive-eval (or vemv/clojure-reload-command
+                                               "(with-out-str (com.stuartsierra.component.user-helpers/reset))"))
                    (delay (argless (message "Reloaded!"))
-                          0.1))))))
-      (if (vemv/in-a-lisp-mode?)
-          (progn
-            (vemv/save)
-            (call-interactively 'eval-buffer)))))
+                          0.1)))
+             (progn
+               (cider-load-buffer)
+               (cider-load-all-project-ns)
+               (delay (argless (message "Reloaded!"))
+                      0.1))))))
+    (if (vemv/in-a-lisp-mode?)
+        (progn
+          (vemv/save)
+          (call-interactively 'eval-buffer)))))
 
 (defun vemv/clojure-init ()
   (if (minibuffer-prompt)
       (delay 'vemv/clojure-init 1)
 
-      (advice-add 'pe/show-buffer :after 'vemv/after-file-open)
-      (advice-add 'vemv/fiplr :after 'vemv/after-file-open)
-      ;; (advice-add 'vemv/open :after 'vemv/after-file-open) ;; I don't remember why I disabled this
-      (advice-add 'vemv/next-file-buffer :after 'vemv/after-file-open)
-      (advice-add 'vemv/previous-file-buffer :after 'vemv/after-file-open)
-      (advice-add 'vemv/close-this-buffer :after 'vemv/after-file-open)
-      (advice-add 'helm-ag--action-find-file :after 'vemv/after-file-open)
-      (advice-add 'cider-new-error-buffer :after (lambda (&rest _)
-                                                   (cider-interactive-eval "(try (clojure.core/prn clojure.core/*e)
+    (advice-add 'pe/show-buffer :after 'vemv/after-file-open)
+    (advice-add 'vemv/fiplr :after 'vemv/after-file-open)
+    ;; (advice-add 'vemv/open :after 'vemv/after-file-open) ;; I don't remember why I disabled this
+    (advice-add 'vemv/next-file-buffer :after 'vemv/after-file-open)
+    (advice-add 'vemv/previous-file-buffer :after 'vemv/after-file-open)
+    (advice-add 'vemv/close-this-buffer :after 'vemv/after-file-open)
+    (advice-add 'helm-ag--action-find-file :after 'vemv/after-file-open)
+    (advice-add 'cider-new-error-buffer :after (lambda (&rest _)
+                                                 (cider-interactive-eval "(try (clojure.core/prn clojure.core/*e)
                                                                               (catch java.lang.Throwable e))")
-                                                   (delay (argless
-                                                           (when (vemv/buffer-of-current-running-project?
-                                                                  (vemv/save-window-excursion
-                                                                   (vemv/safe-select-window vemv/main_window)
-                                                                   (current-buffer)))
-                                                             (vemv/save-window-excursion
-                                                              (vemv/safe-select-window vemv/repl-window)
-                                                              (vemv/switch-to-buffer-in-any-frame vemv/clj-repl-name)
-                                                              (end-of-buffer)
-                                                              (paredit-backward)
-                                                              (paredit-backward))))
-                                                          0.7)))
+                                                 (delay (argless
+                                                         (when (vemv/buffer-of-current-running-project?
+                                                                (vemv/save-window-excursion
+                                                                 (vemv/safe-select-window vemv/main_window)
+                                                                 (current-buffer)))
+                                                           (vemv/save-window-excursion
+                                                            (vemv/safe-select-window vemv/repl-window)
+                                                            (vemv/switch-to-buffer-in-any-frame vemv/clj-repl-name)
+                                                            (end-of-buffer)
+                                                            (paredit-backward)
+                                                            (paredit-backward))))
+                                                        0.7)))
 
-      (vemv/safe-select-window vemv/main_window)
-      (vemv/open-recent-file-for-this-project!)))
+    (vemv/safe-select-window vemv/main_window)
+    (vemv/open-recent-file-for-this-project!)))
 
 (defun vemv/is-cljs-project? ()
   (or (eq vemv/project-type :cljs)
@@ -257,29 +257,29 @@
                           (if (vemv/is-cljs-project?)
                               (if vemv/cider-port
                                   (cider-connect-clojurescript vemv/cider-port)
-                                  (cider-jack-in-clojurescript))
-                              (if vemv/cider-port
-                                  (cider-connect "127.0.0.1" vemv/cider-port vemv/project-root-dir)
-                                  (cider-jack-in))))
+                                (cider-jack-in-clojurescript))
+                            (if vemv/cider-port
+                                (cider-connect "127.0.0.1" vemv/cider-port vemv/project-root-dir)
+                              (cider-jack-in))))
                  1))
-        (if vemv/using-nrepl
-            (if (cider-connected-p)
-                (if (vemv/current-main-buffer-is-cljs)
-                    (vemv/send :cljs)
-                    (vemv/send :clj)))
-            (vemv/send :shell)))))
+      (if vemv/using-nrepl
+          (if (cider-connected-p)
+              (if (vemv/current-main-buffer-is-cljs)
+                  (vemv/send :cljs)
+                (vemv/send :clj)))
+        (vemv/send :shell)))))
 
 (defun vemv/jump-to-clojure-definition ()
   (interactive)
   (if (not (vemv/in-clojure-mode?))
       (call-interactively 'xref-find-definitions)
-      (let* ((curr-token (cider-symbol-at-point 'look-back))
-             (curr-token-is-qualified-kw (vemv/starts-with curr-token "::"))
-             (cider-prompt-for-symbol nil))
-        (if curr-token-is-qualified-kw
-            (call-interactively 'cider-find-keyword)
-            (cider-find-var))
-        (vemv/advice-nrepl))))
+    (let* ((curr-token (cider-symbol-at-point 'look-back))
+           (curr-token-is-qualified-kw (vemv/starts-with curr-token "::"))
+           (cider-prompt-for-symbol nil))
+      (if curr-token-is-qualified-kw
+          (call-interactively 'cider-find-keyword)
+        (cider-find-var))
+      (vemv/advice-nrepl))))
 
 (defun vemv/message-clojure-doc ()
   (interactive)
@@ -302,8 +302,8 @@
                                  (if (and a d)
                                      "\n\n")
                                  d)))
-            (vemv/echo "No docs found.")))
-      (vemv/echo "Not connected.")))
+          (vemv/echo "No docs found.")))
+    (vemv/echo "Not connected.")))
 
 (defun vemv/clear-cider-repl-buffer (&optional no-recur)
   (interactive)
@@ -340,9 +340,9 @@
                                (inferred (funcall cider-test-infer-test-ns ns))
                                (chosen (if (vemv/is-testing-ns ns inferred)
                                            ns
-                                           (if cljs
-                                               vemv/latest-cljs-test-ran
-                                               vemv/latest-clojure-test-ran))))
+                                         (if cljs
+                                             vemv/latest-cljs-test-ran
+                                           vemv/latest-clojure-test-ran))))
                           (when chosen
                             (setq vemv/latest-clojure-test-ran chosen)
                             (if cljs
@@ -351,7 +351,7 @@
                                            (concat "(cljs.test/run-tests '"
                                                    chosen
                                                    ")"))
-                                (cider-test-execute chosen nil nil))))))))
+                              (cider-test-execute chosen nil nil))))))))
 
 (defun vemv/run-this-deftest ()
   "Assuming `point` is at a deftest name, it runs it"

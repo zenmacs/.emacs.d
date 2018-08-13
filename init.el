@@ -43,14 +43,14 @@
 
         (setq debugger (if vemv/verbose-mode ;; Disable annoying *Backtrace* buffer
                            vemv/original-debugger
-                           (lambda (&rest _))))
+                         (lambda (&rest _))))
         (setq command-error-function (if vemv/verbose-mode ;; Silence "End of buffer" messages
                                          vemv/original-command-error-function
-                                         (lambda (&rest _))))
+                                       (lambda (&rest _))))
         (defun minibuffer-message (&rest args) ;; Silence "No matching parenthesis found"
           (if vemv/verbose-mode
               (apply vemv/original-minibuffer-message args)
-              nil))))
+            nil))))
 
     (defun vemv/toggle-verbosity ()
       (vemv/set-verbosity-to (not vemv/verbose-mode)))
@@ -71,7 +71,7 @@
 
   (setq vemv-font (if (eq system-type 'darwin)
                       "Monaco-12"
-                      "DejaVu Sans Mono-13"))
+                    "DejaVu Sans Mono-13"))
 
   (when (window-system)
     (set-face-attribute 'default nil :font vemv-font))

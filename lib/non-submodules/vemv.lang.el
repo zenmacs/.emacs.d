@@ -22,40 +22,40 @@
         (content (or content
                      (if (region-active-p)
                          (vemv/selected-region)
-                         (vemv/sexpr-content backward?)))))
+                       (vemv/sexpr-content backward?)))))
     (if (equal where :emacs)
         (eval (read content))
-        (let* ((sender (selected-window))
-               (destination-buffer (case where
-                                     (:ielm "*ielm*")
-                                     (:shell "*shell-1*")
-                                     (:clj vemv/clj-repl-name)
-                                     (:cljs vemv/cljs-repl-name)))
-               (foreign? (not (seq-contains (vemv/all-buffer-names) destination-buffer)))
-               (destination-buffer (if foreign?
-                                       (buffer-name (window-buffer vemv/repl-window))
-                                       destination-buffer)))
-          (if (and (vemv/in-a-clojure-mode?)
-                   foreign?
-                   (not vemv/parent-project-root-dirs)) ;; implementation could be more accurate, does the job for now
-              (vemv/echo "Can't eval in a different project!")
-              (vemv/safe-select-window vemv/repl-window)
-              (switch-to-buffer destination-buffer)
+      (let* ((sender (selected-window))
+             (destination-buffer (case where
+                                   (:ielm "*ielm*")
+                                   (:shell "*shell-1*")
+                                   (:clj vemv/clj-repl-name)
+                                   (:cljs vemv/cljs-repl-name)))
+             (foreign? (not (seq-contains (vemv/all-buffer-names) destination-buffer)))
+             (destination-buffer (if foreign?
+                                     (buffer-name (window-buffer vemv/repl-window))
+                                   destination-buffer)))
+        (if (and (vemv/in-a-clojure-mode?)
+                 foreign?
+                 (not vemv/parent-project-root-dirs)) ;; implementation could be more accurate, does the job for now
+            (vemv/echo "Can't eval in a different project!")
+          (vemv/safe-select-window vemv/repl-window)
+          (switch-to-buffer destination-buffer)
 
-              (end-of-buffer)
-              (insert content)
+          (end-of-buffer)
+          (insert content)
 
-              (unless no-return
-                (case where
-                  (:ielm (ielm-return))
-                  (:shell (comint-send-input))
-                  (:clj (cider-repl-return))
-                  (:cljs (cider-repl-return))))
-
-              (pop kill-ring)
-              (end-of-buffer))
           (unless no-return
-            (vemv/safe-select-window sender))))))
+            (case where
+              (:ielm (ielm-return))
+              (:shell (comint-send-input))
+              (:clj (cider-repl-return))
+              (:cljs (cider-repl-return))))
+
+          (pop kill-ring)
+          (end-of-buffer))
+        (unless no-return
+          (vemv/safe-select-window sender))))))
 
 (setq vemv/shell-id 0)
 

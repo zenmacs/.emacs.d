@@ -20,7 +20,7 @@
                                                        (string-equal (car x) name))
                                                      (if reverse
                                                          (cons (car vemv/all-workspaces) (cdr vemv/all-workspaces))
-                                                         (-snoc (cdr vemv/all-workspaces) (car vemv/all-workspaces))))))
+                                                       (-snoc (cdr vemv/all-workspaces) (car vemv/all-workspaces))))))
       (unless skip-refresh
         (vemv/force-refresh-project!)))))
 

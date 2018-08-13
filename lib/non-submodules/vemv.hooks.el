@@ -74,11 +74,11 @@
       (progn
         (if back-to-indentation-state
             ad-do-it
-            (beginning-of-line)
-            (send! back-to-indentation-state 'not)))
-      (progn
-        (setq back-to-indentation-state nil)
-        ad-do-it)))
+          (beginning-of-line)
+          (send! back-to-indentation-state 'not)))
+    (progn
+      (setq back-to-indentation-state nil)
+      ad-do-it)))
 
 (ad-activate 'back-to-indentation)
 

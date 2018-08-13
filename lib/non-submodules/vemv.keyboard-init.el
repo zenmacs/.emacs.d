@@ -30,7 +30,7 @@
     (let ((k (second binding)))
       (if (stringp k)
           (read-kbd-macro k)
-          k))
+        k))
     (third binding)))
 
 (global-set-key [kp-delete] 'delete-char) ;; OSX
@@ -42,7 +42,7 @@
                 (if (eq ,scope :global)
                     (global-set-key keyboard-macro
                                     (argless (call-interactively (gethash key ,source))))
-                    (define-key ,scope
-                      keyboard-macro
-                      (argless (call-interactively (gethash key ,source)))))))
+                  (define-key ,scope
+                    keyboard-macro
+                    (argless (call-interactively (gethash key ,source)))))))
             ,source))

@@ -66,7 +66,7 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
   (mapcar (lambda (x)
             (if (and (not no-prettify) (vemv/on-the-fly-project? x))
                 (cider-project-name x)
-                x))
+              x))
           (vemv/projects-for-workspace)))
 
 (defun vemv/refresh-current-project (which &optional switch-p)
@@ -77,13 +77,13 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
     (when which
       (setq vemv/current-project (if on-the-fly-project
                                      (cider-project-name which)
-                                     which)))
+                                   which)))
 
     ;; XXX the case statements are hardcoded. parameterize
     (setq vemv/project-root-dir
           (or vemv/project-root-dir (if on-the-fly-project
                                         which
-                                        (vemv/dir-for-project vemv/current-project))))
+                                      (vemv/dir-for-project vemv/current-project))))
 
     (when (and which (not on-the-fly-project))
       (condition-case nil
@@ -96,7 +96,7 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
     ;; Ensures correct `vemv/safe-show-current-file-in-project-explorer` functioning
     (setq vemv/project-root-dir (concat vemv/project-root-dir (if (s-ends-with? "/" vemv/project-root-dir)
                                                                   ""
-                                                                  "/")))
+                                                                "/")))
 
     (unless (file-exists-p vemv/project-root-dir)
       (vemv/echo (concat "vemv/project-root-dir doesn't exist: " vemv/project-root-dir)))
@@ -105,7 +105,7 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
 
     (setq vemv/project-clojure-dir (concat vemv/project-clojure-dir (if (s-ends-with? "/" vemv/project-clojure-dir)
                                                                         ""
-                                                                        "/")))
+                                                                      "/")))
 
     (setq vemv/project-type (or vemv/project-type (if (file-exists-p (concat vemv/project-root-dir "Gemfile")) :ruby :clj)))
 
@@ -115,12 +115,12 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
           (or vemv/project-fiplr-dir
               (if on-the-fly-project
                   which
-                  (concat vemv/project-clojure-dir))))
+                (concat vemv/project-clojure-dir))))
 
     (setq vemv/project-fiplr-dir
           (if (file-exists-p vemv/project-fiplr-dir)
               vemv/project-fiplr-dir
-              vemv/project-root-dir))
+            vemv/project-root-dir))
 
     ;; the bit to remove in tabs (mode-line). also identifies repls (important)
     (setq vemv/project-ns-prefix (or vemv/project-ns-prefix vemv/current-project))
@@ -129,11 +129,11 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
 
     (if vemv/cider-port
         (setq vemv/clj-repl-name (concat "*cider-repl 127.0.0.1*"))
-        (setq vemv/clj-repl-name (concat "*cider-repl " vemv/repl-identifier "*")))
+      (setq vemv/clj-repl-name (concat "*cider-repl " vemv/repl-identifier "*")))
 
     (if "using cider 0.16"
         (setq vemv/cljs-repl-name (concat "*cider-repl CLJS " vemv/repl-identifier "*"))
-        (setq vemv/cljs-repl-name (concat "*cider-repl " vemv/repl-identifier "(cljs)*")))
+      (setq vemv/cljs-repl-name (concat "*cider-repl " vemv/repl-identifier "(cljs)*")))
 
     (setq vemv/default-clojure-file
           (or

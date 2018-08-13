@@ -140,28 +140,28 @@ inserting it at a new line."
           (forward-char))
         (insert content))
 
-      (back-to-indentation)
+    (back-to-indentation)
 
-      (if (some (lambda (char)
-                  (equal char (vemv/current-char-at-point)))
-                '("(" "[" "{" "<" "\""))
-          (progn
-            (let ((content (vemv/sexpr-content))
-                  (at-b (vemv/at-beginning-of-line-p)))
-              (paredit-forward)
-              (insert (concat (if at-b "\n\n" "\n") content))
-              (paredit-backward)
-              (beginning-of-line)
-              (indent-for-tab-command)))
+    (if (some (lambda (char)
+                (equal char (vemv/current-char-at-point)))
+              '("(" "[" "{" "<" "\""))
+        (progn
+          (let ((content (vemv/sexpr-content))
+                (at-b (vemv/at-beginning-of-line-p)))
+            (paredit-forward)
+            (insert (concat (if at-b "\n\n" "\n") content))
+            (paredit-backward)
+            (beginning-of-line)
+            (indent-for-tab-command)))
 
-          (progn
-            (move-beginning-of-line 1)
-            (kill-line)
-            (yank)
-            (open-line 1)
-            (next-line 1)
-            (yank)
-            (pop kill-ring)))))
+      (progn
+        (move-beginning-of-line 1)
+        (kill-line)
+        (yank)
+        (open-line 1)
+        (next-line 1)
+        (yank)
+        (pop kill-ring)))))
 
 (defun vemv/ensure-no-double-blank-newlines ()
   (while (and (string-equal "\n" (vemv/current-line-contents))
@@ -184,23 +184,23 @@ inserting it at a new line."
                     (if backward?
                         (or (equal " " (vemv/current-char-at-point -1))
                             (equal "\n" (vemv/current-char-at-point -1)))
-                        nil))
+                      nil))
                 (if backward?
                     (or (equal " " (vemv/current-char-at-point -1))
                         (equal "\n" (vemv/current-char-at-point -1)))
-                    t))
+                  t))
       (if backward?
           (delete-backward-char 1)
-          (delete-forward-char 1))))
+        (delete-forward-char 1))))
   (when (eq (point)
             (save-excursion
               (if backward?
                   (progn
                     (paredit-backward)
                     (paredit-forward))
-                  (progn
-                    (paredit-forward)
-                    (paredit-backward)))
+                (progn
+                  (paredit-forward)
+                  (paredit-backward)))
               (point)))
     (ignore-errors
       (push-mark)
@@ -230,12 +230,12 @@ inserting it at a new line."
 
   (funcall (if cut?
                'vemv/bounded-list/insert-at-head!
-               'vemv/bounded-list/insert-at-second-position!)
+             'vemv/bounded-list/insert-at-second-position!)
            (if (region-active-p)
                (progn (call-interactively 'kill-region)
                       (if (not cut?) (pop kill-ring)))
 
-               (paredit-backward-delete))
+             (paredit-backward-delete))
            vemv/kill-list
            vemv/kill-list-bound))
 
@@ -291,34 +291,34 @@ inserting it at a new line."
   (interactive)
   (if (equal last-command 'vemv/end)
       (call-interactively 'move-end-of-line)
-      (let* ((line (vemv/current-line-contents))
-             (rev (vemv/reverse line))
-             (line_length (length line))
-             (movement (recur-let ((result 0))
-                                  (if (some (lambda (char)
-                                              (equal char (substring line result (inc result))))
-                                            '(";" "\n"))
-                                      result
-                                      (recur (inc result))))))
-        (move-beginning-of-line 1)
-        (forward-char movement)
-        ;; there may exist empty space between code and comment:
-        (if (pos? movement)
-            (while (not (some (lambda (char)
-                                (equal char (vemv/current-char-at-point)))
-                              '(" ")))
-              (backward-char)))
-        (comm backward-char (recur-let ((result 0))
-                                       (if (or
-                                            (equal result line_length)
-                                            (equal " " (substring rev result (inc result))))
-                                           result
-                                           (recur (inc result))))))))
+    (let* ((line (vemv/current-line-contents))
+           (rev (vemv/reverse line))
+           (line_length (length line))
+           (movement (recur-let ((result 0))
+                                (if (some (lambda (char)
+                                            (equal char (substring line result (inc result))))
+                                          '(";" "\n"))
+                                    result
+                                  (recur (inc result))))))
+      (move-beginning-of-line 1)
+      (forward-char movement)
+      ;; there may exist empty space between code and comment:
+      (if (pos? movement)
+          (while (not (some (lambda (char)
+                              (equal char (vemv/current-char-at-point)))
+                            '(" ")))
+            (backward-char)))
+      (comm backward-char (recur-let ((result 0))
+                                     (if (or
+                                          (equal result line_length)
+                                          (equal " " (substring rev result (inc result))))
+                                         result
+                                       (recur (inc result))))))))
 
 (defun vemv/copy-selection-or-next-sexpr ()
   (let ((content (if (region-active-p)
                      (vemv/selected-region)
-                     (vemv/sexpr-content))))
+                   (vemv/sexpr-content))))
     (when (region-active-p)
       (call-interactively 'cua-set-mark))
     (vemv/bounded-list/insert-at-head! content vemv/kill-list vemv/kill-list-bound)
@@ -354,18 +354,18 @@ inserting it at a new line."
     (if (and (looking-at "\\s<\\s<\\(\\s<\\)?")
              (or (match-end 1) (/= (current-column) (current-indentation))))
         0
-        (let ((curr (with-temp-buffer
-                      (insert-buffer-substring c)
-                      (when (vemv/in-a-clojure-mode? m)
-                        (clojure-mode))
-                      (goto-char p)
-                      (end-of-line)
-                      (insert "\n")
-                      (call-interactively 'indent-for-tab-command)
-                      (current-indentation))))
-          (when (or (/= (current-column) curr)
-                    (and (> comment-add 0) (looking-at "\\s<\\(\\S<\\|\\'\\)")))
-            curr)))))
+      (let ((curr (with-temp-buffer
+                    (insert-buffer-substring c)
+                    (when (vemv/in-a-clojure-mode? m)
+                      (clojure-mode))
+                    (goto-char p)
+                    (end-of-line)
+                    (insert "\n")
+                    (call-interactively 'indent-for-tab-command)
+                    (current-indentation))))
+        (when (or (/= (current-column) curr)
+                  (and (> comment-add 0) (looking-at "\\s<\\(\\S<\\|\\'\\)")))
+          curr)))))
 
 (defun vemv/semicolon ()
   (interactive)
@@ -374,28 +374,28 @@ inserting it at a new line."
            (paredit-in-string-p)
            (paredit-in-comment-p))
        (insert ";")
-       (let* ((what (if (eq vemv/comment-indent-function 'vemv/normal-indentation)
-                        ";"
-                        ";;"))
-              (_ (when (s-blank-str? (vemv/current-line-contents))
-                   (call-interactively 'indent-for-tab-command)))
-              (whitespace-chars (string-to-list " \n"))
-              (maybe-newline (when (-any? (lambda (x)
-                                            (not (member x whitespace-chars)))
-                                          (string-to-list (vemv/chars-at-right)))
-                               "\n"))
-              (maybe-prefix (if (or (vemv/at-beginning-of-line-p)
-                                    (string-equal " " (vemv/char-at-left)))
-                                ""
-                                " ")))
-         (insert (concat maybe-prefix what " " maybe-newline))
-         (when maybe-newline
-           (beginning-of-line)
-           (call-interactively 'indent-for-tab-command)
-           (previous-line)
-           (beginning-of-line)
-           (call-interactively 'indent-for-tab-command)
-           (end-of-line))))))
+     (let* ((what (if (eq vemv/comment-indent-function 'vemv/normal-indentation)
+                      ";"
+                    ";;"))
+            (_ (when (s-blank-str? (vemv/current-line-contents))
+                 (call-interactively 'indent-for-tab-command)))
+            (whitespace-chars (string-to-list " \n"))
+            (maybe-newline (when (-any? (lambda (x)
+                                          (not (member x whitespace-chars)))
+                                        (string-to-list (vemv/chars-at-right)))
+                             "\n"))
+            (maybe-prefix (if (or (vemv/at-beginning-of-line-p)
+                                  (string-equal " " (vemv/char-at-left)))
+                              ""
+                            " ")))
+       (insert (concat maybe-prefix what " " maybe-newline))
+       (when maybe-newline
+         (beginning-of-line)
+         (call-interactively 'indent-for-tab-command)
+         (previous-line)
+         (beginning-of-line)
+         (call-interactively 'indent-for-tab-command)
+         (end-of-line))))))
 
 (setq vemv/thread-message
       "Press 1 to thread-first,\n      2 to fully thread-first,\n      3 to thread-last, or\n      4 to fully thread-last:\n\n")

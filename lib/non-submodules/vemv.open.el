@@ -29,7 +29,7 @@
   (vemv/safe-select-window vemv/main_window)
   (let* ((default-directory (if (vemv/contains? (buffer-file-name) vemv/project-root-dir)
                                 default-directory
-                                vemv/project-clojure-dir))
+                              vemv/project-clojure-dir))
          (file (buffer-name (or (and filepath (find-file filepath))
                                 (ido-find-file)))))) ;; magical let - do not unwrap!
   (save-buffer)
@@ -42,7 +42,7 @@
 (defun vemv/fiplr (&optional opener)
   (if (vemv/contains? vemv/project-fiplr-dir "/")
       (fiplr-find-file-in-directory vemv/project-fiplr-dir fiplr-ignored-globs (or opener #'find-file))
-      (vemv/echo "`vemv/project-fiplr-dir' was set incorrectly due to an unknown bug. Try reloading the project.")))
+    (vemv/echo "`vemv/project-fiplr-dir' was set incorrectly due to an unknown bug. Try reloading the project.")))
 
 (defun vemv/open-file-via-fiplr-then-close-previous-buffer ()
   (interactive)
@@ -70,7 +70,7 @@
                                   (vemv/contains? (file-truename the-file) ;; expand symlinks
                                                   vemv/project-clojure-dir)))
                          the-file
-                         vemv/default-clojure-file))
+                       vemv/default-clojure-file))
            (the-file (if the-file (file-truename the-file))))
       (when (and the-file (file-exists-p the-file))
         (vemv/open the-file)))))

@@ -25,7 +25,7 @@
             (s-join "." onechars)
             (if (> (length onechars) 0)
                 "."
-                "")
+              "")
             name)))
 
 (defun vemv/mode-line-for-buffer (buffer-name)
@@ -39,18 +39,18 @@
          (close-sym (intern (concat "vemv/mode-line-for-buffer/" bfn "-close")))
          (namespace (if is-project-dot-clj
                         "project.clj"
-                        (if is-clj
-                            (vemv/abbreviate-ns (with-current-buffer buffer-name
-                                                  (or (ignore-errors
-                                                        (cider-current-ns))
-                                                      buffer-name))))))
+                      (if is-clj
+                          (vemv/abbreviate-ns (with-current-buffer buffer-name
+                                                (or (ignore-errors
+                                                      (cider-current-ns))
+                                                    buffer-name))))))
          (is-modified (with-current-buffer buffer-name
                         (buffer-modified-p)))
          (shortname (concat (if is-clj
                                 namespace
-                                (if is-rails-view
-                                    (s-join "/" (-take-last 2 (s-split "/" bfn)))
-                                    buffer-name))
+                              (if is-rails-view
+                                  (s-join "/" (-take-last 2 (s-split "/" bfn)))
+                                buffer-name))
                             (if is-modified "*" ""))))
     (unless (fboundp sym)
       (eval `(defun ,sym ()
@@ -97,9 +97,9 @@
 (defun vemv/message-file-buffers-impl ()
   (if (not (vemv/buffer-of-current-project? (current-buffer)))
       (buffer-name)
-      (let* ((all (mapcar 'vemv/mode-line-for-buffer
-                          (gethash vemv/current-project vemv/chosen-file-buffer-order))))
-        (vemv/format-tabs (car all) (cdr all)))))
+    (let* ((all (mapcar 'vemv/mode-line-for-buffer
+                        (gethash vemv/current-project vemv/chosen-file-buffer-order))))
+      (vemv/format-tabs (car all) (cdr all)))))
 
 (defun vemv/pe/mode-line-format* ()
   (->> (vemv/all-project-names :no-prettify)

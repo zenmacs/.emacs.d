@@ -76,14 +76,14 @@
   ""
   (if (and seq (pos? n))
       (recur (dec n) (rest seq) (cons (first seq) acc))
-      (when (zero? n)
-        (reverse acc))))
+    (when (zero? n)
+      (reverse acc))))
 
 (recur-defun* vemv/drop (n seq)
   ""
   (if (pos? n)
       (recur (dec n) (rest seq))
-      seq))
+    seq))
 
 (recur-defun*
   vemv/partition
@@ -97,7 +97,7 @@ ACC is an implementation detail - do not pass this parameter!"
                  (cons taken acc)
                acc)
              (or step n))
-      (reverse acc)))
+    (reverse acc)))
 
 (defun vemv/debounce (func &optional delay)
   (let*
@@ -115,8 +115,8 @@ ACC is an implementation detail - do not pass this parameter!"
       `(lambda (&rest args)
          (progn
            (if
-            (and (vectorp ,timer) (not (aref ,timer 0)))
-            (cancel-timer ,timer))
+               (and (vectorp ,timer) (not (aref ,timer 0)))
+               (cancel-timer ,timer))
            (setq
             ,timer
             (run-at-time
@@ -186,7 +186,7 @@ ACC is an implementation detail - do not pass this parameter!"
 (defun vemv/keyboard-macro (key)
   (if (stringp key)
       (read-kbd-macro key)
-      key))
+    key))
 
 (defun vemv/display-completion (buffer)
   (vemv/safe-select-window vemv/main_window)
