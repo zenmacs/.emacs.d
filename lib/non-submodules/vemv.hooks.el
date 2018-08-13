@@ -45,7 +45,12 @@
                            (define-key haml-mode-map [tab] 'vemv/tab)))
 
 (add-hook 'js-mode-hook (argless
+                         (vemv/set-keys-for-scope js-mode-map vemv/ruby-key-bindings)
                          (define-key js-mode-map [tab] 'vemv/tab)))
+
+(add-hook 'sh-mode-hook (argless
+                         (vemv/set-keys-for-scope sh-mode-map vemv/ruby-key-bindings)
+                         (define-key sh-mode-map [tab] 'vemv/tab)))
 
 (add-hook 'cider-connected-hook
           (argless
