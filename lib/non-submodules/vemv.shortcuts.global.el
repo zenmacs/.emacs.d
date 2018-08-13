@@ -100,7 +100,7 @@
       vemv/shortcuts/global/tertiary-f              (argless
                                                      (require 'vemv.helm)
                                                      (vemv/with-helm-follow nil
-                                                                            (call-interactively 'helm-do-ag-this-file)))
+                                                       (call-interactively 'helm-do-ag-this-file)))
       vemv/shortcuts/global/tertiary-home           'beginning-of-buffer
       vemv/shortcuts/global/tertiary-j              (argless
                                                      (if (vemv/in-a-clojure-mode?)
@@ -124,10 +124,12 @@
 (global-set-key [(shift return)] (argless
                                   (if (vemv/in-a-clojure-mode?)
                                       (vemv/clear-cider-repl-buffer)
-                                    (when (vemv/in-a-lisp-mode?)
-                                      (vemv/save-window-excursion
-                                       (vemv/safe-select-window vemv/repl-window)
-                                       (comint-clear-buffer))))))
+                                    (vemv/save-window-excursion
+                                     (vemv/safe-select-window vemv/repl-window)
+                                     (if (vemv/in-a-lisp-mode?)
+                                         (switch-to-buffer "*ielm*")
+                                       (switch-to-buffer "*shell-1*"))
+                                     (comint-clear-buffer)))))
 
 ;; same here. control-ret is interpreted as s-return rather than as tertiary-RET
 (global-set-key [(s return)] 'vemv/load-clojure-buffer)
