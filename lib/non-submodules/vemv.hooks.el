@@ -108,6 +108,27 @@
  (advice-add 'pe/left-click ':around 'vemv/pe/left-click)
  (advice-add 'pe/middle-click ':before 'vemv/pe/middle-click))
 
+;; https://github.com/DarthFennec/highlight-indent-guides/issues/44#issuecomment-411486188
+(defadvice highlight-indent-guides--update-line-cache
+    (around my-update-line-cache activate)
+  (let ((higp 'highlight-indent-guides-prop) pos indent)
+    (save-excursion
+      (beginning-of-line)
+      (while (and (not (eobp))
+                  (or (let ((s (syntax-ppss))) (or (nth 3 s) (nth 4 s)))
+                      (looking-at "[[:space:]]*$")))
+        (forward-line))
+      (setq pos (point) indent (current-indentation))
+      (forward-line)
+      (while (and (not (eobp))
+                  (or (let ((s (syntax-ppss))) (or (nth 3 s) (nth 4 s)))
+                      (looking-at "[[:space:]]*$")))
+        (forward-line))
+      (unless (< indent (current-indentation)) (goto-char pos))
+      (back-to-indentation)
+      (setq ad-return-value
+            (unless (bolp) (nth 5 (get-text-property (1- (point)) higp)))))))
+
 (advice-add 'helm-ag--edit :after 'vemv/ag-replace)
 
 (advice-add 'cider-test-run-test :around 'vemv/apply-tests-verbosely)
