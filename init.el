@@ -35,7 +35,8 @@
       (setq inhibit-startup-message (not vemv/verbose-mode))
       (setq inhibit-message (not vemv/verbose-mode)) ;; Silence minibuffer
 
-      (unless vemv/should-start-in-verbose-mode ;; allow debugging issues with `kill -USR2 $emacs_pid`
+      (if vemv/should-start-in-verbose-mode ;; allow debugging issues with `kill -USR2 $emacs_pid`
+          (call-interactively 'toggle-debug-on-error) ;; set globally (this seems the best way - a plain `setq` won't work)
 
         ;; NOTE: overly verbose, so it's always set to nil. Set with M-x toggle-debug-on-error if needed.
         ;; (proof of verbosity: try to undo in a pristine buffer, with this line uncommented)
