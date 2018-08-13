@@ -7,8 +7,7 @@
 (when (not vemv-cleaning-namespaces)
   (add-hook 'clojure-mode-hook 'hs-minor-mode))
 
-(add-hook 'ruby-mode-hook (argless (smartparens-mode)
-                                   (ruby-end-mode)
+(add-hook 'ruby-mode-hook (argless (ruby-end-mode)
                                    (vemv/set-keys-for-scope ruby-mode-map vemv/ruby-key-bindings)
                                    (define-key ruby-mode-map [tab] 'vemv/tab)))
 
