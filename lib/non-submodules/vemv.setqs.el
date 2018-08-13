@@ -31,9 +31,7 @@
 (add-to-list 'sp-no-reindent-after-kill-modes 'haml-mode)
 
 (setq pe/project-root-function (lambda (&rest _)
-                                 (if (vemv/buffer-of-current-project? (current-buffer))
-                                     vemv/project-root-dir
-                                   default-directory)))
+                                 vemv/project-root-dir))
 
 (setq pe/mode-line-format
       `(:eval (vemv/workspace-mode-line-format)))
@@ -83,6 +81,7 @@
       delete-by-moving-to-trash nil
       echo-keystrokes 0.02
       helm-display-header-line nil
+      hi-lock-file-patterns-policy 'never
       highlight-indent-guides-character ?·
       highlight-indent-guides-method 'character
       highlight-indent-guides-responsive 'top
@@ -93,10 +92,13 @@
       js-indent-level 2
       mouse-buffer-menu-maxlen 99999
       mouse-buffer-menu-mode-mult 1
-      mouse-wheel-follow-mouse 't      ;; scroll window under mouse
+      mouse-wheel-follow-mouse 't ;; scroll window under mouse
       mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
       mouse-wheel-scroll-amount '(4 ((shift) . 4))
       nrepl-hide-special-buffers t
+      pe/cache-enabled nil
+      pe/get-directory-tree-async-delay 0.00000000000000001
+      pe/width 21
       redisplay-dont-pause t
       require-final-newline t
       ruby-insert-encoding-magic-comment nil

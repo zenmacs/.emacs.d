@@ -111,6 +111,9 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
                                                                   ""
                                                                 "/")))
 
+    (setq default-directory vemv/project-root-dir)
+    (setq-default default-directory vemv/project-root-dir)
+
     (unless (file-exists-p vemv/project-root-dir)
       (vemv/echo (concat "vemv/project-root-dir doesn't exist: " vemv/project-root-dir)))
 
@@ -162,14 +165,11 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
     (call-interactively 'whitespace-mode)
     (call-interactively 'whitespace-mode)
 
-    (when switch-p
-      (select-window vemv/repl-window) ;; ensures the currently-selected project is visible
-      (funcall vemv/maybe-change-project-graphically))
-
     (when (not (equal vemv/project-type old-project-type))
       (load "vemv.theme"))
 
-    (when (not (gethash vemv/current-project vemv/chosen-file-buffer-order))
-      (vemv/open-recent-file-for-this-project!))))
+    (when switch-p
+      (select-window vemv/repl-window) ;; ensures the currently-selected project is visible
+      (funcall vemv/maybe-change-project-graphically))))
 
 (vemv/refresh-current-project vemv/current-project)

@@ -175,36 +175,6 @@
           (vemv/save)
           (call-interactively 'eval-buffer)))))
 
-(defun vemv/clojure-init ()
-  (if (minibuffer-prompt)
-      (delay 'vemv/clojure-init 1)
-
-    (advice-add 'pe/show-buffer :after 'vemv/after-file-open)
-    (advice-add 'vemv/fiplr :after 'vemv/after-file-open)
-    ;; (advice-add 'vemv/open :after 'vemv/after-file-open) ;; I don't remember why I disabled this
-    (advice-add 'vemv/next-file-buffer :after 'vemv/after-file-open)
-    (advice-add 'vemv/previous-file-buffer :after 'vemv/after-file-open)
-    (advice-add 'vemv/close-this-buffer :after 'vemv/after-file-open)
-    (advice-add 'helm-ag--action-find-file :after 'vemv/after-file-open)
-    (advice-add 'cider-new-error-buffer :after (lambda (&rest _)
-                                                 (cider-interactive-eval "(try (clojure.core/prn clojure.core/*e)
-                                                                              (catch java.lang.Throwable e))")
-                                                 (delay (argless
-                                                         (when (vemv/buffer-of-current-running-project?
-                                                                (vemv/save-window-excursion
-                                                                 (vemv/safe-select-window vemv/main_window)
-                                                                 (current-buffer)))
-                                                           (vemv/save-window-excursion
-                                                            (vemv/safe-select-window vemv/repl-window)
-                                                            (vemv/switch-to-buffer-in-any-frame vemv/clj-repl-name)
-                                                            (end-of-buffer)
-                                                            (paredit-backward)
-                                                            (paredit-backward))))
-                                                        0.7)))
-
-    (vemv/safe-select-window vemv/main_window)
-    (vemv/open-recent-file-for-this-project!)))
-
 (defun vemv/is-cljs-project? ()
   (or (eq vemv/project-type :cljs)
       (vemv/current-main-buffer-is-cljs)

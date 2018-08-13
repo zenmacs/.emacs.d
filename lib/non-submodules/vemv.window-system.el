@@ -4,7 +4,7 @@
 
 (provide 'vemv.window-system)
 
-(defun vemv/initial-layout ()
+(defun vemv/initial-layout (done-fn)
 
   (when (window-system)
     (vemv/maximize))
@@ -14,36 +14,39 @@
 
   (setq default-directory vemv-home)
 
-  (let ((default-directory vemv/project-root-dir))
+  (let* ((default-directory vemv/project-root-dir)
+         (pe/project-root default-directory))
     (vemv/safely-open-pe-window)
-    (call-interactively 'project-explorer-open)
-    (enlarge-window-horizontally -19) ;; leaves 130 columns for vemv/main_window in a 13" Macbook Air
-    (setq vemv/project-explorer-window (selected-window)))
+    (project-explorer-open
+     (argless
+      (setq pe/project-root default-directory)
+      (setq vemv/project-explorer-initialized t)
+      (setq vemv/project-explorer-window (selected-window))
 
-  (vemv/next-window)
+      (vemv/next-window)
 
-  (setq vemv/main_window (selected-window))
+      (setq vemv/main_window (selected-window))
 
-  (vemv/next-window)
+      (vemv/next-window)
 
-  (let ((default-directory vemv/project-root-dir))
-    (sh)
-    (switch-to-buffer "*scratch*"))
+      (let ((default-directory vemv/project-root-dir))
+        (sh)
+        (switch-to-buffer "*scratch*"))
 
-  (vemv/next-window)
+      (vemv/next-window)
 
-  (setq vemv/repl-window (selected-window))
+      (setq vemv/repl-window (selected-window))
 
-  (delay (argless (vemv/safe-select-window vemv/repl-window)
-                  (ielm)
-                  (switch-to-buffer "*shell-1*")
-                  (enable-paredit-mode)
-                  (vemv/safe-select-window vemv/main_window)
-                  (setq vemv/launched t))
-         1)
+      (delay (argless (vemv/safe-select-window vemv/repl-window)
+                      (ielm)
+                      (switch-to-buffer "*shell-1*")
+                      (enable-paredit-mode)
+                      (vemv/safe-select-window vemv/main_window)
+                      (setq vemv/launched t))
+             1)
 
-  (vemv/next-window)
-  (message ""))
+      (vemv/next-window)
+      (funcall done-fn)))))
 
 (defun vemv/close-this-buffer (&optional noswitch)
   (setq-local vemv/ns-shown nil)
@@ -163,13 +166,16 @@
       (switch-to-buffer buffer-name)
     (switch-to-buffer-other-frame buffer-name)))
 
-(defun vemv/safe-select-frame ()
-  (unless (eq (selected-frame) vemv/main_frame)
-    (switch-to-buffer-other-frame (window-buffer vemv/main_window))))
-
-(defun vemv/safe-select-window (x)
+(defun vemv/safe-select-window (w)
   (unless (minibuffer-prompt)
-    (select-window x)))
+    (let* ((b (window-buffer w))
+           (f (window-frame w)))
+      (unless (eq f (selected-frame))
+        (switch-to-buffer-other-frame b))
+      (select-window w))))
+
+(defun vemv/safe-select-frame ()
+  (vemv/safe-select-window vemv/main_window))
 
 (defmacro vemv/save-window-excursion (&rest forms)
   `(let ((current-window (selected-window))

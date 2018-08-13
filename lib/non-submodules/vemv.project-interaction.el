@@ -56,24 +56,40 @@
      (vemv/add-project-to-current-workspace project-name)
      (vemv/force-refresh-project!))))
 
-(defun vemv/maybe-change-project-graphically* ()
-  (vemv/next-file-buffer)
-  (vemv/previous-file-buffer)
-  (select-window vemv/project-explorer-window)
-  (let ((default-directory vemv/project-root-dir))
-    (call-interactively 'project-explorer-open))
+(defun vemv/maybe-change-project-graphically-impl (old-window)
+
   (unless (or cider-launched vemv-cider-connected (cider-connected-p))
     (select-window vemv/repl-window)
     (if (eq vemv/project-type :elisp)
         (switch-to-buffer "*ielm*")
       (vemv/send :shell nil vemv/project-root-dir)
       (delay (argless
+              (select-window vemv/repl-window)
               (comint-clear-buffer)
-              (select-window vemv/main_window))
-             0.3))))
+              (select-window old-window))
+             0.3)))
 
-(setq vemv/maybe-change-project-graphically
-      (vemv/debounce 'vemv/maybe-change-project-graphically* 0.3))
+  (when (not (gethash vemv/current-project vemv/chosen-file-buffer-order))
+    (vemv/open-recent-file-for-this-project!))
+
+  (vemv/next-file-buffer)
+  (vemv/previous-file-buffer))
+
+(defun vemv/maybe-change-project-graphically* ()
+  (let ((old-window (selected-window)))
+    (select-window vemv/project-explorer-window)
+    (setq vemv/project-explorer-initialized nil)
+    (with-current-buffer (window-buffer vemv/project-explorer-window)
+      (project-explorer-open
+       (argless
+        (setq pe/project-root (funcall pe/project-root-function))
+        (setq vemv/project-explorer-initialized t)
+        (when (fboundp 'vemv/refresh-file-caches)
+          (vemv/refresh-file-caches (argless (vemv/maybe-change-project-graphically-impl old-window))
+                                    :force)))))))
+
+(defvar vemv/maybe-change-project-graphically
+  (vemv/debounce 'vemv/maybe-change-project-graphically* 0.3))
 
 (defun vemv/buffer-of-current-project? (b &optional other-candidates)
   (when (and b (buffer-file-name b))
@@ -146,8 +162,7 @@
 (defun vemv/next-file-buffer ()
   "Switch to the next buffer that contains a file opened by the user within this project"
   (interactive)
-  (when (vemv/good-frame-p)
-    (vemv/safe-select-window vemv/main_window))
+  (vemv/safe-select-window vemv/main_window)
   (vemv/clean-chosen-file-buffer-order)
   (switch-to-buffer (let ((entry (gethash vemv/current-project vemv/chosen-file-buffer-order)))
                       (or (second entry)
@@ -162,8 +177,7 @@
 (defun vemv/previous-file-buffer ()
   "Switch to the previous buffer that contains a file opened by the user within this project"
   (interactive)
-  (when (vemv/good-frame-p)
-    (vemv/safe-select-window vemv/main_window))
+  (vemv/safe-select-window vemv/main_window)
   (vemv/clean-chosen-file-buffer-order)
   (if-let (file (or (car (last (gethash vemv/current-project vemv/chosen-file-buffer-order)))
                     (first (gethash vemv/current-project vemv/chosen-file-buffer-order))))

@@ -7,15 +7,16 @@
 
 (defun vemv/after-file-open-without-project-explorer-highlighting ()
   (interactive)
-  (vemv/safe-select-window vemv/main_window)
-  (when (vemv/buffer-of-current-project-or-parent? (current-buffer))
-    (when (and (vemv/in-clojure-mode?)
-               (not vemv/ns-shown))
-      (vemv/toggle-ns-hiding :after-file-open))
-    (vemv/clean-chosen-file-buffer-order)
-    (setq-local mode-line-format tabbed-line-format)
-    (vemv/advice-nrepl)
-    (vemv/ensure-repl-visible)))
+  (vemv/save-window-excursion
+   (vemv/safe-select-window vemv/main_window)
+   (when (vemv/buffer-of-current-project-or-parent? (current-buffer))
+     (when (and (vemv/in-clojure-mode?)
+                (not vemv/ns-shown))
+       (vemv/toggle-ns-hiding :after-file-open))
+     (vemv/clean-chosen-file-buffer-order)
+     (setq-local mode-line-format tabbed-line-format)
+     (vemv/advice-nrepl)
+     (vemv/ensure-repl-visible))))
 
 (defun vemv/after-file-open (&rest ignore)
   (interactive)
@@ -33,11 +34,9 @@
          (file (buffer-name (or (and filepath (find-file filepath))
                                 (ido-find-file)))))) ;; magical let - do not unwrap!
   (save-buffer)
-  (vemv/refresh-file-caches)
-  (vemv/safe-select-window vemv/main_window)
-  (vemv/after-file-open-without-project-explorer-highlighting)
-  (delay (argless (funcall vemv/safe-show-current-file-in-project-explorer))
-         20))
+  (vemv/refresh-file-caches (argless
+                             (vemv/safe-select-window vemv/main_window))
+                            :force))
 
 (defun vemv/fiplr (&optional opener)
   (if (vemv/contains? vemv/project-fiplr-dir "/")

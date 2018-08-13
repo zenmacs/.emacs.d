@@ -39,12 +39,8 @@
 (yas-global-mode 1)
 (cua-mode 1) ;; initialized after customizing cua-remap-control-v
 
-(vemv/initial-layout)
-
 (shell-command-to-string "touch ~/.emacs.d/custom.el")
 (load custom-file)
-
-(delay 'vemv/clojure-init 1)
 
 (delay (argless (if (window-system)
                     (set-face-attribute 'default nil :font vemv-font)))
@@ -55,13 +51,6 @@
   (require 'undo-tree)
   (apply 'undo-tree-undo args))
 
-(delay (argless (setq vemv/project-explorer-initialized t))
-       12)
-
-;; every 5 seconds. in practice, not so often b/c `vemv/refreshing-caches` (timestamp lock)
-(delay (argless (run-with-timer 0 5 'vemv/refresh-file-caches))
-       60)
-
 (vemv/set-keys-for-scope :global vemv/global-key-bindings)
 (vemv/set-keys-for-scope clojure-mode-map vemv/clojure-key-bindings)
 
@@ -69,3 +58,15 @@
             (length (-uniq vemv/available-projects))))
 
 (vemv/open-files-from-last-session!)
+
+(vemv/initial-layout
+ (argless
+  (vemv/next-file-buffer)
+  (vemv/previous-file-buffer)
+
+  ;; every 5 seconds. in practice, not so often b/c `vemv/refreshing-caches` (timestamp lock)
+  ;; disabled until PE deemed stable again
+  (comm delay (argless (run-with-timer 0 5 (argless
+                                            (let ((w (selected-window)))
+                                              (vemv/refresh-file-caches (argless (select-window w)))))))
+        60)))
