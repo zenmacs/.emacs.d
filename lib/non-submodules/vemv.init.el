@@ -39,6 +39,7 @@
 (global-whitespace-mode)
 (yas-global-mode 1)
 (cua-mode 1) ;; initialized after customizing cua-remap-control-v
+(electric-indent-mode -1)
 
 (shell-command-to-string "touch ~/.emacs.d/custom.el")
 (load custom-file)

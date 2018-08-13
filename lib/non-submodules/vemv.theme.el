@@ -48,7 +48,6 @@
   "."
   :group 'vemv)
 
-
 (custom-theme-set-faces
  'vemv
 
@@ -118,7 +117,7 @@
  `(font-lock-variable-name-face ((t ,(if (eq :ruby vemv/project-type)
                                          `(:foreground ,vemv-default-foreground-color)
                                        `(:foreground ,vemv-colors/yellow :bold t)))))
- `(font-lock-warning-face ((t (:bold t :foreground "Pink"))))
+ `(font-lock-warning-face ((t (:bold t :foreground ,vemv-colors/pink))))
 
  `(gui-element ((t (:background "#484848" :foreground "#96CBFE"))))
  `(region ((t (:background ,vemv-colors/purple))))
