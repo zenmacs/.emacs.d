@@ -104,8 +104,9 @@
 
 ;; Thanks to these, by clicking middle click one closes the current file before opening the chosen one.
 ;; On macOS: fn + click.
-(advice-add 'pe/left-click ':around 'vemv/pe/left-click)
-(advice-add 'pe/middle-click ':before 'vemv/pe/middle-click)
+(comm ;; disabled - stopped working for some reason
+ (advice-add 'pe/left-click ':around 'vemv/pe/left-click)
+ (advice-add 'pe/middle-click ':before 'vemv/pe/middle-click))
 
 (advice-add 'helm-ag--edit :after 'vemv/ag-replace)
 
