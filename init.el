@@ -65,6 +65,7 @@
     (normal-top-level-add-subdirs-to-load-path))
 
   (when (eq system-type 'darwin)
+    (global-set-key (kbd "C-q") 'save-buffers-kill-emacs) ;; (redundantly) set C-q, in case of failure during init.el load
     (setq mac-control-modifier 'super)
     (setq mac-option-modifier 'meta)
     (setq mac-command-modifier 'control))
