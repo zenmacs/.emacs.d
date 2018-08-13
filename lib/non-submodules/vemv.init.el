@@ -35,6 +35,7 @@
 (menu-bar-mode)
 (global-auto-revert-mode t) ;; refresh buffers on external changes to the underlying files
 (global-hl-line-mode t)
+(make-variable-buffer-local 'global-hl-line-mode)
 (global-whitespace-mode)
 (yas-global-mode 1)
 (cua-mode 1) ;; initialized after customizing cua-remap-control-v

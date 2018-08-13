@@ -66,6 +66,7 @@
                            (set-face-foreground 'highlight-indent-guides-character-face vemv-default-foreground-color-much-darker)
                            (set-face-background 'highlight-indent-guides-top-character-face vemv-colors/purple)
                            (set-face-foreground 'highlight-indent-guides-top-character-face vemv-colors/purple)
+                           (setq global-hl-line-mode nil)
                            (highlight-indent-guides-mode)))
 
 (add-hook 'haml-mode-hook (argless
