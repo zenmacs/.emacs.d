@@ -18,9 +18,11 @@
          (b (or b (current-buffer)))
          (dc (string-equal "dc" (car vemv/current-workspace)))
          (ds (string-equal "docsolver" (car vemv/current-workspace)))
+         (yas (vemv/contains? (buffer-file-name) "/snippets/"))
          ;; for `save-buffer`:
          (require-final-newline (and (not vemv/no-newline-at-eof)
-                                     (not dc))))
+                                     (not dc)
+                                     (not yas))))
     (with-current-buffer b
       (unless dc
         (delete-trailing-whitespace))
@@ -29,7 +31,7 @@
         (call-interactively 'indent-for-tab-command))
       (goto-line line)
       (vemv/end-of-line-code* nil)
-      (when vemv/no-newline-at-eof
+      (when (or vemv/no-newline-at-eof yas)
         (save-excursion
           (end-of-buffer)
           (while (string-equal (vemv/current-char-at-point) "\n")

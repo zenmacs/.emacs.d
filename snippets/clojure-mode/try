@@ -1,3 +1,0 @@
-#name: try
-# --
-(try (catch js/Object e))

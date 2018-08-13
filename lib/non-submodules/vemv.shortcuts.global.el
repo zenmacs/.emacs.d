@@ -105,7 +105,7 @@
       vemv/shortcuts/global/tertiary-j              (argless
                                                      (if (vemv/in-a-clojure-mode?)
                                                          (cider-eval-sexp-at-point)
-                                                         (vemv/send :emacs)))
+                                                       (vemv/send :emacs)))
       vemv/shortcuts/global/tertiary-k              'vemv/cut
       vemv/shortcuts/global/tertiary-left           'vemv/previous-file-buffer
       vemv/shortcuts/global/tertiary-left-bracket   'vemv/pull-next-sexpr
@@ -124,10 +124,13 @@
 (global-set-key [(shift return)] (argless
                                   (if (vemv/in-a-clojure-mode?)
                                       (vemv/clear-cider-repl-buffer)
-                                      (when (vemv/in-a-lisp-mode?)
-                                        (vemv/save-window-excursion
-                                         (vemv/safe-select-window vemv/repl-window)
-                                         (comint-clear-buffer))))))
+                                    (when (vemv/in-a-lisp-mode?)
+                                      (vemv/save-window-excursion
+                                       (vemv/safe-select-window vemv/repl-window)
+                                       (comint-clear-buffer))))))
 
 ;; same here. control-ret is interpreted as s-return rather than as tertiary-RET
 (global-set-key [(s return)] 'vemv/load-clojure-buffer)
+
+(global-set-key [(s tab)] (argless
+                           (call-interactively 'yas-expand-from-trigger-key)))

@@ -44,6 +44,7 @@
 (require 'fiplr)
 (require 'desktop)
 (require 'smartparens-config)
+(require 'yasnippet)
 
 (autoload 'haml-mode "haml-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.haml$" . haml-mode))
