@@ -76,7 +76,9 @@
                                             expanded-fragments)))
 
               (vemv/safe-select-window vemv/project-explorer-window)
-              (pe/fold-all) ;; can be skipped as it's somewhat expensive. But a well-tuned `pe/omit-regex' will make it acceptable
+              ;; can be skipped as it's somewhat expensive. But a well-tuned `pe/omit-regex' will make it acceptable.
+              ;; disabled because collapsing folder whenever one switches to a file that won't be found is annoying.
+              ;; (pe/fold-all)
               (beginning-of-buffer)
 
               (seq-doseq (f (butlast final-fragments))
