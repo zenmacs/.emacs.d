@@ -9,7 +9,8 @@
 (defun vemv/refresh-pe-cache (&optional done)
   (let ((pe/project-root (funcall pe/project-root-function)))
     (vemv/safe-select-window vemv/project-explorer-window)
-    (call-interactively 'pe/cache-clear)
+    (when pe/cache-enabled
+      (call-interactively 'pe/cache-clear))
     (with-current-buffer (window-buffer vemv/project-explorer-window)
       (funcall pe/directory-tree-function
                (funcall pe/project-root-function)
