@@ -59,12 +59,15 @@
 
 (setq vemv/shell-id 0)
 
-(defun sh ()
+(defun vemv/sh ()
   (interactive)
-  (shell (concat "*shell-"
-                 (number-to-string (send! vemv/shell-id (lambda (a)
-                                                          (inc a))))
-                 "*")))
+  (let* ((b (get-buffer-create (concat "*shell-"
+                                       (number-to-string (send! vemv/shell-id (lambda (a)
+                                                                                (inc a))))
+                                       "*")))
+         (default-directory vemv/project-root-dir))
+    (switch-to-buffer (buffer-name b) nil t)
+    (shell b)))
 
 (defun vemv/smex ()
   (when vemv/launched (smex)))

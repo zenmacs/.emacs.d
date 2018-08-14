@@ -24,29 +24,19 @@
       (setq vemv/project-explorer-window (selected-window))
 
       (vemv/next-window)
-
       (setq vemv/main_window (selected-window))
 
       (vemv/next-window)
-
-      (let ((default-directory vemv/project-root-dir))
-        (sh)
-        (switch-to-buffer "*scratch*"))
-
-      (vemv/next-window)
-
       (setq vemv/repl-window (selected-window))
 
-      (delay (argless (vemv/safe-select-window vemv/repl-window)
-                      (ielm)
-                      (switch-to-buffer "*shell-1*")
-                      (enable-paredit-mode)
-                      (vemv/safe-select-window vemv/main_window)
-                      (setq vemv/launched t))
-             1)
+      (vemv/safe-select-window vemv/repl-window)
+      (vemv/sh)
+      (switch-to-buffer "*scratch*" nil t)
+      (ielm)
 
-      (vemv/next-window)
-      (funcall done-fn)))))
+      (vemv/safe-select-window vemv/main_window)
+      (funcall done-fn)
+      (setq vemv/launched t)))))
 
 (defun vemv/close-this-buffer (&optional noswitch)
   (setq-local vemv/ns-shown nil)
