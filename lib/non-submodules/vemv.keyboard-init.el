@@ -14,9 +14,10 @@
         vemv/exhaustive-list-of-bindings-to-remove))
 
 (add-hook 'cider-mode-hook
-          (mapc (lambda (arg)
-                  (define-key cider-mode-map (vemv/keyboard-macro arg) nil))
-                vemv/exhaustive-list-of-bindings-to-remove))
+          (argless
+           (mapc (lambda (arg)
+                   (define-key cider-mode-map (vemv/keyboard-macro arg) nil))
+                 vemv/exhaustive-list-of-bindings-to-remove)))
 
 (dolist (key vemv/key-bindings-to-remove)
   (global-unset-key key))
