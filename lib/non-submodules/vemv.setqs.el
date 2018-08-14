@@ -91,6 +91,7 @@
       inhibit-startup-message t
       initial-scratch-message ""
       js-indent-level 2
+      max-mini-window-height 0.75
       mouse-buffer-menu-maxlen 99999
       mouse-buffer-menu-mode-mult 1
       mouse-wheel-follow-mouse 't ;; scroll window under mouse
