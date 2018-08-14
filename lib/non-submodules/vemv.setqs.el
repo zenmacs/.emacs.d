@@ -133,7 +133,7 @@
  '(cljr-after-warming-ast-cache-hook (lambda (_)
                                        (setq vemv/cljr-ast-load-counter (inc vemv/cljr-ast-load-counter))))
  '(ielm-prompt "ielm> ")
- '(paren-face-regexp "[][(){}#]")
+ '(paren-face-regexp "\\((\\.-\\|(\\.\\|[][(){}#/%]\\)")
  '(mac-mouse-wheel-smooth-scroll nil)
  '(nrepl-popup-stacktraces nil)
  '(pe/inline-folders nil)
