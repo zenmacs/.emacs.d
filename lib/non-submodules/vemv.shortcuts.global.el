@@ -133,6 +133,3 @@
 
 ;; same here. control-ret is interpreted as s-return rather than as tertiary-RET
 (global-set-key [(s return)] 'vemv/load-clojure-buffer)
-
-(global-set-key [(s tab)] (argless
-                           (call-interactively 'yas-expand-from-trigger-key)))

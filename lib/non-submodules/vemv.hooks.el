@@ -174,3 +174,36 @@
 
 (when pe/cache-enabled
   (add-hook 'kill-emacs-hook 'pe/cache-clear))
+
+(defun vemv/company-calculate-candidates (prefix)
+  "https://github.com/company-mode/company-mode/issues/205#issuecomment-317918803"
+  (let ((candidates (cdr (assoc prefix company-candidates-cache)))
+        (ignore-case (company-call-backend 'ignore-case)))
+    (or candidates
+        (when company-candidates-cache
+          (let ((len (length prefix))
+                (completion-ignore-case ignore-case)
+                prev)
+            (cl-dotimes (i (1+ len))
+              (when (setq prev (cdr (assoc (substring prefix 0 (- len i))
+                                           company-candidates-cache)))
+                (setq candidates (all-completions prefix prev))
+                (cl-return t)))))
+        (progn
+          ;; No cache match, call the backend.
+          (setq candidates (company--preprocess-candidates
+                            (company--fetch-candidates prefix)))
+          ;; Save in cache.
+          (push (cons prefix candidates) company-candidates-cache)))
+    ;; Only now apply the predicate and transformers.
+    (setq candidates (company--postprocess-candidates candidates))
+    (when candidates
+      (if (or (cdr candidates)
+              (get-text-property 0 'yas-template (car candidates))
+              (not (eq t (compare-strings (car candidates) nil nil
+                                          prefix nil nil ignore-case))))
+          candidates
+        t))))
+
+(advice-add 'company-calculate-candidates
+            :override 'vemv/company-calculate-candidates)
