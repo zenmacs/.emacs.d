@@ -86,6 +86,7 @@
       highlight-indent-guides-character ?·
       highlight-indent-guides-method 'character
       highlight-indent-guides-responsive 'top
+      ielm-header ""
       ido-auto-merge-delay-time 99999 ;; prevents annoying folder switching. might be handy: (setq ido-max-directory-size 100000)
       ido-show-dot-for-dired t
       inhibit-startup-message t
