@@ -42,8 +42,10 @@
 (setq tabbed-line-format
       (list
        '(:eval (concat (propertize "  %l:%c " 'face 'font-lock-line-and-column-face)
-                       (when (and (not vemv-cider-connecting) (not vemv-cider-connected))
                        (when debug-on-error (propertize "debug-on-error " 'face 'vemv-default-foreground-face-very-slightly-darker))
+                       (when (and (vemv/clojure-project?)
+                                  (not vemv-cider-connecting)
+                                  (not vemv-cider-connected))
                          (propertize "Disconnected " 'face 'font-lock-line-and-column-face))
                        (when vemv/verbose-mode (propertize "Verbose " 'face 'font-lock-line-and-column-face))))
        '(:eval (when vemv-cider-connecting
