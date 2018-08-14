@@ -42,8 +42,8 @@
 (setq tabbed-line-format
       (list
        '(:eval (concat (propertize "  %l:%c " 'face 'font-lock-line-and-column-face)
-                       (when debug-on-error (propertize "debug-on-error " 'face 'font-lock-warning-face))
                        (when (and (not vemv-cider-connecting) (not vemv-cider-connected))
+                       (when debug-on-error (propertize "debug-on-error " 'face 'vemv-default-foreground-face-very-slightly-darker))
                          (propertize "Disconnected " 'face 'font-lock-line-and-column-face))
                        (when vemv/verbose-mode (propertize "Verbose " 'face 'font-lock-line-and-column-face))))
        '(:eval (when vemv-cider-connecting

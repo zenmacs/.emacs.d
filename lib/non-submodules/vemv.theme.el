@@ -48,6 +48,11 @@
   "."
   :group 'vemv)
 
+(defface vemv-default-foreground-face-very-slightly-darker
+  `((t :foreground ,vemv-default-foreground-color-very-slightly-darker))
+  "."
+  :group 'vemv)
+
 (custom-theme-set-faces
  'vemv
 
