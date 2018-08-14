@@ -70,5 +70,5 @@
   ;; disabled until PE deemed stable again
   (comm delay (argless (run-with-timer 0 5 (argless
                                             (let ((w (selected-window)))
-                                              (vemv/refresh-file-caches (argless (select-window w)))))))
+                                              (vemv/refresh-file-caches (argless (vemv/safe-select-window w)))))))
         60)))

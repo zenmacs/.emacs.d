@@ -169,7 +169,7 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
       (load "vemv.theme"))
 
     (when switch-p
-      (select-window vemv/repl-window) ;; ensures the currently-selected project is visible
+      (vemv/safe-select-window vemv/repl-window) ;; ensures the currently-selected project is visible
       (funcall vemv/maybe-change-project-graphically))))
 
 (vemv/refresh-current-project vemv/current-project)

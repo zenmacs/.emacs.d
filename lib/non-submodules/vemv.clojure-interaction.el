@@ -223,7 +223,7 @@
           (setq vemv/running-project-root-dir vemv/project-root-dir)
           (setq vemv/running-project-type vemv/project-type)
           (delay (argless (funcall vemv/project-initializers)
-                          (select-window vemv/main_window)
+                          (vemv/safe-select-window vemv/main_window)
                           (if (vemv/is-cljs-project?)
                               (if vemv/cider-port
                                   (cider-connect-clojurescript vemv/cider-port)
@@ -279,7 +279,7 @@
   (interactive)
   (when (cider-connected-p)
     (vemv/save-window-excursion
-     (select-window vemv/repl-window)
+     (vemv/safe-select-window vemv/repl-window)
      (end-of-buffer)
      (when (and (not no-recur)
                 (or (> (point-max) 5000) ;; b/c I think the code below is slow, can hang emacs

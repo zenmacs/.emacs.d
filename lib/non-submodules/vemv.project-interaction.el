@@ -59,14 +59,14 @@
 (defun vemv/maybe-change-project-graphically-impl (old-window)
 
   (unless (or cider-launched vemv-cider-connected (cider-connected-p))
-    (select-window vemv/repl-window)
+    (vemv/safe-select-window vemv/repl-window)
     (if (eq vemv/project-type :elisp)
         (switch-to-buffer "*ielm*")
       (vemv/send :shell nil vemv/project-root-dir)
       (delay (argless
-              (select-window vemv/repl-window)
+              (vemv/safe-select-window vemv/repl-window)
               (comint-clear-buffer)
-              (select-window old-window))
+              (vemv/safe-select-window old-window))
              0.3)))
 
   (when (not (gethash vemv/current-project vemv/chosen-file-buffer-order))
@@ -77,7 +77,7 @@
 
 (defun vemv/maybe-change-project-graphically* ()
   (let ((old-window (selected-window)))
-    (select-window vemv/project-explorer-window)
+    (vemv/safe-select-window vemv/project-explorer-window)
     (setq vemv/project-explorer-initialized nil)
     (with-current-buffer (window-buffer vemv/project-explorer-window)
       (project-explorer-open
