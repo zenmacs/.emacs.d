@@ -162,14 +162,10 @@
                    (message "Currently building AST cache. Wait a few seconds and try again.")
                  (progn
                    (cider-interactive-eval (or vemv/clojure-reload-command
-                                               "(with-out-str (com.stuartsierra.component.user-helpers/reset))"))
-                   (delay (argless (message "Reloaded!"))
-                          0.1)))
+                                               "(with-out-str (com.stuartsierra.component.user-helpers/reset))"))))
              (progn
                (cider-load-buffer)
-               (cider-load-all-project-ns)
-               (delay (argless (message "Reloaded!"))
-                      0.1))))))
+               (cider-load-all-project-ns))))))
     (if (vemv/in-a-lisp-mode?)
         (progn
           (vemv/save)
