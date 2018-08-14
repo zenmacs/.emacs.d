@@ -172,4 +172,5 @@
   "Disables annoying dialog 'The local variables list in :x contains values that may not be safe"
   t)
 
-(add-hook 'kill-emacs-hook 'pe/cache-clear)
+(when pe/cache-enabled
+  (add-hook 'kill-emacs-hook 'pe/cache-clear))
