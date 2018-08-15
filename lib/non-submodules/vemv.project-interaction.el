@@ -5,7 +5,10 @@
 (provide 'vemv.project-interaction)
 
 (defun vemv/dir-for-project (which)
-  (concat vemv-home "/" which))
+  (let* ((s (concat vemv-home "/" which)))
+    (if (vemv/ends-with s "/")
+        s
+      (concat s "/"))))
 
 (defun vemv/projects-enabled-in-config ()
   "The projects that are enabled in .emacs.d.overrides.el and were `load`-ed into the system."
@@ -46,7 +49,9 @@
           (project-name (or found default-directory)))
      (assert (not (member default-directory (list "/" vemv-home (vemv/root-marker)))))
      (assert (file-exists-p default-directory))
-     (assert (not (member project-name vemv/available-projects)))
+     (assert (not (member project-name vemv/available-projects))
+             nil
+             (concat "project-name: " (pr-str project-name) " vemv/available-projects:" (pr-str vemv/available-projects)))
      (assert (not (member project-name (vemv/projects-for-workspace))))
      (conj! vemv/on-the-fly-projects (if found
                                          found
