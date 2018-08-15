@@ -34,7 +34,10 @@
 
 (defun vemv/echo (&rest xs)
   (let ((what (->> xs
-                   (mapcar 'pr-str)
+                   (mapcar (lambda (x)
+                             (if (stringp x)
+                                 x
+                               (pr-str x))))
                    (-interpose " ")
                    (apply 'concat))))
     (vemv/verbosely
