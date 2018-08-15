@@ -112,7 +112,8 @@
                  (when (pos? attempt-no)
                    (condition-case nil
                        (vemv/show-current-file-in-project-explorer-unsafe w)
-                     (funcall self self (dec attempts)))))))
+                     (error
+                      (funcall self self (dec attempts))))))))
     (funcall impl impl attempts)))
 
 (defvar vemv/safe-show-current-file-in-project-explorer
