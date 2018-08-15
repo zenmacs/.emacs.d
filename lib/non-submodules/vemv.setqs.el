@@ -23,6 +23,7 @@
 (add-to-list 'exec-path (concat vemv-home "/bin"))
 
 ;; Prevents annoying popups
+(add-to-list 'display-buffer-alist (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 (add-to-list 'special-display-buffer-names '("*Messages*" vemv/display-completion))
 (add-to-list 'special-display-buffer-names '("*xref*" vemv/display-completion))
 (add-to-list 'special-display-buffer-names '("*Help*" vemv/display-completion))

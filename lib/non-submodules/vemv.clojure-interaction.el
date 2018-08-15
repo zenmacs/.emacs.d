@@ -221,9 +221,11 @@
           (delay (argless (funcall vemv/project-initializers)
                           (vemv/safe-select-window vemv/main_window)
                           (if (vemv/is-cljs-project?)
-                              (if vemv/cider-port
-                                  (cider-connect-clojurescript vemv/cider-port)
-                                (cider-jack-in-clojurescript))
+                              (progn
+                                (-some-> vemv/before-figwheel-fn funcall)
+                                (if vemv/cider-port
+                                    (cider-connect-clojurescript vemv/cider-port)
+                                  (cider-jack-in-clojurescript)))
                             (if vemv/cider-port
                                 (cider-connect "127.0.0.1" vemv/cider-port vemv/project-root-dir)
                               (cider-jack-in))))

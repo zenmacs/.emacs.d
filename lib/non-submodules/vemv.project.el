@@ -60,6 +60,7 @@
      (put-clojure-indent 'as-> 2)
      (setq clojure-align-forms-automatically nil)
      (setq whitespace-line-column 131)
+     (setq vemv/before-figwheel-fn nil)
      (when (not vemv-cleaning-namespaces)
        (setq cider-cljs-lein-repl vemv/default-cider-cljs-lein-repl))))
 
