@@ -29,8 +29,9 @@
 (defun vemv/end-of-line-code* (skip-last-step)
   (let* ((bolpos (progn (beginning-of-line) (point)))
          (eolpos (progn (end-of-line) (point))))
-    (if (comment-search-backward bolpos t)
-        (search-backward-regexp comment-start-skip bolpos 'noerror))
+    (when comment-start-skip ;; avoid error in haml-mode
+      (if (comment-search-backward bolpos t)
+          (search-backward-regexp comment-start-skip bolpos 'noerror)))
     (skip-syntax-backward " " bolpos)
     (unless skip-last-step
       (while (member (vemv/char-at-left)
