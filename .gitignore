@@ -34,3 +34,4 @@ ido.last
 /.emacs.desktop.lock
 /emacs-desktop
 /smex-items
+/url
