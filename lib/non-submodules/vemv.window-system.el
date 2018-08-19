@@ -32,6 +32,8 @@
       (vemv/safe-select-window vemv/repl-window)
       (vemv/sh)
       (switch-to-buffer "*scratch*" nil t)
+      (whitespace-mode -1)
+      (toggle-truncate-lines)
       (ielm)
 
       (vemv/safe-select-window vemv/main_window)
