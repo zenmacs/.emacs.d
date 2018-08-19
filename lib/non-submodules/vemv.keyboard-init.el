@@ -19,6 +19,9 @@
                    (define-key cider-mode-map (vemv/keyboard-macro arg) nil))
                  vemv/exhaustive-list-of-bindings-to-remove)))
 
+(es-define-keys project-explorer-mode-map
+  (kbd "<mouse-1>") 'pe/left-click)
+
 (dolist (key vemv/key-bindings-to-remove)
   (global-unset-key key))
 
