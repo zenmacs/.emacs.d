@@ -27,12 +27,15 @@
       (list clojure-mode-map  ";" 'vemv/semicolon
             clojure-mode-map "<tab>" 'vemv/tab
             ;; XXX backtab not handled by gen.rb
-            clojure-mode-map "<backtab>" 'vemv/message-clojure-doc
+            clojure-mode-map "<backtab>" (argless
+                                          (let ((max-mini-window-height 0.99))
+                                            (vemv/message-clojure-doc)))
             emacs-lisp-mode-map "<backtab>" (argless
-                                             (ignore-errors
-                                               (replying-yes
-                                                (vemv/verbosely
-                                                 (-some-> (symbol-at-point) documentation message)))))
+                                             (let ((max-mini-window-height 0.99))
+                                               (ignore-errors
+                                                 (replying-yes
+                                                  (vemv/verbosely
+                                                   (-some-> (symbol-at-point) documentation message))))))
             emacs-lisp-mode-map "<tab>" 'vemv/tab
             html-mode-map "<tab>" 'vemv/tab
             emacs-lisp-mode-map  ";" 'vemv/semicolon
