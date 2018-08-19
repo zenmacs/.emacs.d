@@ -1,6 +1,7 @@
 (require 'vemv.lang)
 (require 'vemv.project-interaction)
 (require 'vemv.open)
+(require 'cider) ;; Ideally would not be there as it slightly slows down things.
 (provide 'vemv.project)
 
 (setq vemv/default-cider-cljs-lein-repl

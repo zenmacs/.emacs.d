@@ -22,8 +22,9 @@
 (es-define-keys project-explorer-mode-map
   (kbd "<mouse-1>") 'pe/left-click)
 
-(dolist (key vemv/key-bindings-to-remove)
-  (global-unset-key key))
+(unless vemv/terminal-emacs?
+  (dolist (key vemv/key-bindings-to-remove)
+    (global-unset-key key)))
 
 (dolist (key vemv/key-bindings-to-dummy)
   (global-set-key key (argless)))

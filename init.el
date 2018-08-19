@@ -1,4 +1,7 @@
 ;; These two reduce `(emacs-init-time)`:
+
+(setq vemv/terminal-emacs? (getenv "TERMINAL_EMACS"))
+
 (let ((file-name-handler-alist nil)
       (gc-cons-threshold (* 200 1000 1000)))
 
@@ -185,6 +188,13 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
   (setq vemv/current-project (car (second vemv/current-workspace)))
 
   (require 'vemv.init))
+
+(when vemv/terminal-emacs?
+  (menu-bar-mode -1)
+  (require 'mouse)
+  (xterm-mouse-mode t)
+  (defun track-mouse (e))
+  (setq mouse-sel-mode t))
 
 (defun display-startup-echo-area-message ())
 

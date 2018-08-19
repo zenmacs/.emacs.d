@@ -15,14 +15,15 @@
 
 (setq vemv/packages-refreshed nil)
 
-(dolist (package '(edn inflections hydra company queue fiplr smartparens yasnippet multiple-cursors benchmark-init
-                       dash simpleclip helm-ag git-timemachine paren-face haml-mode ruby-end highlight-indent-guides))
-  (unless (package-installed-p package)
-    (vemv/verbosely
-     (unless vemv/packages-refreshed
-       (package-refresh-contents)
-       (setq vemv/packages-refreshed t))
-     (package-install package))))
+(unless vemv/terminal-emacs?
+  (dolist (package '(edn inflections hydra company queue fiplr smartparens yasnippet multiple-cursors benchmark-init
+                         dash simpleclip helm-ag git-timemachine paren-face haml-mode ruby-end highlight-indent-guides))
+    (unless (package-installed-p package)
+      (vemv/verbosely
+       (unless vemv/packages-refreshed
+         (package-refresh-contents)
+         (setq vemv/packages-refreshed t))
+       (package-install package)))))
 
 ;; M-x benchmark-init/show-durations-tabulated / M-x benchmark-init/show-durations-tree
 (require 'benchmark-init)
@@ -67,15 +68,16 @@
 ;; rm ~/.emacs.d/elpa/the-package/foo.elc
 ;; restart emacs.
 
-(let* ((lib-dir (expand-file-name "~/.emacs.d/lib/"))
-       (dirs (->> lib-dir
-                  directory-files
-                  (-remove (lambda (x)
-                             (member x `("." ".." "non-submodules"))))
-                  (mapcar (lambda (x)
-                            (concat lib-dir x)))
-                  (cons (expand-file-name "~/.emacs.d/elpa")))))
-  (dolist (dir dirs)
-    (byte-recompile-directory dir 0)))
+(unless vemv/terminal-emacs?
+  (let* ((lib-dir (expand-file-name "~/.emacs.d/lib/"))
+         (dirs (->> lib-dir
+                    directory-files
+                    (-remove (lambda (x)
+                               (member x `("." ".." "non-submodules"))))
+                    (mapcar (lambda (x)
+                              (concat lib-dir x)))
+                    (cons (expand-file-name "~/.emacs.d/elpa")))))
+    (dolist (dir dirs)
+      (byte-recompile-directory dir 0))))
 
 (provide 'vemv.packages)

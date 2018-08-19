@@ -53,22 +53,24 @@
   (require 'undo-tree)
   (apply 'undo-tree-undo args))
 
-(vemv/set-keys-for-scope :global vemv/global-key-bindings)
-(vemv/set-keys-for-scope clojure-mode-map vemv/clojure-key-bindings)
-
 (assert (eq (length vemv/available-projects)
             (length (-uniq vemv/available-projects))))
 
-(vemv/open-files-from-last-session!)
+(unless vemv/terminal-emacs?
 
-(vemv/initial-layout
- (argless
-  (vemv/next-file-buffer)
-  (vemv/previous-file-buffer)
+  (vemv/set-keys-for-scope :global vemv/global-key-bindings)
+  (vemv/set-keys-for-scope clojure-mode-map vemv/clojure-key-bindings)
 
-  ;; every 5 seconds. in practice, not so often b/c `vemv/refreshing-caches` (timestamp lock)
-  ;; disabled until PE deemed stable again
-  (comm delay (argless (run-with-timer 0 5 (argless
-                                            (let ((w (selected-window)))
-                                              (vemv/refresh-file-caches (argless (vemv/safe-select-window w)))))))
-        60)))
+  (vemv/open-files-from-last-session!)
+
+  (vemv/initial-layout
+   (argless
+    (vemv/next-file-buffer)
+    (vemv/previous-file-buffer)
+
+    ;; every 5 seconds. in practice, not so often b/c `vemv/refreshing-caches` (timestamp lock)
+    ;; disabled until PE deemed stable again
+    (comm delay (argless (run-with-timer 0 5 (argless
+                                              (let ((w (selected-window)))
+                                                (vemv/refresh-file-caches (argless (vemv/safe-select-window w)))))))
+          60))))

@@ -81,6 +81,9 @@
                          (vemv/set-keys-for-scope sh-mode-map vemv/ruby-key-bindings)
                          (define-key sh-mode-map [tab] 'vemv/tab)))
 
+(add-hook 'html-mode-hook (argless
+                           (define-key html-mode-map [tab] 'vemv/tab)))
+
 (add-hook 'cider-connected-hook
           (argless
            (delay (argless
