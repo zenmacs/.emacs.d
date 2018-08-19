@@ -93,7 +93,8 @@
 (defun vemv/stop-using-minibuffer (&optional callback)
   "kill the minibuffer"
   (condition-case nil
-      (when (and (>= (recursion-depth) 1) (active-minibuffer-window))
+      (when (and (>= (recursion-depth) 1)
+                 (active-minibuffer-window))
         (when callback
           (delay callback 0.3))
         (abort-recursive-edit)

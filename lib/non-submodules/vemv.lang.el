@@ -70,7 +70,8 @@
     (shell b)))
 
 (defun vemv/smex ()
-  (when vemv/launched (smex)))
+  (when vemv/launched
+    (smex)))
 
 (defun vemv/emacs-reload ()
   (let ((was-verbose vemv/verbose-mode))

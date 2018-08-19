@@ -104,7 +104,8 @@
     (vemv/safe-select-window vemv/main_window)))
 
 (defun vemv/ensure-repl-visible ()
-  (when (and (cider-connected-p) (string-equal cider-launched vemv/current-project))
+  (when (and (cider-connected-p)
+             (string-equal cider-launched vemv/current-project))
     (vemv/show-clj-or-cljs-repl)))
 
 (setq vemv/ns-shown nil)

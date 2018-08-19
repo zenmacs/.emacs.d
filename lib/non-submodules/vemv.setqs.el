@@ -9,10 +9,12 @@
 (setq-default indent-tabs-mode nil)
 (setq-default mode-line-format
               (list "  "
-                    '(:eval (when (and (buffer-file-name) (buffer-modified-p)) "*"))
+                    '(:eval (when (and (buffer-file-name) (buffer-modified-p))
+                              "*"))
                     '(:eval (buffer-name))
                     " "
-                    '(:eval (when (buffer-file-name) (propertize "%l:%c" 'face 'font-lock-line-and-column-face)))))
+                    '(:eval (when (buffer-file-name)
+                              (propertize "%l:%c" 'face 'font-lock-line-and-column-face)))))
 
 (setq locale-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
@@ -43,12 +45,14 @@
 (setq tabbed-line-format
       (list
        '(:eval (concat (propertize "  %l:%c " 'face 'font-lock-line-and-column-face)
-                       (when debug-on-error (propertize "debug-on-error " 'face 'vemv-default-foreground-face-very-slightly-darker))
+                       (when debug-on-error
+                         (propertize "debug-on-error " 'face 'vemv-default-foreground-face-very-slightly-darker))
                        (when (and (vemv/clojure-project?)
                                   (not vemv-cider-connecting)
                                   (not vemv-cider-connected))
                          (propertize "Disconnected " 'face 'font-lock-line-and-column-face))
-                       (when vemv/verbose-mode (propertize "Verbose " 'face 'font-lock-line-and-column-face))))
+                       (when vemv/verbose-mode
+                         (propertize "Verbose " 'face 'font-lock-line-and-column-face))))
        '(:eval (when vemv-cider-connecting
                  (propertize "Connecting... " 'face 'vemv-cider-connection-face)))
        '(:eval (vemv/message-file-buffers-impl))))
@@ -158,7 +162,8 @@ of the buffer into a formatted string."
   (let* ((original (substring-no-properties (buffer-string)))
          (formatted (funcall formatter original)))
     (if (or (not formatted) (equal original formatted))
-        (when (not formatted) (vemv/echo "Buffer has broken syntax, cannot format"))
+        (when (not formatted)
+          (vemv/echo "Buffer has broken syntax, cannot format"))
       (erase-buffer)
       (insert formatted))))
 
