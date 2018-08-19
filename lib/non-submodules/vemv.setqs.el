@@ -122,7 +122,7 @@
       vemv/launched nil
       visible-bell nil ;; disable flickering
       whitespace-style '(face lines-tail)
-      x-select-enable-clipboard t)
+      x-select-enable-clipboard nil)
 
 (custom-set-variables
  '(xref-prompt-for-identifier nil)

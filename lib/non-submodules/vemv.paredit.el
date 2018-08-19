@@ -172,7 +172,7 @@ inserting it at a new line."
               (string-equal "\n" (vemv/current-char-at-point 1)))
     (delete-forward-char 1)))
 
-(defun vemv/kill (&optional backward? skip-save-to-clipboard? skip-kill-whitespace?)
+(defun vemv/kill (&optional backward? _ skip-kill-whitespace?)
   "Deletes the next sexpr (or previous, if BACKWARD?).
 
    Unlike paredit-kill, this function will only grab one sexpr (and no more, if they are contigous),
@@ -212,8 +212,6 @@ inserting it at a new line."
                   (equal " " (vemv/current-char-at-point))
                   (not (equal "\n" (vemv/current-char-at-point))))
             (paredit-forward-delete)))
-        (when (not skip-save-to-clipboard?)
-          (simpleclip-set-contents result))
         (unless skip-kill-whitespace?
           (ignore-errors
             (vemv/ensure-no-double-blank-newlines)))
