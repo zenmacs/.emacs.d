@@ -78,6 +78,7 @@
       column-number-mode t
       company-dabbrev-char-regexp "\\sw\\|_\\|-\\|!\\|\\?\\|*\\|+"
       company-idle-delay nil ;; no autopopup
+      company-tooltip-align-annotations t
       confirm-nonexistent-file-or-buffer nil
       create-lockfiles nil ;; no .#filenames
       css-indent-offset 2
