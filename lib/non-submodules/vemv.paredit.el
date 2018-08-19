@@ -23,10 +23,11 @@
                                      (not dc)
                                      (not yas))))
     (with-current-buffer b
-      (unless dc
-        (delete-trailing-whitespace))
-      (call-interactively 'mark-whole-buffer)
-      (call-interactively 'indent-for-tab-command)
+      (unless (eq major-mode 'fundamental-mode)
+        (unless dc
+          (delete-trailing-whitespace))
+        (call-interactively 'mark-whole-buffer)
+        (call-interactively 'indent-for-tab-command))
       (goto-line line)
       (vemv/end-of-line-code* nil)
       (when (or vemv/no-newline-at-eof yas)
