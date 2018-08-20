@@ -14,6 +14,8 @@
   (interactive)
   (let* ((b (or b (current-buffer))))
     (with-current-buffer b
+      (when (vemv/in-a-lisp-mode?)
+        (check-parens))
       (let* ((line (vemv/current-line-number))
              ;; for `indent-for-tab-command`:
              (last-command nil)
