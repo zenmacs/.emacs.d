@@ -106,11 +106,12 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
 
   (require 'cl) ;; for assert
 
-  (let ((default-directory "~/.emacs.d.overrides/"))
-    (assert (file-exists-p default-directory)
-            nil
-            (concat default-directory " not found. Please follow the readme here: https://github.com/vemv/.emacs.d"))
-    (normal-top-level-add-subdirs-to-load-path))
+  (unless vemv/terminal-emacs?
+    (let ((default-directory "~/.emacs.d.overrides/"))
+      (assert (file-exists-p default-directory)
+              nil
+              (concat default-directory " not found. Please follow the readme here: https://github.com/vemv/.emacs.d"))
+      (normal-top-level-add-subdirs-to-load-path)))
 
   (defmacro vemv/verbosely (&rest forms)
     `(let* ((old vemv/verbose-mode)
@@ -126,9 +127,10 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
 
   (require 'vemv.lang.core)
   (require 'vemv.packages)
-  (require 'emacs.d.overrides)
-  (require 'desktop)
-  (require 'vemv.desktop)
+  (unless vemv/terminal-emacs?
+    (require 'emacs.d.overrides)
+    (require 'desktop)
+    (require 'vemv.desktop))
   (require 'dash)
   (require 's)
 
@@ -158,6 +160,8 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
                   (or (-elem-index (car b) crit) 99999999)))
              target-list)))
 
+  (when vemv/terminal-emacs?
+    (setq vemv/available-workspaces nil))
   (setq vemv/on-the-fly-projects nil)
 
   (defun vemv/set-available-projects! ()
@@ -173,7 +177,7 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
   (setq vemv/running-project nil)
   (setq vemv/running-project-root-dir nil)
   (setq vemv/running-project-type nil)
-  (let ((ordered (vemv.desktop/ordered-workspaces-list)))
+  (let ((ordered (unless vemv/terminal-emacs? (vemv.desktop/ordered-workspaces-list))))
     (->> ordered
          (vemv/sort-car-by-car vemv/available-workspaces)
          (mapcar (lambda (w)

@@ -2,6 +2,9 @@
 
 (setq lexical-binding t)
 
+(require 'es-lib)
+(require 'es-windows)
+(require 'project-explorer)
 (provide 'vemv.project-explorer)
 
 (setq vemv/project-explorer-initialized nil)

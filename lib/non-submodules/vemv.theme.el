@@ -6,8 +6,9 @@
 (require 'vemv.project)
 (provide 'vemv.theme)
 
-(set-face-background 'comint-highlight-prompt "#4D575F")
-(set-face-foreground 'comint-highlight-prompt "white")
+(unless vemv/terminal-emacs?
+  (set-face-background 'comint-highlight-prompt "#4D575F")
+  (set-face-foreground 'comint-highlight-prompt "white"))
 
 (deftheme vemv "")
 

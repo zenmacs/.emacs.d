@@ -31,7 +31,9 @@
 (add-to-list 'special-display-buffer-names '("*Help*" vemv/display-completion))
 (add-to-list 'special-display-buffer-names '("*Ido Completions*" vemv/display-completion))
 (add-to-list 'special-display-buffer-names '("*Diff*" vemv/display-completion))
-(add-to-list 'sp-no-reindent-after-kill-modes 'haml-mode)
+
+(unless vemv/terminal-emacs?
+  (add-to-list 'sp-no-reindent-after-kill-modes 'haml-mode))
 
 (setq pe/project-root-function (lambda (&rest _)
                                  vemv/project-root-dir))
@@ -64,11 +66,12 @@
       kept-old-versions 2
       version-control t)
 
-;; https://github.com/company-mode/company-mode/issues/808
-(setq company-backends (-remove (lambda (x)
-                                  (and (listp x)
-                                       (equal (car x) 'company-dabbrev-code)))
-                                company-backends))
+(unless vemv/terminal-emacs?
+  ;; https://github.com/company-mode/company-mode/issues/808
+  (setq company-backends (-remove (lambda (x)
+                                    (and (listp x)
+                                         (equal (car x) 'company-dabbrev-code)))
+                                  company-backends)))
 
 (setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
       auto-save-file-name-transforms `((".*" ,temporary-file-directory t))

@@ -29,23 +29,30 @@
 (require 'benchmark-init)
 (add-hook 'after-init-hook 'benchmark-init/deactivate)
 
-(require 'saveplace)
+(unless vemv/terminal-emacs?
+  (require 'saveplace))
 (require 'dash)
 (require 'popup)
 (require 'smex)
-(require 'company)
+(unless vemv/terminal-emacs?
+  (require 'company))
 (require 'epl)
-(require 'spinner)
-(require 'comint)
-(require 'es-lib)
-(require 'es-windows)
-(require 'project-explorer)
+(unless vemv/terminal-emacs?
+  (require 'spinner)
+  (require 'comint))
 (require 'paredit)
 (require 's)
 (require 'fiplr)
-(require 'desktop)
-(require 'smartparens-config)
-(require 'yasnippet)
+(unless vemv/terminal-emacs?
+  (require 'desktop)
+  (require 'smartparens-config)
+  (require 'yasnippet))
+
+(when vemv/terminal-emacs?
+  (autoload 'clojure-mode "clojure-mode" nil t)
+  (add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
+  (add-to-list 'auto-mode-alist '("\\.cljs$" . clojure-mode))
+  (add-to-list 'auto-mode-alist '("\\.cljc$" . clojure-mode)))
 
 (autoload 'haml-mode "haml-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.haml$" . haml-mode))

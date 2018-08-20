@@ -4,7 +4,8 @@
 
 (provide 'vemv.hooks)
 
-(when (not vemv-cleaning-namespaces)
+(when (and (not vemv-cleaning-namespaces)
+           (not vemv/terminal-emacs?))
   (add-hook 'clojure-mode-hook 'hs-minor-mode))
 
 (add-hook 'ruby-mode-hook (argless (ruby-end-mode)
@@ -23,9 +24,10 @@
 (add-hook 'shell-mode-hook
           (argless (setq-local mode-line-format vemv/pe/mode-line-format)))
 
-(dolist (mode (list 'emacs-lisp-mode-hook 'ruby-mode-hook 'clojure-mode-hook
-                    'js-mode-hook 'css-mode-hook 'html-mode-hook 'haml-mode-hook))
-  (add-hook mode (argless (call-interactively 'text-scale-increase))))
+(unless vemv/terminal-emacs?
+  (dolist (mode (list 'emacs-lisp-mode-hook 'ruby-mode-hook 'clojure-mode-hook
+                      'js-mode-hook 'css-mode-hook 'html-mode-hook 'haml-mode-hook))
+    (add-hook mode (argless (call-interactively 'text-scale-increase)))))
 
 (advice-add 'pe/show-buffer :after 'vemv/after-file-open)
 (advice-add 'vemv/fiplr :after 'vemv/after-file-open)
@@ -68,6 +70,16 @@
                            (set-face-foreground 'highlight-indent-guides-top-character-face vemv-colors/purple)
                            (setq global-hl-line-mode nil)
                            (highlight-indent-guides-mode)))
+
+(add-hook 'clojure-mode-hook (argless
+                              (unless vemv/terminal-emacs?
+                                (vemv/set-keys-for-scope clojure-mode-map vemv/clojure-key-bindings))
+                              (define-key clojure-mode-map (kbd ";") 'vemv/semicolon)
+                              (define-key clojure-mode-map (kbd "<tab>") 'vemv/tab)
+                              ;; XXX backtab not handled by gen.rb
+                              (define-key clojure-mode-map (kbd "<backtab>") (argless
+                                                                              (let ((max-mini-window-height 0.99))
+                                                                                (vemv/message-clojure-doc))))))
 
 (add-hook 'haml-mode-hook (argless
                            (vemv/set-keys-for-scope haml-mode-map vemv/ruby-key-bindings)

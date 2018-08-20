@@ -8,19 +8,22 @@
 
 ;; Important - remove keybindings before (vemv/initial-layout) so M-x cannot interrupt
 
-(dolist (mode (list paredit-mode-map))
-  (mapc (lambda (arg)
-          (define-key mode (vemv/keyboard-macro arg) nil))
-        vemv/exhaustive-list-of-bindings-to-remove))
+(unless vemv/terminal-emacs?
+  (dolist (mode (list paredit-mode-map))
+    (mapc (lambda (arg)
+            (define-key mode (vemv/keyboard-macro arg) nil))
+          vemv/exhaustive-list-of-bindings-to-remove))
 
-(add-hook 'cider-mode-hook
+  (add-hook 'cider-mode-hook
+            (argless
+             (mapc (lambda (arg)
+                     (define-key cider-mode-map (vemv/keyboard-macro arg) nil))
+                   vemv/exhaustive-list-of-bindings-to-remove))))
+
+(add-hook 'project-explorer-mode-hook
           (argless
-           (mapc (lambda (arg)
-                   (define-key cider-mode-map (vemv/keyboard-macro arg) nil))
-                 vemv/exhaustive-list-of-bindings-to-remove)))
-
-(es-define-keys project-explorer-mode-map
-  (kbd "<mouse-1>") 'pe/left-click)
+           (es-define-keys project-explorer-mode-map
+             (kbd "<mouse-1>") 'pe/left-click)))
 
 (unless vemv/terminal-emacs?
   (dolist (key vemv/key-bindings-to-remove)

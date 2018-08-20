@@ -22,15 +22,8 @@
         ;; they disable three-finger swipe (as I originally intended), but also two-finger swipe too (ruins scrolling)
         [triple-wheel-right] [triple-wheel-left]))
 
-;; XXX create instead vemv/clojure-mode-key-bindings, vemv/emacs-elisp-mode-key-bindings
 (setq vemv/local-key-bindings
-      (list clojure-mode-map  ";" 'vemv/semicolon
-            clojure-mode-map "<tab>" 'vemv/tab
-            ;; XXX backtab not handled by gen.rb
-            clojure-mode-map "<backtab>" (argless
-                                          (let ((max-mini-window-height 0.99))
-                                            (vemv/message-clojure-doc)))
-            emacs-lisp-mode-map "<backtab>" (argless
+      (list emacs-lisp-mode-map "<backtab>" (argless
                                              (let ((max-mini-window-height 0.99))
                                                (ignore-errors
                                                  (replying-yes

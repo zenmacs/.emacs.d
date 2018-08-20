@@ -1,8 +1,14 @@
 (require 'vemv.lang)
 (require 'vemv.project-interaction)
 (require 'vemv.open)
-(require 'cider) ;; Ideally would not be there as it slightly slows down things.
+(unless vemv/terminal-emacs?
+  (require 'cider)) ;; Ideally would not be there as it slightly slows down things.
 (provide 'vemv.project)
+
+(when vemv/terminal-emacs?
+  (defun cider-project-name (x)
+    x)
+  (defun put-clojure-indent (&rest _)))
 
 (setq vemv/default-cider-cljs-lein-repl
       "(do (require 'figwheel-sidecar.repl-api)
@@ -17,7 +23,8 @@
 
 (setq vemv/using-nrepl t)
 
-(setq vemv/initial-cider-lein-parameters cider-lein-parameters)
+(setq vemv/initial-cider-lein-parameters (unless vemv/terminal-emacs?
+                                           cider-lein-parameters))
 
 ;; - make `setq`s defuns
 ;; - infer project from currently open file
@@ -174,4 +181,5 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
       (vemv/safe-select-window vemv/repl-window) ;; ensures the currently-selected project is visible
       (funcall vemv/maybe-change-project-graphically))))
 
-(vemv/refresh-current-project vemv/current-project)
+(unless vemv/terminal-emacs?
+  (vemv/refresh-current-project vemv/current-project))

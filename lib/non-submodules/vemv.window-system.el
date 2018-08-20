@@ -6,6 +6,8 @@
 
 (defun vemv/initial-layout (done-fn)
 
+  (require 'vemv.project-explorer)
+
   (when (window-system)
     (vemv/maximize))
 
