@@ -12,30 +12,30 @@
 
 (defun vemv/save (&optional b)
   (interactive)
-  (let* ((line (vemv/current-line-number))
-         ;; for `indent-for-tab-command`:
-         (last-command nil)
-         (b (or b (current-buffer)))
-         (dc (string-equal "dc" (car vemv/current-workspace)))
-         (yas (vemv/contains? (buffer-file-name) "/snippets/"))
-         ;; for `save-buffer`:
-         (require-final-newline (and (not vemv/no-newline-at-eof)
-                                     (not dc)
-                                     (not yas))))
+  (let* ((b (or b (current-buffer))))
     (with-current-buffer b
-      (unless (eq major-mode 'fundamental-mode)
-        (unless dc
-          (delete-trailing-whitespace))
-        (call-interactively 'mark-whole-buffer)
-        (call-interactively 'indent-for-tab-command))
-      (goto-line line)
-      (vemv/end-of-line-code* nil)
-      (when (or vemv/no-newline-at-eof yas)
-        (save-excursion
-          (end-of-buffer)
-          (while (string-equal (vemv/current-char-at-point) "\n")
-            (delete-backward-char 1))))
-      (save-buffer))))
+      (let* ((line (vemv/current-line-number))
+             ;; for `indent-for-tab-command`:
+             (last-command nil)
+             (dc (string-equal "dc" (car vemv/current-workspace)))
+             (yas (vemv/contains? (buffer-file-name) "/snippets/"))
+             ;; for `save-buffer`:
+             (require-final-newline (and (not vemv/no-newline-at-eof)
+                                         (not dc)
+                                         (not yas))))
+        (unless (eq major-mode 'fundamental-mode)
+          (unless dc
+            (delete-trailing-whitespace))
+          (call-interactively 'mark-whole-buffer)
+          (call-interactively 'indent-for-tab-command))
+        (goto-line line)
+        (vemv/end-of-line-code* nil)
+        (when (or vemv/no-newline-at-eof yas)
+          (save-excursion
+            (end-of-buffer)
+            (while (string-equal (vemv/current-char-at-point) "\n")
+              (delete-backward-char 1))))
+        (save-buffer)))))
 
 (defun vemv/tab ()
   (interactive)
