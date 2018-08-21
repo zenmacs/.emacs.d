@@ -25,10 +25,13 @@
 (setq vemv/local-key-bindings
       (list emacs-lisp-mode-map "<backtab>" (argless
                                              (let ((max-mini-window-height 0.99))
-                                               (ignore-errors
-                                                 (replying-yes
-                                                  (vemv/verbosely
-                                                   (-some-> (symbol-at-point) documentation message))))))
+                                               (or (ignore-errors
+                                                     (replying-yes
+                                                      (-some-> (symbol-at-point) documentation vemv/echo)))
+                                                   (ignore-errors
+                                                     (let ((s (symbol-at-point)))
+
+                                                       (-some-> s (documentation-property 'variable-documentation) vemv/echo))))))
             emacs-lisp-mode-map "<tab>" 'vemv/tab
             emacs-lisp-mode-map  ";" 'vemv/semicolon
             emacs-lisp-mode-map "RET" 'newline-and-indent
