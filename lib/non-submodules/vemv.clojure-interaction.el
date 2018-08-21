@@ -266,11 +266,14 @@
                                                (s-split "\n")
                                                (mapcar 's-trim)
                                                (s-join "\n"))))
-                                (s-join "\n\n"))))
-              (vemv/echo (concat a
-                                 (if (and a d)
-                                     "\n\n")
-                                 d)))
+                                (s-join "\n\n")))
+                   (r (concat a
+                              (if (and a d)
+                                  "\n\n")
+                              d)))
+              (if (> (length (s-lines r)) 40)
+                  (vemv/echo "Docstring too long, jump to it instead.")
+                (vemv/echo r)))
           (vemv/echo "No docs found.")))
     (vemv/echo "Not connected.")))
 
