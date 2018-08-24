@@ -2,13 +2,190 @@
 
 (setq lexical-binding t)
 
+(require 'vemv.theme)
+(require 'vemv.setqs)
 (provide 'vemv.hooks)
 
 (when (and (not vemv-cleaning-namespaces)
            (not vemv/terminal-emacs?))
   (add-hook 'clojure-mode-hook 'hs-minor-mode))
 
+(advice-add 'ruby-mode :before (argless
+                                ;; sets vemv/blue-face, clojure-global-constant-face
+                                (setq ruby-font-lock-keywords
+                                      `( ;; Functions.
+                                        ("^\\s *def\\s +\\(?:[^( \t\n.]*\\.\\)?\\([^( \t\n]+\\)"
+                                         1 font-lock-function-name-face)
+                                        ;; Keywords.
+                                        (,(concat
+                                           ruby-font-lock-keyword-beg-re
+                                           (regexp-opt
+                                            vemv/ruby-keywords
+                                            'symbols))
+                                         (1 font-lock-keyword-face))
+                                        ;; Core methods that have required arguments.
+                                        (,(concat
+                                           ruby-font-lock-keyword-beg-re
+                                           (regexp-opt
+                                            '( ;; built-in methods on Kernel
+                                              "at_exit"
+                                              "autoload"
+                                              "autoload?"
+                                              "callcc"
+                                              "catch"
+                                              "eval"
+                                              "exec"
+                                              "format"
+                                              "lambda"
+                                              "load"
+                                              "loop"
+                                              "open"
+                                              "p"
+                                              "print"
+                                              "printf"
+                                              "proc"
+                                              "putc"
+                                              "puts"
+                                              "require"
+                                              "require_relative"
+                                              "spawn"
+                                              "sprintf"
+                                              "syscall"
+                                              "system"
+                                              "throw"
+                                              "trace_var"
+                                              "trap"
+                                              "untrace_var"
+                                              "warn"
+                                              ;; keyword-like private methods on Module
+                                              "alias_method"
+                                              "attr"
+                                              "attr_accessor"
+                                              "attr_reader"
+                                              "attr_writer"
+                                              "define_method"
+                                              "extend"
+                                              "include"
+                                              "module_function"
+                                              "prepend"
+                                              "private_class_method"
+                                              "private_constant"
+                                              "public_class_method"
+                                              "public_constant"
+                                              "refine"
+                                              "using")
+                                            'symbols))
+                                         (1 (unless (looking-at " *\\(?:[]|,.)}=]\\|$\\)")
+                                              font-lock-builtin-face)))
+                                        ;; Kernel methods that have no required arguments.
+                                        (,(concat
+                                           ruby-font-lock-keyword-beg-re
+                                           (regexp-opt
+                                            '("__callee__"
+                                              "__dir__"
+                                              "__method__"
+                                              "abort"
+                                              "binding"
+                                              "block_given?"
+                                              "caller"
+                                              "exit"
+                                              "exit!"
+                                              "fail"
+                                              "fork"
+                                              "global_variables"
+                                              "local_variables"
+                                              "private"
+                                              "protected"
+                                              "public"
+                                              "raise"
+                                              "rand"
+                                              "readline"
+                                              "readlines"
+                                              "sleep"
+                                              "srand")
+                                            'symbols))
+                                         (1 font-lock-builtin-face))
+                                        ;; Here-doc beginnings.
+                                        (,ruby-here-doc-beg-re
+                                         (0 (when (ruby-verify-heredoc (match-beginning 0))
+                                              'font-lock-string-face)))
+                                        ;; Perl-ish keywords.
+                                        "\\_<\\(?:BEGIN\\|END\\)\\_>\\|^__END__$"
+                                        ;; Singleton objects.
+                                        (,(concat ruby-font-lock-keyword-beg-re
+                                                  "\\_<\\(nil\\|true\\|false\\)\\_>")
+                                         1 clojure-global-constant-face)
+                                        ;; Keywords that evaluate to certain values.
+                                        ("\\_<__\\(?:LINE\\|ENCODING\\|FILE\\)__\\_>"
+                                         (0 font-lock-builtin-face))
+                                        ;; Symbols.
+                                        ("\\(^\\|[^:]\\)\\(:@\\{0,2\\}\\(?:\\sw\\|\\s_\\)+\\)"
+                                         (2 font-lock-constant-face)
+                                         (3 (unless (and (eq (char-before (match-end 3)) ?=)
+                                                         (eq (char-after (match-end 3)) ?>))
+                                              ;; bug#18644
+                                              font-lock-constant-face)
+                                            nil t))
+                                        ;; Special globals.
+                                        (,(concat "\\$\\(?:[:\"!@;,/\\._><\\$?~=*&`'+0-9]\\|-[0adFiIlpvw]\\|"
+                                                  (regexp-opt '("LOAD_PATH" "LOADED_FEATURES" "PROGRAM_NAME"
+                                                                "ERROR_INFO" "ERROR_POSITION"
+                                                                "FS" "FIELD_SEPARATOR"
+                                                                "OFS" "OUTPUT_FIELD_SEPARATOR"
+                                                                "RS" "INPUT_RECORD_SEPARATOR"
+                                                                "ORS" "OUTPUT_RECORD_SEPARATOR"
+                                                                "NR" "INPUT_LINE_NUMBER"
+                                                                "LAST_READ_LINE" "DEFAULT_OUTPUT" "DEFAULT_INPUT"
+                                                                "PID" "PROCESS_ID" "CHILD_STATUS"
+                                                                "LAST_MATCH_INFO" "IGNORECASE"
+                                                                "ARGV" "MATCH" "PREMATCH" "POSTMATCH"
+                                                                "LAST_PAREN_MATCH" "stdin" "stdout" "stderr"
+                                                                "DEBUG" "FILENAME" "VERBOSE" "SAFE" "CLASSPATH"
+                                                                "JRUBY_VERSION" "JRUBY_REVISION" "ENV_JAVA"))
+                                                  "\\_>\\)")
+                                         0 font-lock-builtin-face)
+                                        ("\\(\\$\\|@\\|@@\\)\\(\\w\\|_\\)+"
+                                         0 font-lock-variable-name-face)
+                                        ;; Constants.
+                                        ("\\_<\\([A-Z]+\\(\\w\\|_\\)*\\)"
+                                         1 (unless (eq ?\( (char-after)) font-lock-type-face))
+                                        ;; Ruby 1.9-style symbol hash keys.
+                                        ("\\(?:^\\s *\\|[[{(,]\\s *\\|\\sw\\s +\\)\\(\\(\\sw\\|_\\)+:\\)[^:]"
+                                         (1 (progn (forward-char -1) font-lock-constant-face)))
+                                        ;; Conversion methods on Kernel.
+                                        (,(concat ruby-font-lock-keyword-beg-re
+                                                  (regexp-opt '("Array" "Complex" "Float" "Hash"
+                                                                "Integer" "Rational" "String") 'symbols))
+                                         (1 font-lock-builtin-face))
+                                        ;; Expression expansion.
+                                        (ruby-match-expression-expansion
+                                         2 'vemv/blue-face t)
+                                        ;; Negation char.
+                                        ("\\(?:^\\|[^[:alnum:]_]\\)\\(!+\\)[^=~]"
+                                         1 font-lock-negation-char-face)
+                                        ;; Character literals.
+                                        ;; FIXME: Support longer escape sequences.
+                                        ("\\?\\\\?\\_<.\\_>" 0 font-lock-string-face)
+                                        ;; Regexp options.
+                                        ("\\(?:\\s|\\|/\\)\\([imxo]+\\)"
+                                         1 (when (save-excursion
+                                                   (let ((state (syntax-ppss (match-beginning 0))))
+                                                     (and (nth 3 state)
+                                                          (or (eq (char-after) ?/)
+                                                              (progn
+                                                                (goto-char (nth 8 state))
+                                                                (looking-at "%r"))))))
+                                             font-lock-preprocessor-face))))))
+
 (add-hook 'ruby-mode-hook (argless (ruby-end-mode)
+                                   (setq-local paren-face-regexp (concat "\\("
+                                                                         (->> vemv/ruby-keywords
+                                                                              (mapcar (lambda (x)
+                                                                                        (concat "\\_<" x "\\_>")))
+                                                                              (s-join "\\|")
+                                                                              (concat "[][(){}]\\|"))
+                                                                         "\\)"))
+                                   (paren-face-mode 1)
                                    (vemv/set-keys-for-scope ruby-mode-map vemv/ruby-key-bindings)
                                    (define-key ruby-mode-map [tab] 'vemv/tab)))
 
