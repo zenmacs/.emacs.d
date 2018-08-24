@@ -77,9 +77,7 @@
            (member (buffer-file-name)))))
 
 (defun vemv/good-window-p ()
-  (or (eq (selected-window) vemv/main_window)
-      (eq (selected-window) vemv/repl-window)
-      (eq (selected-window) vemv/project-explorer-window)))
+  (member (selected-window) (list vemv/main_window vemv/repl-window vemv/project-explorer-window)))
 
 (setq vemv/main_frame (selected-frame))
 

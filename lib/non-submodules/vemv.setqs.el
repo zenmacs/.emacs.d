@@ -49,15 +49,17 @@
        '(:eval (concat (propertize "  %l:%c " 'face 'font-lock-line-and-column-face)
                        (when debug-on-error
                          (propertize "debug-on-error " 'face 'vemv-default-foreground-face-very-slightly-darker))
-                       (when (and (vemv/clojure-project?)
-                                  (not vemv-cider-connecting)
-                                  (not vemv-cider-connected))
+                       (when (and (not vemv-cider-connecting)
+                                  (not vemv-cider-connected)
+                                  (vemv/in-a-clojure-mode?)
+                                  (vemv/clojure-project?))
                          (propertize "Disconnected " 'face 'font-lock-line-and-column-face))
                        (when vemv/verbose-mode
                          (propertize "Verbose " 'face 'font-lock-line-and-column-face))))
-       '(:eval (when vemv-cider-connecting
+       '(:eval (when (and vemv-cider-connecting (vemv/in-a-clojure-mode?))
                  (propertize "Connecting... " 'face 'vemv-cider-connection-face)))
-       '(:eval (vemv/message-file-buffers-impl))))
+       '(:eval (when (vemv/good-window-p)
+                 (vemv/message-file-buffers-impl)))))
 
 ;; http://www.emacswiki.org/emacs/BackupDirectory
 (setq backup-by-copying t

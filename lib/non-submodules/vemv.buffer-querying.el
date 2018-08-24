@@ -4,12 +4,14 @@
 
 (provide 'vemv.buffer-querying)
 
+(defvar vemv/clojure-modes (list 'clojure-mode
+                                 'clojurec-mode
+                                 'clojurescript-mode
+                                 'cider-repl-mode))
+
 (defun vemv/in-a-clojure-mode? (&optional m)
   (let ((mode (or m major-mode)))
-    (or (eq mode 'clojure-mode)
-        (eq mode 'clojurec-mode)
-        (eq mode 'clojurescript-mode)
-        (eq mode 'cider-repl-mode))))
+    (member mode vemv/clojure-modes)))
 
 (defun vemv/in-a-lisp-mode? (&optional m)
   (let ((mode (or m major-mode)))
