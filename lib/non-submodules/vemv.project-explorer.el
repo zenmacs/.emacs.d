@@ -102,11 +102,10 @@
                    (funcall vemv/safe-show-current-file-in-project-explorer))))
     (if (minibuffer-prompt)
         (delay fallback 1)
-
       (vemv/refresh-file-caches (argless (if (minibuffer-prompt)
                                              (delay fallback 1)
-                                           (vemv/ensure-project-is-displayed! 'vemv/show-current-file-in-project-explorer-impl))
-                                         (vemv/safe-select-window original-window))))))
+                                           (vemv/ensure-project-is-displayed! 'vemv/show-current-file-in-project-explorer-impl)
+                                           (vemv/safe-select-window original-window)))))))
 
 (defun vemv/safe-show-current-file-in-project-explorer* ()
   (let* ((w (selected-window))
