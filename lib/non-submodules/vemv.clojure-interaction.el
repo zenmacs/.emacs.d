@@ -344,3 +344,38 @@
   "Needs M-x cider-load-buffer first"
   (interactive)
   (vemv/send :cljs nil (concat "(cljs.test/run-tests '" (vemv/current-ns) ")")))
+
+(defun vemv/parse-clojure-filename-url (url)
+  "Adapted from cider-find-file"
+  (cond ((string-match "^file:\\(.+\\)" url)
+         (when-let* ((file (cider--url-to-file (match-string 1 url)))
+                     (path (cider--file-path file)))
+           path))
+        ((string-match "^\\(jar\\|zip\\):\\(file:.+\\)!/\\(.+\\)" url)
+         (when-let* ((entry (match-string 3 url))
+                     (file  (cider--url-to-file (match-string 2 url)))
+                     (path  (cider--file-path file))
+                     (name  (format "%s:%s" path entry)))
+           name))
+        (t (cider--file-path url))))
+
+(defun vemv/echo-clojure-source ()
+  "Shows the Clojure source of the symbol at point."
+  (interactive)
+  (when (vemv/ciderable-p)
+    (let* ((s (if-let* ((info (cider-var-info (cider-symbol-at-point 'look-back))))
+                  (progn
+                    (let* ((line (nrepl-dict-get info "line"))
+                           (file (vemv/parse-clojure-filename-url (nrepl-dict-get info "file")))
+                           (name (nrepl-dict-get info "name")))
+                      (with-temp-buffer
+                        (insert (vemv/slurp file))
+                        (goto-line line)
+                        (beginning-of-line)
+                        (vemv/sexpr-content))))
+                (user-error "Not found."))))
+      (vemv/echo (with-temp-buffer
+                   (clojure-mode)
+                   (insert s)
+                   (font-lock-ensure)
+                   (buffer-string))))))

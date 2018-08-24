@@ -47,6 +47,7 @@
       vemv/shortcuts/global/primary-bang            (argless
                                                      (replying-yes
                                                       (revert-buffer)))
+      vemv/shortcuts/global/primary-dash            'vemv/echo-clojure-source
       vemv/shortcuts/global/primary-down            'forward-paragraph
       vemv/shortcuts/global/primary-e               'vemv/send
       vemv/shortcuts/global/primary-equal           'mark-whole-buffer
