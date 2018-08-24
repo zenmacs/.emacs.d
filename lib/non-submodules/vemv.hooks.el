@@ -183,7 +183,7 @@
                                                                               (mapcar (lambda (x)
                                                                                         (concat "\\_<" x "\\_>")))
                                                                               (s-join "\\|")
-                                                                              (concat "[][(){}]\\|"))
+                                                                              (concat "::\\|,\\|=\\|<\\|>\\|[][(){}|]\\|"))
                                                                          "\\)"))
                                    (paren-face-mode 1)
                                    (vemv/set-keys-for-scope ruby-mode-map vemv/ruby-key-bindings)

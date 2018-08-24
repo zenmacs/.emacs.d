@@ -67,7 +67,7 @@
  'vemv
 
  `(parenthesis ,(if (eq :ruby vemv/project-type)
-                    `((t (:foreground "#d8d8d8")))
+                    `((t (:foreground "#e0e0e0")))
                   `((t (:foreground "#c0c0c0")))))
 
  `(term-color-black      ((t (:foreground ,vemv-default-foreground-color :background ,vemv-default-background-color))))
