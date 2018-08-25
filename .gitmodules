@@ -9,7 +9,7 @@
 	url = https://github.com/VincentToups/recur.git
 [submodule "lib/emacs-utils"]
 	path = lib/emacs-utils
-	url = https://github.com/VincentToups/emacs-utils.git
+	url = https://github.com/vemv/emacs-utils.git
 [submodule "lib/project-explorer"]
 	path = lib/project-explorer
 	url = https://github.com/vemv/project-explorer.git
