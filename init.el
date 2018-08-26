@@ -134,6 +134,9 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
   (require 'dash)
   (require 's)
 
+  (defun zero? (n) (and n (eq 0 n)))
+  (defun filter (p c) (-filter p c))
+
   (defun vemv-source (filename)
     (->> (concat "diff -u  <(true; export) <(source " filename "; export) | tail -n +4")
          (shell-command-to-string)

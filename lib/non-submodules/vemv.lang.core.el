@@ -2,8 +2,6 @@
 
 (setq lexical-binding t)
 
-(require 'recur)
-(require 'multi-methods)
 (provide 'vemv.lang.core)
 
 (defmacro comm (&rest forms)
@@ -75,32 +73,14 @@
 (defmacro dec (n)
   `(- ,n 1))
 
-(recur-defun* vemv/take (n seq &optional acc)
-  ""
-  (if (and seq (pos? n))
-      (recur (dec n) (rest seq) (cons (first seq) acc))
-    (when (zero? n)
-      (reverse acc))))
+(defun vemv/drop (n seq)
+  (-drop n seq))
 
-(recur-defun* vemv/drop (n seq)
-  ""
-  (if (pos? n)
-      (recur (dec n) (rest seq))
-    seq))
+(defun vemv/take (n seq)
+  (-take n seq))
 
-(recur-defun*
-  vemv/partition
-  (n seq &optional step acc)
-  "Divides SEQ in a list of lists of N items each, at offsets STEP or N apart.
-ACC is an implementation detail - do not pass this parameter!"
-  (if seq
-      (recur n ;; XXX recur takes the args in mistaken order. wut
-             (vemv/drop (or step n) seq)
-             (if-let (taken (vemv/take n seq))
-                 (cons taken acc)
-               acc)
-             (or step n))
-    (reverse acc)))
+(defun vemv/partition (n s)
+  (-partition n s))
 
 (defun vemv/debounce (func &optional delay)
   (let*
@@ -130,12 +110,7 @@ ACC is an implementation detail - do not pass this parameter!"
 
 (defun vemv/contains? (a b)
   "Whether the string B is contained in A."
-  (let* ((a-list (string-to-list a))
-         (b-list (string-to-list b))
-         (a-parted (vemv/partition (length b-list) a-list 1)))
-    (some (lambda (slice)
-            (equal slice b-list))
-          a-parted)))
+  (s-contains? b a))
 
 (defun vemv/hash-map (&rest kvs)
   "Makes and returns a hash table out of its arguments."

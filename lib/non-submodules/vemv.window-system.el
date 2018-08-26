@@ -73,7 +73,7 @@
   (or (vemv/buffer-of-current-project? (current-buffer))
       (->> vemv/chosen-file-buffer-order-as-list
            (mapcar 'second)
-           flatten
+           -flatten
            (member (buffer-file-name)))))
 
 (defun vemv/good-window-p ()

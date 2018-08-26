@@ -295,12 +295,13 @@ inserting it at a new line."
     (let* ((line (vemv/current-line-contents))
            (rev (vemv/reverse line))
            (line_length (length line))
-           (movement (recur-let ((result 0))
-                                (if (some (lambda (char)
-                                            (equal char (substring line result (inc result))))
-                                          '(";" "\n"))
-                                    result
-                                  (recur (inc result))))))
+           (movement (or 0 ;; temporarily disabled - uses recur which I discarded
+                         (recur-let ((result 0))
+                                    (if (some (lambda (char)
+                                                (equal char (substring line result (inc result))))
+                                              '(";" "\n"))
+                                        result
+                                      (recur (inc result)))))))
       (move-beginning-of-line 1)
       (forward-char movement)
       ;; there may exist empty space between code and comment:
