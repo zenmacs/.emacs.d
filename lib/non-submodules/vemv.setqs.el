@@ -32,6 +32,8 @@
 (add-to-list 'special-display-buffer-names '("*Ido Completions*" vemv/display-completion))
 (add-to-list 'special-display-buffer-names '("*Diff*" vemv/display-completion))
 
+(add-to-list 'special-display-buffer-names '("*rails*" vemv/repl-completion))
+
 (unless vemv/terminal-emacs?
   (add-to-list 'sp-no-reindent-after-kill-modes 'haml-mode))
 
@@ -73,7 +75,8 @@
   (setq company-backends (-remove (lambda (x)
                                     (and (listp x)
                                          (equal (car x) 'company-dabbrev-code)))
-                                  company-backends)))
+                                  company-backends))
+  (push 'company-robe company-backends))
 
 (setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
       auto-save-file-name-transforms `((".*" ,temporary-file-directory t))

@@ -170,6 +170,10 @@
   (vemv/safe-select-window vemv/main_window)
   (set-window-buffer vemv/main_window buffer))
 
+(defun vemv/repl-completion (buffer)
+  (vemv/safe-select-window vemv/repl-window)
+  (set-window-buffer vemv/repl-window buffer))
+
 (defun vemv/bounded-list/insert-at-head! (x bounded-list bound)
   (vemv/mutate-list-to bounded-list (cons x (-clone bounded-list)))
   (vemv/mutate-list-to bounded-list (-take bound (-clone bounded-list)))

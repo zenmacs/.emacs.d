@@ -16,8 +16,25 @@
 (setq vemv/packages-refreshed nil)
 
 (unless vemv/terminal-emacs?
-  (dolist (package '(edn inflections hydra company queue fiplr smartparens yasnippet multiple-cursors benchmark-init
-                         dash simpleclip helm-ag git-timemachine paren-face haml-mode ruby-end highlight-indent-guides))
+  (dolist (package '(benchmark-init
+                     company
+                     dash
+                     edn
+                     fiplr
+                     git-timemachine
+                     haml-mode
+                     helm-ag
+                     highlight-indent-guides
+                     hydra
+                     inflections
+                     multiple-cursors
+                     paren-face
+                     queue
+                     robe
+                     ruby-end
+                     simpleclip
+                     smartparens
+                     yasnippet))
     (unless (package-installed-p package)
       (vemv/verbosely
        (unless vemv/packages-refreshed

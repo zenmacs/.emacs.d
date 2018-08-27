@@ -178,6 +178,7 @@
                                              font-lock-preprocessor-face))))))
 
 (add-hook 'ruby-mode-hook (argless (ruby-end-mode)
+                                   (robe-mode)
                                    (setq-local paren-face-regexp (concat "\\("
                                                                          (->> vemv/ruby-keywords
                                                                               (mapcar (lambda (x)
