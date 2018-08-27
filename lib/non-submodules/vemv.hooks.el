@@ -286,6 +286,21 @@
 
 (add-hook 'cider-repl-mode-hook #'paredit-mode)
 
+(defvar vemv/verbosity-before-company)
+
+(add-hook 'company-completion-started-hook
+          (argless
+           (setq vemv/verbosity-before-company vemv/verbose-mode)
+           (vemv/set-verbosity-to t)))
+
+(add-hook 'company-completion-cancelled-hook
+          (argless
+           (vemv/set-verbosity-to vemv/verbosity-before-company)))
+
+(add-hook 'company-completion-finished-hook
+          (argless
+           (vemv/set-verbosity-to vemv/verbosity-before-company)))
+
 ;; for when one opens a file via the terminal
 ;; disabled, seems to mess up tabs
 ;; (add-hook 'buffer-list-update-hook 'vemv/clean-chosen-file-buffer-order)
