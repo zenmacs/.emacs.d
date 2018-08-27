@@ -34,6 +34,7 @@
     (setq vemv/verbose-mode (not vemv/should-start-in-verbose-mode))
 
     ;; set globally (this seems the best way - a plain `setq` won't work)
+    ;; XXX shouldn't be set on --debug-init
     (if vemv/should-start-in-verbose-mode
         (call-interactively 'toggle-debug-on-error))
 

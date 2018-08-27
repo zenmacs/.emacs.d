@@ -110,7 +110,7 @@
 
 (defun vemv/contains? (a b)
   "Whether the string B is contained in A."
-  (s-contains? b a))
+  (and a b (s-contains? b a)))
 
 (defun vemv/hash-map (&rest kvs)
   "Makes and returns a hash table out of its arguments."
