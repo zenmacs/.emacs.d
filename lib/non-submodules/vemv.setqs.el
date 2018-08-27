@@ -190,7 +190,7 @@ of the buffer into a formatted string."
       '((directories (".git" "tmp" ".svn" ".hg" ".bzr" "tools" "res-vagrant" "resources" ".lumo-cache"
                       ".paket" "doc" "bin" "assets" "public" "node_modules" "coverage" "target"))
         (files (".#*" "*~" "*.so" "*.jpg" "*.png" "*.gif" "*.pdf" "*.gz" "*.zip" "*.DS_Store"
-                "*.md" "*.gitgnore" "*.scssc" "*.keep" "*.json" "LICENSE" "LICENCE" "license" "*.patch"
+                "*.gitgnore" "*.scssc" "*.keep" "*.json" "LICENSE" "LICENCE" "license" "*.patch"
                 "flask-server" "Makefile" "makefile" "*.txt" "*ignore""*.*rc" "*.map" ".last-compilation-digest-development"
                 "*.ico" "Rakefile" ".rspec" "*integration-testing*" "*node_modules*" "webpack" ".editorconfig" "*.pid"
                 "*.workerjs" "*.MIT" "acorn" "AUTHORS" "*.APACHE2" "JSONStream" "babylon" "*.iml" "*.BSD" "*.log"
