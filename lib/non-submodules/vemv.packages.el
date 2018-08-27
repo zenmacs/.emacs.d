@@ -23,7 +23,15 @@
        (unless vemv/packages-refreshed
          (package-refresh-contents)
          (setq vemv/packages-refreshed t))
-       (package-install package)))))
+       (condition-case nil
+           (package-install package)
+         (error
+          (package-refresh-contents)
+          (condition-case nil
+              (package-install package)
+            (error
+             (package-refresh-contents)
+             (package-install package)))))))))
 
 ;; M-x benchmark-init/show-durations-tabulated / M-x benchmark-init/show-durations-tree
 (require 'benchmark-init)
