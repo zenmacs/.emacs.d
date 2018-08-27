@@ -250,30 +250,33 @@
         (cider-find-var))
       (vemv/advice-nrepl))))
 
+(defun vemv/docstring-of-var (var)
+  (let ((cider-prompt-for-symbol nil)
+        (h (ignore-errors
+             (cider-var-info var))))
+    (when h
+      (let* ((a (nrepl-dict-get h "arglists-str"))
+             (d (-some->> (nrepl-dict-get h "doc")
+                          (s-split "\n\n")
+                          (mapcar (lambda (x)
+                                    (->> x
+                                         (s-split "\n")
+                                         (mapcar 's-trim)
+                                         (s-join "\n"))))
+                          (s-join "\n\n"))))
+        (concat a
+                (if (and a d)
+                    "\n\n")
+                d)))))
+
 (defun vemv/message-clojure-doc ()
   (interactive)
   (if (vemv/ciderable-p)
-      (let* ((curr-token (cider-symbol-at-point 'look-back))
-             (cider-prompt-for-symbol nil)
-             (h (ignore-errors
-                  (cider-var-info curr-token))))
-        (if h
-            (let* ((a (nrepl-dict-get h "arglists-str"))
-                   (d (-some->> (nrepl-dict-get h "doc")
-                                (s-split "\n\n")
-                                (mapcar (lambda (x)
-                                          (->> x
-                                               (s-split "\n")
-                                               (mapcar 's-trim)
-                                               (s-join "\n"))))
-                                (s-join "\n\n")))
-                   (r (concat a
-                              (if (and a d)
-                                  "\n\n")
-                              d)))
-              (if (> (length (s-lines r)) 40)
-                  (vemv/echo "Docstring too long, jump to it instead.")
-                (vemv/echo r)))
+      (let* ((docstring (vemv/docstring-of-var (cider-symbol-at-point 'look-back))))
+        (if docstring
+            (if (> (length (s-lines docstring)) 40)
+                (vemv/echo "Docstring too long, jump to it instead.")
+              (vemv/echo docstring))
           (vemv/echo "No docs found.")))
     (vemv/echo "Not connected.")))
 
