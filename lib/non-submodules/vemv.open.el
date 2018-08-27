@@ -40,7 +40,9 @@
 
 (defun vemv/fiplr (&optional opener)
   (if (vemv/contains? vemv/project-fiplr-dir "/")
-      (fiplr-find-file-in-directory vemv/project-fiplr-dir fiplr-ignored-globs (or opener #'find-file))
+      (progn
+        (vemv/safe-select-window vemv/main_window)
+        (fiplr-find-file-in-directory vemv/project-fiplr-dir fiplr-ignored-globs (or opener #'find-file)))
     (vemv/echo "`vemv/project-fiplr-dir' was set incorrectly due to an unknown bug. Try reloading the project.")))
 
 (defun vemv/open-file-via-fiplr-then-close-previous-buffer ()
