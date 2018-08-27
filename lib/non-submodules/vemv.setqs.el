@@ -89,6 +89,7 @@
       clojure-indent-style ':always-align
       column-number-mode t
       company-dabbrev-char-regexp "\\sw\\|_\\|-\\|!\\|\\?\\|*\\|+"
+      company-echo-truncate-lines nil
       company-idle-delay nil ;; no autopopup
       company-tooltip-align-annotations t
       confirm-nonexistent-file-or-buffer nil

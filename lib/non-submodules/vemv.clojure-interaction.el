@@ -280,6 +280,26 @@
           (vemv/echo "No docs found.")))
     (vemv/echo "Not connected.")))
 
+(defun cider-company-docsig (thing)
+  "Adds the docstring"
+  (let* ((eldoc-info (cider-eldoc-info thing))
+         (ns (lax-plist-get eldoc-info "ns"))
+         (symbol (lax-plist-get eldoc-info "symbol"))
+         (arglists (lax-plist-get eldoc-info "arglists"))
+         (docstring (lax-plist-get eldoc-info "docstring")))
+    (when eldoc-info
+      (comm ;; some padding code that can be eventually useful to prevent blinking
+       (let* ((v ...)
+              (lines (s-lines v))
+              (padded (-pad "\n" lines nil (-repeat 10 nil))))
+         (s-join "\n" (car padded))))
+      (format "%s: %s %s"
+              (cider-eldoc-format-thing ns symbol thing
+                                        (cider-eldoc-thing-type eldoc-info))
+              (cider-eldoc-format-arglist arglists 0)
+              (when docstring
+                (concat "\n\n" docstring))))))
+
 (defun vemv/clear-cider-repl-buffer (&optional no-recur)
   (interactive)
   (when (cider-connected-p)
