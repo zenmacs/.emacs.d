@@ -132,7 +132,10 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
                                                                         ""
                                                                       "/")))
 
-    (setq vemv/project-type (or vemv/project-type (if (file-exists-p (concat vemv/project-root-dir "Gemfile")) :ruby :clj)))
+    (setq vemv/project-type (or vemv/project-type
+                                (if (file-exists-p (concat vemv/project-root-dir "Gemfile"))
+                                    :ruby
+                                  :clj)))
 
     (setq vemv/project-initializers (or vemv/project-initializers (lambda ())))
 

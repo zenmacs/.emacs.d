@@ -2,6 +2,7 @@
 
 (setq lexical-binding t)
 
+(require 'vemv.project-explorer)
 (provide 'vemv.project-interaction)
 
 (defun vemv/dir-for-project (which)
@@ -61,18 +62,25 @@
      (vemv/add-project-to-current-workspace project-name)
      (vemv/force-refresh-project!))))
 
-(defun vemv/maybe-change-project-graphically-impl (old-window)
-
-  (unless (or cider-launched vemv-cider-connected (cider-connected-p))
+(defun vemv/maybe-change-project-graphically-impl (old-window &optional done)
+  (if (or cider-launched vemv-cider-connected (cider-connected-p))
+      (funcall done)
     (vemv/safe-select-window vemv/repl-window)
     (if (eq vemv/project-type :elisp)
-        (switch-to-buffer "*ielm*")
-      (vemv/send :shell nil vemv/project-root-dir)
-      (delay (argless
-              (vemv/safe-select-window vemv/repl-window)
-              (comint-clear-buffer)
-              (vemv/safe-select-window old-window))
-             0.3)))
+        (progn
+          (switch-to-buffer "*ielm*")
+          (funcall done))
+      (if (and (eq vemv/project-type :ruby)
+               (get-buffer "*rails*"))
+          (progn
+            (switch-to-buffer "*rails*")
+            (funcall done))
+        (vemv/send :shell nil vemv/project-root-dir)
+        (delay (argless (vemv/safe-select-window vemv/repl-window)
+                        (comint-clear-buffer)
+                        (vemv/safe-select-window old-window)
+                        (funcall done))
+               0.3))))
 
   (when (not (gethash vemv/current-project vemv/chosen-file-buffer-order))
     (vemv/open-recent-file-for-this-project!))
@@ -89,9 +97,8 @@
        (argless
         (setq pe/project-root (funcall pe/project-root-function))
         (setq vemv/project-explorer-initialized t)
-        (when (fboundp 'vemv/refresh-file-caches)
-          (vemv/refresh-file-caches (argless (vemv/maybe-change-project-graphically-impl old-window))
-                                    :force)))))))
+        (vemv/refresh-file-caches (argless (vemv/maybe-change-project-graphically-impl old-window))
+                                  :force))))))
 
 (defvar vemv/maybe-change-project-graphically
   (vemv/debounce 'vemv/maybe-change-project-graphically* 0.3))

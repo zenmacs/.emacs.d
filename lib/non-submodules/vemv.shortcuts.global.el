@@ -52,7 +52,15 @@
       vemv/shortcuts/global/primary-e               'vemv/send
       vemv/shortcuts/global/primary-equal           'mark-whole-buffer
       vemv/shortcuts/global/primary-f               'vemv/search-in-this-buffer
-      vemv/shortcuts/global/primary-j               'vemv/clojure-init-or-send-sexpr
+      vemv/shortcuts/global/primary-j               (argless
+                                                     (if (vemv/in-a-clojure-mode?)
+                                                         (vemv/clojure-init-or-send-sexpr)
+                                                       (if (eq :ruby vemv/project-type)
+                                                           (unless (or vemv-robe-connecting vemv-robe-connected)
+                                                             (let ((default-dir vemv/project-root-dir)
+                                                                   (inf-ruby-console-environment "development"))
+                                                               (setq vemv-robe-connecting t)
+                                                               (inf-ruby-console-auto))))))
       vemv/shortcuts/global/primary-k               'vemv/kill
       vemv/shortcuts/global/primary-left            (vemv/safe-paredit-command 'paredit-forward-barf-sexp)
       vemv/shortcuts/global/primary-n               'vemv/new-frame

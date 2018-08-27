@@ -190,6 +190,23 @@
                                    (vemv/set-keys-for-scope ruby-mode-map vemv/ruby-key-bindings)
                                    (define-key ruby-mode-map [tab] 'vemv/tab)))
 
+(defun vemv/start-robe ()
+  (if-let (b (get-buffer "*rails*"))
+      (with-current-buffer b
+        (progn
+          (beginning-of-buffer)
+          (if (search-forward "pry>" nil t)
+              (progn
+                (robe-start)
+                (setq vemv-robe-connecting nil)
+                (setq vemv-robe-connected t)
+                (comint-clear-buffer)
+                (end-of-buffer))
+            (delay 'vemv/start-robe 0.75))))
+    (delay 'vemv/start-robe 0.75)))
+
+(add-hook 'inf-ruby-mode-hook 'vemv/start-robe)
+
 (add-hook 'emacs-lisp-mode-hook
           (argless (setq-local mode-line-format tabbed-line-format)))
 
@@ -200,6 +217,9 @@
           (argless (setq-local mode-line-format vemv/pe/mode-line-format)))
 
 (add-hook 'shell-mode-hook
+          (argless (setq-local mode-line-format vemv/pe/mode-line-format)))
+
+(add-hook 'inf-ruby-mode-hook
           (argless (setq-local mode-line-format vemv/pe/mode-line-format)))
 
 (unless vemv/terminal-emacs?

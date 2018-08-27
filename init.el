@@ -177,6 +177,8 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
   (setq cider-launched nil)
   (setq vemv-cider-connecting nil)
   (setq vemv-cider-connected nil)
+  (setq vemv-robe-connecting nil)
+  (setq vemv-robe-connected nil)
   (setq vemv/running-project nil)
   (setq vemv/running-project-root-dir nil)
   (setq vemv/running-project-type nil)

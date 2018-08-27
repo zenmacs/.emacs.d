@@ -18,7 +18,8 @@
                      ('clojurec-mode vemv/project-type)
                      ('emacs-lisp-mode :ielm)
                      ('inferior-emacs-lisp-mode :ielm)
-                     ('sh-mode :shell))))
+                     ('sh-mode :shell)
+                     ('ruby-mode :ruby))))
         (content (or content
                      (if (region-active-p)
                          (vemv/selected-region)
@@ -27,6 +28,7 @@
         (eval (read content))
       (let* ((sender (selected-window))
              (destination-buffer (case where
+                                   (:ruby "*rails*")
                                    (:ielm "*ielm*")
                                    (:shell "*shell-1*")
                                    (:clj vemv/clj-repl-name)
@@ -39,23 +41,27 @@
                  foreign?
                  (not vemv/parent-project-root-dirs)) ;; implementation could be more accurate, does the job for now
             (vemv/echo "Can't eval in a different project!")
-          (vemv/safe-select-window vemv/repl-window)
-          (switch-to-buffer destination-buffer)
+          (if (and (eq where :ruby)
+                   (not (get-buffer "*rails*")))
+              (vemv/echo "Disconnected!")
+            (vemv/safe-select-window vemv/repl-window)
+            (switch-to-buffer destination-buffer)
 
-          (end-of-buffer)
-          (insert content)
+            (end-of-buffer)
+            (insert content)
 
-          (unless no-return
-            (case where
-              (:ielm (ielm-return))
-              (:shell (comint-send-input))
-              (:clj (cider-repl-return))
-              (:cljs (cider-repl-return))))
+            (unless no-return
+              (case where
+                (:ielm (ielm-return))
+                (:ruby (comint-send-input))
+                (:shell (comint-send-input))
+                (:clj (cider-repl-return))
+                (:cljs (cider-repl-return))))
 
-          (pop kill-ring)
-          (end-of-buffer))
-        (unless no-return
-          (vemv/safe-select-window sender))))))
+            (pop kill-ring)
+            (end-of-buffer)
+            (unless no-return
+              (vemv/safe-select-window sender))))))))
 
 (setq vemv/shell-id 0)
 

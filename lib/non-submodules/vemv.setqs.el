@@ -56,12 +56,18 @@
                                   (vemv/in-a-clojure-mode?)
                                   (vemv/clojure-project?))
                          (propertize "Disconnected " 'face 'font-lock-line-and-column-face))
+                       (when (and (not vemv-robe-connecting)
+                                  (not vemv-robe-connected)
+                                  (eq :ruby vemv/project-type))
+                         (propertize "Disconnected " 'face 'font-lock-line-and-column-face))
                        (when vemv/verbose-mode
-                         (propertize "Verbose " 'face 'font-lock-line-and-column-face))))
-       '(:eval (when (and vemv-cider-connecting (vemv/in-a-clojure-mode?))
-                 (propertize "Connecting... " 'face 'vemv-cider-connection-face)))
-       '(:eval (when (vemv/good-window-p)
-                 (vemv/message-file-buffers-impl)))))
+                         (propertize "Verbose " 'face 'font-lock-line-and-column-face))
+                       (when (and vemv-cider-connecting (vemv/in-a-clojure-mode?))
+                         (propertize "Connecting... " 'face 'vemv-cider-connection-face))
+                       (when (and vemv-robe-connecting (eq :ruby vemv/project-type))
+                         (propertize "Connecting... " 'face 'vemv-cider-connection-face))
+                       (when (vemv/good-window-p)
+                         (vemv/message-file-buffers-impl))))))
 
 ;; http://www.emacswiki.org/emacs/BackupDirectory
 (setq backup-by-copying t
@@ -122,6 +128,7 @@
       pe/width 21
       redisplay-dont-pause t
       require-final-newline t
+      robe-completing-read-func 'ido-completing-read
       ruby-insert-encoding-magic-comment nil
       scroll-step 1
       sh-basic-offset 2
@@ -184,7 +191,7 @@ of the buffer into a formatted string."
         (files (".#*" "*~" "*.so" "*.jpg" "*.png" "*.gif" "*.pdf" "*.gz" "*.zip" "*.DS_Store"
                 "*.md" "*.gitgnore" "*.scssc" "*.keep" "*.json" "LICENSE" "LICENCE" "license" "*.patch"
                 "flask-server" "Makefile" "makefile" "*.txt" "*ignore""*.*rc" "*.map" ".last-compilation-digest-development"
-                "*.ico" "Gemfile" "Rakefile" ".rspec" "*integration-testing*" "*node_modules*" "webpack" ".editorconfig" "*.pid"
+                "*.ico" "Rakefile" ".rspec" "*integration-testing*" "*node_modules*" "webpack" ".editorconfig" "*.pid"
                 "*.workerjs" "*.MIT" "acorn" "AUTHORS" "*.APACHE2" "JSONStream" "babylon" "*.iml" "*.BSD" "*.log"
                 "*.ru" "*.cache" "*.ts" "*.json5" "atob" "LICENSE-MIT" "public/assets/*" ".*"
                 "*.ls" "loose-envify" "errno" "*.flow" "*.properties" "*.extract-native-dependencies" "*.targets"
