@@ -20,6 +20,7 @@
                      company
                      dash
                      edn
+                     exec-path-from-shell
                      fiplr
                      git-timemachine
                      haml-mode
@@ -53,6 +54,9 @@
 ;; M-x benchmark-init/show-durations-tabulated / M-x benchmark-init/show-durations-tree
 (require 'benchmark-init)
 (add-hook 'after-init-hook 'benchmark-init/deactivate)
+
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
 
 (unless vemv/terminal-emacs?
   (require 'saveplace))
