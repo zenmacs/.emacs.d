@@ -116,6 +116,7 @@
       inhibit-startup-message t
       initial-scratch-message ""
       js-indent-level 2
+      exec-path-from-shell-check-startup-files nil
       max-mini-window-height 0.25
       mouse-buffer-menu-maxlen 99999
       mouse-buffer-menu-mode-mult 1
