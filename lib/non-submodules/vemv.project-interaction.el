@@ -64,22 +64,22 @@
 
 (defun vemv/maybe-change-project-graphically-impl (old-window &optional done)
   (if (or cider-launched vemv-cider-connected (cider-connected-p))
-      (funcall done)
+      (-some-> done funcall)
     (vemv/safe-select-window vemv/repl-window)
     (if (eq vemv/project-type :elisp)
         (progn
           (switch-to-buffer "*ielm*")
-          (funcall done))
+          (-some-> done funcall))
       (if (and (eq vemv/project-type :ruby)
                (get-buffer "*rails*"))
           (progn
             (switch-to-buffer "*rails*")
-            (funcall done))
+            (-some-> done funcall))
         (vemv/send :shell nil vemv/project-root-dir)
         (delay (argless (vemv/safe-select-window vemv/repl-window)
                         (comint-clear-buffer)
                         (vemv/safe-select-window old-window)
-                        (funcall done))
+                        (-some-> done funcall))
                0.3))))
 
   (when (not (gethash vemv/current-project vemv/chosen-file-buffer-order))
