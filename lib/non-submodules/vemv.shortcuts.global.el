@@ -10,7 +10,9 @@
       vemv/shortcuts/global/S-backspace             'vemv/force-backspace
       vemv/shortcuts/global/S-f7                    'vemv/previous-workspace
       vemv/shortcuts/global/S-f9                    'vemv/next-workspace
-      vemv/shortcuts/global/f4                      nil
+      vemv/shortcuts/global/f5                      (argless
+                                                     (vemv/safe-select-window vemv/repl-window)
+                                                     (switch-to-buffer "*shell-1*"))
       vemv/shortcuts/global/f7                      'vemv/previous-project
       vemv/shortcuts/global/f8                      'vemv/after-file-open
       vemv/shortcuts/global/f9                      'vemv/next-project
