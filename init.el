@@ -128,17 +128,11 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
 
   (require 'vemv.lang.core)
   (require 'vemv.packages)
-  (unless vemv/terminal-emacs?
-    (require 'emacs.d.overrides)
-    (require 'desktop)
-    (require 'vemv.desktop))
   (require 'dash)
   (require 's)
 
-  (defun zero? (n) (and n (eq 0 n)))
-  (defun filter (p c) (-filter p c))
-
   (defun vemv-source (filename)
+    (assert (file-exists-p filename))
     (->> (concat "diff -u  <(true; export) <(source " filename "; export) | tail -n +4")
          (shell-command-to-string)
          (s-split "\n")
@@ -150,6 +144,14 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
                           (y (car (last xy))))
                      (setenv (s-chop-prefix "declare -x " x)
                              (s-replace "\"" "" y)))))))
+
+  (unless vemv/terminal-emacs?
+    (require 'emacs.d.overrides)
+    (require 'desktop)
+    (require 'vemv.desktop))
+
+  (defun zero? (n) (and n (eq 0 n)))
+  (defun filter (p c) (-filter p c))
 
   (defun vemv/sort-list-by-list (target-list criterion-list)
     (-sort (lambda (a b)
