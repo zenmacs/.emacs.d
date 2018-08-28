@@ -81,14 +81,18 @@
 
 (defun vemv/git-file-list-for (grep-options)
   (let* ((default-directory vemv/project-root-dir)
-         (command (concat "cd " default-directory "; "
-                          "cd $(git rev-parse --show-toplevel); "
-                          "git status --porcelain | grep " grep-options " | sed s/^...// |"
-                          "while read line; do echo \"$PWD/$line\"; done")))
-    (->> command
-         shell-command-to-string
-         s-lines
-         (-remove 's-blank?))))
+         (cd (concat "cd " default-directory "; "))
+         (root-command "git rev-parse --show-toplevel")
+         (command (when (not (vemv/contains? (shell-command-to-string (concat cd root-command))
+                                             "not a git repository"))
+                    (concat (concat cd
+                                    "cd $( " root-command "); ")
+                            "git status --porcelain | grep " grep-options " | sed s/^...// |"
+                            "while read line; do echo \"$PWD/$line\"; done"))))
+    (-some->> command
+              shell-command-to-string
+              s-lines
+              (-remove 's-blank?))))
 
 (defun vemv/git-staged-files ()
   "The new and modified files, that are in the staging area. Does not include deleted files."
