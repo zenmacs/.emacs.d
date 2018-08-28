@@ -103,7 +103,6 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
   (setq vemv-home (getenv "HOME"))
 
   (setenv "SHELL" "/bin/zsh")
-  (setenv "PATH" (concat (getenv "PATH") ":" vemv-home "/bin"))
 
   (require 'cl) ;; for assert
 

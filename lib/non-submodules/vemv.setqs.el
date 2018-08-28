@@ -22,8 +22,6 @@
 (set-selection-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
-(add-to-list 'exec-path (concat vemv-home "/bin"))
-
 ;; Prevents annoying popups
 (add-to-list 'display-buffer-alist (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 (add-to-list 'special-display-buffer-names '("*Messages*" vemv/display-completion))
