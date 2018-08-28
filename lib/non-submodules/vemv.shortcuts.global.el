@@ -44,6 +44,8 @@
       vemv/shortcuts/global/primary-SPC             'cua-set-mark
       vemv/shortcuts/global/primary-a               'vemv/copy-selection-or-next-sexpr
       vemv/shortcuts/global/primary-b               'vemv/duplicate
+      vemv/shortcuts/global/primary-bar             (argless
+                                                     (insert "\n"))
       vemv/shortcuts/global/primary-backspace       'vemv/delete-this-line
       vemv/shortcuts/global/primary-backtick        'other-frame
       vemv/shortcuts/global/primary-bang            (argless
