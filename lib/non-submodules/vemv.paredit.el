@@ -102,10 +102,10 @@
 
 (defmacro vemv/paredit-safely (&rest body)
   "* Paredit commands over non-lisps can cause Emacs freezes.
-   * comment-indent-function has a strange behavior, it's hard to dynamically set.
+   * `comment-indent-function' should be the default, else `paredit-forward-slurp-sexp' can break sexprs.
    * Indentation can go wild due to `last-command'"
   `(when (vemv/in-a-lisp-mode?)
-     (let* ((comment-indent-function vemv/comment-indent-function)
+     (let* ((comment-indent-function 'comment-indent-default)
             (last-command nil)
             (v (progn
                  ,@body)))
