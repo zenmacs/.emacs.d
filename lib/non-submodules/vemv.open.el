@@ -75,3 +75,35 @@
            (the-file (if the-file (file-truename the-file))))
       (when (and the-file (file-exists-p the-file))
         (vemv/open the-file)))))
+
+(defun vemv/git-file-list-for (grep-options)
+  (let* ((default-directory vemv/project-root-dir)
+         (command (concat "cd " default-directory "; "
+                          "cd $(git rev-parse --show-toplevel); "
+                          "git status --porcelain | grep " grep-options " | sed s/^...// |"
+                          "while read line; do echo \"$PWD/$line\"; done")))
+    (->> command
+         shell-command-to-string
+         s-lines
+         (-remove 's-blank?))))
+
+(defun vemv/git-staged-files ()
+  "The new and modified files, that are in the staging area. Does not include deleted files."
+  (vemv/git-file-list-for "\"^M \\|^A\""))
+
+(defun vemv/git-unstaged-files ()
+  "The new and modified files, that are not in the staging area. Does not include deleted files."
+  (vemv/git-file-list-for "\"^ M \\|^??\""))
+
+(defun vemv/open-git-staged-files ()
+  (interactive)
+  (mapcar 'vemv/open (vemv/git-staged-files)))
+
+(defun vemv/open-git-unstaged-files ()
+  (interactive)
+  (mapcar 'vemv/open (vemv/git-unstaged-files)))
+
+(defun vemv/open-all-git-files ()
+  (interactive)
+  (mapcar 'vemv/open (-concat (vemv/git-staged-files)
+                              (vemv/git-unstaged-files))))
