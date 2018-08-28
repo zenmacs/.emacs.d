@@ -38,7 +38,10 @@
                              (vemv/safe-select-window vemv/main_window))
                             :force))
 
+(defvar vemv.fiplr.cache/all-git-modified-files)
+
 (defun vemv/fiplr (&optional opener)
+  (setq vemv.fiplr.cache/all-git-modified-files (vemv/all-git-modified-files))
   (if (vemv/contains? vemv/project-fiplr-dir "/")
       (progn
         (vemv/safe-select-window vemv/main_window)
@@ -95,6 +98,9 @@
   "The new and modified files, that are not in the staging area. Does not include deleted files."
   (vemv/git-file-list-for "\"^ M \\|^??\""))
 
+(defun vemv/all-git-modified-files ()
+  (-concat (vemv/git-staged-files) (vemv/git-unstaged-files)))
+
 (defun vemv/open-git-staged-files ()
   (interactive)
   (mapcar 'vemv/open (vemv/git-staged-files)))
@@ -105,5 +111,4 @@
 
 (defun vemv/open-all-git-files ()
   (interactive)
-  (mapcar 'vemv/open (-concat (vemv/git-staged-files)
-                              (vemv/git-unstaged-files))))
+  (mapcar 'vemv/open (vemv/all-git-modified-files)))

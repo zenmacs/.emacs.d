@@ -403,6 +403,17 @@
 (when pe/cache-enabled
   (add-hook 'kill-emacs-hook 'pe/cache-clear))
 
+(defun grizzl-format-match (match-str selected)
+  "Adds git-status awareness"
+  (let* ((margin (if selected "> "            "  "))
+         (face   (if selected 'grizzl-selection-face 'default))
+         (match-str (if (-find (lambda (x)
+                                 (vemv/ends-with x match-str))
+                               vemv.fiplr.cache/all-git-modified-files)
+                        (concat match-str "*")
+                      match-str)))
+    (propertize (format "%s%s" margin match-str) 'face face)))
+
 (defun vemv/company-calculate-candidates (prefix)
   "https://github.com/company-mode/company-mode/issues/205#issuecomment-317918803"
   (let ((candidates (cdr (assoc prefix company-candidates-cache)))

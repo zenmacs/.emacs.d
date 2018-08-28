@@ -71,6 +71,7 @@
   (require 'comint))
 (require 'paredit)
 (require 's)
+(require 'grizzl)
 (require 'fiplr)
 (unless vemv/terminal-emacs?
   (require 'desktop)
