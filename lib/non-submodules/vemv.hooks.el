@@ -195,7 +195,7 @@
       (with-current-buffer b
         (progn
           (beginning-of-buffer)
-          (if (search-forward "pry>" nil t)
+          (if (search-forward vemv/pry-prompt nil t)
               (progn
                 (robe-start)
                 (setq vemv-robe-connecting nil)

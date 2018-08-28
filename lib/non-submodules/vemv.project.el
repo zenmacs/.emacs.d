@@ -69,6 +69,7 @@
      (setq clojure-align-forms-automatically nil)
      (setq whitespace-line-column 131)
      (setq vemv/before-figwheel-fn nil)
+     (setq vemv/pry-prompt "pry") ;; The pry prompt as per your `~/.pryrc' or such. Will affect robe-mode initialization process, so make sure to reflect any customized value here.
      (when (not vemv-cleaning-namespaces)
        (setq cider-cljs-lein-repl vemv/default-cider-cljs-lein-repl))))
 
