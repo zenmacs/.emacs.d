@@ -35,10 +35,6 @@
   "."
   :group 'vemv)
 
-;; Faces aren't vars, so e.g. ruby-mode can break without these
-(defvar vemv/blue-face 'vemv/blue-face)
-(defvar clojure-global-constant-face 'clojure-global-constant-face)
-
 (setq vemv-default-autocomplete-popup-background-color "#A2A2A2")
 (setq vemv-default-autocomplete-popup-background-color-lighter "#cccccc")
 (setq vemv-default-autocomplete-popup-foreground-color "#333333")
@@ -62,6 +58,13 @@
   `((t :foreground ,vemv-default-foreground-color-very-slightly-darker))
   "."
   :group 'vemv)
+
+;; Faces aren't vars, so e.g. ruby-mode can break without these
+(defvar vemv-default-foreground-face-very-slightly-darker 'vemv-default-foreground-face-very-slightly-darker)
+(defvar vemv-default-face 'vemv-default-face)
+(defvar font-lock-line-and-column-face 'font-lock-line-and-column-face)
+(defvar vemv/blue-face 'vemv/blue-face)
+(defvar clojure-global-constant-face 'clojure-global-constant-face)
 
 (custom-theme-set-faces
  'vemv

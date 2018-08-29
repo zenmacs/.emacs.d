@@ -411,12 +411,12 @@
   "Adds git-status awareness"
   (let* ((margin (if selected "> "            "  "))
          (face   (if selected 'grizzl-selection-face 'default))
-         (match-str (if (-find (lambda (x)
-                                 (vemv/ends-with x match-str))
-                               vemv.fiplr.cache/all-git-modified-files)
-                        (concat match-str "*")
-                      match-str)))
-    (propertize (format "%s%s" margin match-str) 'face face)))
+         (dirty (-find (lambda (x)
+                         (vemv/ends-with x match-str))
+                       vemv.fiplr.cache/all-git-modified-files)))
+    (concat (propertize (format "%s%s" margin match-str) 'face face)
+            (when dirty
+              (propertize "*" 'face vemv-default-foreground-face-very-slightly-darker)))))
 
 ;; XXX possible performance improvement: use `git ls-files` directly, no find-diff-git commibation
 (defun fiplr-list-files-shell-command (type path ignored-globs)
