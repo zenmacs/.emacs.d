@@ -132,8 +132,9 @@
       vemv/shortcuts/global/tertiary-right          'vemv/next-file-buffer
       vemv/shortcuts/global/tertiary-s              'vemv/save-all-buffers-for-this-project
       vemv/shortcuts/global/tertiary-t              (argless
-                                                     (vemv/close-all-file-buffers)
-                                                     (vemv/fiplr))
+                                                     (vemv/fiplr (lambda (filename)
+                                                                   (find-file filename)
+                                                                   (vemv/close-all-other-file-buffers))))
       vemv/shortcuts/global/tertiary-v              'vemv/paste-from-kill-list
       vemv/shortcuts/global/tertiary-w              'vemv/close-all-file-buffers
       vemv/shortcuts/global/tertiary-x              'vemv/dumb-cut
