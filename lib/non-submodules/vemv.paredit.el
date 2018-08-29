@@ -99,9 +99,9 @@
                   (let ((v (-find (lambda (x)
                                     (vemv/ends-with (vemv/chars-at-left) x))
                                   `(" )" " ]" " }"
-                                    " (" ;; elisp let
-                                    "[ " ;; clojure let
-                                    ))))
+                                    "(( " "[[ " "{{ "
+                                    "( (" "[ [" "{ {"
+                                    " ( " " [ " " { "))))
                     (when m
                       (left-char))
                     v)))
