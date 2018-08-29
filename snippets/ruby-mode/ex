@@ -1,0 +1,3 @@
+#name: ex
+# --
+expect($1).to

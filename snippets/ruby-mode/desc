@@ -1,0 +1,7 @@
+#name: desc
+# --
+describe $1 do
+
+  $2
+
+end

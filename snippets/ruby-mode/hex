@@ -1,0 +1,3 @@
+#name: hex
+# --
+SecureRandom.hex($1)

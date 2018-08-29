@@ -1,0 +1,5 @@
+#name: s
+# --
+unless $1
+  $2
+end

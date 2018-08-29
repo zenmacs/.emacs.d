@@ -1,0 +1,3 @@
+#name: ba
+# --
+before_action :$1, only: [:$2]
