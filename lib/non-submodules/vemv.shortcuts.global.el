@@ -49,8 +49,7 @@
       vemv/shortcuts/global/primary-backspace       'vemv/delete-this-line
       vemv/shortcuts/global/primary-backtick        'other-frame
       vemv/shortcuts/global/primary-bang            (argless
-                                                     (replying-yes
-                                                      (revert-buffer)))
+                                                     (revert-buffer t t t))
       vemv/shortcuts/global/primary-dash            'vemv/echo-clojure-source
       vemv/shortcuts/global/primary-down            'forward-paragraph
       vemv/shortcuts/global/primary-e               'vemv/send
