@@ -102,7 +102,13 @@
       vemv/shortcuts/global/secondary-right         'forward-word
       vemv/shortcuts/global/secondary-right-bracket (vemv/safe-paredit-command 'paredit-forward)
       vemv/shortcuts/global/secondary-t             'vemv/open-file-via-fiplr-then-close-previous-buffer
-      vemv/shortcuts/global/secondary-up            (vemv/safe-paredit-command 'paredit-splice-sexp-killing-backward)
+      vemv/shortcuts/global/secondary-up            (vemv/safe-paredit-command
+                                                     (argless
+                                                      (when (ignore-errors ;; avoid running the command at the top-level.
+                                                              (save-excursion
+                                                                (backward-up-list))
+                                                              t)
+                                                        (paredit-splice-sexp-killing-backward))))
       vemv/shortcuts/global/secondary-x             'vemv/smex
       vemv/shortcuts/global/secondary-w             'vemv/close-all-other-file-buffers
       vemv/shortcuts/global/tertiary-RET            'vemv/load-clojure-buffer
