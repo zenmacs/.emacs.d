@@ -414,6 +414,55 @@
                       match-str)))
     (propertize (format "%s%s" margin match-str) 'face face)))
 
+;; XXX possible performance improvement: use `git ls-files` directly, no find-diff-git commibation
+(defun fiplr-list-files-shell-command (type path ignored-globs)
+  "Adds ability to honor .gitignore"
+  (let* ((type-abbrev
+          (lambda (assoc-type)
+            (cl-case assoc-type
+              ('directories "d")
+              ('files "f"))))
+         (name-matcher
+          (lambda (glob)
+            (mapconcat 'identity
+                       `("-name" ,(shell-quote-argument glob))
+                       " ")))
+         (grouped-name-matchers
+          (lambda (type)
+            (mapconcat 'identity
+                       `(,(shell-quote-argument "(")
+                         ,(mapconcat (lambda (v) (funcall name-matcher v))
+                                     (cadr (assoc type ignored-globs))
+                                     " -o ")
+                         ,(shell-quote-argument ")"))
+                       " ")))
+         (matcher
+          (lambda (assoc-type)
+            (mapconcat 'identity
+                       `(,(shell-quote-argument "(")
+                         "-type"
+                         ,(funcall type-abbrev assoc-type)
+                         ,(funcall grouped-name-matchers assoc-type)
+                         ,(shell-quote-argument ")"))
+                       " "))))
+    (let* ((find (mapconcat 'identity
+                            `("find"
+                              "-L"
+                              ,(shell-quote-argument (directory-file-name path))
+                              ,(funcall matcher 'directories)
+                              "-prune"
+                              "-o"
+                              "-not"
+                              ,(funcall matcher 'files)
+                              "-type"
+                              ,(funcall type-abbrev type)
+                              "-print")
+                            " ")))
+      (if (vemv/in-a-git-repo? vemv/project-fiplr-dir)
+          (concat "diff --new-line-format=\"\" --unchanged-line-format=\"\" <(" find " | sort) "
+                  " <(cd $(git rev-parse --show-toplevel); git ls-files --others | while read line; do echo \"$PWD/$line\"; done | sort)")
+        find))))
+
 (defun vemv/company-calculate-candidates (prefix)
   "https://github.com/company-mode/company-mode/issues/205#issuecomment-317918803"
   (let ((candidates (cdr (assoc prefix company-candidates-cache)))

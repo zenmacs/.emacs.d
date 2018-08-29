@@ -79,14 +79,16 @@
       (when (and the-file (file-exists-p the-file))
         (vemv/open the-file)))))
 
+(defun vemv/in-a-git-repo? (dir)
+  (not (vemv/contains? (shell-command-to-string (concat "cd "dir "; "
+                                                        "git rev-parse --show-toplevel"))
+                       "ot a git repository")))
+
 (defun vemv/git-file-list-for (grep-options)
   (let* ((default-directory vemv/project-root-dir)
-         (cd (concat "cd " default-directory "; "))
-         (root-command "git rev-parse --show-toplevel")
-         (command (when (not (vemv/contains? (shell-command-to-string (concat cd root-command))
-                                             "not a git repository"))
-                    (concat (concat cd
-                                    "cd $( " root-command "); ")
+         (command (when (vemv/in-a-git-repo? default-directory)
+                    (concat "cd " default-directory "; "
+                            "cd $(git rev-parse --show-toplevel); "
                             "git status --porcelain | grep " grep-options " | sed s/^...// |"
                             "while read line; do echo \"$PWD/$line\"; done"))))
     (-some->> command

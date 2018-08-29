@@ -183,20 +183,13 @@ of the buffer into a formatted string."
       (erase-buffer)
       (insert formatted))))
 
+;; set something brief, since we already are applying .gitignore.
+;; note that fiplr would break with a nil value.
 (setq fiplr-ignored-globs
-      ;; `directories` entries must be single-segment, i.e `/` doesn't work.
-      '((directories (".git" "tmp" ".svn" ".hg" ".bzr" "tools" "res-vagrant" "resources" ".lumo-cache"
-                      ".paket" "doc" "bin" "assets" "public" "node_modules" "coverage" "target"))
-        (files (".#*" "*~" "*.so" "*.jpg" "*.png" "*.gif" "*.pdf" "*.gz" "*.zip" "*.DS_Store"
-                "*.gitgnore" "*.scssc" "*.keep" "*.json" "LICENSE" "LICENCE" "license" "*.patch"
-                "flask-server" "Makefile" "makefile" "*.txt" "*ignore""*.*rc" "*.map" ".last-compilation-digest-development"
-                "*.ico" "Rakefile" ".rspec" "*integration-testing*" "*node_modules*" "webpack" ".editorconfig" "*.pid"
-                "*.workerjs" "*.MIT" "acorn" "AUTHORS" "*.APACHE2" "JSONStream" "babylon" "*.iml" "*.BSD" "*.log"
-                "*.ru" "*.cache" "*.ts" "*.json5" "atob" "LICENSE-MIT" "public/assets/*" ".*"
-                "*.ls" "loose-envify" "errno" "*.flow" "*.properties" "*.extract-native-dependencies" "*.targets"
-                "*.ps1" "*.arcconfig" "Vagrantfile" "*.template" "*.nuspec" "*.emz" "1" "2" "*.svg"
-                "*.ttf" ".lein-repl-history" "*.cur" "profile" ".figwheel-compile-stamp" "*.woff" "*.eor"
-                "*.xml" "*.coffee" "*.lock" "*.markdown" "*.opts" "module-deps" ".nrepl-port" "repl-port"))))
+      ;; `directories` entries must be single-segment, i.e `a/b` doesn't work.
+      '((directories (".git" "tmp" ".svn" ".hg" ".bzr" ".lumo-cache"
+                      "node_modules" "coverage" "target"))
+        (files (".#*" "*~" "*.DS_Store"))))
 
 ;; Without this, performance can freeze.
 ;; `public`: for Rails' `public/assets`
