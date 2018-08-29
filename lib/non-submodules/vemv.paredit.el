@@ -93,11 +93,18 @@
   "Brings the sexpr located in the next line at the current one."
   (interactive)
   (just-one-space -1)
-  (while (progn (right-char)
-                (-find (lambda (x)
-                         (vemv/ends-with (vemv/chars-at-left) x))
-                       `(" )" " ]" " }")))
-    (left-char)
+  (while (progn (let ((m (member (vemv/current-char-at-point) `("(" ")" "[" "]" "{" "}"))))
+                  (when m
+                    (right-char))
+                  (let ((v (-find (lambda (x)
+                                    (vemv/ends-with (vemv/chars-at-left) x))
+                                  `(" )" " ]" " }"
+                                    " (" ;; elisp let
+                                    "[ " ;; clojure let
+                                    ))))
+                    (when m
+                      (left-char))
+                    v)))
     (backward-delete-char 1)))
 
 (defmacro vemv/paredit-safely (&rest body)
