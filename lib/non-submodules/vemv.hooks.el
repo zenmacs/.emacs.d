@@ -284,7 +284,8 @@
 
 (add-hook 'haml-mode-hook (argless
                            (vemv/set-keys-for-scope haml-mode-map vemv/ruby-key-bindings)
-                           (define-key haml-mode-map [tab] 'vemv/tab)))
+                           (define-key haml-mode-map [tab] 'vemv/tab)
+                           (yas-activate-extra-mode 'ruby-mode)))
 
 (add-hook 'js-mode-hook (argless
                          (vemv/set-keys-for-scope js-mode-map vemv/ruby-key-bindings)
