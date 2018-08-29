@@ -304,7 +304,8 @@
                    (setq vemv-cider-connected t)
                    (vemv/show-clj-or-cljs-repl)
                    (when (not vemv-cleaning-namespaces)
-                     (vemv/advice-nrepl)))
+                     (vemv/advice-nrepl))
+                   (define-key clojure-mode-map (kbd "/") 'cljr-slash))
                   2)))
 
 (add-hook 'cider-repl-mode-hook #'paredit-mode)
