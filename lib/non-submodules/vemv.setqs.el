@@ -124,6 +124,7 @@
       nrepl-hide-special-buffers t
       pe/cache-enabled nil
       pe/get-directory-tree-async-delay 0.00000000000000001
+      pe/goto-current-file-on-open nil
       pe/width 21
       redisplay-dont-pause t
       require-final-newline t
