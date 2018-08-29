@@ -256,7 +256,10 @@
                    (global-set-key (kbd "C-r") 'vemv/test-this-ns) ;; must be defined there. TODO: define all clojure bindings here
                    (setq-local mode-line-format tabbed-line-format)))
 
-(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+(add-hook 'emacs-lisp-mode-hook (argless
+                                 (enable-paredit-mode)
+                                 (setq-local paren-face-regexp "[][()/#']")
+                                 (paren-face-mode 1)))
 
 (add-hook 'ielm-mode-hook 'enable-paredit-mode)
 
