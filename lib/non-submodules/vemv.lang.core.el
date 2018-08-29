@@ -136,8 +136,7 @@
 
 (defun vemv/ends-with (s ending)
   "Returns non-nil if string S ends with ENDING."
-  (let ((elength (length ending)))
-    (string= (substring s (- 0 elength)) ending)))
+  (s-ends-with? ending s))
 
 (defun vemv/starts-with (s candidate)
   "Returns non-nil if string S starts with CANDIDATE."
