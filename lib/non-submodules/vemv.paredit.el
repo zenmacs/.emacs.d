@@ -107,16 +107,21 @@
                     v)))
     (backward-delete-char 1)))
 
+(defmacro vemv/paredit-almost-safely (&rest body)
+  `(when (vemv/in-a-lisp-mode?)
+     (let* ((last-command nil)
+            (v (progn
+                 ,@body)))
+       v)))
+
 (defmacro vemv/paredit-safely (&rest body)
   "* Paredit commands over non-lisps can cause Emacs freezes.
    * `comment-indent-function' should be the default, else `paredit-forward-slurp-sexp' can break sexprs.
    * Indentation can go wild due to `last-command'"
-  `(when (vemv/in-a-lisp-mode?)
-     (let* ((comment-indent-function 'comment-indent-default)
-            (last-command nil)
-            (v (progn
-                 ,@body)))
-       v)))
+  `(let* ((comment-indent-function 'comment-indent-default)
+          (v (vemv/paredit-almost-safely
+              ,@body)))
+     v))
 
 (defun vemv/safe-paredit-command (command)
   (argless
@@ -378,7 +383,7 @@ inserting it at a new line."
 
 (defun vemv/semicolon ()
   (interactive)
-  (vemv/paredit-safely
+  (vemv/paredit-almost-safely
    (if (or (equal (vemv/current-char-at-point) ";")
            (paredit-in-string-p)
            (paredit-in-comment-p))
