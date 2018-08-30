@@ -12,7 +12,9 @@
       vemv/shortcuts/global/S-f9                    'vemv/next-workspace
       vemv/shortcuts/global/f5                      (argless
                                                      (vemv/safe-select-window vemv/repl-window)
-                                                     (switch-to-buffer "*shell-1*"))
+                                                     (switch-to-buffer "*shell-1*")
+                                                     (vemv/send :shell nil vemv/project-root-dir)
+                                                     (comint-clear-buffer))
       vemv/shortcuts/global/f7                      'vemv/previous-project
       vemv/shortcuts/global/f8                      'vemv/after-file-open
       vemv/shortcuts/global/f9                      'vemv/next-project
