@@ -29,7 +29,8 @@
           (unless dc
             (delete-trailing-whitespace))
           (call-interactively 'mark-whole-buffer)
-          (call-interactively 'indent-for-tab-command))
+          (call-interactively 'indent-for-tab-command)
+          (pop-mark))
         (goto-line line)
         (vemv/end-of-line-code* nil)
         (when (or vemv/no-newline-at-eof yas)
