@@ -134,7 +134,7 @@
                                  :persistent-action  'helm-ag--persistent-action
                                  :action helm-ag--actions
                                  :nohighlight t
-                                 :requires-pattern 3
+                                 :requires-pattern 1
                                  :candidate-number-limit 9999
                                  :keymap helm-do-ag-map
                                  :follow follow)))
