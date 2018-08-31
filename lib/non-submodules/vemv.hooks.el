@@ -501,3 +501,6 @@
 
 (advice-add 'company-calculate-candidates
             :override 'vemv/company-calculate-candidates)
+
+(add-hook 'eval-expression-minibuffer-setup-hook (argless
+                                                  (eldoc-mode -1)))
