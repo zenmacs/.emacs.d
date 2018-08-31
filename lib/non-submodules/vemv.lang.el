@@ -73,7 +73,9 @@
                                        "*")))
          (default-directory vemv/project-root-dir))
     (switch-to-buffer (buffer-name b) nil t)
-    (shell b)))
+    (shell b)
+    (setq-local comint-process-echoes t) ;; disable command echoing
+    ))
 
 (defun vemv/smex ()
   (when vemv/launched
