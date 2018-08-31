@@ -27,6 +27,7 @@
                      helm-ag
                      highlight-indent-guides
                      hydra
+                     ido-at-point
                      inflections
                      multiple-cursors
                      paren-face
@@ -77,6 +78,8 @@
   (require 'desktop)
   (require 'smartparens-config)
   (require 'yasnippet))
+
+(autoload 'ido-at-point-mode "ido-at-point")
 
 (when vemv/terminal-emacs?
   (autoload 'clojure-mode "clojure-mode" nil t)

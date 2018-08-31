@@ -262,6 +262,7 @@
                                  (paren-face-mode 1)))
 
 (add-hook 'ielm-mode-hook 'enable-paredit-mode)
+(add-hook 'ielm-mode-hook 'ido-at-point-mode)
 
 (add-hook 'haml-mode-hook (argless
                            (require 'highlight-indent-guides)
