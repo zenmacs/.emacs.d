@@ -402,6 +402,12 @@
 (advice-add 'cider-test-show-report :around 'vemv/apply-tests-verbosely)
 (advice-add 'cider-test-execute :around 'vemv/apply-tests-verbosely)
 
+(defun vemv/honoring-newline-at-eof-setting (f &rest args)
+  (let (require-final-newline (not vemv/no-newline-at-eof))
+    (apply f args)))
+
+(advice-add 'save-buffer :around 'vemv/honoring-newline-at-eof-setting)
+
 (defun hack-local-variables-confirm (f &rest args)
   "Disables annoying dialog 'The local variables list in :x contains values that may not be safe"
   t)
