@@ -19,6 +19,7 @@
 (setq vemv-colors/lighter-yellow "#ffe444")
 (setq vemv-colors/pink "#D93273")
 (setq vemv-colors/purple "#7A3555")
+(setq vemv-colors/warning-pink "#aa1e44")
 
 (defface font-lock-line-and-column-face
   `((t :foreground "#696969"))
@@ -137,7 +138,7 @@
  `(font-lock-variable-name-face ((t ,(if (eq :ruby vemv/project-type)
                                          `(:foreground ,vemv-default-foreground-color)
                                        `(:foreground ,vemv-colors/yellow :bold t)))))
- `(font-lock-warning-face ((t (:bold t :foreground ,vemv-colors/pink))))
+ `(font-lock-warning-face ((t (:bold t :background ,vemv-colors/warning-pink :foreground "white"))))
 
  `(gui-element ((t (:background "#484848" :foreground "#96CBFE"))))
  `(region ((t (:background ,vemv-colors/purple))))
