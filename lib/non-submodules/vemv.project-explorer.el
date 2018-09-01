@@ -58,10 +58,13 @@
                                 (and done-fn (funcall done-fn))
                                 (setq vemv/project-explorer-initialized t)))))))
 
+(defun vemv/main-window-buffer-filename ()
+  (with-current-buffer (window-buffer vemv/main_window)
+    (and (buffer-file-name)
+         (file-truename (buffer-file-name)))))
+
 (defun vemv/show-current-file-in-project-explorer-impl ()
-  (let ((buffer-truename (with-current-buffer (window-buffer vemv/main_window)
-                           (and (buffer-file-name)
-                                (file-truename (buffer-file-name))))))
+  (let ((buffer-truename (vemv/main-window-buffer-filename)))
     (when (and buffer-truename (vemv/contains? buffer-truename vemv/project-root-dir))
       (let* ((buffer-fragments (-remove (lambda (x)
                                           (string-equal x ""))
@@ -108,15 +111,16 @@
                                            (vemv/safe-select-window original-window)))))))
 
 (defun vemv/safe-show-current-file-in-project-explorer* ()
-  (let* ((w (selected-window))
-         (attempts 7)
-         (impl (lambda (self attempt-no )
-                 (when (pos? attempt-no)
-                   (condition-case nil
-                       (vemv/show-current-file-in-project-explorer-unsafe w)
-                     (error
-                      (funcall self self (dec attempts))))))))
-    (funcall impl impl attempts)))
+  (when (file-exists-p (vemv/main-window-buffer-filename))
+    (let* ((w (selected-window))
+           (attempts 7)
+           (impl (lambda (self attempt-no)
+                   (when (pos? attempt-no)
+                     (condition-case nil
+                         (vemv/show-current-file-in-project-explorer-unsafe w)
+                       (error
+                        (funcall self self (dec attempts))))))))
+      (funcall impl impl attempts))))
 
 (defvar vemv/safe-show-current-file-in-project-explorer
   (vemv/debounce 'vemv/safe-show-current-file-in-project-explorer* 0.8))
