@@ -426,7 +426,6 @@
             (when dirty
               (propertize "*" 'face vemv-default-foreground-face-very-slightly-darker)))))
 
-;; XXX possible performance improvement: use `git ls-files` directly, no find-diff-git commibation
 (defun fiplr-list-files-shell-command (type path ignored-globs)
   "Adds ability to honor .gitignore"
   (let* ((type-abbrev
@@ -471,8 +470,7 @@
                               "-print")
                             " ")))
       (if (vemv/in-a-git-repo? vemv/project-fiplr-dir)
-          (concat "diff --new-line-format=\"\" --unchanged-line-format=\"\" <(" find " | sort) "
-                  " <(cd $(git rev-parse --show-toplevel); git ls-files --others | while read line; do echo \"$PWD/$line\"; done | sort)")
+          (concat "cd " vemv/project-fiplr-dir "; comm -23 <(sort <(git ls-files --exclude-standard) <(git status --porcelain | grep -v \"^ D\" | sed s/^...//) | uniq | sort) <(git ls-files --deleted | sort) | while read line; do echo \"$PWD/$line\"; done | sort")
         find))))
 
 (defun vemv/company-calculate-candidates (prefix)
