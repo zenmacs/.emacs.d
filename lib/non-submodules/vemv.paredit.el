@@ -25,12 +25,24 @@
              (require-final-newline (and (not vemv/no-newline-at-eof)
                                          (not dc)
                                          (not yas))))
-        (unless (eq major-mode 'fundamental-mode)
+        (unless (member major-mode `(fundamental-mode ruby-mode))
           (unless dc
             (delete-trailing-whitespace))
           (call-interactively 'mark-whole-buffer)
           (call-interactively 'indent-for-tab-command)
           (pop-mark))
+        (when (eq major-mode 'ruby-mode)
+          (require 'rubocop)
+          (defun rubocop--file-command (command)
+            "Removes compilation-mode stuff"
+            (rubocop-ensure-installed)
+            (let ((file-name (buffer-file-name (current-buffer))))
+              (if file-name
+                  ;; make sure we run RuboCop from a project's root if the command is executed within a project
+                  (let ((default-directory (or (rubocop-project-root 'no-error) default-directory)))
+                    (shell-command-to-string (rubocop-build-command command (rubocop-local-file-name file-name))))
+                (error "Buffer is not visiting a file"))))
+          (rubocop-autocorrect-current-file))
         (goto-line line)
         (vemv/end-of-line-code* nil)
         (when (or vemv/no-newline-at-eof yas)

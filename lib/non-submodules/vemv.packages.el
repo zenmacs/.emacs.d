@@ -33,6 +33,7 @@
                      paren-face
                      queue
                      robe
+                     rubocop
                      ruby-end
                      simpleclip
                      smartparens
