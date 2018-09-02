@@ -195,7 +195,7 @@ of the buffer into a formatted string."
                       "node_modules" "coverage" "target"))
         (files (".#*" "*~" "*.DS_Store"))))
 
-;; Without this, performance can freeze.
+;; Without this, performance can freeze (update: not so much given we know correctly use `pe/omit-gitignore')
 ;; `public`: for Rails' `public/assets`
 (setq pe/omit-regex (mapconcat 'identity
                                (list "^#" "~$" "^node_modules$" "tmp" ".git$" ".sass-cache"

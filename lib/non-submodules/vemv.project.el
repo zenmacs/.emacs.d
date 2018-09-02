@@ -128,6 +128,9 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
     (unless (file-exists-p vemv/project-root-dir)
       (vemv/echo (concat "vemv/project-root-dir doesn't exist: " vemv/project-root-dir)))
 
+    ;; note: `pe/omit-gitignore' is poorly named, should be called `pe/honor-gitignore'
+    (setq pe/omit-gitignore (file-exists-p (concat vemv/project-root-dir ".gitignore")))
+
     (setq vemv/project-clojure-dir (or vemv/project-clojure-dir vemv/project-root-dir))
 
     (setq vemv/project-clojure-dir (concat vemv/project-clojure-dir (if (s-ends-with? "/" vemv/project-clojure-dir)
