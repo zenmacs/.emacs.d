@@ -37,8 +37,7 @@
       (whitespace-mode -1)
       (toggle-truncate-lines)
       (ielm)
-      (vemv/maybe-change-project-graphically-impl vemv/main_window
-                                                  (argless
+      (vemv/maybe-change-project-graphically-impl (argless
                                                    (vemv/safe-select-window vemv/main_window)
                                                    (funcall done-fn)
                                                    (setq vemv/launched t)))))))

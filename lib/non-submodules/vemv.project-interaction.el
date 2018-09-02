@@ -62,25 +62,24 @@
      (vemv/add-project-to-current-workspace project-name)
      (vemv/force-refresh-project!))))
 
-(defun vemv/maybe-change-project-graphically-impl (old-window &optional done)
+(defun vemv/maybe-change-project-graphically-impl (&optional done)
   (if (or cider-launched vemv-cider-connected (cider-connected-p))
       (-some-> done funcall)
-    (vemv/safe-select-window vemv/repl-window)
-    (if (eq vemv/project-type :elisp)
-        (progn
-          (switch-to-buffer "*ielm*")
-          (-some-> done funcall))
-      (if (and (eq vemv/project-type :ruby)
-               (get-buffer "*rails*"))
+    (with-selected-window vemv/repl-window
+      (if (eq vemv/project-type :elisp)
           (progn
-            (switch-to-buffer "*rails*")
+            (switch-to-buffer "*ielm*")
             (-some-> done funcall))
-        (vemv/send :shell nil vemv/project-root-dir)
-        (delay (argless (vemv/safe-select-window vemv/repl-window)
-                        (comint-clear-buffer)
-                        (vemv/safe-select-window old-window)
-                        (-some-> done funcall))
-               0.3))))
+        (if (and (eq vemv/project-type :ruby)
+                 (get-buffer "*rails*"))
+            (progn
+              (switch-to-buffer "*rails*")
+              (-some-> done funcall))
+          (vemv/send :shell nil vemv/project-root-dir)
+          (delay (argless (with-selected-window vemv/repl-window
+                            (comint-clear-buffer)
+                            (-some-> done funcall)))
+                 0.3)))))
 
   (when (not (gethash vemv/current-project vemv/chosen-file-buffer-order))
     (vemv/open-recent-file-for-this-project!))
@@ -89,15 +88,14 @@
   (vemv/previous-file-buffer))
 
 (defun vemv/maybe-change-project-graphically* ()
-  (let ((old-window (selected-window)))
-    (vemv/safe-select-window vemv/project-explorer-window)
-    (setq vemv/project-explorer-initialized nil)
+  (with-selected-window vemv/project-explorer-window
     (with-current-buffer (window-buffer vemv/project-explorer-window)
+      (setq vemv/project-explorer-initialized nil)
       (project-explorer-open
        (argless
         (setq pe/project-root (funcall pe/project-root-function))
         (setq vemv/project-explorer-initialized t)
-        (vemv/refresh-file-caches (argless (vemv/maybe-change-project-graphically-impl old-window))
+        (vemv/refresh-file-caches 'vemv/maybe-change-project-graphically-impl
                                   :force))))))
 
 (defvar vemv/maybe-change-project-graphically

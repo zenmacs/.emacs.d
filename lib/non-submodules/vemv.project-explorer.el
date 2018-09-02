@@ -11,22 +11,21 @@
 
 (defun vemv/refresh-pe-cache (&optional done)
   (let ((pe/project-root (funcall pe/project-root-function)))
-    (vemv/safe-select-window vemv/project-explorer-window)
-    (when pe/cache-enabled
-      (call-interactively 'pe/cache-clear))
-    (with-current-buffer (window-buffer vemv/project-explorer-window)
-      (funcall pe/directory-tree-function
-               (funcall pe/project-root-function)
-               (lambda (x)
-                 (vemv/safe-select-window vemv/project-explorer-window)
-                 (setq vemv/project-explorer-initialized t)
-                 (with-current-buffer (window-buffer vemv/project-explorer-window)
-                   (pe/set-tree (current-buffer) 'refresh x)
-                   (when done
-                     (funcall done))))))))
+    (with-selected-window vemv/project-explorer-window
+      (with-current-buffer (window-buffer vemv/project-explorer-window)
+        (when pe/cache-enabled
+          (call-interactively 'pe/cache-clear))
+        (funcall pe/directory-tree-function
+                 (funcall pe/project-root-function)
+                 (lambda (x)
+                   (with-selected-window vemv/project-explorer-window
+                     (with-current-buffer (window-buffer vemv/project-explorer-window)
+                       (setq vemv/project-explorer-initialized t)
+                       (pe/set-tree (current-buffer) 'refresh x)
+                       (when done
+                         (funcall done))))))))))
 
-(setq vemv/refreshing-caches
-      nil)
+(setq vemv/refreshing-caches nil)
 
 (defun vemv/timestamp-lock-acquired? (timestamp)
   (and timestamp (< (- (vemv/timestamp) timestamp) 30)))
@@ -46,58 +45,62 @@
     (vemv/safe-select-window vemv/project-explorer-window)))
 
 (defun vemv/ensure-project-is-displayed! (done-fn)
-  (vemv/safe-select-window vemv/project-explorer-window)
-  (let* ((expected vemv/project-root-dir)
-         (actual (funcall pe/project-root-function))
-         (default-directory expected)
-         (pe/project-root expected))
-    (if (string-equal expected actual)
-        (and done-fn (funcall done-fn))
-      (with-current-buffer (window-buffer vemv/project-explorer-window)
-        (project-explorer-open (argless
-                                (and done-fn (funcall done-fn))
-                                (setq vemv/project-explorer-initialized t)))))))
+  (with-selected-window vemv/project-explorer-window
+    (with-current-buffer (window-buffer vemv/project-explorer-window)
+      (let* ((expected vemv/project-root-dir)
+             (actual (funcall pe/project-root-function))
+             (default-directory expected)
+             (pe/project-root expected))
+        (if (string-equal expected actual)
+            (-some-> done-fn funcall)
+          (project-explorer-open (argless
+                                  (and done-fn (funcall done-fn))
+                                  (setq vemv/project-explorer-initialized t))))))))
 
 (defun vemv/main-window-buffer-filename ()
   (with-current-buffer (window-buffer vemv/main_window)
     (and (buffer-file-name)
          (file-truename (buffer-file-name)))))
 
+(defun vemv.project-explorer/filename-subsegments (filename)
+  (let* ((projname (funcall pe/project-root-function))
+         (project-fragments (-remove 's-blank?
+                                     (split-string projname "/")))
+         (fragments (->> (split-string filename "/")
+                         (-remove 's-blank?)
+                         (-drop (length project-fragments))))
+         (expanded-fragments (mapcar* '-take
+                                      (number-sequence 1 (length fragments))
+                                      (-repeat (length fragments) fragments))))
+    (mapcar (lambda (x)
+              (concat (->> x
+                           (-interpose "/")
+                           (cons projname)
+                           (s-join ""))
+                      "/"))
+            expanded-fragments)))
+
 (defun vemv/show-current-file-in-project-explorer-impl ()
   (let ((buffer-truename (vemv/main-window-buffer-filename)))
     (when (and buffer-truename (vemv/contains? buffer-truename vemv/project-root-dir))
-      (let* ((buffer-fragments (-remove (lambda (x)
-                                          (string-equal x ""))
-                                        (split-string buffer-truename "/")))
-             (projname (funcall pe/project-root-function))
-             (project-fragments (-remove (lambda (x)
-                                           (string-equal x ""))
-                                         (split-string projname "/")))
-             (fragments (-drop (length project-fragments)
-                               buffer-fragments))
-             (expanded-fragments (mapcar* (lambda (x y)
-                                            (-take x y))
-                                          (number-sequence 1 (length fragments)) (-repeat (length fragments) fragments)))
-             (final-fragments (mapcar (lambda (x)
-                                        (concat (s-join "" (cons projname (-interpose "/" x))) "/"))
-                                      expanded-fragments)))
+      (let* ((final-fragments (vemv.project-explorer/filename-subsegments buffer-truename))
+             (goal (->> final-fragments last first (s-chop-suffix "/"))))
 
-        (vemv/safe-select-window vemv/project-explorer-window)
-        ;; somewhat expensive call. But a well-tuned `pe/omit-regex' will make it acceptable.
-        ;; Note: do not comment out anymore - implementation will fail.
-        (pe/fold-all)
-        (beginning-of-buffer)
+        (with-selected-window vemv/project-explorer-window
+          ;; somewhat expensive call. But a well-tuned `pe/omit-regex' will make it acceptable.
+          ;; Note: do not comment out anymore - implementation will fail.
+          (pe/fold-all)
+          (beginning-of-buffer)
 
-        (seq-doseq (f (butlast final-fragments))
-          (while (not (string-equal f (pe/current-directory)))
+          (seq-doseq (f (butlast final-fragments))
+            (while (not (string-equal f (pe/current-directory)))
+              (next-line))
+            (pe/return))
+
+          (while (not (string-equal goal (pe/get-filename)))
             (next-line))
-          (pe/return))
 
-        (while (not (string-equal (->> final-fragments last first (s-chop-suffix "/"))
-                                  (pe/get-filename)))
-          (next-line))
-
-        (end-of-line)))))
+          (end-of-line))))))
 
 (defun vemv/show-current-file-in-project-explorer-unsafe (original-window)
   (interactive)
@@ -123,4 +126,4 @@
       (funcall impl impl attempts))))
 
 (defvar vemv/safe-show-current-file-in-project-explorer
-  (vemv/debounce 'vemv/safe-show-current-file-in-project-explorer* 0.8))
+  (vemv/debounce 'vemv/safe-show-current-file-in-project-explorer* 0.2))
