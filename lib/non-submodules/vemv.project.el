@@ -129,7 +129,8 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
       (vemv/echo (concat "vemv/project-root-dir doesn't exist: " vemv/project-root-dir)))
 
     ;; note: `pe/omit-gitignore' is poorly named, should be called `pe/honor-gitignore'
-    (setq pe/omit-gitignore (file-exists-p (concat vemv/project-root-dir ".gitignore")))
+    ;; disabled due to https://github.com/vemv/.emacs.d/issues/206
+    ;; (setq pe/omit-gitignore (file-exists-p (concat vemv/project-root-dir ".gitignore")))
 
     (setq vemv/project-clojure-dir (or vemv/project-clojure-dir vemv/project-root-dir))
 
