@@ -96,3 +96,9 @@
     (when (not was-verbose)
       (vemv/toggle-verbosity))
     (vemv/echo "Reloaded!")))
+
+(defun vemv/keyboard-funcall (f &rest args)
+  (if vemv/input-enabled
+      (progn
+        (apply f args))
+    (vemv/echo "Input disabled by `vemv/keyboard-funcall'.")))

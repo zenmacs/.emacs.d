@@ -159,10 +159,10 @@ result += %|
   SPECIAL.each do |char|
     command = "vemv/shortcuts/#{scope}/#{REPLACEMENTS[char]}"
     left = char.include?('[f') ? "#{char}" : %|"#{char}"|
-    result += %|    #{left} (argless (if #{command} (funcall #{command})))\n| unless SELF_INSERTING.include?(char)
+    result += %|    #{left} (argless (if #{command} (vemv/keyboard-funcall #{command})))\n| unless SELF_INSERTING.include?(char)
     unless DUALS.include?(char)
       command = "vemv/shortcuts/#{scope}/S-#{REPLACEMENTS[char]}"
-      result += %|    "#{super_combination_for char}" (argless (if #{command} (funcall #{command})))\n|
+      result += %|    "#{super_combination_for char}" (argless (if #{command} (vemv/keyboard-funcall #{command})))\n|
     end
   end
 
@@ -171,9 +171,9 @@ result += %|
       next if char.include?('[f')
       next if NO_C.include?(char) && modifier_mappings[modifier] == 'C'
       command = "vemv/shortcuts/#{scope}/#{modifier}-#{REPLACEMENTS[char]}"
-      result += %|    "#{modifier_mappings[modifier]}-#{char}" (argless (if #{command} (funcall #{command})))\n|
+      result += %|    "#{modifier_mappings[modifier]}-#{char}" (argless (if #{command} (vemv/keyboard-funcall #{command})))\n|
       s_command = "vemv/shortcuts/#{scope}/#{modifier}-S-#{REPLACEMENTS[char]}"
-      result += %|    "#{modifier_mappings[modifier]}-S-#{char}" (argless (if #{s_command} (funcall #{s_command})))\n|
+      result += %|    "#{modifier_mappings[modifier]}-S-#{char}" (argless (if #{s_command} (vemv/keyboard-funcall #{s_command})))\n|
     end
   end
 

@@ -2,6 +2,8 @@
 
 (setq vemv/terminal-emacs? (getenv "TERMINAL_EMACS"))
 
+(defvar vemv/input-enabled t)
+
 (let ((file-name-handler-alist nil)
       (gc-cons-threshold (* 200 1000 1000)))
 

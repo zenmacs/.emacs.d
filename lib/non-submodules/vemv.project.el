@@ -123,6 +123,7 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
 
     (setq default-directory vemv/project-root-dir)
     (setq-default default-directory vemv/project-root-dir)
+    (setq-local default-directory vemv/project-root-dir)
 
     (unless (file-exists-p vemv/project-root-dir)
       (vemv/echo (concat "vemv/project-root-dir doesn't exist: " vemv/project-root-dir)))

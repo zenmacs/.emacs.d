@@ -85,7 +85,12 @@
     (vemv/open-recent-file-for-this-project!))
 
   (vemv/next-file-buffer)
-  (vemv/previous-file-buffer))
+  (vemv/previous-file-buffer)
+
+  (setq vemv/input-enabled t)
+  (setq default-directory vemv/project-root-dir)
+  (setq-default default-directory vemv/project-root-dir)
+  (setq-local default-directory vemv/project-root-dir))
 
 (defun vemv/maybe-change-project-graphically* ()
   (with-selected-window vemv/project-explorer-window
@@ -224,12 +229,14 @@
 
 (defun vemv/next-project ()
   (interactive)
+  (setq vemv/input-enabled nil)
   (vemv/refresh-available-projects)
   (vemv/next-project-within-workspace)
   (vemv/force-refresh-project!))
 
 (defun vemv/previous-project ()
   (interactive)
+  (setq vemv/input-enabled nil)
   (vemv/refresh-available-projects)
   (vemv/previous-project-within-workspace)
   (vemv/force-refresh-project!))
