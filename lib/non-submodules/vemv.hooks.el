@@ -474,7 +474,9 @@
                   "| ruby -e 'puts STDIN.read.split(\"\\n\").sort_by{|line| -(%w("
                   (if (eq vemv/project-type :ruby)
                       "app/controllers spec"
-                    "src test")
+                    (if (eq vemv/project-type :elisp)
+                        "vemv. .el"
+                      "src test"))
                   ").find_index{|pattern| line.include? pattern } || 9999) }'")
         find))))
 
