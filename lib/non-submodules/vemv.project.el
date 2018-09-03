@@ -38,7 +38,7 @@
     (load (concat "vemv.project." vemv/current-project))
   (error nil))
 
-(defmacro vemv.project/reset ()
+(defmacro vemv.project/reset* ()
   `(progn
      (set-variable 'cider-lein-parameters vemv/initial-cider-lein-parameters)
      (setq vemv/project-type nil) ;; :clj, :cljs (these two have an effect), or any other keyword (with the only purpose of preventing :clj/:cljs effects)
@@ -69,9 +69,13 @@
      (setq clojure-align-forms-automatically nil)
      (setq whitespace-line-column 131)
      (setq vemv/before-figwheel-fn nil)
+     (setq vemv.project/cd-command "cd ") ;; the command that will be used in *shell-1* to change directories as you change projects.
      (setq vemv/pry-prompt "pry") ;; The pry prompt as per your `~/.pryrc' or such. Will affect robe-mode initialization process, so make sure to reflect any customized value here.
      (when (not vemv-cleaning-namespaces)
        (setq cider-cljs-lein-repl vemv/default-cider-cljs-lein-repl))))
+
+(defun vemv.project/reset ()
+  (vemv.project/reset*))
 
 (vemv.project/reset)
 

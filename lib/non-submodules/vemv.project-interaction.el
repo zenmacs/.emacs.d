@@ -75,7 +75,7 @@
             (progn
               (switch-to-buffer "*rails*")
               (-some-> done funcall))
-          (vemv/send :shell nil vemv/project-root-dir)
+          (vemv/send :shell nil (concat vemv.project/cd-command vemv/project-root-dir))
           (delay (argless (with-selected-window vemv/repl-window
                             (comint-clear-buffer)
                             (-some-> done funcall)))
