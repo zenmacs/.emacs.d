@@ -48,7 +48,8 @@
               (if file-name
                   ;; make sure we run RuboCop from a project's root if the command is executed within a project
                   (let ((default-directory (or (rubocop-project-root 'no-error) default-directory)))
-                    (shell-command-to-string (rubocop-build-command command (rubocop-local-file-name file-name))))
+                    (shell-command-to-string (rubocop-build-command command (rubocop-local-file-name file-name)))
+                    (revert-buffer t t t))
                 (error "Buffer is not visiting a file"))))
           (rubocop-autocorrect-current-file))))))
 
