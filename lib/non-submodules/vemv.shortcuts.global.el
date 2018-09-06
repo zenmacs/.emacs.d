@@ -113,6 +113,8 @@
                                                         (paredit-splice-sexp-killing-backward))))
       vemv/shortcuts/global/secondary-x             'vemv/smex
       vemv/shortcuts/global/secondary-w             'vemv/close-all-other-file-buffers
+      vemv/shortcuts/global/tertiary-9              (vemv/safe-paredit-command 'paredit-backward-up)
+      vemv/shortcuts/global/tertiary-0              (vemv/safe-paredit-command 'paredit-forward-up)
       vemv/shortcuts/global/tertiary-RET            'vemv/load-clojure-buffer
       vemv/shortcuts/global/tertiary-SPC            'vemv/indent-region
       vemv/shortcuts/global/tertiary-backspace      'vemv/unindent-region
