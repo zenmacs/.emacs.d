@@ -177,6 +177,132 @@
                                                                 (looking-at "%r"))))))
                                              font-lock-preprocessor-face))))))
 
+(advice-add 'js-mode :before (argless
+                              (setq js--font-lock-keywords-2
+                                    (append js--font-lock-keywords-1
+                                            (list (list js--keyword-re 1 font-lock-keyword-face)
+                                                  (list "\\_<for\\_>"
+                                                        "\\s-+\\(each\\)\\_>" nil nil
+                                                        (list 1 'font-lock-keyword-face))
+                                                  (cons js--basic-type-re font-lock-type-face)
+                                                  (cons js--constant-re clojure-global-constant-face))))
+                              (setq js--font-lock-keywords-3
+                                    `(
+                                      ;; This goes before keywords-2 so it gets used preferentially
+                                      ;; instead of the keywords in keywords-2. Don't use override
+                                      ;; because that will override syntactic fontification too, which
+                                      ;; will fontify commented-out directives as if they weren't
+                                      ;; commented out.
+                                      ,@cpp-font-lock-keywords ; from font-lock.el
+
+                                      ,@js--font-lock-keywords-2
+
+                                      ("\\.\\(prototype\\)\\_>"
+                                       (1 font-lock-constant-face))
+
+                                      ;; Highlights class being declared, in parts
+                                      (js--class-decl-matcher
+                                       ,(concat "\\(" js--name-re "\\)\\(?:\\.\\|.*$\\)")
+                                       (goto-char (match-beginning 1))
+                                       nil
+                                       (1 font-lock-type-face))
+
+                                      ;; Highlights parent class, in parts, if available
+                                      (js--class-decl-matcher
+                                       ,(concat "\\(" js--name-re "\\)\\(?:\\.\\|.*$\\)")
+                                       (if (match-beginning 2)
+                                           (progn
+                                             (setq js--tmp-location (match-end 2))
+                                             (goto-char js--tmp-location)
+                                             (insert "=")
+                                             (goto-char (match-beginning 2)))
+                                         (setq js--tmp-location nil)
+                                         (goto-char (point-at-eol)))
+                                       (when js--tmp-location
+                                         (save-excursion
+                                           (goto-char js--tmp-location)
+                                           (delete-char 1)))
+                                       (1 font-lock-type-face))
+
+                                      ;; Highlights parent class
+                                      (js--class-decl-matcher
+                                       (2 font-lock-type-face nil t))
+
+                                      ;; Dojo needs its own matcher to override the string highlighting
+                                      (,(js--make-framework-matcher
+                                         'dojo
+                                         "^\\s-*dojo\\.declare\\s-*(\""
+                                         "\\(" js--dotted-name-re "\\)"
+                                         "\\(?:\"\\s-*,\\s-*\\(" js--dotted-name-re "\\)\\)?")
+                                       (1 font-lock-type-face t)
+                                       (2 font-lock-type-face nil t))
+
+                                      ;; Match Dojo base classes. Of course Mojo has to be different
+                                      ;; from everything else under the sun...
+                                      (,(js--make-framework-matcher
+                                         'dojo
+                                         "^\\s-*dojo\\.declare\\s-*(\""
+                                         "\\(" js--dotted-name-re "\\)\"\\s-*,\\s-*\\[")
+                                       ,(concat "[[,]\\s-*\\(" js--dotted-name-re "\\)\\s-*"
+                                                "\\(?:\\].*$\\)?")
+                                       (backward-char)
+                                       (end-of-line)
+                                       (1 font-lock-type-face))
+
+                                      ;; continued Dojo base-class list
+                                      (,(js--make-framework-matcher
+                                         'dojo
+                                         "^\\s-*" js--dotted-name-re "\\s-*[],]")
+                                       ,(concat "\\(" js--dotted-name-re "\\)"
+                                                "\\s-*\\(?:\\].*$\\)?")
+                                       (if (save-excursion (backward-char)
+                                                           (js--inside-dojo-class-list-p))
+                                           (forward-symbol -1)
+                                         (end-of-line))
+                                       (end-of-line)
+                                       (1 font-lock-type-face))
+
+                                      ;; variable declarations
+                                      ,(list
+                                        (concat "\\_<\\(const\\|var\\|let\\)\\_>\\|" js--basic-type-re)
+                                        (list #'js--variable-decl-matcher nil nil nil))
+
+                                      ;; class instantiation
+                                      ,(list
+                                        (concat "\\_<new\\_>\\s-+\\(" js--dotted-name-re "\\)")
+                                        (list 1 'font-lock-type-face))
+
+                                      ;; instanceof
+                                      ,(list
+                                        (concat "\\_<instanceof\\_>\\s-+\\(" js--dotted-name-re "\\)")
+                                        (list 1 'font-lock-type-face))
+
+                                      ;; formal parameters
+                                      ,(list
+                                        (concat
+                                         "\\_<function\\_>\\(\\s-+" js--name-re "\\)?\\s-*(\\s-*"
+                                         js--name-start-re)
+                                        (list (concat "\\(" js--name-re "\\)\\(\\s-*).*\\)?")
+                                              '(backward-char)
+                                              '(end-of-line)
+                                              '(1 font-lock-variable-name-face)))
+
+                                      ;; continued formal parameter list
+                                      ,(list
+                                        (concat
+                                         "^\\s-*" js--name-re "\\s-*[,)]")
+                                        (list js--name-re
+                                              '(if (save-excursion (backward-char)
+                                                                   (js--inside-param-list-p))
+                                                   (forward-symbol -1)
+                                                 (end-of-line))
+                                              '(end-of-line)
+                                              '(0 font-lock-variable-name-face)))))
+                              (setq js--font-lock-keywords
+                                    '(js--font-lock-keywords-3 js--font-lock-keywords-1
+                                                               js--font-lock-keywords-2
+                                                               js--font-lock-keywords-3))))
+
 (add-hook 'ruby-mode-hook (argless (ruby-end-mode)
                                    (robe-mode)
                                    (setq-local paren-face-regexp (concat "\\("
