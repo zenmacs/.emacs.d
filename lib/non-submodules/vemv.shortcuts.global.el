@@ -114,6 +114,8 @@
       vemv/shortcuts/global/secondary-x             'vemv/smex
       vemv/shortcuts/global/secondary-w             'vemv/close-all-other-file-buffers
       vemv/shortcuts/global/tertiary-RET            'vemv/load-clojure-buffer
+      vemv/shortcuts/global/tertiary-SPC            'vemv/indent-region
+      vemv/shortcuts/global/tertiary-backspace      'vemv/unindent-region
       vemv/shortcuts/global/tertiary-a              'vemv/copy-inserting-at-kill-list
       vemv/shortcuts/global/tertiary-backtick       'vemv/jump-to-clojure-definition
       vemv/shortcuts/global/tertiary-e              (argless (vemv/send nil nil nil :no-return))

@@ -77,3 +77,35 @@
       (progn
         (next-line)
         (back-to-indentation)))))
+
+(defun vemv/indent-region (&optional n)
+  "Indents the current region, or the current line"
+  (interactive)
+  (let* ((was-selected (region-active-p))
+         (n (or n 2))
+         (beg (if was-selected
+                  (region-beginning)
+                (save-excursion
+                  (beginning-of-line-text)
+                  (point))))
+         (end (if was-selected
+                  (region-end)
+                (save-excursion
+                  (end-of-line)
+                  (point))))
+         (beg (save-excursion
+                (goto-char beg)
+                (beginning-of-line)
+                (point)))
+         (end (save-excursion
+                (goto-char end)
+                (end-of-line)
+                (point))))
+    (indent-rigidly beg end n)
+    (when was-selected
+      (select-region beg end))))
+
+(defun vemv/unindent-region ()
+  "Unindents the current region, or the current line"
+  (interactive)
+  (vemv/indent-region -2))
