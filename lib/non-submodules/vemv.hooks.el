@@ -415,6 +415,8 @@
                            (yas-activate-extra-mode 'ruby-mode)))
 
 (add-hook 'js-mode-hook (argless
+                         (setq-local paren-face-regexp "\\(\\+\\|\\?\\|,\\|=\\|<\\|>\\|[][(){}:.;$!]\\)")
+                         (paren-face-mode 1)
                          (vemv/set-keys-for-scope js-mode-map vemv/ruby-key-bindings)
                          (define-key js-mode-map [tab] 'vemv/tab)))
 
