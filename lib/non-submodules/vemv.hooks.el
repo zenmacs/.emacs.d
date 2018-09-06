@@ -177,6 +177,7 @@
                                                                 (looking-at "%r"))))))
                                              font-lock-preprocessor-face))))))
 
+;; Sets `clojure-global-constant-face'
 (advice-add 'js-mode :before (argless
                               (setq js--font-lock-keywords-2
                                     (append js--font-lock-keywords-1
@@ -643,3 +644,40 @@
 
 (add-hook 'eval-expression-minibuffer-setup-hook (argless
                                                   (eldoc-mode -1)))
+
+
+;; Sets #4D575F
+(advice-add 'css-mode :before
+            (argless
+             (defun css--fontify-region (start end &optional loudly)
+               "Fontify a CSS buffer between START and END.
+START and END are buffer positions."
+               (let ((extended-region (font-lock-default-fontify-region start end loudly)))
+                 (when css-fontify-colors
+                   (when (and (consp extended-region)
+		              (eq (car extended-region) 'jit-lock-bounds))
+	             (setq start (cadr extended-region))
+	             (setq end (cddr extended-region)))
+                   (save-excursion
+	             (let ((case-fold-search t))
+	               (goto-char start)
+	               (while (re-search-forward css--colors-regexp end t)
+	                 ;; Skip comments and strings.
+	                 (unless (nth 8 (syntax-ppss))
+	                   (let* ((start (match-beginning 0))
+                                  (color (css--compute-color start (match-string 0))))
+		             (when color
+		               (with-silent-modifications
+		                 ;; Use the color as the background, to make it more
+		                 ;; clear.  Use a contrasting color as the foreground,
+		                 ;; to make it readable.  Finally, have a small box
+		                 ;; using the existing foreground color, to make sure
+		                 ;; it stands out a bit from any other text; in
+		                 ;; particular this is nice when the color matches the
+		                 ;; buffer's background color.
+		                 (add-text-properties
+		                  start (point)
+		                  (list 'face (list :background color
+				                    :foreground (css--contrasty-color color)
+				                    :box '(:line-width -1 :color "#4D575F"))))))))))))
+                 extended-region))))
