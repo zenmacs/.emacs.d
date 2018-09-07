@@ -111,7 +111,23 @@
  `(cider-repl-stdout-face ((t (:foreground ,vemv-default-foreground-color-very-slightly-darker))))
  `(cider-stacktrace-error-class-face ((t (:foreground ,vemv-error-foreground-color))))
  `(cider-stacktrace-ns-face ((t (:foreground "white"))))
- `(cider-test-success-face ((t (:background ,vemv-colors/keyword-green :foreground ,vemv-default-autocomplete-popup-foreground-color))))
+ `(cider-test-success-face
+   ((t (:background ,vemv-colors/keyword-green :foreground ,vemv-default-autocomplete-popup-foreground-color))))
+ `(cider-test-failure-face
+   ((((class color) (background light))
+     :background "firebrick"
+     :foreground ,vemv-default-foreground-color)
+    (((class color) (background dark))
+     :background "firebrick"
+     :foreground ,vemv-default-foreground-color)))
+ `(cider-test-error-face
+   ((((class color) (background light))
+     :background "firebrick"
+     :foreground ,vemv-default-foreground-color)
+    (((class color) (background dark))
+     :background "firebrick"
+     :foreground ,vemv-default-foreground-color)))
+
 
  `(font-lock-builtin-face ((t (:foreground ,vemv-default-foreground-color))))
 
@@ -125,7 +141,9 @@
  `(font-lock-function-name-face ((t (:foreground ,vemv-colors/yellow :bold t))))
 
  ;; used for special forms and macros. also for def - which is annoying
- `(font-lock-keyword-face ((t (:foreground ,(if (eq :ruby vemv/project-type) vemv-default-foreground-color vemv-colors/lighter-yellow)))))
+ `(font-lock-keyword-face ((t (:foreground ,(if (eq :ruby vemv/project-type)
+                                                vemv-default-foreground-color
+                                              vemv-colors/lighter-yellow)))))
  `(font-lock-preprocessor-face ((t (:foreground ,vemv-colors/keyword-green)))) ;; Java
  `(font-lock-regexp-grouping-backslash ((t (:foreground ,vemv-colors/yellow))))
  `(font-lock-regexp-grouping-construct ((t (:foreground ,vemv-colors/blue))))
