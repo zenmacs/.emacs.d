@@ -10,6 +10,10 @@
            (not vemv/terminal-emacs?))
   (add-hook 'clojure-mode-hook 'hs-minor-mode))
 
+(advice-add 'haml-mode :before (argless
+                                (add-to-list 'haml-fontify-filter-functions-alist
+                                             '("scss" . haml-fontify-region-as-css))))
+
 (advice-add 'ruby-mode :before (argless
                                 ;; sets vemv/blue-face, clojure-global-constant-face
                                 (setq ruby-font-lock-keywords
