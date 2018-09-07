@@ -53,6 +53,7 @@
 
 (defun vemv/open-file-via-fiplr-then-close-previous-buffer ()
   (interactive)
+  (select-window vemv/main_window)
   (setq vemv/previous-buffer (current-buffer))
   (vemv/fiplr (lambda (filename)
                 (find-file filename)
