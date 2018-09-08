@@ -23,6 +23,9 @@
   (vemv/after-file-open-without-project-explorer-highlighting)
   (funcall vemv/safe-show-current-file-in-project-explorer))
 
+(defvar vemv/after-file-open-watcher
+  (add-hook 'focus-in-hook 'vemv/advice-nrepl))
+
 (defun vemv/open (&optional filepath)
   "Opens a file (from FILEPATH or the user input)."
   (interactive)
