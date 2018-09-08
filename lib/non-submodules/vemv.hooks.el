@@ -603,7 +603,7 @@
                               "-print")
                             " ")))
       (if (vemv/in-a-git-repo? vemv/project-fiplr-dir)
-          (concat "cd " vemv/project-fiplr-dir "; comm -23 <(sort <(git ls-files --exclude-standard) <(git status --porcelain | grep -v \"^ D\" | sed s/^...//) | uniq | sort) <(git ls-files --deleted | sort) | while read line; do echo \"$PWD/$line\"; done"
+          (concat "cd " vemv/project-fiplr-dir "; comm -23 <(sort <(git ls-files --exclude-standard | while read line; do echo \"$PWD/$line\"; done) <(git status --porcelain | grep -v \"^ D\" | sed s/^...//) | uniq | sort) <(git ls-files --deleted | while read line; do echo \"$PWD/$line\"; done | sort)"
                   "| ruby -e 'puts STDIN.read.split(\"\\n\").sort_by{|line| -(%w("
                   (if (eq vemv/project-type :ruby)
                       "app/controllers spec"
