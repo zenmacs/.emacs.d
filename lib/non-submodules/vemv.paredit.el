@@ -61,8 +61,10 @@
            (or (let ((last-command nil))
                  (call-interactively 'indent-for-tab-command))
                t))
-      (call-interactively 'company-complete)
-      (call-interactively 'company-dabbrev)))
+      (and (not (vemv/non-completable-char-p))
+           (call-interactively 'company-complete))
+      (and (not (vemv/non-completable-char-p))
+           (call-interactively 'company-dabbrev))))
 
 (defun vemv/dumb-cut ()
   "Cuts the current selection, regardless of paredit boundaries"
