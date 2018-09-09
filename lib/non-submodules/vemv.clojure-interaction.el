@@ -67,7 +67,7 @@
               (funcall after))))
          1))
 
-(setq vemv/debounced-advice-nrepl (vemv/debounce 'vemv/advice-nrepl* 0.8))
+(setq vemv/debounced-advice-nrepl (vemv/debounce 'vemv/advice-nrepl* 0.4))
 
 (defun vemv/advice-nrepl (&optional x)
   (funcall vemv/debounced-advice-nrepl x))
@@ -315,7 +315,7 @@
          (cider-repl-return) ;; un-hijack the prompt. XXX: only do if there's no pending input
          (cider-repl-clear-buffer)
          (delay (argless (vemv/clear-cider-repl-buffer :recurring callback))
-                1.5))
+                0.75))
        (cider-repl-clear-buffer)
        (end-of-buffer)
        (when (or recurring (not should-recur))
