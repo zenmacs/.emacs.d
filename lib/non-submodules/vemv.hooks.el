@@ -603,14 +603,19 @@
                               "-print")
                             " ")))
       (if (vemv/in-a-git-repo? vemv/project-fiplr-dir)
-          (concat "cd " vemv/project-fiplr-dir "; comm -23 <(sort <(git ls-files --exclude-standard | while read line; do echo \"$PWD/$line\"; done) <(git status --porcelain | grep -v \"^ D\" | sed s/^...//) | uniq | sort) <(git ls-files --deleted | while read line; do echo \"$PWD/$line\"; done | sort)"
-                  "| ruby -e 'puts STDIN.read.split(\"\\n\").sort_by{|line| -(%w("
-                  (if (eq vemv/project-type :ruby)
-                      "app/controllers spec"
-                    (if (eq vemv/project-type :elisp)
-                        "vemv. .el"
-                      "src test"))
-                  ").find_index{|pattern| line.include? pattern } || 9999) }'")
+          (concat
+           "cd " vemv/project-fiplr-dir "; "
+           "comm -23 <(sort <(git ls-files --exclude-standard | while read line; do echo \"$PWD/$line\"; done) "
+           "                <(cd $(git rev-parse --show-toplevel); git status --porcelain | grep -v \"^ D\" | sed s/^...// | while read line; do echo \"$PWD/$line\"; done) "
+           "                 | uniq | sort) "
+           "         <(git ls-files --deleted | while read line; do echo \"$PWD/$line\"; done | sort) "
+           "| ruby -e 'puts STDIN.read.split(\"\\n\").sort_by{|line| -(%w("
+           (if (eq vemv/project-type :ruby)
+               "app/controllers spec"
+             (if (eq vemv/project-type :elisp)
+                 "vemv. .el"
+               "src test"))
+           ").find_index{|pattern| line.include? pattern } || 9999) }'")
         find))))
 
 (defun vemv/company-calculate-candidates (prefix)
