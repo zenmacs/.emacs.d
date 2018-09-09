@@ -85,6 +85,9 @@
       vemv/shortcuts/global/primary-z               (argless
                                                      (require 'vemv.undo)
                                                      (call-interactively 'undo-tree-undo))
+      vemv/shortcuts/global/primary-secondary-f     (argless
+                                                     (require 'vemv.helm)
+                                                     (vemv/helm-search-and-replace-from-this-directory))
       vemv/shortcuts/global/prior                   'cua-scroll-down
       vemv/shortcuts/global/right                   'right-char
       vemv/shortcuts/global/secondary-S-k           'vemv/kill-backward-copying-content

@@ -15,14 +15,19 @@
      (let* ((helm-ag-use-temp-buffer ,follow))
        ,@body)))
 
-(defun vemv/helm-search-and-replace (&optional follow)
+(defun vemv/helm-search-and-replace (&optional follow from-where)
   (vemv/safe-select-window vemv/main_window)
   (vemv/with-helm-follow follow
-                         (let* ((default-directory vemv/project-clojure-dir)
-                                (require-final-newline (not vemv/no-newline-at-eof))
-                                (where (ido-read-directory-name "Where: ")))
-                           (assert (file-exists-p where))
-                           (helm-do-ag where))))
+    (let* ((from-where (or from-where vemv/project-clojure-dir))
+           (default-directory from-where)
+           (require-final-newline (not vemv/no-newline-at-eof))
+           (where (ido-read-directory-name "Where: ")))
+      (assert (file-exists-p where))
+      (helm-do-ag where))))
+
+(defun vemv/helm-search-and-replace-from-this-directory ()
+  (vemv/helm-search-and-replace nil (or (ignore-errors (file-name-directory buffer-file-name))
+                                        default-directory)))
 
 (defun vemv/helm-search-and-replace-with-previews ()
   "Performs a vemv/helm-search-and-replace, but with helm 'follow' mode, namely there's a preview of each ocurrence
