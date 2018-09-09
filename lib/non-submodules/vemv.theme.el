@@ -103,6 +103,10 @@
 
  `(whitespace-line ((t (:background ,vemv-colors/pink :foreground ,vemv-default-foreground-color))))
 
+ `(compilation-info ((t (:background ,vemv-default-background-color :foreground ,vemv-default-foreground-color))))
+
+ `(pe/directory-face ((t (:foreground ,vemv-colors/lighter-yellow :bold t))))
+
  `(cider-fringe-good-face ((t (:foreground ,vemv-default-foreground-color))))
  `(cider-error-highlight-face ((t (:foreground ,vemv-default-foreground-color))))
  `(cider-stacktrace-error-class-face ((t (:foreground ,vemv-error-foreground-color))))
