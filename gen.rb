@@ -145,6 +145,9 @@ def emit_bindings scope: 'global', modifier_mappings: {"primary" => 'C', "second
       next if NO_C.include?(char) && modifier_mappings[modifier] == 'C'
       result += %|#{spaces}"#{modifier_mappings[modifier]}-#{char}"|
       result += %|#{spaces}"#{modifier_mappings[modifier]}-S-#{char}"|
+      if modifier == 'primary'
+        result += %|#{spaces}"#{modifier_mappings[modifier]}-M-#{char}"|
+      end
     end
   end
 

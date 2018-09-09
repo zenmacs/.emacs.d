@@ -8,7 +8,7 @@
 ;; ummodificable: C-m, C-i, C-[
 ;; ESC acts like alt, but one does not have to hold it pressed.
 
-(setq vemv/key-bindings-to-remove '("\C-a" "\C-b" "\C-e" "\C-f" "\C-s" "\C-w" "\C-j" "\M-x"
+(setq vemv/key-bindings-to-remove '("\C-a" "\C-b" "\C-e" "\C-f" "\C-s" "\C-w" "\C-j" "\M-x" "\C-\M-f"
                                     "\C-l" "\C-n" "\C-o" "\C-p" "\C-q" "\C-o" "\C-k" "\M-a"
                                     "\C-t" "\C-u" "\C-v" "\C-z" "\C-d" "\C-y" "\C-S-z"
                                     "\C-m" "\C-\\" "\C-h" "\C-r" [f10] "\M-e" "\M-!"
