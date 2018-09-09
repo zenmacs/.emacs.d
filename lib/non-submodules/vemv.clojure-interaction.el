@@ -157,16 +157,17 @@
         (progn
           (vemv/save)
           (vemv/advice-nrepl)
-          (replying-yes
-           (if vemv/using-component-reloaded-workflow
-               (if vemv/cljr-building-ast-cache?
-                   (message "Currently building AST cache. Wait a few seconds and try again.")
-                 (progn
-                   (cider-interactive-eval (or vemv/clojure-reload-command
-                                               "(with-out-str (com.stuartsierra.component.user-helpers/reset))"))))
-             (progn
-               (cider-load-buffer)
-               (cider-load-all-project-ns))))))
+          (vemv/clear-cider-repl-buffer nil
+                                        (argless
+                                         (replying-yes
+                                          (if vemv/using-component-reloaded-workflow
+                                              (if vemv/cljr-building-ast-cache?
+                                                  (message "Currently building AST cache. Wait a few seconds and try again.")
+                                                (cider-interactive-eval (or vemv/clojure-reload-command
+                                                                            "(with-out-str
+                                                                               (com.stuartsierra.component.user-helpers/reset))")))
+                                            (cider-load-buffer)
+                                            (cider-load-all-project-ns)))))))
     (if (vemv/in-a-lisp-mode?)
         (progn
           (vemv/save)
@@ -300,21 +301,25 @@
               (when docstring
                 (concat "\n\n" docstring))))))
 
-(defun vemv/clear-cider-repl-buffer (&optional no-recur)
+(defun vemv/clear-cider-repl-buffer (&optional recurring callback)
   (interactive)
   (when (cider-connected-p)
     (vemv/save-window-excursion
      (vemv/safe-select-window vemv/repl-window)
      (end-of-buffer)
-     (when (and (not no-recur)
-                (or (> (point-max) 5000) ;; b/c I think the code below is slow, can hang emacs
-                    (vemv/contains? (prin1-to-string (buffer-string))
-                                    "cider-repl-stdout-face")))
-       (cider-repl-return) ;; ub-hijack the prompt
+     (let* ((should-recur (and (not recurring)
+                               (or (> (point-max) 5000) ;; b/c I think the code below is slow, can hang emacs
+                                   (vemv/contains? (prin1-to-string (buffer-string))
+                                                   "cider-repl-stdout-face")))))
+       (when should-recur
+         (cider-repl-return) ;; un-hijack the prompt. XXX: only do if there's no pending input
+         (cider-repl-clear-buffer)
+         (delay (argless (vemv/clear-cider-repl-buffer :recurring callback))
+                1.5))
        (cider-repl-clear-buffer)
-       (delay (argless (vemv/clear-cider-repl-buffer :no-recur)) 1.5))
-     (cider-repl-clear-buffer)
-     (end-of-buffer))))
+       (end-of-buffer)
+       (when (or recurring (not should-recur))
+         (-some-> callback funcall))))))
 
 (setq vemv/latest-clojure-test-ran nil)
 (setq vemv/latest-cljs-test-ran nil)
