@@ -52,7 +52,8 @@
      (setq vemv/project-ns-prefix nil) ;; The prefix that every namespace in this project shares. Will be ommitted from each tab reprsenting a file/ns.
      (setq vemv/repl-identifier nil) ;; The name that CIDER assigns to the project in its repls. Normally well-inferred; use this setting as a workaround.
      (setq vemv/default-clojure-file nil) ;; The file that will be open with the project, if no files were open for this project last time you quit Emacs.
-     (setq vemv/parent-project-root-dirs nil) ;; The root dirs (as in `vemv/project-root-dir`) of parent projects of this project.
+     (setq vemv/parent-project-root-dirs nil) ;; The root dirs (as in `vemv/project-root-dir`) of parent projects of this project. Set vemv.project/chilren-root-dirs too if setting this.
+     (setq vemv.project/chilren-root-dirs nil) ;; The root dirs (as in `vemv/project-root-dir`) of children projects of this project. Set vemv/parent-project-root-dirs too if setting this.
      (setq vemv-cleaning-namespaces nil)
      (setq vemv/modifiers/primary nil)
      (setq vemv/modifiers/secondary nil)
@@ -177,7 +178,13 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
           (or
            vemv/default-clojure-file
            ;; XXX should be the first existing file: .clj, .cljs or .cljc
-           (concat vemv/project-clojure-dir "src/" vemv/project-ns-prefix "/core.clj" (if (eq vemv/project-type :cljs) "s" ""))))
+           (concat vemv/project-clojure-dir
+                   "src/"
+                   vemv/project-ns-prefix
+                   "/core.clj"
+                   (if (eq vemv/project-type :cljs)
+                       "s"
+                     ""))))
 
     (setq vemv-cleaning-namespaces nil)
     (setq vemv/modifiers/primary "C")

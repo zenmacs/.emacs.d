@@ -118,19 +118,23 @@
   (vemv/buffer-of-current-project? b vemv/parent-project-root-dirs))
 
 (defun vemv/buffer-of-current-running-project? (b &optional candidates)
-  (when (and b (buffer-file-name b))
-    (let ((tn (file-truename (buffer-file-name b))))
-      (->> candidates
-           (cons vemv/running-project-root-dir)
-           (-find (lambda (x)
-                    (vemv/contains? tn x)))))))
+  (when-let ((f (-some->> b
+                          buffer-file-name
+                          file-truename)))
+    (->> candidates
+         (cons vemv/running-project-root-dir)
+         (-find (lambda (x)
+                  (vemv/contains? f x))))))
 
 (defun vemv/buffer-of-current-running-project-or-children? (b)
   (vemv/buffer-of-current-running-project? b
                                            (when (-find (lambda (x)
                                                           (string-equal x vemv/running-project-root-dir))
-                                                        vemv/parent-project-root-dirs)
-                                             (list vemv/project-root-dir))))
+                                                        (cons
+                                                         ;; supports case of a secondary frame with a children project's buffer:
+                                                         vemv/project-root-dir
+                                                         vemv/parent-project-root-dirs))
+                                             (cons vemv/project-root-dir vemv.project/chilren-root-dirs))))
 
 (defun vemv/open_file_buffers ()
   (->> (buffer-list)
