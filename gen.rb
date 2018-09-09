@@ -104,6 +104,14 @@ def emit_setqs scope: 'global', modifier_mappings: {"primary" => 'C', "secondary
 ;; "#{modifier_mappings[modifier]}-#{char}"
 (setq #{binding} #{value})\n|
 
+      if modifier == 'primary'
+        binding = "vemv/shortcuts/#{scope}/#{modifier}-secondary-#{REPLACEMENTS[char]}"
+        value = scope == 'global' ? informative_stub(binding) : "vemv/shortcuts/global/#{modifier}-secondary-#{REPLACEMENTS[char]}"
+        result += %|
+;; "#{modifier_mappings[modifier]}-M-#{char}"
+(setq #{binding} #{value})\n|
+      end
+
       binding = "vemv/shortcuts/#{scope}/#{modifier}-S-#{REPLACEMENTS[char]}"
       value = scope == 'global' ? informative_stub(binding) : "vemv/shortcuts/global/#{modifier}-S-#{REPLACEMENTS[char]}"
       result += %|
@@ -176,6 +184,10 @@ result += %|
       next if NO_C.include?(char) && modifier_mappings[modifier] == 'C'
       command = "vemv/shortcuts/#{scope}/#{modifier}-#{REPLACEMENTS[char]}"
       result += %|    "#{modifier_mappings[modifier]}-#{char}" (argless (if #{command} (vemv/keyboard-funcall #{command})))\n|
+      if modifier == 'primary'
+        command = "vemv/shortcuts/#{scope}/#{modifier}-secondary-#{REPLACEMENTS[char]}"
+        result += %|    "#{modifier_mappings[modifier]}-M-#{char}" (argless (if #{command} (vemv/keyboard-funcall #{command})))\n|
+      end
       s_command = "vemv/shortcuts/#{scope}/#{modifier}-S-#{REPLACEMENTS[char]}"
       result += %|    "#{modifier_mappings[modifier]}-S-#{char}" (argless (if #{s_command} (vemv/keyboard-funcall #{s_command})))\n|
     end

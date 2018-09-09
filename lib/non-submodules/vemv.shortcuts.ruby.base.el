@@ -139,11 +139,17 @@
 ;; "C-a"
 (setq vemv/shortcuts/ruby/primary-a vemv/shortcuts/global/primary-a)
 
+;; "C-M-a"
+(setq vemv/shortcuts/ruby/primary-secondary-a vemv/shortcuts/global/primary-secondary-a)
+
 ;; "C-S-a"
 (setq vemv/shortcuts/ruby/primary-S-a vemv/shortcuts/global/primary-S-a)
 
 ;; "C-b"
 (setq vemv/shortcuts/ruby/primary-b vemv/shortcuts/global/primary-b)
+
+;; "C-M-b"
+(setq vemv/shortcuts/ruby/primary-secondary-b vemv/shortcuts/global/primary-secondary-b)
 
 ;; "C-S-b"
 (setq vemv/shortcuts/ruby/primary-S-b vemv/shortcuts/global/primary-S-b)
@@ -151,11 +157,17 @@
 ;; "C-c"
 (setq vemv/shortcuts/ruby/primary-c vemv/shortcuts/global/primary-c)
 
+;; "C-M-c"
+(setq vemv/shortcuts/ruby/primary-secondary-c vemv/shortcuts/global/primary-secondary-c)
+
 ;; "C-S-c"
 (setq vemv/shortcuts/ruby/primary-S-c vemv/shortcuts/global/primary-S-c)
 
 ;; "C-d"
 (setq vemv/shortcuts/ruby/primary-d vemv/shortcuts/global/primary-d)
+
+;; "C-M-d"
+(setq vemv/shortcuts/ruby/primary-secondary-d vemv/shortcuts/global/primary-secondary-d)
 
 ;; "C-S-d"
 (setq vemv/shortcuts/ruby/primary-S-d vemv/shortcuts/global/primary-S-d)
@@ -163,11 +175,17 @@
 ;; "C-e"
 (setq vemv/shortcuts/ruby/primary-e vemv/shortcuts/global/primary-e)
 
+;; "C-M-e"
+(setq vemv/shortcuts/ruby/primary-secondary-e vemv/shortcuts/global/primary-secondary-e)
+
 ;; "C-S-e"
 (setq vemv/shortcuts/ruby/primary-S-e vemv/shortcuts/global/primary-S-e)
 
 ;; "C-f"
 (setq vemv/shortcuts/ruby/primary-f vemv/shortcuts/global/primary-f)
+
+;; "C-M-f"
+(setq vemv/shortcuts/ruby/primary-secondary-f vemv/shortcuts/global/primary-secondary-f)
 
 ;; "C-S-f"
 (setq vemv/shortcuts/ruby/primary-S-f vemv/shortcuts/global/primary-S-f)
@@ -175,11 +193,17 @@
 ;; "C-h"
 (setq vemv/shortcuts/ruby/primary-h vemv/shortcuts/global/primary-h)
 
+;; "C-M-h"
+(setq vemv/shortcuts/ruby/primary-secondary-h vemv/shortcuts/global/primary-secondary-h)
+
 ;; "C-S-h"
 (setq vemv/shortcuts/ruby/primary-S-h vemv/shortcuts/global/primary-S-h)
 
 ;; "C-j"
 (setq vemv/shortcuts/ruby/primary-j vemv/shortcuts/global/primary-j)
+
+;; "C-M-j"
+(setq vemv/shortcuts/ruby/primary-secondary-j vemv/shortcuts/global/primary-secondary-j)
 
 ;; "C-S-j"
 (setq vemv/shortcuts/ruby/primary-S-j vemv/shortcuts/global/primary-S-j)
@@ -187,11 +211,17 @@
 ;; "C-k"
 (setq vemv/shortcuts/ruby/primary-k vemv/shortcuts/global/primary-k)
 
+;; "C-M-k"
+(setq vemv/shortcuts/ruby/primary-secondary-k vemv/shortcuts/global/primary-secondary-k)
+
 ;; "C-S-k"
 (setq vemv/shortcuts/ruby/primary-S-k vemv/shortcuts/global/primary-S-k)
 
 ;; "C-l"
 (setq vemv/shortcuts/ruby/primary-l vemv/shortcuts/global/primary-l)
+
+;; "C-M-l"
+(setq vemv/shortcuts/ruby/primary-secondary-l vemv/shortcuts/global/primary-secondary-l)
 
 ;; "C-S-l"
 (setq vemv/shortcuts/ruby/primary-S-l vemv/shortcuts/global/primary-S-l)
@@ -199,11 +229,17 @@
 ;; "C-n"
 (setq vemv/shortcuts/ruby/primary-n vemv/shortcuts/global/primary-n)
 
+;; "C-M-n"
+(setq vemv/shortcuts/ruby/primary-secondary-n vemv/shortcuts/global/primary-secondary-n)
+
 ;; "C-S-n"
 (setq vemv/shortcuts/ruby/primary-S-n vemv/shortcuts/global/primary-S-n)
 
 ;; "C-o"
 (setq vemv/shortcuts/ruby/primary-o vemv/shortcuts/global/primary-o)
+
+;; "C-M-o"
+(setq vemv/shortcuts/ruby/primary-secondary-o vemv/shortcuts/global/primary-secondary-o)
 
 ;; "C-S-o"
 (setq vemv/shortcuts/ruby/primary-S-o vemv/shortcuts/global/primary-S-o)
@@ -211,11 +247,17 @@
 ;; "C-p"
 (setq vemv/shortcuts/ruby/primary-p vemv/shortcuts/global/primary-p)
 
+;; "C-M-p"
+(setq vemv/shortcuts/ruby/primary-secondary-p vemv/shortcuts/global/primary-secondary-p)
+
 ;; "C-S-p"
 (setq vemv/shortcuts/ruby/primary-S-p vemv/shortcuts/global/primary-S-p)
 
 ;; "C-q"
 (setq vemv/shortcuts/ruby/primary-q vemv/shortcuts/global/primary-q)
+
+;; "C-M-q"
+(setq vemv/shortcuts/ruby/primary-secondary-q vemv/shortcuts/global/primary-secondary-q)
 
 ;; "C-S-q"
 (setq vemv/shortcuts/ruby/primary-S-q vemv/shortcuts/global/primary-S-q)
@@ -223,11 +265,17 @@
 ;; "C-r"
 (setq vemv/shortcuts/ruby/primary-r vemv/shortcuts/global/primary-r)
 
+;; "C-M-r"
+(setq vemv/shortcuts/ruby/primary-secondary-r vemv/shortcuts/global/primary-secondary-r)
+
 ;; "C-S-r"
 (setq vemv/shortcuts/ruby/primary-S-r vemv/shortcuts/global/primary-S-r)
 
 ;; "C-s"
 (setq vemv/shortcuts/ruby/primary-s vemv/shortcuts/global/primary-s)
+
+;; "C-M-s"
+(setq vemv/shortcuts/ruby/primary-secondary-s vemv/shortcuts/global/primary-secondary-s)
 
 ;; "C-S-s"
 (setq vemv/shortcuts/ruby/primary-S-s vemv/shortcuts/global/primary-S-s)
@@ -235,11 +283,17 @@
 ;; "C-t"
 (setq vemv/shortcuts/ruby/primary-t vemv/shortcuts/global/primary-t)
 
+;; "C-M-t"
+(setq vemv/shortcuts/ruby/primary-secondary-t vemv/shortcuts/global/primary-secondary-t)
+
 ;; "C-S-t"
 (setq vemv/shortcuts/ruby/primary-S-t vemv/shortcuts/global/primary-S-t)
 
 ;; "C-u"
 (setq vemv/shortcuts/ruby/primary-u vemv/shortcuts/global/primary-u)
+
+;; "C-M-u"
+(setq vemv/shortcuts/ruby/primary-secondary-u vemv/shortcuts/global/primary-secondary-u)
 
 ;; "C-S-u"
 (setq vemv/shortcuts/ruby/primary-S-u vemv/shortcuts/global/primary-S-u)
@@ -247,11 +301,17 @@
 ;; "C-v"
 (setq vemv/shortcuts/ruby/primary-v vemv/shortcuts/global/primary-v)
 
+;; "C-M-v"
+(setq vemv/shortcuts/ruby/primary-secondary-v vemv/shortcuts/global/primary-secondary-v)
+
 ;; "C-S-v"
 (setq vemv/shortcuts/ruby/primary-S-v vemv/shortcuts/global/primary-S-v)
 
 ;; "C-w"
 (setq vemv/shortcuts/ruby/primary-w vemv/shortcuts/global/primary-w)
+
+;; "C-M-w"
+(setq vemv/shortcuts/ruby/primary-secondary-w vemv/shortcuts/global/primary-secondary-w)
 
 ;; "C-S-w"
 (setq vemv/shortcuts/ruby/primary-S-w vemv/shortcuts/global/primary-S-w)
@@ -259,11 +319,17 @@
 ;; "C-x"
 (setq vemv/shortcuts/ruby/primary-x vemv/shortcuts/global/primary-x)
 
+;; "C-M-x"
+(setq vemv/shortcuts/ruby/primary-secondary-x vemv/shortcuts/global/primary-secondary-x)
+
 ;; "C-S-x"
 (setq vemv/shortcuts/ruby/primary-S-x vemv/shortcuts/global/primary-S-x)
 
 ;; "C-y"
 (setq vemv/shortcuts/ruby/primary-y vemv/shortcuts/global/primary-y)
+
+;; "C-M-y"
+(setq vemv/shortcuts/ruby/primary-secondary-y vemv/shortcuts/global/primary-secondary-y)
 
 ;; "C-S-y"
 (setq vemv/shortcuts/ruby/primary-S-y vemv/shortcuts/global/primary-S-y)
@@ -271,113 +337,221 @@
 ;; "C-z"
 (setq vemv/shortcuts/ruby/primary-z vemv/shortcuts/global/primary-z)
 
+;; "C-M-z"
+(setq vemv/shortcuts/ruby/primary-secondary-z vemv/shortcuts/global/primary-secondary-z)
+
 ;; "C-S-z"
 (setq vemv/shortcuts/ruby/primary-S-z vemv/shortcuts/global/primary-S-z)
 
 ;; "C-0"
 (setq vemv/shortcuts/ruby/primary-0 vemv/shortcuts/global/primary-0)
 
+;; "C-M-0"
+(setq vemv/shortcuts/ruby/primary-secondary-0 vemv/shortcuts/global/primary-secondary-0)
+
 ;; "C-1"
 (setq vemv/shortcuts/ruby/primary-1 vemv/shortcuts/global/primary-1)
+
+;; "C-M-1"
+(setq vemv/shortcuts/ruby/primary-secondary-1 vemv/shortcuts/global/primary-secondary-1)
 
 ;; "C-2"
 (setq vemv/shortcuts/ruby/primary-2 vemv/shortcuts/global/primary-2)
 
+;; "C-M-2"
+(setq vemv/shortcuts/ruby/primary-secondary-2 vemv/shortcuts/global/primary-secondary-2)
+
 ;; "C-3"
 (setq vemv/shortcuts/ruby/primary-3 vemv/shortcuts/global/primary-3)
+
+;; "C-M-3"
+(setq vemv/shortcuts/ruby/primary-secondary-3 vemv/shortcuts/global/primary-secondary-3)
 
 ;; "C-4"
 (setq vemv/shortcuts/ruby/primary-4 vemv/shortcuts/global/primary-4)
 
+;; "C-M-4"
+(setq vemv/shortcuts/ruby/primary-secondary-4 vemv/shortcuts/global/primary-secondary-4)
+
 ;; "C-5"
 (setq vemv/shortcuts/ruby/primary-5 vemv/shortcuts/global/primary-5)
+
+;; "C-M-5"
+(setq vemv/shortcuts/ruby/primary-secondary-5 vemv/shortcuts/global/primary-secondary-5)
 
 ;; "C-6"
 (setq vemv/shortcuts/ruby/primary-6 vemv/shortcuts/global/primary-6)
 
+;; "C-M-6"
+(setq vemv/shortcuts/ruby/primary-secondary-6 vemv/shortcuts/global/primary-secondary-6)
+
 ;; "C-7"
 (setq vemv/shortcuts/ruby/primary-7 vemv/shortcuts/global/primary-7)
+
+;; "C-M-7"
+(setq vemv/shortcuts/ruby/primary-secondary-7 vemv/shortcuts/global/primary-secondary-7)
 
 ;; "C-8"
 (setq vemv/shortcuts/ruby/primary-8 vemv/shortcuts/global/primary-8)
 
+;; "C-M-8"
+(setq vemv/shortcuts/ruby/primary-secondary-8 vemv/shortcuts/global/primary-secondary-8)
+
 ;; "C-9"
 (setq vemv/shortcuts/ruby/primary-9 vemv/shortcuts/global/primary-9)
+
+;; "C-M-9"
+(setq vemv/shortcuts/ruby/primary-secondary-9 vemv/shortcuts/global/primary-secondary-9)
 
 ;; "C-!"
 (setq vemv/shortcuts/ruby/primary-bang vemv/shortcuts/global/primary-bang)
 
+;; "C-M-!"
+(setq vemv/shortcuts/ruby/primary-secondary-bang vemv/shortcuts/global/primary-secondary-bang)
+
 ;; "C-@"
 (setq vemv/shortcuts/ruby/primary-at vemv/shortcuts/global/primary-at)
+
+;; "C-M-@"
+(setq vemv/shortcuts/ruby/primary-secondary-at vemv/shortcuts/global/primary-secondary-at)
 
 ;; "C-&"
 (setq vemv/shortcuts/ruby/primary-ampersand vemv/shortcuts/global/primary-ampersand)
 
+;; "C-M-&"
+(setq vemv/shortcuts/ruby/primary-secondary-ampersand vemv/shortcuts/global/primary-secondary-ampersand)
+
 ;; "C-#"
 (setq vemv/shortcuts/ruby/primary-hash vemv/shortcuts/global/primary-hash)
+
+;; "C-M-#"
+(setq vemv/shortcuts/ruby/primary-secondary-hash vemv/shortcuts/global/primary-secondary-hash)
 
 ;; "C-%"
 (setq vemv/shortcuts/ruby/primary-percent vemv/shortcuts/global/primary-percent)
 
+;; "C-M-%"
+(setq vemv/shortcuts/ruby/primary-secondary-percent vemv/shortcuts/global/primary-secondary-percent)
+
 ;; "C-^"
 (setq vemv/shortcuts/ruby/primary-caret vemv/shortcuts/global/primary-caret)
+
+;; "C-M-^"
+(setq vemv/shortcuts/ruby/primary-secondary-caret vemv/shortcuts/global/primary-secondary-caret)
 
 ;; "C-$"
 (setq vemv/shortcuts/ruby/primary-dollar vemv/shortcuts/global/primary-dollar)
 
+;; "C-M-$"
+(setq vemv/shortcuts/ruby/primary-secondary-dollar vemv/shortcuts/global/primary-secondary-dollar)
+
 ;; "C-_"
 (setq vemv/shortcuts/ruby/primary-underscore vemv/shortcuts/global/primary-underscore)
+
+;; "C-M-_"
+(setq vemv/shortcuts/ruby/primary-secondary-underscore vemv/shortcuts/global/primary-secondary-underscore)
 
 ;; "C--"
 (setq vemv/shortcuts/ruby/primary-dash vemv/shortcuts/global/primary-dash)
 
+;; "C-M--"
+(setq vemv/shortcuts/ruby/primary-secondary-dash vemv/shortcuts/global/primary-secondary-dash)
+
 ;; "C-,"
 (setq vemv/shortcuts/ruby/primary-comma vemv/shortcuts/global/primary-comma)
+
+;; "C-M-,"
+(setq vemv/shortcuts/ruby/primary-secondary-comma vemv/shortcuts/global/primary-secondary-comma)
 
 ;; "C-;"
 (setq vemv/shortcuts/ruby/primary-semicolon vemv/shortcuts/global/primary-semicolon)
 
+;; "C-M-;"
+(setq vemv/shortcuts/ruby/primary-secondary-semicolon vemv/shortcuts/global/primary-secondary-semicolon)
+
 ;; "C-:"
 (setq vemv/shortcuts/ruby/primary-colon vemv/shortcuts/global/primary-colon)
+
+;; "C-M-:"
+(setq vemv/shortcuts/ruby/primary-secondary-colon vemv/shortcuts/global/primary-secondary-colon)
 
 ;; "C-?"
 (setq vemv/shortcuts/ruby/primary-question-mark vemv/shortcuts/global/primary-question-mark)
 
+;; "C-M-?"
+(setq vemv/shortcuts/ruby/primary-secondary-question-mark vemv/shortcuts/global/primary-secondary-question-mark)
+
 ;; "C-."
 (setq vemv/shortcuts/ruby/primary-dot vemv/shortcuts/global/primary-dot)
+
+;; "C-M-."
+(setq vemv/shortcuts/ruby/primary-secondary-dot vemv/shortcuts/global/primary-secondary-dot)
 
 ;; "C-'"
 (setq vemv/shortcuts/ruby/primary-single-quote vemv/shortcuts/global/primary-single-quote)
 
+;; "C-M-'"
+(setq vemv/shortcuts/ruby/primary-secondary-single-quote vemv/shortcuts/global/primary-secondary-single-quote)
+
 ;; "C-("
 (setq vemv/shortcuts/ruby/primary-left-parens vemv/shortcuts/global/primary-left-parens)
+
+;; "C-M-("
+(setq vemv/shortcuts/ruby/primary-secondary-left-parens vemv/shortcuts/global/primary-secondary-left-parens)
 
 ;; "C-)"
 (setq vemv/shortcuts/ruby/primary-right-parens vemv/shortcuts/global/primary-right-parens)
 
+;; "C-M-)"
+(setq vemv/shortcuts/ruby/primary-secondary-right-parens vemv/shortcuts/global/primary-secondary-right-parens)
+
 ;; "C-]"
 (setq vemv/shortcuts/ruby/primary-right-bracket vemv/shortcuts/global/primary-right-bracket)
+
+;; "C-M-]"
+(setq vemv/shortcuts/ruby/primary-secondary-right-bracket vemv/shortcuts/global/primary-secondary-right-bracket)
 
 ;; "C-{"
 (setq vemv/shortcuts/ruby/primary-left-curly vemv/shortcuts/global/primary-left-curly)
 
+;; "C-M-{"
+(setq vemv/shortcuts/ruby/primary-secondary-left-curly vemv/shortcuts/global/primary-secondary-left-curly)
+
 ;; "C-}"
 (setq vemv/shortcuts/ruby/primary-right-curly vemv/shortcuts/global/primary-right-curly)
+
+;; "C-M-}"
+(setq vemv/shortcuts/ruby/primary-secondary-right-curly vemv/shortcuts/global/primary-secondary-right-curly)
 
 ;; "C-*"
 (setq vemv/shortcuts/ruby/primary-star vemv/shortcuts/global/primary-star)
 
+;; "C-M-*"
+(setq vemv/shortcuts/ruby/primary-secondary-star vemv/shortcuts/global/primary-secondary-star)
+
 ;; "C-/"
 (setq vemv/shortcuts/ruby/primary-slash vemv/shortcuts/global/primary-slash)
+
+;; "C-M-/"
+(setq vemv/shortcuts/ruby/primary-secondary-slash vemv/shortcuts/global/primary-secondary-slash)
 
 ;; "C-`"
 (setq vemv/shortcuts/ruby/primary-backtick vemv/shortcuts/global/primary-backtick)
 
+;; "C-M-`"
+(setq vemv/shortcuts/ruby/primary-secondary-backtick vemv/shortcuts/global/primary-secondary-backtick)
+
 ;; "C-+"
 (setq vemv/shortcuts/ruby/primary-plus vemv/shortcuts/global/primary-plus)
 
+;; "C-M-+"
+(setq vemv/shortcuts/ruby/primary-secondary-plus vemv/shortcuts/global/primary-secondary-plus)
+
 ;; "C-<backspace>"
 (setq vemv/shortcuts/ruby/primary-backspace vemv/shortcuts/global/primary-backspace)
+
+;; "C-M-<backspace>"
+(setq vemv/shortcuts/ruby/primary-secondary-backspace vemv/shortcuts/global/primary-secondary-backspace)
 
 ;; "C-S-<backspace>"
 (setq vemv/shortcuts/ruby/primary-S-backspace vemv/shortcuts/global/primary-S-backspace)
@@ -385,11 +559,17 @@
 ;; "C-<down>"
 (setq vemv/shortcuts/ruby/primary-down vemv/shortcuts/global/primary-down)
 
+;; "C-M-<down>"
+(setq vemv/shortcuts/ruby/primary-secondary-down vemv/shortcuts/global/primary-secondary-down)
+
 ;; "C-S-<down>"
 (setq vemv/shortcuts/ruby/primary-S-down vemv/shortcuts/global/primary-S-down)
 
 ;; "C-<end>"
 (setq vemv/shortcuts/ruby/primary-end vemv/shortcuts/global/primary-end)
+
+;; "C-M-<end>"
+(setq vemv/shortcuts/ruby/primary-secondary-end vemv/shortcuts/global/primary-secondary-end)
 
 ;; "C-S-<end>"
 (setq vemv/shortcuts/ruby/primary-S-end vemv/shortcuts/global/primary-S-end)
@@ -397,11 +577,17 @@
 ;; "C-<home>"
 (setq vemv/shortcuts/ruby/primary-home vemv/shortcuts/global/primary-home)
 
+;; "C-M-<home>"
+(setq vemv/shortcuts/ruby/primary-secondary-home vemv/shortcuts/global/primary-secondary-home)
+
 ;; "C-S-<home>"
 (setq vemv/shortcuts/ruby/primary-S-home vemv/shortcuts/global/primary-S-home)
 
 ;; "C-<left>"
 (setq vemv/shortcuts/ruby/primary-left vemv/shortcuts/global/primary-left)
+
+;; "C-M-<left>"
+(setq vemv/shortcuts/ruby/primary-secondary-left vemv/shortcuts/global/primary-secondary-left)
 
 ;; "C-S-<left>"
 (setq vemv/shortcuts/ruby/primary-S-left vemv/shortcuts/global/primary-S-left)
@@ -409,11 +595,17 @@
 ;; "C-<next>"
 (setq vemv/shortcuts/ruby/primary-next vemv/shortcuts/global/primary-next)
 
+;; "C-M-<next>"
+(setq vemv/shortcuts/ruby/primary-secondary-next vemv/shortcuts/global/primary-secondary-next)
+
 ;; "C-S-<next>"
 (setq vemv/shortcuts/ruby/primary-S-next vemv/shortcuts/global/primary-S-next)
 
 ;; "C-<prior>"
 (setq vemv/shortcuts/ruby/primary-prior vemv/shortcuts/global/primary-prior)
+
+;; "C-M-<prior>"
+(setq vemv/shortcuts/ruby/primary-secondary-prior vemv/shortcuts/global/primary-secondary-prior)
 
 ;; "C-S-<prior>"
 (setq vemv/shortcuts/ruby/primary-S-prior vemv/shortcuts/global/primary-S-prior)
@@ -421,11 +613,17 @@
 ;; "C-<right>"
 (setq vemv/shortcuts/ruby/primary-right vemv/shortcuts/global/primary-right)
 
+;; "C-M-<right>"
+(setq vemv/shortcuts/ruby/primary-secondary-right vemv/shortcuts/global/primary-secondary-right)
+
 ;; "C-S-<right>"
 (setq vemv/shortcuts/ruby/primary-S-right vemv/shortcuts/global/primary-S-right)
 
 ;; "C-<up>"
 (setq vemv/shortcuts/ruby/primary-up vemv/shortcuts/global/primary-up)
+
+;; "C-M-<up>"
+(setq vemv/shortcuts/ruby/primary-secondary-up vemv/shortcuts/global/primary-secondary-up)
 
 ;; "C-S-<up>"
 (setq vemv/shortcuts/ruby/primary-S-up vemv/shortcuts/global/primary-S-up)
@@ -433,17 +631,29 @@
 ;; "C-="
 (setq vemv/shortcuts/ruby/primary-equal vemv/shortcuts/global/primary-equal)
 
+;; "C-M-="
+(setq vemv/shortcuts/ruby/primary-secondary-equal vemv/shortcuts/global/primary-secondary-equal)
+
 ;; "C-|"
 (setq vemv/shortcuts/ruby/primary-bar vemv/shortcuts/global/primary-bar)
 
+;; "C-M-|"
+(setq vemv/shortcuts/ruby/primary-secondary-bar vemv/shortcuts/global/primary-secondary-bar)
+
 ;; "C-RET"
 (setq vemv/shortcuts/ruby/primary-RET vemv/shortcuts/global/primary-RET)
+
+;; "C-M-RET"
+(setq vemv/shortcuts/ruby/primary-secondary-RET vemv/shortcuts/global/primary-secondary-RET)
 
 ;; "C-S-RET"
 (setq vemv/shortcuts/ruby/primary-S-RET vemv/shortcuts/global/primary-S-RET)
 
 ;; "C-SPC"
 (setq vemv/shortcuts/ruby/primary-SPC vemv/shortcuts/global/primary-SPC)
+
+;; "C-M-SPC"
+(setq vemv/shortcuts/ruby/primary-secondary-SPC vemv/shortcuts/global/primary-secondary-SPC)
 
 ;; "C-S-SPC"
 (setq vemv/shortcuts/ruby/primary-S-SPC vemv/shortcuts/global/primary-S-SPC)

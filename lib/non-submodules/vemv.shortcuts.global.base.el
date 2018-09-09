@@ -139,11 +139,17 @@
 ;; "C-a"
 (setq vemv/shortcuts/global/primary-a (argless (message "You pressed `vemv/shortcuts/global/primary-a`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-a"
+(setq vemv/shortcuts/global/primary-secondary-a (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-a`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-S-a"
 (setq vemv/shortcuts/global/primary-S-a (argless (message "You pressed `vemv/shortcuts/global/primary-S-a`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-b"
 (setq vemv/shortcuts/global/primary-b (argless (message "You pressed `vemv/shortcuts/global/primary-b`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-b"
+(setq vemv/shortcuts/global/primary-secondary-b (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-b`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-S-b"
 (setq vemv/shortcuts/global/primary-S-b (argless (message "You pressed `vemv/shortcuts/global/primary-S-b`! For making this binding useful, customize it (you can find instructions at the wiki)")))
@@ -151,11 +157,17 @@
 ;; "C-c"
 (setq vemv/shortcuts/global/primary-c (argless (message "You pressed `vemv/shortcuts/global/primary-c`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-c"
+(setq vemv/shortcuts/global/primary-secondary-c (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-c`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-S-c"
 (setq vemv/shortcuts/global/primary-S-c (argless (message "You pressed `vemv/shortcuts/global/primary-S-c`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-d"
 (setq vemv/shortcuts/global/primary-d (argless (message "You pressed `vemv/shortcuts/global/primary-d`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-d"
+(setq vemv/shortcuts/global/primary-secondary-d (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-d`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-S-d"
 (setq vemv/shortcuts/global/primary-S-d (argless (message "You pressed `vemv/shortcuts/global/primary-S-d`! For making this binding useful, customize it (you can find instructions at the wiki)")))
@@ -163,11 +175,17 @@
 ;; "C-e"
 (setq vemv/shortcuts/global/primary-e (argless (message "You pressed `vemv/shortcuts/global/primary-e`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-e"
+(setq vemv/shortcuts/global/primary-secondary-e (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-e`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-S-e"
 (setq vemv/shortcuts/global/primary-S-e (argless (message "You pressed `vemv/shortcuts/global/primary-S-e`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-f"
 (setq vemv/shortcuts/global/primary-f (argless (message "You pressed `vemv/shortcuts/global/primary-f`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-f"
+(setq vemv/shortcuts/global/primary-secondary-f (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-f`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-S-f"
 (setq vemv/shortcuts/global/primary-S-f (argless (message "You pressed `vemv/shortcuts/global/primary-S-f`! For making this binding useful, customize it (you can find instructions at the wiki)")))
@@ -175,11 +193,17 @@
 ;; "C-h"
 (setq vemv/shortcuts/global/primary-h (argless (message "You pressed `vemv/shortcuts/global/primary-h`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-h"
+(setq vemv/shortcuts/global/primary-secondary-h (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-h`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-S-h"
 (setq vemv/shortcuts/global/primary-S-h (argless (message "You pressed `vemv/shortcuts/global/primary-S-h`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-j"
 (setq vemv/shortcuts/global/primary-j (argless (message "You pressed `vemv/shortcuts/global/primary-j`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-j"
+(setq vemv/shortcuts/global/primary-secondary-j (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-j`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-S-j"
 (setq vemv/shortcuts/global/primary-S-j (argless (message "You pressed `vemv/shortcuts/global/primary-S-j`! For making this binding useful, customize it (you can find instructions at the wiki)")))
@@ -187,11 +211,17 @@
 ;; "C-k"
 (setq vemv/shortcuts/global/primary-k (argless (message "You pressed `vemv/shortcuts/global/primary-k`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-k"
+(setq vemv/shortcuts/global/primary-secondary-k (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-k`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-S-k"
 (setq vemv/shortcuts/global/primary-S-k (argless (message "You pressed `vemv/shortcuts/global/primary-S-k`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-l"
 (setq vemv/shortcuts/global/primary-l (argless (message "You pressed `vemv/shortcuts/global/primary-l`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-l"
+(setq vemv/shortcuts/global/primary-secondary-l (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-l`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-S-l"
 (setq vemv/shortcuts/global/primary-S-l (argless (message "You pressed `vemv/shortcuts/global/primary-S-l`! For making this binding useful, customize it (you can find instructions at the wiki)")))
@@ -199,11 +229,17 @@
 ;; "C-n"
 (setq vemv/shortcuts/global/primary-n (argless (message "You pressed `vemv/shortcuts/global/primary-n`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-n"
+(setq vemv/shortcuts/global/primary-secondary-n (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-n`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-S-n"
 (setq vemv/shortcuts/global/primary-S-n (argless (message "You pressed `vemv/shortcuts/global/primary-S-n`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-o"
 (setq vemv/shortcuts/global/primary-o (argless (message "You pressed `vemv/shortcuts/global/primary-o`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-o"
+(setq vemv/shortcuts/global/primary-secondary-o (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-o`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-S-o"
 (setq vemv/shortcuts/global/primary-S-o (argless (message "You pressed `vemv/shortcuts/global/primary-S-o`! For making this binding useful, customize it (you can find instructions at the wiki)")))
@@ -211,11 +247,17 @@
 ;; "C-p"
 (setq vemv/shortcuts/global/primary-p (argless (message "You pressed `vemv/shortcuts/global/primary-p`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-p"
+(setq vemv/shortcuts/global/primary-secondary-p (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-p`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-S-p"
 (setq vemv/shortcuts/global/primary-S-p (argless (message "You pressed `vemv/shortcuts/global/primary-S-p`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-q"
 (setq vemv/shortcuts/global/primary-q (argless (message "You pressed `vemv/shortcuts/global/primary-q`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-q"
+(setq vemv/shortcuts/global/primary-secondary-q (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-q`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-S-q"
 (setq vemv/shortcuts/global/primary-S-q (argless (message "You pressed `vemv/shortcuts/global/primary-S-q`! For making this binding useful, customize it (you can find instructions at the wiki)")))
@@ -223,11 +265,17 @@
 ;; "C-r"
 (setq vemv/shortcuts/global/primary-r (argless (message "You pressed `vemv/shortcuts/global/primary-r`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-r"
+(setq vemv/shortcuts/global/primary-secondary-r (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-r`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-S-r"
 (setq vemv/shortcuts/global/primary-S-r (argless (message "You pressed `vemv/shortcuts/global/primary-S-r`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-s"
 (setq vemv/shortcuts/global/primary-s (argless (message "You pressed `vemv/shortcuts/global/primary-s`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-s"
+(setq vemv/shortcuts/global/primary-secondary-s (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-s`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-S-s"
 (setq vemv/shortcuts/global/primary-S-s (argless (message "You pressed `vemv/shortcuts/global/primary-S-s`! For making this binding useful, customize it (you can find instructions at the wiki)")))
@@ -235,11 +283,17 @@
 ;; "C-t"
 (setq vemv/shortcuts/global/primary-t (argless (message "You pressed `vemv/shortcuts/global/primary-t`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-t"
+(setq vemv/shortcuts/global/primary-secondary-t (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-t`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-S-t"
 (setq vemv/shortcuts/global/primary-S-t (argless (message "You pressed `vemv/shortcuts/global/primary-S-t`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-u"
 (setq vemv/shortcuts/global/primary-u (argless (message "You pressed `vemv/shortcuts/global/primary-u`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-u"
+(setq vemv/shortcuts/global/primary-secondary-u (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-u`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-S-u"
 (setq vemv/shortcuts/global/primary-S-u (argless (message "You pressed `vemv/shortcuts/global/primary-S-u`! For making this binding useful, customize it (you can find instructions at the wiki)")))
@@ -247,11 +301,17 @@
 ;; "C-v"
 (setq vemv/shortcuts/global/primary-v (argless (message "You pressed `vemv/shortcuts/global/primary-v`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-v"
+(setq vemv/shortcuts/global/primary-secondary-v (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-v`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-S-v"
 (setq vemv/shortcuts/global/primary-S-v (argless (message "You pressed `vemv/shortcuts/global/primary-S-v`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-w"
 (setq vemv/shortcuts/global/primary-w (argless (message "You pressed `vemv/shortcuts/global/primary-w`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-w"
+(setq vemv/shortcuts/global/primary-secondary-w (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-w`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-S-w"
 (setq vemv/shortcuts/global/primary-S-w (argless (message "You pressed `vemv/shortcuts/global/primary-S-w`! For making this binding useful, customize it (you can find instructions at the wiki)")))
@@ -259,11 +319,17 @@
 ;; "C-x"
 (setq vemv/shortcuts/global/primary-x (argless (message "You pressed `vemv/shortcuts/global/primary-x`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-x"
+(setq vemv/shortcuts/global/primary-secondary-x (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-x`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-S-x"
 (setq vemv/shortcuts/global/primary-S-x (argless (message "You pressed `vemv/shortcuts/global/primary-S-x`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-y"
 (setq vemv/shortcuts/global/primary-y (argless (message "You pressed `vemv/shortcuts/global/primary-y`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-y"
+(setq vemv/shortcuts/global/primary-secondary-y (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-y`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-S-y"
 (setq vemv/shortcuts/global/primary-S-y (argless (message "You pressed `vemv/shortcuts/global/primary-S-y`! For making this binding useful, customize it (you can find instructions at the wiki)")))
@@ -271,113 +337,221 @@
 ;; "C-z"
 (setq vemv/shortcuts/global/primary-z (argless (message "You pressed `vemv/shortcuts/global/primary-z`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-z"
+(setq vemv/shortcuts/global/primary-secondary-z (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-z`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-S-z"
 (setq vemv/shortcuts/global/primary-S-z (argless (message "You pressed `vemv/shortcuts/global/primary-S-z`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-0"
 (setq vemv/shortcuts/global/primary-0 (argless (message "You pressed `vemv/shortcuts/global/primary-0`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-0"
+(setq vemv/shortcuts/global/primary-secondary-0 (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-0`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-1"
 (setq vemv/shortcuts/global/primary-1 (argless (message "You pressed `vemv/shortcuts/global/primary-1`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-1"
+(setq vemv/shortcuts/global/primary-secondary-1 (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-1`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-2"
 (setq vemv/shortcuts/global/primary-2 (argless (message "You pressed `vemv/shortcuts/global/primary-2`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-2"
+(setq vemv/shortcuts/global/primary-secondary-2 (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-2`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-3"
 (setq vemv/shortcuts/global/primary-3 (argless (message "You pressed `vemv/shortcuts/global/primary-3`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-3"
+(setq vemv/shortcuts/global/primary-secondary-3 (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-3`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-4"
 (setq vemv/shortcuts/global/primary-4 (argless (message "You pressed `vemv/shortcuts/global/primary-4`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-4"
+(setq vemv/shortcuts/global/primary-secondary-4 (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-4`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-5"
 (setq vemv/shortcuts/global/primary-5 (argless (message "You pressed `vemv/shortcuts/global/primary-5`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-5"
+(setq vemv/shortcuts/global/primary-secondary-5 (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-5`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-6"
 (setq vemv/shortcuts/global/primary-6 (argless (message "You pressed `vemv/shortcuts/global/primary-6`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-6"
+(setq vemv/shortcuts/global/primary-secondary-6 (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-6`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-7"
 (setq vemv/shortcuts/global/primary-7 (argless (message "You pressed `vemv/shortcuts/global/primary-7`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-7"
+(setq vemv/shortcuts/global/primary-secondary-7 (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-7`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-8"
 (setq vemv/shortcuts/global/primary-8 (argless (message "You pressed `vemv/shortcuts/global/primary-8`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-8"
+(setq vemv/shortcuts/global/primary-secondary-8 (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-8`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-9"
 (setq vemv/shortcuts/global/primary-9 (argless (message "You pressed `vemv/shortcuts/global/primary-9`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-9"
+(setq vemv/shortcuts/global/primary-secondary-9 (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-9`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-!"
 (setq vemv/shortcuts/global/primary-bang (argless (message "You pressed `vemv/shortcuts/global/primary-bang`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-!"
+(setq vemv/shortcuts/global/primary-secondary-bang (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-bang`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-@"
 (setq vemv/shortcuts/global/primary-at (argless (message "You pressed `vemv/shortcuts/global/primary-at`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-@"
+(setq vemv/shortcuts/global/primary-secondary-at (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-at`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-&"
 (setq vemv/shortcuts/global/primary-ampersand (argless (message "You pressed `vemv/shortcuts/global/primary-ampersand`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-&"
+(setq vemv/shortcuts/global/primary-secondary-ampersand (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-ampersand`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-#"
 (setq vemv/shortcuts/global/primary-hash (argless (message "You pressed `vemv/shortcuts/global/primary-hash`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-#"
+(setq vemv/shortcuts/global/primary-secondary-hash (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-hash`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-%"
 (setq vemv/shortcuts/global/primary-percent (argless (message "You pressed `vemv/shortcuts/global/primary-percent`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-%"
+(setq vemv/shortcuts/global/primary-secondary-percent (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-percent`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-^"
 (setq vemv/shortcuts/global/primary-caret (argless (message "You pressed `vemv/shortcuts/global/primary-caret`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-^"
+(setq vemv/shortcuts/global/primary-secondary-caret (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-caret`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-$"
 (setq vemv/shortcuts/global/primary-dollar (argless (message "You pressed `vemv/shortcuts/global/primary-dollar`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-$"
+(setq vemv/shortcuts/global/primary-secondary-dollar (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-dollar`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-_"
 (setq vemv/shortcuts/global/primary-underscore (argless (message "You pressed `vemv/shortcuts/global/primary-underscore`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-_"
+(setq vemv/shortcuts/global/primary-secondary-underscore (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-underscore`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C--"
 (setq vemv/shortcuts/global/primary-dash (argless (message "You pressed `vemv/shortcuts/global/primary-dash`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M--"
+(setq vemv/shortcuts/global/primary-secondary-dash (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-dash`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-,"
 (setq vemv/shortcuts/global/primary-comma (argless (message "You pressed `vemv/shortcuts/global/primary-comma`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-,"
+(setq vemv/shortcuts/global/primary-secondary-comma (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-comma`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-;"
 (setq vemv/shortcuts/global/primary-semicolon (argless (message "You pressed `vemv/shortcuts/global/primary-semicolon`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-;"
+(setq vemv/shortcuts/global/primary-secondary-semicolon (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-semicolon`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-:"
 (setq vemv/shortcuts/global/primary-colon (argless (message "You pressed `vemv/shortcuts/global/primary-colon`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-:"
+(setq vemv/shortcuts/global/primary-secondary-colon (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-colon`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-?"
 (setq vemv/shortcuts/global/primary-question-mark (argless (message "You pressed `vemv/shortcuts/global/primary-question-mark`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-?"
+(setq vemv/shortcuts/global/primary-secondary-question-mark (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-question-mark`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-."
 (setq vemv/shortcuts/global/primary-dot (argless (message "You pressed `vemv/shortcuts/global/primary-dot`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-."
+(setq vemv/shortcuts/global/primary-secondary-dot (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-dot`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-'"
 (setq vemv/shortcuts/global/primary-single-quote (argless (message "You pressed `vemv/shortcuts/global/primary-single-quote`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-'"
+(setq vemv/shortcuts/global/primary-secondary-single-quote (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-single-quote`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-("
 (setq vemv/shortcuts/global/primary-left-parens (argless (message "You pressed `vemv/shortcuts/global/primary-left-parens`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-("
+(setq vemv/shortcuts/global/primary-secondary-left-parens (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-left-parens`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-)"
 (setq vemv/shortcuts/global/primary-right-parens (argless (message "You pressed `vemv/shortcuts/global/primary-right-parens`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-)"
+(setq vemv/shortcuts/global/primary-secondary-right-parens (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-right-parens`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-]"
 (setq vemv/shortcuts/global/primary-right-bracket (argless (message "You pressed `vemv/shortcuts/global/primary-right-bracket`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-]"
+(setq vemv/shortcuts/global/primary-secondary-right-bracket (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-right-bracket`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-{"
 (setq vemv/shortcuts/global/primary-left-curly (argless (message "You pressed `vemv/shortcuts/global/primary-left-curly`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-{"
+(setq vemv/shortcuts/global/primary-secondary-left-curly (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-left-curly`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-}"
 (setq vemv/shortcuts/global/primary-right-curly (argless (message "You pressed `vemv/shortcuts/global/primary-right-curly`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-}"
+(setq vemv/shortcuts/global/primary-secondary-right-curly (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-right-curly`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-*"
 (setq vemv/shortcuts/global/primary-star (argless (message "You pressed `vemv/shortcuts/global/primary-star`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-*"
+(setq vemv/shortcuts/global/primary-secondary-star (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-star`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-/"
 (setq vemv/shortcuts/global/primary-slash (argless (message "You pressed `vemv/shortcuts/global/primary-slash`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-/"
+(setq vemv/shortcuts/global/primary-secondary-slash (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-slash`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-`"
 (setq vemv/shortcuts/global/primary-backtick (argless (message "You pressed `vemv/shortcuts/global/primary-backtick`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-`"
+(setq vemv/shortcuts/global/primary-secondary-backtick (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-backtick`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-+"
 (setq vemv/shortcuts/global/primary-plus (argless (message "You pressed `vemv/shortcuts/global/primary-plus`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-+"
+(setq vemv/shortcuts/global/primary-secondary-plus (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-plus`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-<backspace>"
 (setq vemv/shortcuts/global/primary-backspace (argless (message "You pressed `vemv/shortcuts/global/primary-backspace`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-<backspace>"
+(setq vemv/shortcuts/global/primary-secondary-backspace (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-backspace`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-S-<backspace>"
 (setq vemv/shortcuts/global/primary-S-backspace (argless (message "You pressed `vemv/shortcuts/global/primary-S-backspace`! For making this binding useful, customize it (you can find instructions at the wiki)")))
@@ -385,11 +559,17 @@
 ;; "C-<down>"
 (setq vemv/shortcuts/global/primary-down (argless (message "You pressed `vemv/shortcuts/global/primary-down`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-<down>"
+(setq vemv/shortcuts/global/primary-secondary-down (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-down`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-S-<down>"
 (setq vemv/shortcuts/global/primary-S-down (argless (message "You pressed `vemv/shortcuts/global/primary-S-down`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-<end>"
 (setq vemv/shortcuts/global/primary-end (argless (message "You pressed `vemv/shortcuts/global/primary-end`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-<end>"
+(setq vemv/shortcuts/global/primary-secondary-end (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-end`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-S-<end>"
 (setq vemv/shortcuts/global/primary-S-end (argless (message "You pressed `vemv/shortcuts/global/primary-S-end`! For making this binding useful, customize it (you can find instructions at the wiki)")))
@@ -397,11 +577,17 @@
 ;; "C-<home>"
 (setq vemv/shortcuts/global/primary-home (argless (message "You pressed `vemv/shortcuts/global/primary-home`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-<home>"
+(setq vemv/shortcuts/global/primary-secondary-home (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-home`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-S-<home>"
 (setq vemv/shortcuts/global/primary-S-home (argless (message "You pressed `vemv/shortcuts/global/primary-S-home`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-<left>"
 (setq vemv/shortcuts/global/primary-left (argless (message "You pressed `vemv/shortcuts/global/primary-left`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-<left>"
+(setq vemv/shortcuts/global/primary-secondary-left (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-left`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-S-<left>"
 (setq vemv/shortcuts/global/primary-S-left (argless (message "You pressed `vemv/shortcuts/global/primary-S-left`! For making this binding useful, customize it (you can find instructions at the wiki)")))
@@ -409,11 +595,17 @@
 ;; "C-<next>"
 (setq vemv/shortcuts/global/primary-next (argless (message "You pressed `vemv/shortcuts/global/primary-next`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-<next>"
+(setq vemv/shortcuts/global/primary-secondary-next (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-next`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-S-<next>"
 (setq vemv/shortcuts/global/primary-S-next (argless (message "You pressed `vemv/shortcuts/global/primary-S-next`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-<prior>"
 (setq vemv/shortcuts/global/primary-prior (argless (message "You pressed `vemv/shortcuts/global/primary-prior`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-<prior>"
+(setq vemv/shortcuts/global/primary-secondary-prior (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-prior`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-S-<prior>"
 (setq vemv/shortcuts/global/primary-S-prior (argless (message "You pressed `vemv/shortcuts/global/primary-S-prior`! For making this binding useful, customize it (you can find instructions at the wiki)")))
@@ -421,11 +613,17 @@
 ;; "C-<right>"
 (setq vemv/shortcuts/global/primary-right (argless (message "You pressed `vemv/shortcuts/global/primary-right`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-<right>"
+(setq vemv/shortcuts/global/primary-secondary-right (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-right`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-S-<right>"
 (setq vemv/shortcuts/global/primary-S-right (argless (message "You pressed `vemv/shortcuts/global/primary-S-right`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-<up>"
 (setq vemv/shortcuts/global/primary-up (argless (message "You pressed `vemv/shortcuts/global/primary-up`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-<up>"
+(setq vemv/shortcuts/global/primary-secondary-up (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-up`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-S-<up>"
 (setq vemv/shortcuts/global/primary-S-up (argless (message "You pressed `vemv/shortcuts/global/primary-S-up`! For making this binding useful, customize it (you can find instructions at the wiki)")))
@@ -433,17 +631,29 @@
 ;; "C-="
 (setq vemv/shortcuts/global/primary-equal (argless (message "You pressed `vemv/shortcuts/global/primary-equal`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-="
+(setq vemv/shortcuts/global/primary-secondary-equal (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-equal`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-|"
 (setq vemv/shortcuts/global/primary-bar (argless (message "You pressed `vemv/shortcuts/global/primary-bar`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
+;; "C-M-|"
+(setq vemv/shortcuts/global/primary-secondary-bar (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-bar`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
 ;; "C-RET"
 (setq vemv/shortcuts/global/primary-RET (argless (message "You pressed `vemv/shortcuts/global/primary-RET`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-RET"
+(setq vemv/shortcuts/global/primary-secondary-RET (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-RET`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-S-RET"
 (setq vemv/shortcuts/global/primary-S-RET (argless (message "You pressed `vemv/shortcuts/global/primary-S-RET`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-SPC"
 (setq vemv/shortcuts/global/primary-SPC (argless (message "You pressed `vemv/shortcuts/global/primary-SPC`! For making this binding useful, customize it (you can find instructions at the wiki)")))
+
+;; "C-M-SPC"
+(setq vemv/shortcuts/global/primary-secondary-SPC (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-SPC`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
 ;; "C-S-SPC"
 (setq vemv/shortcuts/global/primary-S-SPC (argless (message "You pressed `vemv/shortcuts/global/primary-S-SPC`! For making this binding useful, customize it (you can find instructions at the wiki)")))
