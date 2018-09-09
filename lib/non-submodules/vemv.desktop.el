@@ -22,6 +22,7 @@
          eval)))
 
 (defun vemv.desktop/ordered-file-buffers-list ()
+  "Taken from the `vemv/chosen-file-buffer-order-as-list' variable, persisted to `~/.emacs.d/emacs-desktop'."
   (ignore-errors
     (->> (vemv.desktop/desktop-file-contents)
          (-find (lambda (x)
@@ -33,6 +34,7 @@
          (-flatten))))
 
 (defun vemv/files-from-previous-session ()
+  "Taken from `~/.emacs.d/emacs-desktop'."
   (ignore-errors
     (->> (vemv.desktop/desktop-file-contents)
          (-filter (lambda (x)

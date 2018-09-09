@@ -142,19 +142,18 @@
 (setq vemv/chosen-file-buffer-order-as-list nil)
 
 (defun vemv/refresh-chosen-file-buffer-order-as-list! ()
-  (ignore-errors
-    (setq vemv/chosen-file-buffer-order-as-list
-          (mapcar (lambda (e)
-                    (let* ((proj (car e))
-                           (buffnames (->> e
-                                           second
-                                           (-remove 'nil?)
-                                           (mapcar (lambda (b)
-                                                     (with-current-buffer (get-buffer b)
-                                                       (buffer-file-name))))
-                                           (reverse))))
-                      (list proj buffnames)))
-                  (vemv/hash-map-to-list vemv/chosen-file-buffer-order)))))
+  (setq vemv/chosen-file-buffer-order-as-list
+        (mapcar (lambda (e)
+                  (let* ((proj (car e))
+                         (buffnames (->> e
+                                         second
+                                         (filter 'identity)
+                                         (mapcar (lambda (b)
+                                                   (with-current-buffer (get-buffer b)
+                                                     (buffer-file-name))))
+                                         (reverse))))
+                    (list proj buffnames)))
+                (vemv/hash-map-to-list vemv/chosen-file-buffer-order))))
 
 (defun vemv/clean-chosen-file-buffer-order ()
   "Removes closed buffers from vemv/chosen-file-buffer-order"
