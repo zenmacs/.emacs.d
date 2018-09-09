@@ -80,15 +80,19 @@ def emit_setqs scope: 'global', modifier_mappings: {"primary" => 'C', "secondary
 
     binding = "vemv/shortcuts/#{scope}/#{REPLACEMENTS[char]}"
     value = scope == 'global' ? informative_stub(binding) : "vemv/shortcuts/global/#{REPLACEMENTS[char]}"
-    result += %|
+    unless SELF_INSERTING.include?(char)
+      result += %|
 ;; "#{char}"
-(setq #{binding} #{value})\n| unless SELF_INSERTING.include?(char)
+(setq #{binding} #{value})\n|
+    end
 
     binding = "vemv/shortcuts/#{scope}/S-#{REPLACEMENTS[char]}"
     value = scope == 'global' ? informative_stub(binding) : "vemv/shortcuts/global/S-#{REPLACEMENTS[char]}"
-    result += %|
+    unless DUALS.include?(char)
+      result += %|
 ;; "#{super_combination_for char}"
-(setq #{binding} #{value})\n| unless DUALS.include?(char)
+(setq #{binding} #{value})\n|
+    end
 
   end
 
@@ -114,9 +118,11 @@ def emit_setqs scope: 'global', modifier_mappings: {"primary" => 'C', "secondary
 
       binding = "vemv/shortcuts/#{scope}/#{modifier}-S-#{REPLACEMENTS[char]}"
       value = scope == 'global' ? informative_stub(binding) : "vemv/shortcuts/global/#{modifier}-S-#{REPLACEMENTS[char]}"
-      result += %|
+      unless DUALS.include?(char)
+        result += %|
 ;; "#{modifier_mappings[modifier]}-S-#{char}"
-(setq #{binding} #{value})\n| unless DUALS.include?(char)
+(setq #{binding} #{value})\n|
+      end
     end
   end
 
@@ -138,31 +144,31 @@ def emit_bindings scope: 'global', modifier_mappings: {"primary" => 'C', "second
 
 (setq vemv/exhaustive-list-of-bindings-to-remove (list|
 
-  spaces = "\n                                                       "
+    spaces = "\n                                                       "
 
-  SPECIAL.each do |char|
-    left = char.include?('[f') ? "#{char}" : %|"#{char}"|
-    if !SELF_INSERTING.include?(char) || [';'].include?(char)
-      result += %|#{spaces}#{left}|
-    end
-  end
-
-  %w(primary secondary tertiary).each do |modifier|
-    (('a'..'z').to_a + (0..9).to_a.map(&:to_s) + SPECIAL).each do |char|
-      next if char.include?('[f')
-      next if NO_C.include?(char) && modifier_mappings[modifier] == 'C'
-      result += %|#{spaces}"#{modifier_mappings[modifier]}-#{char}"|
-      result += %|#{spaces}"#{modifier_mappings[modifier]}-S-#{char}"|
-      if modifier == 'primary'
-        result += %|#{spaces}"#{modifier_mappings[modifier]}-M-#{char}"|
+    SPECIAL.each do |char|
+      left = char.include?('[f') ? "#{char}" : %|"#{char}"|
+      if !SELF_INSERTING.include?(char) || [';'].include?(char)
+        result += %|#{spaces}#{left}|
       end
     end
+
+    %w(primary secondary tertiary).each do |modifier|
+      (('a'..'z').to_a + (0..9).to_a.map(&:to_s) + SPECIAL).each do |char|
+        next if char.include?('[f')
+        next if NO_C.include?(char) && modifier_mappings[modifier] == 'C'
+        result += %|#{spaces}"#{modifier_mappings[modifier]}-#{char}"|
+        result += %|#{spaces}"#{modifier_mappings[modifier]}-S-#{char}"|
+        if modifier == 'primary'
+          result += %|#{spaces}"#{modifier_mappings[modifier]}-M-#{char}"|
+        end
+      end
+    end
+
+    result += %|))|
   end
 
-result += %|))|
-  end
-
-result += %|
+  result += %|
 
 (setq #{variable_name}
   (vemv/hash-map
@@ -216,12 +222,12 @@ def emit_to_remove scope='global', modifier_mappings: {"primary" => 'C', "second
         r
       end),
 
-      (%w(primary secondary tertiary).map do |modifier|
-        (('a'..'z').to_a + (0..9).to_a.map(&:to_s) + SPECIAL).map do |char|
-          next if char.include?('[f')
-          r = [%|"#{modifier_mappings[modifier]}-#{char}"|, %|"#{modifier_mappings[modifier]}-S-#{char}"|]
-        end
-      end)]
+       (%w(primary secondary tertiary).map do |modifier|
+         (('a'..'z').to_a + (0..9).to_a.map(&:to_s) + SPECIAL).map do |char|
+           next if char.include?('[f')
+           r = [%|"#{modifier_mappings[modifier]}-#{char}"|, %|"#{modifier_mappings[modifier]}-S-#{char}"|]
+         end
+       end)]
 
   ).flatten.compact.map{|x| x.gsub(/^\"C/, "\"\\C").gsub(/^\"M/, "\"\\M") }.map{|a| !a.include?('"') && !a.include?("[f") ? %|"#{a}"| : a }.reject{|a| a.include? "<" }
   puts result.join(" ")
