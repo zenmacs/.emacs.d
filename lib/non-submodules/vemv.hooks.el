@@ -536,7 +536,7 @@
 (advice-add 'cider-test-execute :around 'vemv/apply-tests-verbosely)
 
 (defun vemv/honoring-newline-at-eof-setting (f &rest args)
-  (let (require-final-newline (not vemv/no-newline-at-eof))
+  (let ((require-final-newline (not vemv/no-newline-at-eof)))
     (apply f args)))
 
 (advice-add 'save-buffer :around 'vemv/honoring-newline-at-eof-setting)
