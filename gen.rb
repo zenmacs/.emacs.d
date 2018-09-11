@@ -177,10 +177,10 @@ def emit_bindings scope: 'global', modifier_mappings: {"primary" => 'C', "second
   SPECIAL.each do |char|
     command = "vemv/shortcuts/#{scope}/#{REPLACEMENTS[char]}"
     left = char.include?('[f') ? "#{char}" : %|"#{char}"|
-    result += %|    #{left} (argless (if #{command} (vemv/keyboard-funcall #{command})))\n| unless SELF_INSERTING.include?(char)
+    result += %|    #{left} (argless (if #{command} (vemv/keyboard-funcall :#{command} #{command})))\n| unless SELF_INSERTING.include?(char)
     unless DUALS.include?(char)
       command = "vemv/shortcuts/#{scope}/S-#{REPLACEMENTS[char]}"
-      result += %|    "#{super_combination_for char}" (argless (if #{command} (vemv/keyboard-funcall #{command})))\n|
+      result += %|    "#{super_combination_for char}" (argless (if #{command} (vemv/keyboard-funcall :#{command} #{command})))\n|
     end
   end
 
@@ -189,13 +189,13 @@ def emit_bindings scope: 'global', modifier_mappings: {"primary" => 'C', "second
       next if char.include?('[f')
       next if NO_C.include?(char) && modifier_mappings[modifier] == 'C'
       command = "vemv/shortcuts/#{scope}/#{modifier}-#{REPLACEMENTS[char]}"
-      result += %|    "#{modifier_mappings[modifier]}-#{char}" (argless (if #{command} (vemv/keyboard-funcall #{command})))\n|
+      result += %|    "#{modifier_mappings[modifier]}-#{char}" (argless (if #{command} (vemv/keyboard-funcall :#{command} #{command})))\n|
       if modifier == 'primary'
         command = "vemv/shortcuts/#{scope}/#{modifier}-secondary-#{REPLACEMENTS[char]}"
-        result += %|    "#{modifier_mappings[modifier]}-M-#{char}" (argless (if #{command} (vemv/keyboard-funcall #{command})))\n|
+        result += %|    "#{modifier_mappings[modifier]}-M-#{char}" (argless (if #{command} (vemv/keyboard-funcall :#{command} #{command})))\n|
       end
       s_command = "vemv/shortcuts/#{scope}/#{modifier}-S-#{REPLACEMENTS[char]}"
-      result += %|    "#{modifier_mappings[modifier]}-S-#{char}" (argless (if #{s_command} (vemv/keyboard-funcall #{s_command})))\n|
+      result += %|    "#{modifier_mappings[modifier]}-S-#{char}" (argless (if #{s_command} (vemv/keyboard-funcall :#{s_command} #{s_command})))\n|
     end
   end
 

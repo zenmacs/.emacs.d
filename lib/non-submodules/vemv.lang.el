@@ -97,8 +97,8 @@
       (vemv/toggle-verbosity))
     (vemv/echo "Reloaded!")))
 
-(defun vemv/keyboard-funcall (f &rest args)
-  (if vemv/input-enabled
+(defun vemv/keyboard-funcall (ref f &rest args)
+  (if (or vemv/input-enabled (equal ref :vemv/shortcuts/global/primary-secondary-8))
       (progn
         (apply f args))
-    (vemv/echo "Input disabled by `vemv/keyboard-funcall'.")))
+    (vemv/echo "Input disabled by `vemv/keyboard-funcall'. Press primary-secondary-8 to re-enable it.")))

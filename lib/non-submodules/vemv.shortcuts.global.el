@@ -85,6 +85,7 @@
       vemv/shortcuts/global/primary-z               (argless
                                                      (require 'vemv.undo)
                                                      (call-interactively 'undo-tree-undo))
+      vemv/shortcuts/global/primary-secondary-8     (argless (setq vemv/input-enabled t))
       vemv/shortcuts/global/primary-secondary-f     (argless
                                                      (require 'vemv.helm)
                                                      (vemv/helm-search-and-replace-from-this-directory))
