@@ -87,6 +87,9 @@
                                                      (call-interactively 'undo-tree-undo))
       vemv/shortcuts/global/primary-secondary-8     (argless (setq vemv/input-enabled t))
       vemv/shortcuts/global/primary-secondary-d     'vemv/delete-file-and-buffer
+      vemv/shortcuts/global/primary-secondary-w     (argless
+                                                     (replying-yes
+                                                      (vemv/close-this)))
       vemv/shortcuts/global/primary-secondary-f     (argless
                                                      (require 'vemv.helm)
                                                      (vemv/helm-search-and-replace-from-this-directory))
