@@ -109,3 +109,11 @@
   "Unindents the current region, or the current line"
   (interactive)
   (vemv/indent-region -2))
+
+(defun vemv/delete-file-and-buffer ()
+  "Kills the current buffer and deletes the file it is visiting."
+  (interactive)
+  (replying-yes
+   (when-let ((filename (buffer-file-name)))
+     (delete-file filename)
+     (kill-buffer))))
