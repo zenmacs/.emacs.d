@@ -149,7 +149,7 @@
 
 (setq vemv/cljr-building-ast-cache? nil) ;; XXX implement on new clj-refactor.el release
 
-(defun vemv/load-clojure-buffer ()
+(defun vemv/load-clojure-buffer (&optional callback)
   (interactive)
   (if (vemv/ciderable-p)
       (if (vemv/current-main-buffer-is-cljs)
@@ -165,13 +165,16 @@
                                                   (message "Currently building AST cache. Wait a few seconds and try again.")
                                                 (cider-interactive-eval (or vemv/clojure-reload-command
                                                                             "(with-out-str
-                                                                               (com.stuartsierra.component.user-helpers/reset))")))
+                                                                               (com.stuartsierra.component.user-helpers/reset))")
+                                                                        callback))
                                             (cider-load-buffer)
-                                            (cider-load-all-project-ns)))))))
+                                            (cider-load-all-project-ns)
+                                            (-some-> callback funcall)))))))
     (if (vemv/in-a-lisp-mode?)
         (progn
           (vemv/save)
-          (call-interactively 'eval-buffer)))))
+          (call-interactively 'eval-buffer)
+          (-some-> callback funcall)))))
 
 (defun vemv/is-cljs-project? ()
   (or (eq vemv/project-type :cljs)
@@ -334,24 +337,27 @@
   "Runs the tests for the current namespace, or if not applicable, for the latest applicable ns."
   (interactive)
   (when (vemv/in-clojure-mode?)
-    (vemv/advice-nrepl (argless
-                        (let* ((cljs (vemv/current-main-buffer-is-cljs))
-                               (ns (vemv/current-ns))
-                               (inferred (funcall cider-test-infer-test-ns ns))
-                               (chosen (if (vemv/is-testing-ns ns inferred)
-                                           ns
-                                         (if cljs
-                                             vemv/latest-cljs-test-ran
-                                           vemv/latest-clojure-test-ran))))
-                          (when chosen
-                            (setq vemv/latest-clojure-test-ran chosen)
-                            (if cljs
-                                (vemv/send :cljs
-                                           nil
-                                           (concat "(cljs.test/run-tests '"
-                                                   chosen
-                                                   ")"))
-                              (cider-test-execute chosen nil nil))))))))
+    (vemv/load-clojure-buffer (lambda (&rest args)
+                                (when (ignore-errors
+                                        (-some-> args car (nrepl-dict-get "status") (car) (string-equal "done")))
+                                  (vemv/advice-nrepl (argless
+                                                      (let* ((cljs (vemv/current-main-buffer-is-cljs))
+                                                             (ns (vemv/current-ns))
+                                                             (inferred (funcall cider-test-infer-test-ns ns))
+                                                             (chosen (if (vemv/is-testing-ns ns inferred)
+                                                                         ns
+                                                                       (if cljs
+                                                                           vemv/latest-cljs-test-ran
+                                                                         vemv/latest-clojure-test-ran))))
+                                                        (when chosen
+                                                          (setq vemv/latest-clojure-test-ran chosen)
+                                                          (if cljs
+                                                              (vemv/send :cljs
+                                                                         nil
+                                                                         (concat "(cljs.test/run-tests '"
+                                                                                 chosen
+                                                                                 ")"))
+                                                            (cider-test-execute chosen nil nil)))))))))))
 
 (defun vemv/run-this-deftest ()
   "Assuming `point` is at a deftest name, it runs it"
