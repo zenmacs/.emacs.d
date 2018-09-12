@@ -32,9 +32,9 @@
 
 (add-to-list 'special-display-buffer-names '("*rails*" vemv/repl-completion))
 (add-to-list 'special-display-buffer-names '("*helm-ag*" vemv/repl-completion))
-;; (add-to-list 'special-display-buffer-names '("*cider-error*" vemv/repl-completion)) ;; opens the buffer twice. Probably CIDER has some custom mechanism.
 
 (add-to-list 'special-display-buffer-names '("*cider-test-report*" vemv.completions/split-window-vertically))
+(add-to-list 'special-display-buffer-names '("*cider-error*" vemv.completions/split-window-vertically))
 
 (unless vemv/terminal-emacs?
   (add-to-list 'sp-no-reindent-after-kill-modes 'ruby-mode)
