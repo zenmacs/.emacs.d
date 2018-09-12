@@ -333,12 +333,17 @@
     (or (string-equal n (or inferred (funcall cider-test-infer-test-ns n)))
         (vemv/starts-with n "unit."))))
 
+;; We close this buffer because otherwise it gets buried, leaving a useless extra window.
+;; Customizing `cider-ancillary-buffers' didn't work.
+(defun vemv/close-cider-error ()
+  (when-let ((w (get-buffer-window "*cider-error*")))
+    (with-selected-window w
+      (vemv/close-this))))
+
 (defun vemv/test-this-ns ()
   "Runs the tests for the current namespace, or if not applicable, for the latest applicable ns."
   (interactive)
-  (when-let ((w (get-buffer-window "*cider-error*")))
-    (with-selected-window w
-      (vemv/close-this)))
+  (vemv/close-cider-error)
   (when (vemv/in-clojure-mode?)
     (vemv/load-clojure-buffer (lambda (&rest args)
                                 (when (ignore-errors

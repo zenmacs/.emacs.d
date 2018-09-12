@@ -180,6 +180,7 @@
 (defun vemv/next-file-buffer ()
   "Switch to the next buffer that contains a file opened by the user within this project"
   (interactive)
+  (vemv/close-cider-error)
   (vemv/safe-select-window vemv/main_window)
   (vemv/clean-chosen-file-buffer-order)
   (switch-to-buffer (let ((entry (gethash vemv/current-project vemv/chosen-file-buffer-order)))
@@ -195,6 +196,7 @@
 (defun vemv/previous-file-buffer ()
   "Switch to the previous buffer that contains a file opened by the user within this project"
   (interactive)
+  (vemv/close-cider-error)
   (vemv/safe-select-window vemv/main_window)
   (vemv/clean-chosen-file-buffer-order)
   (if-let (file (or (car (last (gethash vemv/current-project vemv/chosen-file-buffer-order)))
