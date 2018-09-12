@@ -690,3 +690,23 @@ START and END are buffer positions."
 				                    :foreground (css--contrasty-color color)
 				                    :box '(:line-width -1 :color "#4D575F"))))))))))))
                  extended-region))))
+
+(defun cider-stacktrace-navigate (button)
+  "Removes the second argument from cider--jump-to-loc-from-info, avoiding the usage of random windows"
+  (let* ((var (button-get button 'var))
+         (class (button-get button 'class))
+         (method (button-get button 'method))
+         (info (or (and var (cider-var-info var))
+                   (and class method (cider-member-info class method))
+                   (nrepl-dict)))
+         ;; Stacktrace returns more accurate line numbers, but if the function's
+         ;; line was unreliable, then so is the stacktrace by the same amount.
+         ;; Set `line-shift' to the number of lines from the beginning of defn.
+         (line-shift (- (or (button-get button 'line) 0)
+                        (or (nrepl-dict-get info "line") 1)))
+         ;; give priority to `info` files as `info` returns full paths.
+         (info (nrepl-dict-put info "file" (or (nrepl-dict-get info "file")
+                                               (button-get button 'file)))))
+    (cider--jump-to-loc-from-info info)
+    (forward-line line-shift)
+    (back-to-indentation)))
