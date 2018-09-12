@@ -113,6 +113,7 @@
  `(pe/directory-face ((t (:foreground ,vemv-colors/lighter-yellow :bold t))))
 
  `(cider-fringe-good-face ((t (:foreground ,vemv-default-foreground-color))))
+ `(cider-stacktrace-error-message-face ((t (:foreground ,vemv-default-foreground-color-very-slightly-darker))))
  `(cider-error-highlight-face ((t (:foreground ,vemv-default-foreground-color))))
  `(cider-stacktrace-error-class-face ((t (:foreground ,vemv-error-foreground-color))))
  `(cider-repl-stderr-face ((t (:foreground ,vemv-error-foreground-color))))
@@ -120,6 +121,8 @@
  `(cider-repl-stdout-face ((t (:foreground ,vemv-default-foreground-color-very-slightly-darker))))
  `(cider-stacktrace-error-class-face ((t (:foreground ,vemv-error-foreground-color))))
  `(cider-stacktrace-ns-face ((t (:foreground "white"))))
+ `(cider-stacktrace-filter-active-face ((t (:foreground ,vemv-colors/keyword-green :underline t))))
+ `(cider-stacktrace-filter-inactive-face ((t (:foreground ,vemv-colors/keyword-green))))
  `(cider-test-success-face
    ((t (:background ,vemv-colors/keyword-green :foreground ,vemv-default-autocomplete-popup-foreground-color))))
  `(cider-test-failure-face
@@ -158,7 +161,7 @@
  `(font-lock-regexp-grouping-construct ((t (:foreground ,vemv-colors/blue))))
  `(font-lock-string-face ((t (:foreground ,vemv-colors/light-blue))))
 
- `(button ((t (:foreground ,vemv-colors/light-blue :underline t))))
+ `(button ((t (:foreground ,vemv-default-foreground-color-very-slightly-darker :underline t))))
 
  ;; ns prefixes:
  `(font-lock-type-face ((t (:foreground ,vemv-default-foreground-color-very-slightly-darker
