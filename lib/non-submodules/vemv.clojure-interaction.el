@@ -336,6 +336,9 @@
 (defun vemv/test-this-ns ()
   "Runs the tests for the current namespace, or if not applicable, for the latest applicable ns."
   (interactive)
+  (when-let ((w (get-buffer-window "*cider-error*")))
+    (with-selected-window w
+      (vemv/close-this)))
   (when (vemv/in-clojure-mode?)
     (vemv/load-clojure-buffer (lambda (&rest args)
                                 (when (ignore-errors
