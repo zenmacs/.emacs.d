@@ -421,3 +421,34 @@
                    (insert s)
                    (font-lock-ensure)
                    (buffer-string))))))
+
+(defun vemv/parse-requires (x)
+  (->> x
+       (-find (lambda (x)
+                (and (listp x)
+                     (equal :require (car x)))))
+       cdr))
+
+(defun vemv/check-unused-requires ()
+  (interactive)
+  (when (vemv/ciderable-p)
+    (when-let ((clean (cljr--call-middleware-sync
+                       (cljr--create-msg "clean-ns"
+                                         "path" (cljr--project-relative-path (buffer-file-name))
+                                         "libspec-whitelist" cljr-libspec-whitelist
+                                         "prune-ns-form" "true")
+                       "ns")))
+      (let* ((ideal (->> clean read vemv/parse-requires))
+             (actual (->> (cider-ns-form) read vemv/parse-requires))
+             (diff (-difference actual ideal)))
+        (-some->> diff
+                  (mapcar 'pr-str)
+                  (mapcar (lambda (x)
+                            (s-replace "\\" "" x)))
+                  (s-join "\n")
+                  (concat (propertize (vemv/current-ns)
+                                      'face 'vemv-cider-connection-face)
+                          (propertize " - There are unused requires:\n"
+                                      'face 'vemv-warning-face)
+                          "\n")
+                  (vemv/echo))))))

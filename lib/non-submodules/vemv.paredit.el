@@ -39,6 +39,7 @@
             (while (string-equal (vemv/current-char-at-point) "\n")
               (delete-backward-char 1))))
         (save-buffer)
+        (vemv/check-unused-requires)
         (when (eq major-mode 'ruby-mode)
           (require 'rubocop)
           (defun rubocop--file-command (command)

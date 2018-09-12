@@ -60,6 +60,11 @@
   "."
   :group 'vemv)
 
+(defface vemv-warning-face
+  `((t :foreground ,vemv-colors/yellow :background ,vemv-default-background-color-slightly-darker))
+  "."
+  :group 'vemv)
+
 ;; Faces aren't vars, so e.g. ruby-mode can break without these
 (defvar vemv-default-foreground-face-very-slightly-darker 'vemv-default-foreground-face-very-slightly-darker)
 (defvar vemv-default-face 'vemv-default-face)
