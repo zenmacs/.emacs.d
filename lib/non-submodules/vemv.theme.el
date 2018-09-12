@@ -67,6 +67,11 @@
 (defvar vemv/blue-face 'vemv/blue-face)
 (defvar clojure-global-constant-face 'clojure-global-constant-face)
 
+(set-fringe-bitmap-face 'left-arrow 'vemv-cider-connection-face)
+(set-fringe-bitmap-face 'left-curly-arrow 'vemv-cider-connection-face)
+(set-fringe-bitmap-face 'right-arrow 'vemv-cider-connection-face)
+(set-fringe-bitmap-face 'right-curly-arrow 'vemv-cider-connection-face)
+
 (custom-theme-set-faces
  'vemv
 
@@ -152,6 +157,8 @@
  `(font-lock-regexp-grouping-backslash ((t (:foreground ,vemv-colors/yellow))))
  `(font-lock-regexp-grouping-construct ((t (:foreground ,vemv-colors/blue))))
  `(font-lock-string-face ((t (:foreground ,vemv-colors/light-blue))))
+
+ `(button ((t (:foreground ,vemv-colors/light-blue :underline t))))
 
  ;; ns prefixes:
  `(font-lock-type-face ((t (:foreground ,vemv-default-foreground-color-very-slightly-darker
