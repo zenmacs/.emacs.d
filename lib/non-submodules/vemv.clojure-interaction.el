@@ -452,3 +452,11 @@
                                       'face 'vemv-warning-face)
                           "\n")
                   (vemv/echo))))))
+
+(defun vemv/fix-defn-oneliners ()
+  "Places a newline, if needed, between defn names and their arglists."
+  (interactive)
+  (save-excursion
+    (beginning-of-buffer)
+    (replace-regexp "defn \\(\\sw+\\)? \\["
+                    "defn \\1\n  [")))

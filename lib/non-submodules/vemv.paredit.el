@@ -20,11 +20,14 @@
              ;; for `indent-for-tab-command`:
              (last-command nil)
              (dc (string-equal "dc" (car vemv/current-workspace)))
+             (ds (string-equal "docsolver" (car vemv/current-workspace)))
              (yas (vemv/contains? (buffer-file-name) "/snippets/"))
              ;; for `save-buffer`:
              (require-final-newline (and (not vemv/no-newline-at-eof)
                                          (not dc)
                                          (not yas))))
+        (when ds
+          (vemv/fix-defn-oneliners))
         (unless (member major-mode `(fundamental-mode ruby-mode))
           (unless dc
             (delete-trailing-whitespace))
