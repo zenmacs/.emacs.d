@@ -17,6 +17,7 @@
 (setq vemv-colors/keyword-green "#C1ED3D")
 (setq vemv-colors/yellow "#FFE33B")
 (setq vemv-colors/lighter-yellow "#ffe444")
+(setq vemv-colors/dark-yellow "#877b34")
 (setq vemv-colors/pink "#D93273")
 (setq vemv-colors/purple "#7A3555")
 (setq vemv-colors/warning-pink "#aa1e44")
@@ -62,6 +63,11 @@
 
 (defface vemv-warning-face
   `((t :foreground ,vemv-colors/yellow :background ,vemv-default-background-color-slightly-darker))
+  "."
+  :group 'vemv)
+
+(defface vemv-reverse-warning-face
+  `((t :background ,vemv-colors/dark-yellow :foreground ,vemv-default-foreground-color-very-slightly-darker))
   "."
   :group 'vemv)
 
