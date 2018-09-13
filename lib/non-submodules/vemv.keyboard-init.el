@@ -9,7 +9,7 @@
 ;; Important - remove keybindings before (vemv/initial-layout) so M-x cannot interrupt
 
 (unless vemv/terminal-emacs?
-  (dolist (mode (list paredit-mode-map))
+  (dolist (mode (list paredit-mode-map emacs-lisp-mode-map))
     (mapc (lambda (arg)
             (define-key mode (vemv/keyboard-macro arg) nil))
           vemv/exhaustive-list-of-bindings-to-remove))

@@ -93,6 +93,9 @@
       vemv/shortcuts/global/primary-secondary-f     (argless
                                                      (require 'vemv.helm)
                                                      (vemv/helm-search-and-replace-from-this-directory))
+      vemv/shortcuts/global/primary-secondary-q     (argless
+                                                     (replying-yes
+                                                      (kill-emacs)))
       vemv/shortcuts/global/prior                   'cua-scroll-down
       vemv/shortcuts/global/right                   'right-char
       vemv/shortcuts/global/secondary-S-k           'vemv/kill-backward-copying-content
