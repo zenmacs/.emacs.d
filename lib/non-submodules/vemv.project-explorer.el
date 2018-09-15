@@ -114,7 +114,7 @@
                                            (vemv/safe-select-window original-window)))))))
 
 (defun vemv/safe-show-current-file-in-project-explorer* ()
-  (when (file-exists-p (vemv/main-window-buffer-filename))
+  (when (-some-> (vemv/main-window-buffer-filename) file-exists-p)
     (let* ((w (selected-window))
            (attempts 7)
            (impl (lambda (self attempt-no)
