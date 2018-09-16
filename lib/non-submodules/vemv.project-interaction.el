@@ -153,8 +153,10 @@
                                          second
                                          (filter 'identity)
                                          (mapcar (lambda (b)
-                                                   (with-current-buffer (get-buffer b)
-                                                     (buffer-file-name))))
+                                                   ;; needed for some reason (despite the prior `filter'):
+                                                   (when-let ((buffer (get-buffer b)))
+                                                     (with-current-buffer buffer
+                                                       (buffer-file-name)))))
                                          (reverse))))
                     (list proj buffnames)))
                 (vemv/hash-map-to-list vemv/chosen-file-buffer-order))))
