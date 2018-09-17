@@ -440,18 +440,20 @@
                        "ns")))
       (let* ((ideal (->> clean read vemv/parse-requires))
              (actual (->> (cider-ns-form) read vemv/parse-requires))
-             (diff (-difference actual ideal)))
-        (-some->> diff
-                  (mapcar 'pr-str)
-                  (mapcar (lambda (x)
-                            (s-replace "\\" "" x)))
-                  (s-join "\n")
-                  (concat (propertize (vemv/current-ns)
-                                      'face 'vemv-cider-connection-face)
-                          (propertize " - There are unused requires:\n"
-                                      'face 'vemv-warning-face)
-                          "\n")
-                  (vemv/echo))))))
+             (diff (-difference actual ideal))
+             (message (-some->> diff
+                                (mapcar 'pr-str)
+                                (mapcar (lambda (x)
+                                          (s-replace "\\" "" x)))
+                                (s-join "\n")
+                                (concat (propertize (vemv/current-ns)
+                                                    'face 'vemv-cider-connection-face)
+                                        (propertize " - There are unused requires:\n"
+                                                    'face 'vemv-warning-face)
+                                        "\n"))))
+        (when message
+          (vemv/echo message)
+          (shell-command-to-string (concat "terminal-notifier -message '" message "'")))))))
 
 (defun vemv/fix-defn-oneliners ()
   "Places a newline, if needed, between defn names and their arglists."
