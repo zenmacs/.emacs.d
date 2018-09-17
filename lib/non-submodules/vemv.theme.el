@@ -163,6 +163,9 @@
  `(font-lock-doc-string-face ((t (:foreground ,vemv-colors/yellow :italic t))))
  `(font-lock-function-name-face ((t (:foreground ,vemv-colors/yellow :bold t))))
 
+ `(magit-diff-file-heading ((t (:foreground ,vemv-colors/yellow :bold t))))
+ `(magit-diff-context-highlight ((t (:background ,vemv-default-background-color-slightly-darker))))
+
  ;; used for special forms and macros. also for def - which is annoying
  `(font-lock-keyword-face ((t (:foreground ,(if (eq :ruby vemv/project-type)
                                                 vemv-default-foreground-color

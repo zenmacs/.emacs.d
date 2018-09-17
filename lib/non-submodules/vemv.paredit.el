@@ -126,7 +126,8 @@
     (backward-delete-char 1)))
 
 (defmacro vemv/paredit-almost-safely (&rest body)
-  `(when (vemv/in-a-lisp-mode?)
+  `(when (or (vemv/in-a-lisp-mode?)
+             (derived-mode-p 'magit-mode))
      (let* ((last-command nil)
             (v (progn
                  ,@body)))

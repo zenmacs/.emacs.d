@@ -177,6 +177,11 @@
   (vemv/safe-select-window vemv/main_window)
   (set-window-buffer (split-window-vertically) buffer))
 
+(defun vemv.completions/in-new-frame (buffer)
+  (let* ((f (vemv/new-frame)))
+    (select-frame f)
+    (set-window-buffer (car (window-list f)) buffer)))
+
 (defun vemv/bounded-list/insert-at-head! (x bounded-list bound)
   (vemv/mutate-list-to bounded-list (cons x (-clone bounded-list)))
   (vemv/mutate-list-to bounded-list (-take bound (-clone bounded-list)))

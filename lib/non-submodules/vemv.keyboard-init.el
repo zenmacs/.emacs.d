@@ -23,6 +23,13 @@
   (add-hook 'cider-repl-mode-hook
             (define-key cider-repl-mode-map (kbd "<tab>") 'vemv/tab)))
 
+(add-hook 'magit-diff-mode-hook
+          (argless (mapc (lambda (arg)
+                           (define-key magit-mode-map (vemv/keyboard-macro arg) nil)
+                           (define-key magit-diff-mode-map (vemv/keyboard-macro arg) nil))
+                         vemv/exhaustive-list-of-bindings-to-remove)
+                   (vemv/set-keys-for-scope magit-diff-mode-map vemv/clojure-key-bindings)))
+
 (add-hook 'project-explorer-mode-hook
           (argless
            (es-define-keys project-explorer-mode-map

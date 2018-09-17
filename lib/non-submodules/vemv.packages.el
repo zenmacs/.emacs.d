@@ -29,6 +29,7 @@
                      hydra
                      ido-at-point
                      inflections
+                     magit
                      multiple-cursors
                      paren-face
                      queue
