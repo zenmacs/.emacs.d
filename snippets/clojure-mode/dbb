@@ -1,0 +1,4 @@
+#name: dbb
+# --
+(with-open [conn (jdbc.core/connection (:app/db app.main/system))]
+  (jdbc.core/fetch conn (honeysql.format/format {:select [$1]})))
