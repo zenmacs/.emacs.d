@@ -353,6 +353,9 @@
 (add-hook 'inf-ruby-mode-hook
           (argless (setq-local mode-line-format vemv/pe/mode-line-format)))
 
+(add-hook 'cider-repl-mode-hook
+          (argless (yas-activate-extra-mode 'clojure-mode)))
+
 (unless vemv/terminal-emacs?
   (dolist (mode (list 'emacs-lisp-mode-hook 'ruby-mode-hook 'clojure-mode-hook
                       'js-mode-hook 'css-mode-hook 'html-mode-hook 'haml-mode-hook))

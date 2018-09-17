@@ -18,7 +18,10 @@
             (argless
              (mapc (lambda (arg)
                      (define-key cider-mode-map (vemv/keyboard-macro arg) nil))
-                   vemv/exhaustive-list-of-bindings-to-remove))))
+                   vemv/exhaustive-list-of-bindings-to-remove)))
+
+  (add-hook 'cider-repl-mode-hook
+            (define-key cider-repl-mode-map (kbd "<tab>") 'vemv/tab)))
 
 (add-hook 'project-explorer-mode-hook
           (argless
