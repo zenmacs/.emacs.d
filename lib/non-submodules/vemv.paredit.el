@@ -24,7 +24,8 @@
              (yas (vemv/contains? (buffer-file-name) "/snippets/")))
         (when ds
           (vemv/fix-defn-oneliners))
-        (unless (member major-mode `(fundamental-mode ruby-mode))
+        (unless (or yas
+                    (member major-mode `(fundamental-mode ruby-mode)))
           (unless dc
             (delete-trailing-whitespace))
           (call-interactively 'mark-whole-buffer)
