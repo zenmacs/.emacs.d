@@ -12,47 +12,48 @@
 
 (defun vemv/save (&optional b)
   (interactive)
-  (let* ((b (or b (current-buffer))))
-    (with-current-buffer b
-      (when (vemv/in-a-lisp-mode?)
-        (check-parens))
-      (let* ((line (vemv/current-line-number))
-             ;; for `indent-for-tab-command`:
-             (last-command nil)
-             (dc (string-equal "dc" (car vemv/current-workspace)))
-             (ds (string-equal "docsolver" (car vemv/current-workspace)))
-             (yas (vemv/contains? (buffer-file-name) "/snippets/")))
-        (when ds
-          (vemv/fix-defn-oneliners))
-        (unless (or yas
-                    (member major-mode `(fundamental-mode ruby-mode)))
-          (unless dc
-            (delete-trailing-whitespace))
-          (call-interactively 'mark-whole-buffer)
-          (call-interactively 'indent-for-tab-command)
-          (pop-mark))
-        (goto-line line)
-        (vemv/end-of-line-code* nil)
-        (when (or vemv/no-newline-at-eof yas)
-          (save-excursion
-            (end-of-buffer)
-            (while (string-equal (vemv/current-char-at-point) "\n")
-              (delete-backward-char 1))))
-        (save-buffer)
-        (vemv/check-unused-requires)
-        (when (eq major-mode 'ruby-mode)
-          (require 'rubocop)
-          (defun rubocop--file-command (command)
-            "Removes compilation-mode stuff"
-            (rubocop-ensure-installed)
-            (let ((file-name (buffer-file-name (current-buffer))))
-              (if file-name
-                  ;; make sure we run RuboCop from a project's root if the command is executed within a project
-                  (let ((default-directory (or (rubocop-project-root 'no-error) default-directory)))
-                    (shell-command-to-string (rubocop-build-command command (rubocop-local-file-name file-name)))
-                    (revert-buffer t t t))
-                (error "Buffer is not visiting a file"))))
-          (rubocop-autocorrect-current-file))))))
+  (when (buffer-file-name)
+    (let* ((b (or b (current-buffer))))
+      (with-current-buffer b
+        (when (vemv/in-a-lisp-mode?)
+          (check-parens))
+        (let* ((line (vemv/current-line-number))
+               ;; for `indent-for-tab-command`:
+               (last-command nil)
+               (dc (string-equal "dc" (car vemv/current-workspace)))
+               (ds (string-equal "docsolver" (car vemv/current-workspace)))
+               (yas (vemv/contains? (buffer-file-name) "/snippets/")))
+          (when ds
+            (vemv/fix-defn-oneliners))
+          (unless (or yas
+                      (member major-mode `(fundamental-mode ruby-mode)))
+            (unless dc
+              (delete-trailing-whitespace))
+            (call-interactively 'mark-whole-buffer)
+            (call-interactively 'indent-for-tab-command)
+            (pop-mark))
+          (goto-line line)
+          (vemv/end-of-line-code* nil)
+          (when (or vemv/no-newline-at-eof yas)
+            (save-excursion
+              (end-of-buffer)
+              (while (string-equal (vemv/current-char-at-point) "\n")
+                (delete-backward-char 1))))
+          (save-buffer)
+          (vemv/check-unused-requires)
+          (when (eq major-mode 'ruby-mode)
+            (require 'rubocop)
+            (defun rubocop--file-command (command)
+              "Removes compilation-mode stuff"
+              (rubocop-ensure-installed)
+              (let ((file-name (buffer-file-name (current-buffer))))
+                (if file-name
+                    ;; make sure we run RuboCop from a project's root if the command is executed within a project
+                    (let ((default-directory (or (rubocop-project-root 'no-error) default-directory)))
+                      (shell-command-to-string (rubocop-build-command command (rubocop-local-file-name file-name)))
+                      (revert-buffer t t t))
+                  (error "Buffer is not visiting a file"))))
+            (rubocop-autocorrect-current-file)))))))
 
 (defun vemv/tab ()
   (interactive)
