@@ -67,7 +67,7 @@
   :group 'vemv)
 
 (defface vemv-reverse-warning-face
-  `((t :background ,vemv-colors/dark-yellow :foreground ,vemv-default-foreground-color-very-slightly-darker))
+  `((t :underline (:color ,vemv-colors/yellow :style wave)))
   "."
   :group 'vemv)
 
