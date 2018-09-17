@@ -5,7 +5,6 @@
 (setq vemv/shortcuts/global/backspace               'vemv/backspace
       vemv/shortcuts/global/down                    'next-line
       vemv/shortcuts/global/end                     'vemv/end-of-line-or-code
-      vemv/shortcuts/global/f11                     'vemv/maximize
       vemv/shortcuts/global/RET                     'newline-and-indent
       vemv/shortcuts/global/S-backspace             'vemv/force-backspace
       vemv/shortcuts/global/S-f7                    'vemv/previous-workspace
