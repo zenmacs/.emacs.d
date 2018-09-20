@@ -91,13 +91,15 @@
                                                         "git rev-parse --show-toplevel"))
                        "ot a git repository")))
 
-(defun vemv/git-file-list-for (grep-options)
+(defun vemv/git-file-list-for (grep-options &optional git-command)
   (let* ((default-directory vemv/project-root-dir)
+         (git-command (or git-command "git status --porcelain"))
          (command (when (vemv/in-a-git-repo? default-directory)
                     (concat "cd " default-directory "; "
                             "cd $(git rev-parse --show-toplevel); "
-                            "git status --porcelain | grep " grep-options " | sed s/^...// |"
-                            "while read line; do echo \"$PWD/$line\"; done"))))
+                            git-command (when grep-options
+                                          (concat " | grep " grep-options " | sed s/^...//"))
+                            " | while read line; do echo \"$PWD/$line\"; done"))))
     (-some->> command
               shell-command-to-string
               s-lines
@@ -125,3 +127,27 @@
 (defun vemv/open-all-git-files ()
   (interactive)
   (mapcar 'vemv/open (vemv/all-git-modified-files)))
+
+(defun vemv/open-git-diff-against ()
+  (interactive)
+  (require 'magit-diff)
+  (require 'git-gutter)
+  (defsubst git-gutter:show-gutter-p (diffinfos)
+    t)
+  (defsubst git-gutter:reset-window-margin-p ()
+    nil)
+  (select-window vemv/main_window)
+  (let* ((default-directory vemv/project-root-dir)
+         (branch (magit-diff-read-range-or-commit "Branch"))
+         (files (->> branch
+                     (concat "git diff --name-only ")
+                     (vemv/git-file-list-for nil)
+                     (-filter 'file-exists-p))))
+    (mapcar 'find-file-noselect files)
+    (mapcar (lambda (x)
+              (with-current-buffer (get-file-buffer x)
+                (switch-to-buffer (current-buffer) t t)
+                (setq git-gutter:diff-option branch)
+                (git-gutter-mode)))
+            files)
+    (vemv/next-file-buffer)))

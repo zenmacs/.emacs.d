@@ -34,3 +34,6 @@
 [submodule "lib/clj-refactor"]
 	path = lib/clj-refactor
 	url = https://github.com/vemv/clj-refactor.el.git
+[submodule "lib/emacs-git-gutter"]
+	path = lib/emacs-git-gutter
+	url = https://github.com/vemv/emacs-git-gutter.git
