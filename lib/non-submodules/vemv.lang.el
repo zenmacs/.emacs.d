@@ -26,8 +26,7 @@
                        (vemv/sexpr-content backward?)))))
     (if (equal where :emacs)
         (eval (read content))
-      (let* ((sender (selected-window))
-             (destination-buffer (case where
+      (let* ((destination-buffer (case where
                                    (:ruby "*rails*")
                                    (:ielm "*ielm*")
                                    (:shell "*shell-1*")
@@ -44,24 +43,24 @@
           (if (and (eq where :ruby)
                    (not (get-buffer "*rails*")))
               (vemv/echo "Disconnected!")
-            (vemv/safe-select-window vemv/repl-window)
-            (switch-to-buffer destination-buffer)
+            (with-selected-window vemv/repl-window
+              (switch-to-buffer destination-buffer)
 
-            (end-of-buffer)
-            (insert content)
+              (end-of-buffer)
+              (insert content)
 
-            (unless no-return
-              (case where
-                (:ielm (ielm-return))
-                (:ruby (comint-send-input))
-                (:shell (comint-send-input))
-                (:clj (cider-repl-return))
-                (:cljs (cider-repl-return))))
+              (unless no-return
+                (case where
+                  (:ielm (ielm-return))
+                  (:ruby (comint-send-input))
+                  (:shell (comint-send-input))
+                  (:clj (cider-repl-return))
+                  (:cljs (cider-repl-return))))
 
-            (pop kill-ring)
-            (end-of-buffer)
-            (unless no-return
-              (vemv/safe-select-window sender))))))))
+              (pop kill-ring)
+              (end-of-buffer))
+            (when no-return
+              (vemv/safe-select-window vemv/repl-window))))))))
 
 (setq vemv/shell-id 0)
 
