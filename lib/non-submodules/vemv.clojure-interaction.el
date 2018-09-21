@@ -464,7 +464,7 @@
   (interactive)
   (save-excursion
     (beginning-of-buffer)
-    (replace-regexp "defn \\(\\sw+\\)? \\["
+    (replace-regexp "defn \\(\\_<.*?\\_>\\) \\["
                     "defn \\1\n  [")))
 
 (define-minor-mode docsolver-mode
