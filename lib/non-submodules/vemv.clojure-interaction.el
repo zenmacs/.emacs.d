@@ -427,7 +427,11 @@
        (-find (lambda (x)
                 (and (listp x)
                      (equal :require (car x)))))
-       cdr))
+       (cdr)
+       (mapcar (lambda (x)
+                 (if (symbolp x)
+                     (vector x)
+                   x)))))
 
 (defun vemv/check-unused-requires ()
   (interactive)
