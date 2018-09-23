@@ -7,21 +7,20 @@
 
 (defun vemv/after-file-open-without-project-explorer-highlighting ()
   (interactive)
-  (vemv/save-window-excursion
-   (vemv/safe-select-window vemv/main_window)
-   (when (vemv/buffer-of-current-project-or-parent? (current-buffer))
-     (when (and (vemv/in-clojure-mode?)
-                (not vemv/ns-shown))
-       (vemv/toggle-ns-hiding :after-file-open))
-     (vemv/clean-chosen-file-buffer-order)
-     (setq-local mode-line-format tabbed-line-format)
-     (vemv/advice-nrepl)
-     (vemv/ensure-repl-visible))))
+  (when (and (vemv/in-clojure-mode?)
+             (not vemv/ns-shown))
+    (vemv/toggle-ns-hiding :after-file-open))
+  (vemv/clean-chosen-file-buffer-order)
+  (setq-local mode-line-format tabbed-line-format)
+  (vemv/advice-nrepl)
+  (vemv/ensure-repl-visible))
 
 (defun vemv/after-file-open (&rest ignore)
   (interactive)
-  (vemv/after-file-open-without-project-explorer-highlighting)
-  (funcall vemv/safe-show-current-file-in-project-explorer))
+  (with-selected-window vemv/main_window
+    (when (vemv/buffer-of-current-project-or-parent? (current-buffer))
+      (vemv/after-file-open-without-project-explorer-highlighting)
+      (funcall vemv/safe-show-current-file-in-project-explorer))))
 
 (defvar vemv/after-file-open-watcher
   (add-hook 'focus-in-hook 'vemv/advice-nrepl))
