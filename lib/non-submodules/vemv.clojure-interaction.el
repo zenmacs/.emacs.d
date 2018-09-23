@@ -251,8 +251,7 @@
            (cider-prompt-for-symbol nil))
       (if curr-token-is-qualified-kw
           (call-interactively 'cider-find-keyword)
-        (cider-find-var))
-      (vemv/advice-nrepl))))
+        (cider-find-var)))))
 
 (defun vemv/docstring-of-var (var)
   (let ((cider-prompt-for-symbol nil)
