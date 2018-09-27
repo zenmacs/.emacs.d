@@ -469,5 +469,5 @@
 (define-minor-mode docsolver-mode
   "Highlights certain tokens as dangerous."
   :lighter ""
-  (font-lock-add-keywords nil `(("\\b\\(when\\|if\\|->>\\|->\\)\\b" 0 'vemv-reverse-warning-face)))
+  (font-lock-add-keywords nil `(("\\b\\(when\\|=\\|if\\|if-not\\|when-not\\|->>\\|->\\)\\b" 0 'vemv-reverse-warning-face)))
   (vemv/fontify))
