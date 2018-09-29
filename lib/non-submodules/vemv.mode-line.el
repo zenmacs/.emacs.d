@@ -93,7 +93,7 @@
          (all (cons p rest)))
     (apply 'concat (-interpose sep all))))
 
-(defun vemv/message-file-buffers-impl ()
+(defun vemv/present-one-tab-per-project-file ()
   (if (not (vemv/buffer-of-current-project? (current-buffer)))
       (buffer-name)
     (let* ((all (mapcar 'vemv/mode-line-for-buffer

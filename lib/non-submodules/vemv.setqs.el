@@ -72,7 +72,7 @@
                        (when (and vemv-robe-connecting (eq :ruby vemv/project-type))
                          (propertize "Connecting... " 'face 'vemv-cider-connection-face))
                        (when (vemv/good-window-p)
-                         (vemv/message-file-buffers-impl))))))
+                         (vemv/present-one-tab-per-project-file))))))
 
 ;; http://www.emacswiki.org/emacs/BackupDirectory
 (setq backup-by-copying t
