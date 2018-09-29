@@ -38,7 +38,6 @@
                                                      (let ((f (vemv/new-frame)))
                                                        (select-frame f)
                                                        (switch-to-buffer "*Messages*")))
-      vemv/shortcuts/global/primary-S-r             'vemv/run-this-deftest
       vemv/shortcuts/global/primary-S-s             'save-buffer
       vemv/shortcuts/global/primary-S-z             (argless
                                                      (require 'vemv.undo)
@@ -145,6 +144,7 @@
       vemv/shortcuts/global/tertiary-left           'vemv/previous-file-buffer
       vemv/shortcuts/global/tertiary-left-bracket   'vemv/pull-next-sexpr
       vemv/shortcuts/global/tertiary-o              'vemv/open-project
+      vemv/shortcuts/global/tertiary-r              'vemv/run-this-deftest
       vemv/shortcuts/global/tertiary-right          'vemv/next-file-buffer
       vemv/shortcuts/global/tertiary-s              'vemv/save-all-buffers-for-this-project
       vemv/shortcuts/global/tertiary-t              (argless

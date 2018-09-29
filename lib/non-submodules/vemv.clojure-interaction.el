@@ -366,25 +366,40 @@
                                                                                  ")"))
                                                             (cider-test-execute chosen nil nil)))))))))))
 
-(defun vemv/run-this-deftest ()
+(defun vemv/run-this-deftest-cljs ()
   "Assuming `point` is at a deftest name, it runs it"
   (interactive)
   (vemv/advice-nrepl (argless
-                      (let* ((cljs (vemv/current-main-buffer-is-cljs))
-                             (ns (vemv/current-ns))
+                      (let* ((ns (vemv/current-ns))
                              (chosen (cider-symbol-at-point)))
                         (when chosen
-                          (vemv/send (if cljs :cljs :clj)
+                          (vemv/send :cljs
                                      nil
-                                     (concat (if cljs "(.reload js/location true) " "")
-                                             "(cljs.test/run-block ["
-                                             chosen
-                                             "])")))))))
-
+                                     (concat  "(.reload js/location true) "
+                                              "(cljs.test/run-block ["
+                                              chosen
+                                              "])")))))))
 (defun vemv/dumb-cljs-test ()
   "Needs M-x cider-load-buffer first"
   (interactive)
   (vemv/send :cljs nil (concat "(cljs.test/run-tests '" (vemv/current-ns) ")")))
+
+(defun vemv.clojure-interaction/sync-eval-to-string (s)
+  (-> s cider-nrepl-sync-request:eval (nrepl-dict-get "value")))
+
+(defun vemv/run-this-deftest ()
+  "Evaluates and runs the test definition form at point. It can be `deftest',
+or something custom that returns a var, which must have :name and :test metadata."
+  (when (and (vemv/ciderable-p)
+             (s-ends-with? ".clj" (buffer-file-name)))
+    (let* ((ns (vemv/current-ns))
+           (sym (-> (concat "(-> "
+                            (vemv.clojure-interaction/sync-eval-to-string (vemv/sexpr-content))
+                            " meta :name)")
+                    vemv.clojure-interaction/sync-eval-to-string
+                    list)))
+      (cider-test-update-last-test ns sym)
+      (cider-test-execute ns sym))))
 
 (defun vemv/parse-clojure-filename-url (url)
   "Adapted from cider-find-file"
