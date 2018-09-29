@@ -213,6 +213,14 @@
        (filter 'vemv/buffer-of-current-project?)
        (mapcar 'vemv/save)))
 
+(defun vemv/save-other-buffers-for-this-project ()
+  (->> (vemv/all-buffers)
+       (-filter 'vemv/buffer-of-current-project?)
+       (-remove (lambda (x)
+                  (string-equal (buffer-file-name)
+                                (buffer-file-name x))))
+       (mapcar 'vemv/save)))
+
 (defun vemv/should-show-project? (x)
   (or (string-equal x vemv/current-project)
       (vemv/starts-with (vemv/root-marker) x)
