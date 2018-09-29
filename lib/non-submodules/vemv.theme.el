@@ -160,7 +160,6 @@
  `(clojure-lambda-arg-face ((t (:foreground ,vemv-default-foreground-color))))
  `(font-lock-comment-face ((t (:italic t :foreground ,vemv-colors/yellow))))
  `(font-lock-constant-face ((t (:italic t :foreground ,vemv-colors/keyword-green))))
- `(font-lock-doc-face ((t (:foreground ,vemv-colors/yellow :italic t))))
  `(font-lock-function-name-face ((t (:foreground ,vemv-colors/yellow :bold t))))
 
  `(magit-diff-file-heading ((t (:foreground ,vemv-colors/yellow :bold t))))
@@ -174,6 +173,7 @@
  `(font-lock-regexp-grouping-backslash ((t (:foreground ,vemv-colors/yellow))))
  `(font-lock-regexp-grouping-construct ((t (:foreground ,vemv-colors/blue))))
  `(font-lock-string-face ((t (:foreground ,vemv-colors/light-blue))))
+ `(font-lock-doc-face ((t (:foreground ,vemv-colors/light-blue))))
 
  `(button ((t (:foreground ,vemv-default-foreground-color-very-slightly-darker :underline t))))
 
