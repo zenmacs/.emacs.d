@@ -27,44 +27,16 @@
   (with-current-buffer (buffer-name which-buffer)
     (cider-current-ns)))
 
-(setq vemv/figwheel-connected-p-already nil)
-
-;; XXX this should be a universal figwheel fn. open PR at some point
-(defun vemv/figwheel-connected-p ()
-  (if (or
-       vemv/figwheel-connected-p-already
-       (not (vemv/current-main-buffer-is-cljs))
-       (not (string-equal vemv/current-project "gpm")))
-      t
-    (condition-case nil
-        (with-current-buffer vemv/clj-repl-name
-          (progn (cider-nrepl-sync-request:eval "(require 'dev.formatting.watch)")
-                 (if (string-equal (nrepl-dict-get (cider-nrepl-sync-request:eval "(dev.formatting.watch/currently-connected?)")
-                                                   "value")
-                                   "true")
-                     (progn
-                       (setq vemv/figwheel-connected-p-already t)
-                       t)
-                   nil)))
-      (error nil))))
-
-
 (defun vemv/advice-nrepl* (&optional after)
   (interactive)
-  (delay (argless
-          (unless (or (vemv/scratch-p)
-                      (not (vemv/buffer-of-current-running-project-or-children? (current-buffer)))
-                      (and (eq vemv/running-project-type :clj) (vemv/current-main-buffer-is-cljs)))
-            (when (and (vemv/ciderable-p)
-                       (vemv/figwheel-connected-p)
-                       (not (string-equal (vemv/current-ns)
-                                          (vemv/current-ns (window-buffer vemv/repl-window)))))
-              (cider-repl-set-ns (vemv/current-ns))
-              (cider-interactive-eval (concat "(try (clojure.core/require '"
-                                              (vemv/current-ns)
-                                              ") (catch java.lang.Throwable _))")))
-            (when after
-              (funcall after))))
+  (delay (argless (unless (or (not (buffer-file-name))
+                              (not (vemv/buffer-of-current-running-project-or-children? (current-buffer)))
+                              (and (eq vemv/running-project-type :clj) (vemv/current-main-buffer-is-cljs)))
+                    (when (and (vemv/ciderable-p)
+                               (not (string-equal (vemv/current-ns)
+                                                  (vemv/current-ns (window-buffer vemv/repl-window)))))
+                      (-some-> (vemv/current-ns) cider-repl-set-ns))
+                    (-some-> after funcall)))
          1))
 
 (setq vemv/debounced-advice-nrepl (vemv/debounce 'vemv/advice-nrepl* 0.4))
