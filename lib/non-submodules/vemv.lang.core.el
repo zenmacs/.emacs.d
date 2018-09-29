@@ -174,8 +174,19 @@
   (set-window-buffer vemv/repl-window buffer))
 
 (defun vemv.completions/split-window-vertically (buffer)
+  (vemv/safe-select-window vemv/repl-window)
+  (enlarge-window -1000)
   (vemv/safe-select-window vemv/main_window)
-  (set-window-buffer (split-window-vertically) buffer))
+  (let* ((total (frame-total-lines))
+         (middle (/ total 2))
+         (current (window-total-height))
+         (repl-height 4)
+         (x (-> middle
+                (- repl-height)
+                (/ 2)
+                (- 1)
+                (-))))
+    (set-window-buffer (split-window-vertically x) buffer)))
 
 (defun vemv.completions/in-new-frame (buffer)
   (let* ((f (vemv/new-frame)))
