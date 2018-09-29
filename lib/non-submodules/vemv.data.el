@@ -30,7 +30,6 @@
                                                       (-some-> (symbol-at-point) documentation vemv/echo)))
                                                    (ignore-errors
                                                      (let ((s (symbol-at-point)))
-
                                                        (-some-> s (documentation-property 'variable-documentation) vemv/echo))))))
             emacs-lisp-mode-map "<tab>" 'vemv/tab
             emacs-lisp-mode-map  ";" 'vemv/semicolon

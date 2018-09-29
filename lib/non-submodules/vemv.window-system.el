@@ -54,8 +54,9 @@
   (when (and (not noswitch)
              (eq (selected-window) vemv/main_window))
     (switch-to-buffer (let ((entry (gethash vemv/current-project vemv/chosen-file-buffer-order)))
-                        (or (first entry)
-                            (second entry)
+                        (or (-some-> (or (first entry)
+                                         (second entry))
+                                     (get-file-buffer))
                             vemv/file-buffer-fallback)))))
 
 (defun vemv/noncloseable-buffer-p ()
@@ -128,21 +129,23 @@
   (->> vemv/chosen-file-buffer-order
        (gethash vemv/current-project)
        (-clone)
-       (mapcar (lambda (b)
-                 (with-current-buffer b
-                   (vemv/close-this-buffer)))))
+       (mapcar (lambda (_b)
+                 (when-let* ((b (get-file-buffer _b)))
+                   (with-current-buffer b
+                     (vemv/close-this-buffer))))))
   (switch-to-buffer "*scratch*"))
 
 (defun vemv/close-all-other-file-buffers ()
   (interactive)
-  (let ((root (buffer-name (current-buffer))))
+  (let ((root (buffer-file-name (current-buffer))))
     (->> vemv/chosen-file-buffer-order
          (gethash vemv/current-project)
          (-clone)
-         (mapcar (lambda (b)
-                   (unless (string-equal b root)
-                     (with-current-buffer b
-                       (vemv/close-this-buffer :noswitch))))))
+         (mapcar (lambda (_b)
+                   (unless (string-equal _b root)
+                     (when-let* ((b (get-file-buffer _b)))
+                       (with-current-buffer b
+                         (vemv/close-this-buffer :noswitch)))))))
     (vemv/next-file-buffer)))
 
 (defun vemv/maximize ()

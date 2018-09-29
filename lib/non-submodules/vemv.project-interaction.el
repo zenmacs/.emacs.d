@@ -107,12 +107,11 @@
   (vemv/debounce 'vemv/maybe-change-project-graphically* 0.3))
 
 (defun vemv/buffer-of-current-project? (b &optional other-candidates)
-  (when (and b (buffer-file-name b))
-    (let* ((tn (file-truename (buffer-file-name b))))
-      (->> other-candidates
-           (cons vemv/project-root-dir)
-           (-find (lambda (x)
-                    (vemv/contains? tn x)))))))
+  (when-let* ((tn (-some-> b buffer-file-name file-truename)))
+    (->> other-candidates
+         (cons vemv/project-root-dir)
+         (-find (lambda (x)
+                  (vemv/contains? tn x))))))
 
 (defun vemv/buffer-of-current-project-or-parent? (b)
   (vemv/buffer-of-current-project? b vemv/parent-project-root-dirs))
@@ -136,36 +135,31 @@
                                                          vemv/parent-project-root-dirs))
                                              (cons vemv/project-root-dir vemv.project/chilren-root-dirs))))
 
-(defun vemv/open_file_buffers ()
-  (->> (buffer-list)
-       (filter 'vemv/buffer-of-current-project?)
-       (mapcar 'buffer-name)))
-
 (setq vemv/chosen-file-buffer-order (vemv/hash-map))
 
 (setq vemv/chosen-file-buffer-order-as-list nil)
 
 (defun vemv/refresh-chosen-file-buffer-order-as-list! ()
   (setq vemv/chosen-file-buffer-order-as-list
-        (mapcar (lambda (e)
-                  (let* ((proj (car e))
-                         (buffnames (->> e
-                                         second
-                                         (filter 'identity)
-                                         (mapcar (lambda (b)
-                                                   ;; needed for some reason (despite the prior `filter'):
-                                                   (when-let ((buffer (get-buffer b)))
-                                                     (with-current-buffer buffer
-                                                       (buffer-file-name)))))
-                                         (reverse))))
-                    (list proj buffnames)))
-                (vemv/hash-map-to-list vemv/chosen-file-buffer-order))))
+        (->> (vemv/hash-map-to-list vemv/chosen-file-buffer-order)
+             (mapcar (lambda (e)
+                       (let* ((proj (car e))
+                              (buffnames (->> e
+                                              second
+                                              (filter 'identity)
+                                              (filter 'get-file-buffer)
+                                              (reverse))))
+                         (list proj buffnames)))))))
 
 (defun vemv/clean-chosen-file-buffer-order ()
   "Removes closed buffers from vemv/chosen-file-buffer-order"
-  (let* ((curr (buffer-name (current-buffer)))
-         (actually-open (vemv/open_file_buffers))
-         (all (-distinct (-concat (gethash vemv/current-project vemv/chosen-file-buffer-order) actually-open)))
+  (let* ((curr (buffer-file-name))
+         (actually-open (->> (buffer-list)
+                             (filter 'vemv/buffer-of-current-project?)
+                             (mapcar 'buffer-file-name)))
+         (all (-> (gethash vemv/current-project vemv/chosen-file-buffer-order)
+                  (-concat actually-open)
+                  (-distinct)))
          (all-without-curr (-remove (lambda (x)
                                       (string-equal x curr))
                                     all))
@@ -186,8 +180,9 @@
   (vemv/safe-select-window vemv/main_window)
   (vemv/clean-chosen-file-buffer-order)
   (switch-to-buffer (let ((entry (gethash vemv/current-project vemv/chosen-file-buffer-order)))
-                      (or (second entry)
-                          (first entry)
+                      (or (-some-> (or (second entry)
+                                       (first entry))
+                                   (get-file-buffer))
                           vemv/file-buffer-fallback)))
   (puthash vemv/current-project
            `(,@(cdr (gethash vemv/current-project vemv/chosen-file-buffer-order))
@@ -201,14 +196,16 @@
   (vemv/close-cider-error)
   (vemv/safe-select-window vemv/main_window)
   (vemv/clean-chosen-file-buffer-order)
-  (if-let (file (or (car (last (gethash vemv/current-project vemv/chosen-file-buffer-order)))
-                    (first (gethash vemv/current-project vemv/chosen-file-buffer-order))))
-      (progn
-        (switch-to-buffer file)
-        (puthash vemv/current-project
-                 `(,file ,@(butlast (gethash vemv/current-project vemv/chosen-file-buffer-order)))
-                 vemv/chosen-file-buffer-order))
-    (switch-to-buffer vemv/file-buffer-fallback))
+  (let* ((filename (or (car (last (gethash vemv/current-project vemv/chosen-file-buffer-order)))
+                       (first (gethash vemv/current-project vemv/chosen-file-buffer-order))))
+         (buffer-name (-some-> filename get-file-buffer)))
+    (if buffer-name
+        (progn
+          (switch-to-buffer buffer-name)
+          (puthash vemv/current-project
+                   `(,filename ,@(butlast (gethash vemv/current-project vemv/chosen-file-buffer-order)))
+                   vemv/chosen-file-buffer-order))
+      (switch-to-buffer vemv/file-buffer-fallback)))
   (vemv/refresh-chosen-file-buffer-order-as-list!))
 
 (defun vemv/save-all-buffers-for-this-project ()

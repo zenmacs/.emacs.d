@@ -28,15 +28,15 @@
               "")
             name)))
 
-(defun vemv/mode-line-for-buffer (buffer-name)
-  (let* ((buf (get-buffer buffer-name))
-         (bfn (buffer-file-name buf))
+(defun vemv/mode-line-for-buffer (buffer-filename)
+  (let* ((buf (get-file-buffer buffer-filename))
+         (buffer-name (buffer-name buf))
          (is-project-dot-clj (vemv/contains? buffer-name "project.clj"))
          (is-clj (vemv/contains? buffer-name ".clj"))
-         (is-rails-view (or (vemv/contains? bfn ".haml")
-                            (vemv/contains? bfn ".erb")))
-         (sym (intern (concat "vemv/mode-line-for-buffer/" bfn "-open")))
-         (close-sym (intern (concat "vemv/mode-line-for-buffer/" bfn "-close")))
+         (is-rails-view (or (vemv/contains? buffer-filename ".haml")
+                            (vemv/contains? buffer-filename ".erb")))
+         (sym (intern (concat "vemv/mode-line-for-buffer/" buffer-filename "-open")))
+         (close-sym (intern (concat "vemv/mode-line-for-buffer/" buffer-filename "-close")))
          (namespace (if is-project-dot-clj
                         "project.clj"
                       (if is-clj
@@ -49,13 +49,12 @@
          (shortname (concat (if is-clj
                                 namespace
                               (if is-rails-view
-                                  (s-join "/" (-take-last 2 (s-split "/" bfn)))
+                                  (s-join "/" (-take-last 2 (s-split "/" buffer-filename)))
                                 buffer-name))
                             (if is-modified "*" ""))))
     (unless (fboundp sym)
       (eval `(defun ,sym ()
                (interactive)
-               ()
                (vemv/safe-select-window vemv/main_window)
                (switch-to-buffer ,buffer-name)
                (vemv/clean-chosen-file-buffer-order)
