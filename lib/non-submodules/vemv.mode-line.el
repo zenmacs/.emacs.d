@@ -56,12 +56,12 @@
       (eval `(defun ,sym ()
                (interactive)
                (vemv/safe-select-window vemv/main_window)
-               (switch-to-buffer ,buffer-name)
+               (switch-to-buffer (get-file-buffer ,buffer-filename))
                (vemv/clean-chosen-file-buffer-order)
                (vemv/after-file-open)))
       (eval `(defun ,close-sym ()
                (interactive)
-               (kill-buffer ,buffer-name)
+               (kill-buffer (get-file-buffer ,buffer-filename))
                (vemv/clean-chosen-file-buffer-order))))
     (propertize shortname 'local-map `(keymap
                                        (mode-line keymap
