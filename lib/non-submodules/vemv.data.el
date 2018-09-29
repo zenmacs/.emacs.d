@@ -24,7 +24,7 @@
 
 (setq vemv/local-key-bindings
       (list emacs-lisp-mode-map "<backtab>" (argless
-                                             (let ((max-mini-window-height 0.99))
+                                             (let ((vemv/max-mini-window-height 0.99))
                                                (or (ignore-errors
                                                      (replying-yes
                                                       (-some-> (symbol-at-point) documentation vemv/echo)))

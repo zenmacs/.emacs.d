@@ -30,7 +30,11 @@
                ((symbol-function 'yes-or-no-p) #'always-yes))
        ,@forms)))
 
+;; Works around `max-mini-window-height', which Emacs doesn't always honor
+(defvar vemv/max-mini-window-height nil)
+
 (defun vemv/echo (&rest xs)
+  (setq max-mini-window-height (or vemv/max-mini-window-height max-mini-window-height))
   (let ((what (->> xs
                    (mapcar (lambda (x)
                              (if (stringp x)
@@ -40,6 +44,7 @@
                    (apply 'concat))))
     (vemv/verbosely
      (message what))
+    (setq vemv/max-mini-window-height nil)
     what))
 
 (defun pr-str (x)

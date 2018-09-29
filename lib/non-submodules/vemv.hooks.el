@@ -419,7 +419,7 @@
                               (define-key clojure-mode-map (kbd "<tab>") 'vemv/tab)
                               ;; XXX backtab not handled by gen.rb
                               (define-key clojure-mode-map (kbd "<backtab>") (argless
-                                                                              (let ((max-mini-window-height 0.99))
+                                                                              (let ((vemv/max-mini-window-height 0.99))
                                                                                 (vemv/message-clojure-doc))))))
 
 (add-hook 'haml-mode-hook (argless
