@@ -6,10 +6,13 @@
 ;; elisp gotchas: let vs. let* · last returns a list · "Wrong type argument: commandp" -> forgot interactive
 
 (defun vemv/send (&optional where backward? content no-return)
-  "Copy the next sexp (or on non-nil backward? arg, the previous sexp) and its character trailer,
-  switch to the window that is assigned for REPL purposes, then it switch to the corresponding buffer
-  (different REPLs have different buffers),
-  paste and simulate a <RET> press. Finally, go back to sender window."
+  "Does the following, sequentially:
+   * Copy the next sexp (or on truthy `backward?' arg, the previous sexp);
+   * Switch to the window that is assigned for REPL purposes;
+   * Switch to the corresponding REPL buffer for the current language context;
+   * Paste the sexp;
+   * Simulate a <RET> press;
+   * Go back to the original window."
   (interactive)
   (let ((where (or where
                    (case major-mode
