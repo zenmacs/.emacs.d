@@ -96,9 +96,11 @@
 (defun vemv/present-one-tab-per-project-file ()
   (if (not (vemv/buffer-of-current-project? (current-buffer)))
       (buffer-name)
-    (let* ((all (mapcar 'vemv/mode-line-for-buffer
-                        (gethash vemv/current-project vemv/chosen-file-buffer-order))))
-      (vemv/format-tabs (car all) (cdr all)))))
+    (if-let* ((all (->> (gethash vemv/current-project vemv/chosen-file-buffer-order)
+                        (filter 'identity)
+                        (mapcar 'vemv/mode-line-for-buffer))))
+        (vemv/format-tabs (car all) (cdr all))
+      (buffer-name))))
 
 (defun vemv/pe/mode-line-format* ()
   (->> (vemv/all-project-names :no-prettify)

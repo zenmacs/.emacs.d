@@ -135,9 +135,9 @@
                                                          vemv/parent-project-root-dirs))
                                              (cons vemv/project-root-dir vemv.project/chilren-root-dirs))))
 
-(setq vemv/chosen-file-buffer-order (vemv/hash-map))
+(defvar vemv/chosen-file-buffer-order (vemv/hash-map))
 
-(setq vemv/chosen-file-buffer-order-as-list nil)
+(defvar vemv/chosen-file-buffer-order-as-list nil)
 
 (defun vemv/refresh-chosen-file-buffer-order-as-list! ()
   (setq vemv/chosen-file-buffer-order-as-list
