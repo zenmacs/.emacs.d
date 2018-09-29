@@ -160,7 +160,7 @@
  `(clojure-lambda-arg-face ((t (:foreground ,vemv-default-foreground-color))))
  `(font-lock-comment-face ((t (:italic t :foreground ,vemv-colors/yellow))))
  `(font-lock-constant-face ((t (:italic t :foreground ,vemv-colors/keyword-green))))
- `(font-lock-doc-string-face ((t (:foreground ,vemv-colors/yellow :italic t))))
+ `(font-lock-doc-face ((t (:foreground ,vemv-colors/yellow :italic t))))
  `(font-lock-function-name-face ((t (:foreground ,vemv-colors/yellow :bold t))))
 
  `(magit-diff-file-heading ((t (:foreground ,vemv-colors/yellow :bold t))))
