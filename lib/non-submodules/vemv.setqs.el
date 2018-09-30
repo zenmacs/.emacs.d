@@ -99,6 +99,7 @@
       cider-show-error-buffer nil
       cider-stacktrace-default-positive-filters '(project)
       cider-stacktrace-default-filters '(tooling dup repl)
+      cider-stacktrace-fill-column nil
       column-number-mode t
       company-dabbrev-char-regexp "\\sw\\|_\\|-\\|!\\|\\?\\|*\\|+"
       company-echo-truncate-lines nil
