@@ -372,14 +372,23 @@
 or something custom that returns a var, which must have :name and :test metadata."
   (when (and (vemv/ciderable-p)
              (s-ends-with? ".clj" (buffer-file-name)))
-    (let* ((ns (vemv/current-ns))
-           (sym (-> (concat "(-> "
-                            (vemv.clojure-interaction/sync-eval-to-string (vemv/sexpr-content))
-                            " meta :name)")
-                    vemv.clojure-interaction/sync-eval-to-string
-                    list)))
-      (cider-test-update-last-test ns sym)
-      (cider-test-execute ns sym))))
+    (-> (argless (vemv/close-cider-error)
+                 (with-selected-window vemv/main_window
+                   (save-excursion
+                     (unless (and (zero? (current-column))
+                                  (looking-at-p "("))
+                       (end-of-line)
+                       (beginning-of-defun))
+                     (let* ((ns (vemv/current-ns))
+                            (sym (-> (concat "(-> "
+                                             (vemv.clojure-interaction/sync-eval-to-string (vemv/sexpr-content))
+                                             " meta :name)")
+                                     vemv.clojure-interaction/sync-eval-to-string
+                                     list)))
+                       (vemv/echo ns sym)
+                       (cider-test-update-last-test ns sym)
+                       (cider-test-execute ns sym)))))
+        (vemv/load-clojure-buffer))))
 
 (defun vemv/echo-clojure-source ()
   "Shows the Clojure source of the symbol at point."
