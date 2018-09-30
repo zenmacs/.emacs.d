@@ -77,8 +77,9 @@
            -flatten
            (member (buffer-file-name)))))
 
-(defun vemv/good-window-p ()
-  (member (selected-window) (list vemv/main_window vemv/repl-window vemv/project-explorer-window)))
+(defun vemv/good-window-p (&optional window)
+  (member (or window (selected-window))
+          (list vemv/main_window vemv/repl-window vemv/project-explorer-window)))
 
 (setq vemv/main_frame (selected-frame))
 

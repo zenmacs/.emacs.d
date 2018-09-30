@@ -45,4 +45,14 @@
 ;; M-x - interactive command
 ;; M-x describe-key - resolve a key binding
 
-(global-set-key [mode-line mouse-3] 'nil) ;; prevent close-on-right-click
+(defun vemv/mouse-delete-window (click)
+  "Like `mouse-delete-window', but only deletes popup windows.
+   See https://emacs.stackexchange.com/questions/33464"
+  (interactive "e")
+  (unless (one-window-p t)
+    (mouse-minibuffer-check click)
+    (let* ((window (posn-window (event-start click))))
+      (when (not (vemv/good-window-p window))
+        (delete-window window)))))
+
+(global-set-key [mode-line mouse-3] 'vemv/mouse-delete-window)
