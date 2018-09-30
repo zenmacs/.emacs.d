@@ -147,7 +147,7 @@
    (vemv/paredit-safely
     (call-interactively command))))
 
-(defun vemv/sexpr-content (&optional backward?)
+(defun vemv/sexpr-content (&optional backward? with-properties?)
   "Returns the content of the next (or previous, on non-nil values of BACKWARD?) sexpr, as a string.
 
 Unlike paredit-copy-as-kill, this function will only grab one sexpr (and no more even -
@@ -157,7 +157,7 @@ if they are contigous), and is side-effect free."
     (push-mark)
     (if backward? (paredit-backward) (paredit-forward))
 
-    (let ((result (vemv/selected-region)))
+    (let ((result (vemv/selected-region with-properties?)))
       (pop-mark)
       (if backward? (paredit-forward) (paredit-backward))
       result)))

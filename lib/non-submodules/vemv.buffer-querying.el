@@ -19,10 +19,12 @@
         (eq mode 'emacs-lisp-mode)
         (eq mode 'inferior-emacs-lisp-mode))))
 
-(defun vemv/selected-region ()
+(defun vemv/selected-region (&optional with-properties?)
   "Returns the selected region as a string. Side effects free."
   (kill-ring-save (mark) (point))
-  (let ((result (substring-no-properties (car kill-ring))))
+  (let ((result (if with-properties?
+                    (substring (car kill-ring))
+                  (substring-no-properties (car kill-ring)))))
     (pop kill-ring)
     result))
 
