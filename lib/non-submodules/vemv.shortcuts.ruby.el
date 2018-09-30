@@ -3,7 +3,7 @@
 (provide 'vemv.shortcuts.ruby)
 
 (setq vemv/shortcuts/ruby/secondary-up               (argless
-                                                      (call-interactively 'sp-splice-sexp))
+                                                      (call-interactively 'sp-splice-sexp-killing-backward))
       vemv/shortcuts/ruby/primary-backspace          'vemv/delete-this-line
       vemv/shortcuts/ruby/secondary-k                (argless
                                                       (call-interactively 'sp-backward-kill-sexp))
