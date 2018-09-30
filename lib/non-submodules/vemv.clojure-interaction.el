@@ -78,7 +78,13 @@
 (defun vemv/ensure-repl-visible ()
   (when (and (cider-connected-p)
              (string-equal cider-launched vemv/current-project))
-    (vemv/show-clj-or-cljs-repl)))
+    (vemv/show-clj-or-cljs-repl))
+  (when (eq major-mode 'emacs-lisp-mode)
+    (with-selected-window vemv/repl-window
+      (switch-to-buffer "*ielm*")))
+  (when (eq vemv/project-type :ruby)
+    (with-selected-window vemv/repl-window
+      (switch-to-buffer "*rails*"))))
 
 (setq vemv/ns-shown nil)
 
