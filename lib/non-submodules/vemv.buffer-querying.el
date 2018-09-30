@@ -7,7 +7,9 @@
 (defvar vemv/clojure-modes (list 'clojure-mode
                                  'clojurec-mode
                                  'clojurescript-mode
-                                 'cider-repl-mode))
+                                 'cider-repl-mode
+                                 'cider-test-report-mode
+                                 'cider-stacktrace-mode))
 
 (defun vemv/in-a-clojure-mode? (&optional m)
   (let ((mode (or m major-mode)))
