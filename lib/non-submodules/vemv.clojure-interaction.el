@@ -450,3 +450,11 @@ or something custom that returns a var, which must have :name and :test metadata
   :lighter ""
   (font-lock-add-keywords nil `(("\\b\\(when\\|=\\|if\\|if-not\\|when-not\\|->>\\|->\\)\\b" 0 'vemv-reverse-warning-face)))
   (vemv/fontify))
+
+(defun cider-stacktrace--should-hide-p (neg-filters pos-filters flags)
+  "I customized the logic here, didn't like the original one (`show' means for them: show unconditionally, disregarding negative filters)."
+  (let ((neg (seq-intersection neg-filters flags))
+        (pos (seq-intersection pos-filters flags)))
+    (cond (neg t)
+          ((and pos-filters (not pos)) t)
+          (t nil))))
