@@ -35,7 +35,6 @@
                      queue
                      robe
                      rubocop
-                     ruby-end
                      simpleclip
                      smartparens
                      yasnippet))

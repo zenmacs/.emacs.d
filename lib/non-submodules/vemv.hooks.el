@@ -308,7 +308,7 @@
                                                                js--font-lock-keywords-2
                                                                js--font-lock-keywords-3))))
 
-(add-hook 'ruby-mode-hook (argless (ruby-end-mode)
+(add-hook 'ruby-mode-hook (argless (smartparens-mode)
                                    (robe-mode)
                                    (setq-local paren-face-regexp (concat "\\("
                                                                          (->> vemv/ruby-keywords
@@ -404,6 +404,7 @@
 (add-hook 'ielm-mode-hook 'ido-at-point-mode)
 
 (add-hook 'haml-mode-hook (argless
+                           (smartparens-mode)
                            (require 'highlight-indent-guides)
                            (setq highlight-indent-guides-auto-enabled nil)
                            (set-face-foreground 'highlight-indent-guides-character-face vemv-default-foreground-color-much-darker)
