@@ -3,8 +3,6 @@
 (require 'vemv.lang.core)
 (provide 'vemv.lang)
 
-;; elisp gotchas: let vs. let* · last returns a list · "Wrong type argument: commandp" -> forgot interactive
-
 (defun vemv/send (&optional where backward? content no-return)
   "Does the following, sequentially:
    * Copy the next sexp (or on truthy `backward?' arg, the previous sexp);

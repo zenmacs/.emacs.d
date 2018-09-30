@@ -374,17 +374,15 @@
 (advice-add 'cider-new-error-buffer :after (lambda (&rest _)
                                              (cider-interactive-eval "(try (clojure.core/prn clojure.core/*e)
                                                                               (catch java.lang.Throwable e))")
-                                             (delay (argless
-                                                     (when (vemv/buffer-of-current-running-project?
-                                                            (vemv/save-window-excursion
-                                                             (vemv/safe-select-window vemv/main_window)
-                                                             (current-buffer)))
-                                                       (vemv/save-window-excursion
-                                                        (vemv/safe-select-window vemv/repl-window)
-                                                        (vemv/switch-to-buffer-in-any-frame vemv/clj-repl-name)
-                                                        (end-of-buffer)
-                                                        (paredit-backward)
-                                                        (paredit-backward))))
+                                             (delay (argless (when (-> vemv/main_window
+                                                                       window-buffer
+                                                                       vemv/buffer-of-current-running-project?)
+                                                               (vemv/save-window-excursion
+                                                                (vemv/safe-select-window vemv/repl-window)
+                                                                (vemv/switch-to-buffer-in-any-frame vemv/clj-repl-name)
+                                                                (end-of-buffer)
+                                                                (paredit-backward)
+                                                                (paredit-backward))))
                                                     0.7)))
 
 (add-hook 'clojure-mode-hook

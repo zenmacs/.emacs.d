@@ -74,7 +74,7 @@
   (or (vemv/buffer-of-current-project? (current-buffer))
       (->> vemv/chosen-file-buffer-order-as-list
            (mapcar 'second)
-           -flatten
+           (-flatten)
            (member (buffer-file-name)))))
 
 (defun vemv/good-window-p (&optional window)
@@ -93,7 +93,7 @@
   (delete-frame (selected-frame) t))
 
 (defun vemv/stop-using-minibuffer (&optional callback)
-  "kill the minibuffer"
+  "Kills the minibuffer."
   (condition-case nil
       (when (and (>= (recursion-depth) 1)
                  (active-minibuffer-window))
