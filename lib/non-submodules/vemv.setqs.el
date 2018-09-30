@@ -97,7 +97,6 @@
       cider-repl-display-help-banner' nil
       cider-repl-pop-to-buffer-on-connect nil
       cider-show-error-buffer nil
-      clojure-indent-style ':always-align
       column-number-mode t
       company-dabbrev-char-regexp "\\sw\\|_\\|-\\|!\\|\\?\\|*\\|+"
       company-echo-truncate-lines nil
