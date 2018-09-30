@@ -137,7 +137,7 @@
     nil)
   (select-window vemv/main_window)
   (let* ((default-directory vemv/project-root-dir)
-         (branch (magit-diff-read-range-or-commit "Branch"))
+         (branch (magit-diff-read-range-or-commit "Branch" vemv.project/default-git-branch))
          (files (->> branch
                      (concat "git diff --name-only ")
                      (vemv/git-file-list-for nil)
