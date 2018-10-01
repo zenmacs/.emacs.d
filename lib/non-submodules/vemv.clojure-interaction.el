@@ -319,32 +319,38 @@
     (with-selected-window w
       (vemv/close-this))))
 
+(defmacro vemv/on-nrepl-success (&rest body)
+  `(lambda (&rest __args)
+     (when (ignore-errors
+             (-some-> __args car (nrepl-dict-get "status") (car) (string-equal "done")))
+       ,@body)))
+
 (defun vemv/test-this-ns ()
   "Runs the tests for the current namespace, or if not applicable, for the latest applicable ns."
   (interactive)
   (vemv/close-cider-error)
   (when (vemv/in-clojure-mode?)
-    (vemv/load-clojure-buffer (lambda (&rest args)
-                                (when (ignore-errors
-                                        (-some-> args car (nrepl-dict-get "status") (car) (string-equal "done")))
-                                  (vemv/advice-nrepl (argless
-                                                      (let* ((cljs (vemv/current-main-buffer-is-cljs))
-                                                             (ns (vemv/current-ns))
-                                                             (inferred (funcall cider-test-infer-test-ns ns))
-                                                             (chosen (if (vemv/is-testing-ns ns inferred)
-                                                                         ns
-                                                                       (if cljs
-                                                                           vemv/latest-cljs-test-ran
-                                                                         vemv/latest-clojure-test-ran))))
-                                                        (when chosen
-                                                          (setq vemv/latest-clojure-test-ran chosen)
-                                                          (if cljs
-                                                              (vemv/send :cljs
-                                                                         nil
-                                                                         (concat "(cljs.test/run-tests '"
-                                                                                 chosen
-                                                                                 ")"))
-                                                            (cider-test-execute chosen nil nil)))))))))))
+    (vemv/load-clojure-buffer
+     (vemv/on-nrepl-success
+      (vemv/advice-nrepl
+       (argless
+        (let* ((cljs (vemv/current-main-buffer-is-cljs))
+               (ns (vemv/current-ns))
+               (inferred (funcall cider-test-infer-test-ns ns))
+               (chosen (if (vemv/is-testing-ns ns inferred)
+                           ns
+                         (if cljs
+                             vemv/latest-cljs-test-ran
+                           vemv/latest-clojure-test-ran))))
+          (when chosen
+            (setq vemv/latest-clojure-test-ran chosen)
+            (if cljs
+                (vemv/send :cljs
+                           nil
+                           (concat "(cljs.test/run-tests '"
+                                   chosen
+                                   ")"))
+              (cider-test-execute chosen nil nil))))))))))
 
 (defun vemv/run-this-deftest-cljs ()
   "Assuming `point` is at a deftest name, it runs it"
@@ -372,23 +378,24 @@
 or something custom that returns a var, which must have :name and :test metadata."
   (when (and (vemv/ciderable-p)
              (s-ends-with? ".clj" (buffer-file-name)))
-    (-> (argless (vemv/close-cider-error)
-                 (with-selected-window vemv/main_window
-                   (save-excursion
-                     (unless (and (zero? (current-column))
-                                  (looking-at-p "("))
-                       (end-of-line)
-                       (beginning-of-defun))
-                     (let* ((ns (vemv/current-ns))
-                            (sym (-> (concat "(-> "
-                                             (vemv.clojure-interaction/sync-eval-to-string (vemv/sexpr-content))
-                                             " meta :name)")
-                                     vemv.clojure-interaction/sync-eval-to-string
-                                     list)))
-                       (vemv/echo ns sym)
-                       (cider-test-update-last-test ns sym)
-                       (cider-test-execute ns sym)))))
-        (vemv/load-clojure-buffer))))
+    (vemv/load-clojure-buffer
+     (vemv/on-nrepl-success
+      (vemv/close-cider-error)
+      (with-selected-window vemv/main_window
+        (save-excursion
+          (unless (and (zero? (current-column))
+                       (looking-at-p "("))
+            (end-of-line)
+            (beginning-of-defun))
+          (let* ((ns (vemv/current-ns))
+                 (sym (-> (concat "(-> "
+                                  (vemv.clojure-interaction/sync-eval-to-string (vemv/sexpr-content))
+                                  " meta :name)")
+                          vemv.clojure-interaction/sync-eval-to-string
+                          list)))
+            (vemv/echo ns sym)
+            (cider-test-update-last-test ns sym)
+            (cider-test-execute ns sym))))))))
 
 (defun vemv/echo-clojure-source ()
   "Shows the Clojure source of the symbol at point."
