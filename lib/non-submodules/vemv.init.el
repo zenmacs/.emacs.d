@@ -48,6 +48,10 @@
 (cua-mode 1) ;; initialized after customizing cua-remap-control-v
 (electric-indent-mode -1)
 
+;; Disables mode-line tooltips, making `vemv/echo-clojure-source' more persistent
+;; Not in vemv.setqs, something else would reset it later
+(setq show-help-function nil)
+
 (when (window-system)
   (delay (argless
           (set-face-attribute 'default nil :font vemv-font))
