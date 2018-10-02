@@ -31,6 +31,7 @@
 (tooltip-mode -1)
 (smex-initialize)
 (global-subword-mode)
+(savehist-mode 1)
 
 (unless vemv/terminal-emacs?
   (recentf-mode 1)
