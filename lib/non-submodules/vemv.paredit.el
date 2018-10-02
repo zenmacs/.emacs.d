@@ -53,7 +53,9 @@
                       (shell-command-to-string (rubocop-build-command command (rubocop-local-file-name file-name)))
                       (revert-buffer t t t))
                   (error "Buffer is not visiting a file"))))
-            (rubocop-autocorrect-current-file)))))))
+            (rubocop-autocorrect-current-file)
+            (when vemv-robe-connected
+              (vemv/send :ruby nil "reload!"))))))))
 
 (defun vemv/tab ()
   (interactive)
