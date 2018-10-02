@@ -721,3 +721,11 @@ START and END are buffer positions."
     (cider--jump-to-loc-from-info info)
     (forward-line line-shift)
     (back-to-indentation)))
+
+(defun magit-diff (rev-or-range &optional args files)
+  "Adds `vemv.project/default-git-branch' awareness."
+  (interactive (cons (magit-diff-read-range-or-commit "Diff for range"
+                                                      vemv.project/default-git-branch
+                                                      current-prefix-arg)
+                     (magit-diff-arguments)))
+  (magit-diff-setup rev-or-range nil args files))
