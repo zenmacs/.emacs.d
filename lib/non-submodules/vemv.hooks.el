@@ -321,6 +321,11 @@
                                    (vemv/set-keys-for-scope ruby-mode-map vemv/ruby-key-bindings)
                                    (define-key ruby-mode-map [tab] 'vemv/tab)))
 
+(add-hook 'inf-ruby-mode-hook (argless
+                               (setq inf-ruby-prompt-format "^pry>")
+                               (setq inf-ruby-first-prompt-pattern inf-ruby-prompt-format)
+                               (setq inf-ruby-prompt-pattern inf-ruby-prompt-format)))
+
 (defun vemv/start-robe ()
   (if-let (b (get-buffer "*rails*"))
       (with-current-buffer b
