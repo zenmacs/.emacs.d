@@ -169,7 +169,8 @@
                                       (with-selected-window vemv/repl-window
                                         (if (vemv/in-a-lisp-mode?)
                                             (switch-to-buffer "*ielm*")
-                                          (if (eq major-mode 'ruby-mode)
+                                          (if (and (member major-mode '(ruby-mode inf-ruby-mode))
+                                                   (get-buffer "*rails*"))
                                               (switch-to-buffer "*rails*")
                                             (switch-to-buffer "*shell-1*")))
                                         (comint-clear-buffer))))))

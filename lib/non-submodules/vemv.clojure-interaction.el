@@ -82,7 +82,8 @@
   (when (eq major-mode 'emacs-lisp-mode)
     (with-selected-window vemv/repl-window
       (switch-to-buffer "*ielm*")))
-  (when (eq vemv/project-type :ruby)
+  (when (and (eq vemv/project-type :ruby)
+             (get-buffer "*rails*"))
     (with-selected-window vemv/repl-window
       (switch-to-buffer "*rails*"))))
 
