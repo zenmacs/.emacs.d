@@ -208,10 +208,11 @@
       (switch-to-buffer vemv/file-buffer-fallback)))
   (vemv/refresh-chosen-file-buffer-order-as-list!))
 
-(defun vemv/save-all-buffers-for-this-project ()
+(defun vemv/save-all-buffers-for-this-project (&optional skip-check-unused-requires skip-formatting)
   (->> (vemv/all-buffers)
        (filter 'vemv/buffer-of-current-project?)
-       (mapcar 'vemv/save)))
+       (mapcar (lambda (b)
+                 (vemv/save b skip-check-unused-requires skip-formatting)))))
 
 (defun vemv/save-other-buffers-for-this-project ()
   (->> (vemv/all-buffers)

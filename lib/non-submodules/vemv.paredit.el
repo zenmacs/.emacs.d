@@ -10,7 +10,7 @@
 ;; I don't use kill-ring, since third-parties (e.g. paredit) can mess with it
 (setq vemv/kill-list (-repeat vemv/kill-list-bound nil))
 
-(defun vemv/save (&optional b)
+(defun vemv/save (&optional b skip-check-unused-requires skip-formatting)
   (interactive)
   (when (buffer-file-name)
     (let* ((b (or b (current-buffer))))
@@ -25,7 +25,8 @@
                (yas (vemv/contains? (buffer-file-name) "/snippets/")))
           (when ds
             (vemv/fix-defn-oneliners))
-          (unless (or yas
+          (unless (or skip-formatting
+                      yas
                       (member major-mode `(fundamental-mode ruby-mode)))
             (unless dc
               (delete-trailing-whitespace))
@@ -40,20 +41,22 @@
               (while (string-equal (vemv/current-char-at-point) "\n")
                 (delete-backward-char 1))))
           (save-buffer)
-          (vemv/check-unused-requires)
+          (unless skip-check-unused-requires
+            (vemv/check-unused-requires))
           (when (eq major-mode 'ruby-mode)
-            (require 'rubocop)
-            (defun rubocop--file-command (command)
-              "Removes compilation-mode stuff"
-              (rubocop-ensure-installed)
-              (let ((file-name (buffer-file-name (current-buffer))))
-                (if file-name
-                    ;; make sure we run RuboCop from a project's root if the command is executed within a project
-                    (let ((default-directory (or (rubocop-project-root 'no-error) default-directory)))
-                      (shell-command-to-string (rubocop-build-command command (rubocop-local-file-name file-name)))
-                      (revert-buffer t t t))
-                  (error "Buffer is not visiting a file"))))
-            (rubocop-autocorrect-current-file)
+            (unless skip-formatting
+              (require 'rubocop)
+              (defun rubocop--file-command (command)
+                "Removes compilation-mode stuff"
+                (rubocop-ensure-installed)
+                (let ((file-name (buffer-file-name (current-buffer))))
+                  (if file-name
+                      ;; make sure we run RuboCop from a project's root if the command is executed within a project
+                      (let ((default-directory (or (rubocop-project-root 'no-error) default-directory)))
+                        (shell-command-to-string (rubocop-build-command command (rubocop-local-file-name file-name)))
+                        (revert-buffer t t t))
+                    (error "Buffer is not visiting a file"))))
+              (rubocop-autocorrect-current-file))
             (when vemv-robe-connected
               (vemv/send :ruby nil "reload!"))))))))
 

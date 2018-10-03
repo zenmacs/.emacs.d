@@ -134,7 +134,8 @@
       (if (vemv/current-main-buffer-is-cljs)
           (vemv/send :cljs nil "(.reload js/location true)")
         (progn
-          (vemv/save)
+          ;; code has been potentially unloaded, so the underlying `vemv/check-unused-requires' will fail. Prevent that:
+          (vemv/save-all-buffers-for-this-project :skip-check-unused-requires :skip-formatting)
           (vemv/advice-nrepl)
           (vemv/clear-cider-repl-buffer nil
                                         (argless
@@ -148,7 +149,9 @@
                                                                         callback))
                                             (cider-load-buffer)
                                             (cider-load-all-project-ns)
-                                            (-some-> callback funcall)))))))
+                                            (-some-> callback funcall)
+                                            ;; format code, which was previously skipped
+                                            (vemv/save-all-buffers-for-this-project)))))))
     (if (vemv/in-a-lisp-mode?)
         (progn
           (vemv/save)
