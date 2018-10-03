@@ -34,6 +34,7 @@
                      paren-face
                      queue
                      robe
+                     rspec-mode
                      rubocop
                      simpleclip
                      smartparens

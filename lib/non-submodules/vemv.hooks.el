@@ -308,9 +308,7 @@
                                                                js--font-lock-keywords-2
                                                                js--font-lock-keywords-3))))
 
-(add-hook 'ruby-mode-hook (argless (smartparens-mode)
-                                   (robe-mode)
-                                   (setq-local paren-face-regexp (concat "\\("
+(add-hook 'ruby-mode-hook (argless (setq-local paren-face-regexp (concat "\\("
                                                                          (->> vemv/ruby-keywords
                                                                               (mapcar (lambda (x)
                                                                                         (concat "\\_<" x "\\_>")))
@@ -318,6 +316,9 @@
                                                                               (concat "::\\|,\\|=\\|<\\|>\\|[][(){}|@]\\|"))
                                                                          "\\)"))
                                    (paren-face-mode 1)
+                                   (smartparens-mode)
+                                   (robe-mode)
+                                   (rspec-mode)
                                    (vemv/set-keys-for-scope ruby-mode-map vemv/ruby-key-bindings)
                                    (define-key ruby-mode-map [tab] 'vemv/tab)))
 
