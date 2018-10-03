@@ -33,9 +33,9 @@
 (add-to-list 'special-display-buffer-names '("*rails*" vemv/repl-completion))
 (add-to-list 'special-display-buffer-names '("*helm-ag*" vemv/repl-completion))
 
-(add-to-list 'special-display-buffer-names '("*cider-test-report*" vemv.completions/split-window-vertically))
-(add-to-list 'special-display-buffer-names '("*cider-error*" vemv.completions/split-window-vertically))
-(add-to-list 'special-display-buffer-names '("*rspec-compilation*" vemv.completions/split-window-vertically))
+(add-to-list 'special-display-buffer-names '("*cider-test-report*" vemv.completions/split-window-vertically-small))
+(add-to-list 'special-display-buffer-names '("*cider-error*" vemv.completions/split-window-vertically-small))
+(add-to-list 'special-display-buffer-names '("*rspec-compilation*" vemv.completions/split-window-vertically-big))
 
 (add-to-list 'special-display-buffer-names '("magit-diff: docsolver" vemv.completions/in-new-frame))
 
