@@ -9,6 +9,8 @@
       vemv/shortcuts/global/S-backspace             'vemv/force-backspace
       vemv/shortcuts/global/S-f7                    'vemv/previous-workspace
       vemv/shortcuts/global/S-f9                    'vemv/next-workspace
+      vemv/shortcuts/global/f3                      'split-window-below
+      vemv/shortcuts/global/f4                      'split-window-right
       vemv/shortcuts/global/f5                      (argless
                                                      (vemv/safe-select-window vemv/repl-window)
                                                      (switch-to-buffer "*shell-1*")
