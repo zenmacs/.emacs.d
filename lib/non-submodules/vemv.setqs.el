@@ -155,7 +155,8 @@
       visible-bell nil ;; disable flickering
       whitespace-style '(face lines-tail)
       x-select-enable-clipboard nil
-      yas-key-syntaxes '("w_"))
+      yas-key-syntaxes '("w_")
+      yas-use-menu nil)
 
 (custom-set-variables
  '(xref-prompt-for-identifier nil)

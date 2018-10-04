@@ -35,6 +35,7 @@
 
 (unless vemv/terminal-emacs?
   (recentf-mode 1)
+  (global-set-key [menu-bar File] nil) ;; b/c recentf-mode
   (global-company-mode)
   (menu-bar-mode)
   (yas-global-mode 1)

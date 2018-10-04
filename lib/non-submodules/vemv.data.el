@@ -12,7 +12,14 @@
                                     "\C-l" "\C-n" "\C-o" "\C-p" "\C-q" "\C-o" "\C-k" "\M-a"
                                     "\C-t" "\C-u" "\C-v" "\C-z" "\C-d" "\C-y" "\C-S-z"
                                     "\C-m" "\C-\\" "\C-h" "\C-r" [f10] "\M-e" "\M-!"
-                                    "\M-\"" "\M-|" "\M-$" "\M-y" "\M-f" "\M-T" "\M-t"))
+                                    "\M-\"" "\M-|" "\M-$" "\M-y" "\M-f" "\M-T" "\M-t"
+                                    [menu-bar help-menu]
+                                    [menu-bar file]
+                                    [menu-bar File]
+                                    [menu-bar tools]
+                                    ;; [menu-bar edit] -> would break simpleclip
+                                    [menu-bar options]
+                                    [menu-bar buffer]))
 
 (setq vemv/key-bindings-to-dummy
       '([mouse-6] [mouse-7]
@@ -32,7 +39,8 @@
                                                      (let ((s (symbol-at-point)))
                                                        (-some-> s (documentation-property 'variable-documentation) vemv/echo))))))
             emacs-lisp-mode-map "<tab>" 'vemv/tab
-            emacs-lisp-mode-map  ";" 'vemv/semicolon
+            emacs-lisp-mode-map ";" 'vemv/semicolon
+            emacs-lisp-mode-map [menu-bar emacs-lisp] nil
             emacs-lisp-mode-map "RET" 'newline-and-indent
             emacs-lisp-mode-map "C-?" 'vemv/elisp-window-documentation
             *fiplr-keymap* "<S-return>" 'exit-minibuffer ;; makes it equivalent to RET. Sometime I type S-RET due to muscle memory

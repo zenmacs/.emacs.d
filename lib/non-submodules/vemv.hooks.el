@@ -8,7 +8,9 @@
 
 (when (and (not vemv-cleaning-namespaces)
            (not vemv/terminal-emacs?))
-  (add-hook 'clojure-mode-hook 'hs-minor-mode))
+  (add-hook 'clojure-mode-hook (argless
+                                (hs-minor-mode)
+                                (define-key hs-minor-mode-map [menu-bar Hide/Show] nil))))
 
 (advice-add 'haml-mode :before (argless
                                 (add-to-list 'haml-fontify-filter-functions-alist
@@ -320,7 +322,10 @@
                                    (robe-mode)
                                    (rspec-mode)
                                    (vemv/set-keys-for-scope ruby-mode-map vemv/ruby-key-bindings)
-                                   (define-key ruby-mode-map [tab] 'vemv/tab)))
+                                   (define-key ruby-mode-map [tab] 'vemv/tab)
+                                   (define-key ruby-mode-map [menu-bar Ruby] nil)
+                                   (define-key inf-ruby-mode-map [menu-bar Inf-Ruby] nil)
+                                   (define-key inf-ruby-minor-mode-map [menu-bar Inf-Ruby] nil)))
 
 (add-hook 'inf-ruby-mode-hook (argless
                                (setq inf-ruby-prompt-format "^pry>")
@@ -351,10 +356,15 @@
           (argless (setq-local mode-line-format vemv/pe/mode-line-format)))
 
 (add-hook 'ielm-mode-hook
-          (argless (setq-local mode-line-format vemv/pe/mode-line-format)))
+          (argless (setq-local mode-line-format vemv/pe/mode-line-format)
+                   (define-key comint-mode-map [menu-bar signals] nil)
+                   (define-key comint-mode-map [menu-bar inout] nil)
+                   (define-key comint-mode-map [menu-bar completion] nil)
+                   (define-key ielm-map [menu-bar IELM] nil)))
 
 (add-hook 'shell-mode-hook
-          (argless (setq-local mode-line-format vemv/pe/mode-line-format)))
+          (argless (setq-local mode-line-format vemv/pe/mode-line-format)
+                   (define-key shell-mode-map [menu-bar completion] nil)))
 
 (add-hook 'inf-ruby-mode-hook
           (argless (setq-local mode-line-format vemv/pe/mode-line-format)))
@@ -440,7 +450,8 @@
 
 (add-hook 'sh-mode-hook (argless
                          (vemv/set-keys-for-scope sh-mode-map vemv/ruby-key-bindings)
-                         (define-key sh-mode-map [tab] 'vemv/tab)))
+                         (define-key sh-mode-map [tab] 'vemv/tab)
+                         (define-key sh-mode-map [menu-bar sh-script] nil)))
 
 (add-hook 'html-mode-hook (argless
                            (define-key html-mode-map [tab] 'vemv/tab)))
