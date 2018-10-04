@@ -319,7 +319,7 @@
 ;; We close this buffer because otherwise it gets buried, leaving a useless extra window.
 ;; Customizing `cider-ancillary-buffers' didn't work.
 (defun vemv/close-cider-error ()
-  (when-let ((w (get-buffer-window "*cider-error*")))
+  (when-let (w (get-buffer-window "*cider-error*"))
     (with-selected-window w
       (vemv/close-this))))
 
@@ -382,9 +382,9 @@
 or something custom that returns a var, which must have :name and :test metadata."
   (when (and (vemv/ciderable-p)
              (s-ends-with? ".clj" (buffer-file-name)))
+    (vemv/close-cider-error)
     (vemv/load-clojure-buffer
      (vemv/on-nrepl-success
-      (vemv/close-cider-error)
       (with-selected-window vemv/main_window
         (save-excursion
           (unless (and (zero? (current-column))
