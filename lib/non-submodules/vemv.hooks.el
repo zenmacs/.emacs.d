@@ -668,6 +668,16 @@
 (advice-add 'company-calculate-candidates
             :override 'vemv/company-calculate-candidates)
 
+(setq vemv.maybe-activate-pdf-tools/activated nil)
+
+(defun vemv/maybe-activate-pdf-tools (&rest _)
+  (unless vemv.maybe-activate-pdf-tools/activated
+    (setq vemv.maybe-activate-pdf-tools/activated t)
+    (pdf-tools-install t t)))
+
+(advice-add 'find-file
+            :before 'vemv/maybe-activate-pdf-tools)
+
 (add-hook 'eval-expression-minibuffer-setup-hook (argless
                                                   (eldoc-mode -1)))
 
@@ -735,3 +745,14 @@ START and END are buffer positions."
                                                       current-prefix-arg)
                      (magit-diff-arguments)))
   (magit-diff-setup rev-or-range nil args files))
+
+(add-hook 'pdf-view-mode-hook
+          (lambda ()
+            (setq-local mode-line-format
+                        '("  "
+                          (:eval (number-to-string (pdf-view-current-page)))
+                          "/"
+                          (:eval (number-to-string (pdf-cache-number-of-pages)))))
+            (define-key pdf-view-mode-map (kbd "<right>") 'forward-page)
+            (define-key pdf-view-mode-map (kbd "<left>") 'backward-page)
+            (define-key pdf-view-mode-map (kbd "C-n") 'vemv/new-frame)))

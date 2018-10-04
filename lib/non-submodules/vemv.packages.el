@@ -32,6 +32,7 @@
                      magit
                      multiple-cursors
                      paren-face
+                     pdf-tools
                      queue
                      robe
                      rspec-mode
