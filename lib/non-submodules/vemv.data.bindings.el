@@ -6,6 +6,7 @@
 ;; generated with gen.rb
 
 (setq vemv/exhaustive-list-of-bindings-to-remove (list
+                                                       "<escape>-<escape>-<escape>"
                                                        ";"
                                                        [f1]
                                                        [f10]

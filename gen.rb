@@ -146,6 +146,8 @@ def emit_bindings scope: 'global', modifier_mappings: {"primary" => 'C', "second
 
     spaces = "\n                                                       "
 
+    result += %|#{spaces}"<escape>-<escape>-<escape>"|
+
     SPECIAL.each do |char|
       left = char.include?('[f') ? "#{char}" : %|"#{char}"|
       if !SELF_INSERTING.include?(char) || [';'].include?(char)
