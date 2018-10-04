@@ -134,7 +134,7 @@
                  (when-let* ((b (get-file-buffer _b)))
                    (with-current-buffer b
                      (vemv/close-this-buffer))))))
-  (switch-to-buffer "*scratch*"))
+  (switch-to-buffer vemv/file-buffer-fallback))
 
 (defun vemv/close-all-other-file-buffers ()
   (interactive)
