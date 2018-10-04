@@ -689,6 +689,9 @@
 (advice-add 'find-file
             :before 'vemv/maybe-activate-pdf-tools)
 
+(advice-add 'find-file-noselect
+            :before 'vemv/maybe-activate-pdf-tools)
+
 (add-hook 'eval-expression-minibuffer-setup-hook (argless
                                                   (eldoc-mode -1)))
 
@@ -766,4 +769,8 @@ START and END are buffer positions."
                           (:eval (number-to-string (pdf-cache-number-of-pages)))))
             (define-key pdf-view-mode-map (kbd "<right>") 'forward-page)
             (define-key pdf-view-mode-map (kbd "<left>") 'backward-page)
-            (define-key pdf-view-mode-map (kbd "C-n") 'vemv/new-frame)))
+            (define-key pdf-view-mode-map (kbd "C-n") 'vemv/new-frame)
+            (define-key pdf-misc-menu-bar-minor-mode-map [menu-bar PDF\ Tools] nil)
+            (define-key image-mode-map [menu-bar Image] nil)
+            ;; normally shouldn't be unset (b/c simpleclip bug), it's ok for presentations
+            (define-key global-map [menu-bar edit] nil)))

@@ -134,6 +134,7 @@
       mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
       mouse-wheel-scroll-amount '(4 ((shift) . 4))
       nrepl-hide-special-buffers t
+      pdf-outline-enable-imenu nil
       pe/cache-enabled nil
       pe/get-directory-tree-async-delay 0.00000000000000001
       pe/goto-current-file-on-open nil
