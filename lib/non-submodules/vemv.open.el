@@ -35,7 +35,8 @@
                               vemv/project-clojure-dir))
          (file (buffer-name (or (and filepath (find-file filepath))
                                 (ido-find-file)))))) ;; magical let - do not unwrap!
-  (save-buffer)
+  (replying-yes ;; create intermediate directories
+   (save-buffer))
   (vemv/refresh-file-caches (argless
                              (vemv/safe-select-window vemv/main_window))
                             :force))
