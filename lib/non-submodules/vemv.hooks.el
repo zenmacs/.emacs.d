@@ -771,6 +771,4 @@ START and END are buffer positions."
             (define-key pdf-view-mode-map (kbd "<left>") 'backward-page)
             (define-key pdf-view-mode-map (kbd "C-n") 'vemv/new-frame)
             (define-key pdf-misc-menu-bar-minor-mode-map [menu-bar PDF\ Tools] nil)
-            (define-key image-mode-map [menu-bar Image] nil)
-            ;; normally shouldn't be unset (b/c simpleclip bug), it's ok for presentations
-            (define-key global-map [menu-bar edit] nil)))
+            (define-key image-mode-map [menu-bar Image] nil)))

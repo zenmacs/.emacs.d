@@ -17,7 +17,7 @@
                                     [menu-bar file]
                                     [menu-bar File]
                                     [menu-bar tools]
-                                    ;; [menu-bar edit] -> would break simpleclip
+                                    [menu-bar edit]
                                     [menu-bar options]
                                     [menu-bar buffer]))
 

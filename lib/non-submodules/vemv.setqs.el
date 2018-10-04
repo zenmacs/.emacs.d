@@ -146,6 +146,7 @@
       scroll-step 1
       sh-basic-offset 2
       sh-indentation 2
+      simpleclip-edit-menu nil
       shift-select-mode nil
       smie-indent-basic 2
       transient-mark-mode t
