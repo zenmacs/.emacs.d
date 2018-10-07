@@ -755,10 +755,16 @@ START and END are buffer positions."
 
 (defun magit-diff (rev-or-range &optional args files)
   "Adds `vemv.project/default-git-branch' awareness."
-  (interactive (cons (magit-diff-read-range-or-commit "Diff for range"
-                                                      vemv.project/default-git-branch
-                                                      current-prefix-arg)
-                     (magit-diff-arguments)))
+  (interactive (cons (progn
+                       (require 'magit)
+                       (require 'magit-diff)
+                       (magit-diff-read-range-or-commit "Diff for range"
+                                                        vemv.project/default-git-branch
+                                                        current-prefix-arg))
+                     (progn
+                       (require 'magit)
+                       (require 'magit-diff)
+                       (magit-diff-arguments))))
   (magit-diff-setup rev-or-range nil args files))
 
 (add-hook 'pdf-view-mode-hook
