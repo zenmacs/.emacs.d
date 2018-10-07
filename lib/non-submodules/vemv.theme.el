@@ -18,6 +18,8 @@
 (setq vemv-colors/yellow "#FFE33B")
 (setq vemv-colors/lighter-yellow "#ffe444")
 (setq vemv-colors/dark-yellow "#877b34")
+(setq vemv-colors/paren-grey-strong "#c0c0c0")
+(setq vemv-colors/paren-grey-light "#e0e0e0")
 (setq vemv-colors/pink "#D93273")
 (setq vemv-colors/purple "#7A3555")
 (setq vemv-colors/warning-pink "#aa1e44")
@@ -87,8 +89,8 @@
  'vemv
 
  `(parenthesis ,(if (eq :ruby vemv/project-type)
-                    `((t (:foreground "#e0e0e0")))
-                  `((t (:foreground "#c0c0c0")))))
+                    `((t (:foreground ,vemv-colors/paren-grey-light)))
+                  `((t (:foreground ,vemv-colors/paren-grey-strong)))))
 
  `(term-color-black      ((t (:foreground ,vemv-default-foreground-color :background ,vemv-default-background-color))))
  `(term-color-red        ((t (:foreground ,vemv-default-foreground-color :background ,vemv-default-background-color))))
@@ -128,7 +130,7 @@
  `(cider-error-highlight-face ((t (:foreground ,vemv-default-foreground-color))))
  `(cider-stacktrace-error-class-face ((t (:foreground ,vemv-error-foreground-color))))
  `(cider-repl-stderr-face ((t (:foreground ,vemv-error-foreground-color))))
- `(cider-repl-prompt-face ((t (:foreground ,vemv-default-foreground-color :italic t))))
+ `(cider-repl-prompt-face ((t (:foreground ,vemv-colors/paren-grey-light :italic t))))
  `(cider-repl-stdout-face ((t (:foreground ,vemv-default-foreground-color-very-slightly-darker))))
  `(cider-stacktrace-error-class-face ((t (:foreground ,vemv-error-foreground-color))))
  `(cider-stacktrace-ns-face ((t (:foreground "white"))))
