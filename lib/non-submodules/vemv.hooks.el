@@ -10,7 +10,8 @@
            (not vemv/terminal-emacs?))
   (add-hook 'clojure-mode-hook (argless
                                 (hs-minor-mode)
-                                (define-key hs-minor-mode-map [menu-bar Hide/Show] nil))))
+                                (define-key hs-minor-mode-map [menu-bar Hide/Show] nil)
+                                (define-key clojure-mode-map [menu-bar Clojure] nil))))
 
 (advice-add 'haml-mode :before (argless
                                 (add-to-list 'haml-fontify-filter-functions-alist
