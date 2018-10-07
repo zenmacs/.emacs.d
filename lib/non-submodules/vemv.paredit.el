@@ -27,7 +27,7 @@
             (vemv/fix-defn-oneliners))
           (unless (or skip-formatting
                       yas
-                      (member major-mode `(fundamental-mode ruby-mode)))
+                      (member major-mode `(fundamental-mode ruby-mode conf-colon-mode)))
             (unless dc
               (delete-trailing-whitespace))
             (call-interactively 'mark-whole-buffer)
