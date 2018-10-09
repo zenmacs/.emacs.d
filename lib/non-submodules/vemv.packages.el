@@ -55,6 +55,33 @@
              (package-refresh-contents)
              (package-install package)))))))))
 
+(require 'dash)
+(defun vemv/maybe-omit-message (f m &rest args)
+  (if (-find (lambda (x)
+               (string-match x m))
+             `("^Checking .*\\.\\.\\."
+               "^Loading .*\\.\\.\\."
+               "You appear to be setting environment variables"
+               "Hiding all blocks"
+               "Cleaning up the recentf"
+               "loading of snippets successfully"
+               "Saving file"
+               "Truncate long lines"
+               "Mark activated"
+               "uncompressing"
+               "^Wrote"
+               "Done (Total of"
+               "Mark set"
+               "Mark cleared"
+               "Auto-saving"
+               "Undo branch point"
+               "Indenting region"))
+      nil
+    (apply f m args)))
+
+;; some output comes from `make-progress-reporter', which is harder to disable
+(advice-add 'message ':around 'vemv/maybe-omit-message)
+
 ;; M-x benchmark-init/show-durations-tabulated / M-x benchmark-init/show-durations-tree
 (require 'benchmark-init)
 (add-hook 'after-init-hook 'benchmark-init/deactivate)
@@ -64,7 +91,6 @@
 
 (unless vemv/terminal-emacs?
   (require 'saveplace))
-(require 'dash)
 (require 'popup)
 (require 'smex)
 (unless vemv/terminal-emacs?
