@@ -17,7 +17,8 @@
 
 (defun vemv/in-a-lisp-mode? (&optional m)
   (let ((mode (or m major-mode)))
-    (or (vemv/in-a-clojure-mode? mode)
+    (or (minibuffer-prompt) ;; for eval-expression
+        (vemv/in-a-clojure-mode? mode)
         (eq mode 'emacs-lisp-mode)
         (eq mode 'inferior-emacs-lisp-mode))))
 

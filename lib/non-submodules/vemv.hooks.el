@@ -415,6 +415,8 @@
                                  (setq-local paren-face-regexp "[][()/#'`,]")
                                  (paren-face-mode 1)))
 
+(add-hook 'eval-expression-minibuffer-setup-hook 'enable-paredit-mode)
+
 (add-hook 'ielm-mode-hook 'enable-paredit-mode)
 (add-hook 'ielm-mode-hook 'ido-at-point-mode)
 
