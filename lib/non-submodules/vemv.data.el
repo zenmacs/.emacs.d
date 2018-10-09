@@ -43,6 +43,7 @@
             emacs-lisp-mode-map [menu-bar emacs-lisp] nil
             emacs-lisp-mode-map "RET" 'newline-and-indent
             emacs-lisp-mode-map "C-?" 'vemv/elisp-window-documentation
+            minibuffer-local-map [menu-bar minibuf] nil
             *fiplr-keymap* "<S-return>" 'exit-minibuffer ;; makes it equivalent to RET. Sometime I type S-RET due to muscle memory
             ))
 
