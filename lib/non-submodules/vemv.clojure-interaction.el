@@ -427,13 +427,16 @@ or something custom that returns a var, which must have :name and :test metadata
                      (equal :require (car x)))))
        (cdr)
        (mapcar (lambda (x)
-                 (if (symbolp x)
-                     (vector x)
-                   x)))))
+                 (-> (if (symbolp x)
+                         (vector x)
+                       x)
+                     car)))))
 
 (defun vemv/check-unused-requires ()
   (interactive)
-  (when (vemv/ciderable-p)
+  (when (and (vemv/ciderable-p)
+             (member major-mode '(clojure-mode clojurec-mode)) ;; cljs more likely to contain side-effectful requires
+             (cider-ns-form))
     (when-let ((clean (cljr--call-middleware-sync
                        (cljr--create-msg "clean-ns"
                                          "path" (cljr--project-relative-path (buffer-file-name))
