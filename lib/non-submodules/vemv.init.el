@@ -45,7 +45,7 @@
 (global-auto-revert-mode t) ;; refresh buffers on external changes to the underlying files
 (global-hl-line-mode t)
 (make-variable-buffer-local 'global-hl-line-mode)
-(global-whitespace-mode)
+(vemv/global-whitespace-mode)
 (cua-mode 1) ;; initialized after customizing cua-remap-control-v
 (electric-indent-mode -1)
 

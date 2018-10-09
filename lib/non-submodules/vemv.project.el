@@ -68,7 +68,7 @@
      (setq clojure-indent-style :always-align)
      (put-clojure-indent 'as-> 2)
      (setq clojure-align-forms-automatically nil)
-     (setq whitespace-line-column 131)
+     (setq whitespace-line-column nil)
      (setq vemv/before-figwheel-fn nil)
      (setq vemv.project/default-git-branch "master")
      (setq vemv.project/cd-command "cd ") ;; the command that will be used in *shell-1* to change directories as you change projects.
@@ -192,8 +192,14 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
     (setq vemv/modifiers/secondary "M")
     (setq vemv/modifiers/tertiary "s")
 
-    (call-interactively 'whitespace-mode)
-    (call-interactively 'whitespace-mode)
+    (when whitespace-line-column
+      (->> vemv/chosen-file-buffer-order
+           (gethash vemv/current-project)
+           (mapcar (lambda (_b)
+                     (when-let* ((b (get-file-buffer _b)))
+                       (with-current-buffer b
+                         (dotimes (_ 2)
+                           (call-interactively 'whitespace-mode))))))))
 
     (when (not (equal vemv/project-type old-project-type))
       (load "vemv.theme"))

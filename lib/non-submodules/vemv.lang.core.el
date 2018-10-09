@@ -244,3 +244,11 @@
           (font-lock-ensure))
       (with-no-warnings
         (font-lock-fontify-buffer)))))
+
+(require 'whitespace)
+(define-global-minor-mode vemv/global-whitespace-mode whitespace-mode
+  (lambda ()
+    (when (and (buffer-file-name)
+               whitespace-line-column)
+      (whitespace-mode 1)))
+  :group 'whitespace)
