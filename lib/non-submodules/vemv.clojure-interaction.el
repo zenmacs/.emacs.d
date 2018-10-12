@@ -471,7 +471,7 @@ or something custom that returns a var, which must have :name and :test metadata
 (define-minor-mode docsolver-mode
   "Highlights certain tokens as dangerous."
   :lighter ""
-  (font-lock-add-keywords nil `(("\\b\\(when\\|=\\|if\\|if-not\\|when-not\\|->>\\|->\\)\\b" 0 'vemv-reverse-warning-face)))
+  (font-lock-add-keywords nil `(("\\b\\(when\\|=\\|and\\|or\\|if\\|if-not\\|when-not\\|->>\\|->\\)\\b" 0 'vemv-reverse-warning-face)))
   (vemv/fontify))
 
 (defun cider-stacktrace--should-hide-p (neg-filters pos-filters flags)
