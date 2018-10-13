@@ -472,8 +472,10 @@ Also removes `noerror' from `search-forward-regexp' for accuracy"
        (mapcar (lambda (x)
                  (-> (if (symbolp x)
                          (vector x)
-                       x)
-                     car)))))
+                       (if (listp x)
+                           (vconcat x)
+                         x))
+                     (aref 0))))))
 
 (defun vemv/check-unused-requires ()
   (interactive)
