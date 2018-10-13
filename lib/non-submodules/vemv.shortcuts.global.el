@@ -132,6 +132,7 @@
       vemv/shortcuts/global/tertiary-backspace      'vemv/unindent-region
       vemv/shortcuts/global/tertiary-a              'vemv/copy-inserting-at-kill-list
       vemv/shortcuts/global/tertiary-backtick       'vemv/jump-to-clojure-definition
+      vemv/shortcuts/global/tertiary-down           'end-of-defun
       vemv/shortcuts/global/tertiary-e              (argless (vemv/send nil nil nil :no-return))
       vemv/shortcuts/global/tertiary-end            'end-of-buffer
       vemv/shortcuts/global/tertiary-f              (argless
@@ -154,6 +155,7 @@
                                                      (vemv/fiplr (lambda (filename)
                                                                    (find-file filename)
                                                                    (vemv/close-all-other-file-buffers))))
+      vemv/shortcuts/global/tertiary-up             'beginning-of-defun
       vemv/shortcuts/global/tertiary-v              'vemv/paste-from-kill-list
       vemv/shortcuts/global/tertiary-w              'vemv/close-all-file-buffers
       vemv/shortcuts/global/tertiary-x              'vemv/dumb-cut
