@@ -401,24 +401,67 @@ or something custom that returns a var, which must have :name and :test metadata
             (cider-test-update-last-test ns sym)
             (cider-test-execute ns sym))))))))
 
+(defun vemv/cider-find-keyword-silently (&optional arg)
+  "Silent version of cider-find-keyword. Just returns the line/file.
+Also removes `noerror' from `search-forward-regexp' for accuracy"
+  (interactive "P")
+  (cider-ensure-connected)
+  (let* ((kw (let ((kw-at-point (cider-symbol-at-point 'look-back)))
+               (if (or cider-prompt-for-symbol arg)
+                   (read-string
+                    (format "Keyword (default %s): " kw-at-point)
+                    nil nil kw-at-point)
+                 kw-at-point)))
+         (ns-qualifier (and
+                        (string-match "^:+\\(.+\\)/.+$" kw)
+                        (match-string 1 kw)))
+         (kw-ns (if ns-qualifier
+                    (cider-resolve-alias (cider-current-ns) ns-qualifier)
+                  (cider-current-ns)))
+         (kw-to-find (concat "::" (replace-regexp-in-string "^:+\\(.+/\\)?" "" kw) " ")))
+
+    (when (and ns-qualifier (string= kw-ns (cider-current-ns)))
+      (error "Could not resolve alias `%s' in `%s'" ns-qualifier (cider-current-ns)))
+    (if-let* ((path (cider-sync-request:ns-path kw-ns)))
+        (let* ((buffer (cider-find-file path)))
+          (with-current-buffer buffer
+            (save-excursion
+              (beginning-of-buffer)
+              (search-forward-regexp kw-to-find nil)
+              (list (vemv/current-line-number)
+                    (buffer-file-name)))))
+      (user-error "Can't find namespace `%s'" ns))))
+
 (defun vemv/echo-clojure-source ()
   "Shows the Clojure source of the symbol at point."
   (interactive)
   (when (vemv/ciderable-p)
-    (if-let* ((info (cider-var-info (cider-symbol-at-point 'look-back))))
-        (let* ((vemv/max-mini-window-height 0.99)
-               (buffer-count (length (vemv/all-buffers)))
-               (line (nrepl-dict-get info "line"))
-               (buffer (cider-find-file (nrepl-dict-get info "file")))
-               (v (with-current-buffer buffer
-                    (goto-line line)
-                    (beginning-of-line)
-                    (font-lock-ensure)
-                    (vemv/sexpr-content nil :with-properties))))
-          (when (< buffer-count (length (vemv/all-buffers)))
-            (kill-buffer buffer))
-          (vemv/echo v))
-      (user-error "Not found."))))
+    (let* ((info (cider-var-info (cider-symbol-at-point 'look-back)))
+           (line-and-file (if info
+                              (list (nrepl-dict-get info "line")
+                                    (nrepl-dict-get info "file"))
+                            (let* ((curr-token (cider-symbol-at-point 'look-back))
+                                   (curr-token-is-qualified-kw (vemv/starts-with curr-token "::"))
+                                   (cider-prompt-for-symbol nil))
+                              (when curr-token-is-qualified-kw
+                                (call-interactively 'vemv/cider-find-keyword-silently))))))
+      (if line-and-file
+          (let* ((line (first line-and-file))
+                 (file (second line-and-file))
+                 (_ (vemv/echo line file))
+                 (vemv/max-mini-window-height 0.99)
+                 (buffer-count (length (vemv/all-buffers)))
+                 (buffer (cider-find-file file))
+                 (v (with-current-buffer buffer
+                      (save-excursion
+                        (goto-line line)
+                        (beginning-of-line)
+                        (font-lock-ensure)
+                        (vemv/sexpr-content nil :with-properties)))))
+            (when (< buffer-count (length (vemv/all-buffers)))
+              (kill-buffer buffer))
+            (vemv/echo v))
+        (user-error "Not found.")))))
 
 (defun vemv/parse-requires (x)
   (->> x
