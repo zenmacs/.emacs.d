@@ -112,6 +112,7 @@
       custom-file "~/.emacs.d/custom.el"
       delete-by-moving-to-trash nil
       echo-keystrokes 0.02
+      global-hl-line-sticky-flag t
       helm-display-header-line nil
       hi-lock-file-patterns-policy 'never
       highlight-indent-guides-character ?·

@@ -87,6 +87,7 @@
              (goal (->> final-fragments last first (s-chop-suffix "/"))))
 
         (with-selected-window vemv/project-explorer-window
+          (setq-local cursor-type nil)
           ;; somewhat expensive call. But a well-tuned `pe/omit-regex' will make it acceptable.
           ;; Note: do not comment out anymore - implementation will fail.
           (pe/fold-all)
@@ -100,7 +101,9 @@
           (while (not (string-equal goal (pe/get-filename)))
             (next-line))
 
-          (end-of-line))))))
+          (end-of-line)
+
+          (global-hl-line-highlight))))))
 
 (defun vemv/show-current-file-in-project-explorer-unsafe (original-window)
   (interactive)
