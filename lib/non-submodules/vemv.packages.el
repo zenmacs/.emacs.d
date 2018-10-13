@@ -57,25 +57,28 @@
 
 (require 'dash)
 (defun vemv/maybe-omit-message (f m &rest args)
-  (if (-find (lambda (x)
-               (string-match x m))
-             `("^Checking .*\\.\\.\\."
-               "^Loading .*\\.\\.\\."
-               "You appear to be setting environment variables"
-               "Hiding all blocks"
-               "Cleaning up the recentf"
-               "loading of snippets successfully"
-               "Saving file"
-               "Truncate long lines"
-               "Mark activated"
-               "uncompressing"
-               "^Wrote"
-               "Done (Total of"
-               "Mark set"
-               "Mark cleared"
-               "Auto-saving"
-               "Undo branch point"
-               "Indenting region"))
+  ;; Important to take extra caution here - any error will leave Emacs unable to receive keyboard input
+  (if (or (not m)
+          (-find (lambda (x)
+                   (ignore-errors
+                     (string-match x m)))
+                 `("^Checking .*\\.\\.\\."
+                   "^Loading .*\\.\\.\\."
+                   "You appear to be setting environment variables"
+                   "Hiding all blocks"
+                   "Cleaning up the recentf"
+                   "loading of snippets successfully"
+                   "Saving file"
+                   "Truncate long lines"
+                   "Mark activated"
+                   "uncompressing"
+                   "^Wrote"
+                   "Done (Total of"
+                   "Mark set"
+                   "Mark cleared"
+                   "Auto-saving"
+                   "Undo branch point"
+                   "Indenting region")))
       nil
     (apply f m args)))
 
