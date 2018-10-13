@@ -124,6 +124,7 @@
  `(compilation-info ((t (:background ,vemv-default-background-color :foreground ,vemv-default-foreground-color))))
 
  `(pe/directory-face ((t (:foreground ,vemv-colors/lighter-yellow :bold t))))
+ `(pe/file-face ((t (:foreground ,vemv-colors/paren-grey-light :bold t))))
 
  `(cider-fringe-good-face ((t (:foreground ,vemv-default-foreground-color))))
  `(cider-stacktrace-error-message-face ((t (:foreground ,vemv-default-foreground-color-very-slightly-darker))))
