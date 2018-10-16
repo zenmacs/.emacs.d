@@ -391,12 +391,13 @@
 (advice-add 'cider-new-error-buffer :after (lambda (&rest _)
                                              (cider-interactive-eval "(try (clojure.core/prn clojure.core/*e)
                                                                               (catch java.lang.Throwable e))")
-                                             (delay (argless (when (-> vemv/main_window
-                                                                       window-buffer
-                                                                       vemv/buffer-of-current-running-project?)
+                                             (delay (argless (when (and (-> vemv/main_window
+                                                                            window-buffer
+                                                                            vemv/buffer-of-current-running-project?)
+                                                                        (get-buffer vemv/clj-repl-name))
                                                                (vemv/save-window-excursion
                                                                 (vemv/safe-select-window vemv/repl-window)
-                                                                (vemv/switch-to-buffer-in-any-frame vemv/clj-repl-name)
+                                                                (switch-to-buffer vemv/clj-repl-name t t)
                                                                 (end-of-buffer)
                                                                 (paredit-backward)
                                                                 (paredit-backward))))
