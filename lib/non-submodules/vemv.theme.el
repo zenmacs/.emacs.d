@@ -6,10 +6,6 @@
 (require 'vemv.project)
 (provide 'vemv.theme)
 
-(unless vemv/terminal-emacs?
-  (set-face-background 'comint-highlight-prompt "#4D575F")
-  (set-face-foreground 'comint-highlight-prompt "white"))
-
 (deftheme vemv "")
 
 (setq vemv-colors/blue "#6da5ff")
@@ -23,6 +19,10 @@
 (setq vemv-colors/pink "#D93273")
 (setq vemv-colors/purple "#7A3555")
 (setq vemv-colors/warning-pink "#aa1e44")
+
+(unless vemv/terminal-emacs?
+  (set-face-background 'comint-highlight-prompt "#4D575F")
+  (set-face-foreground 'comint-highlight-prompt vemv-colors/paren-grey-light))
 
 (defface font-lock-line-and-column-face
   `((t :foreground "#696969"))
