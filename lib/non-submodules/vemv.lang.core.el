@@ -43,7 +43,7 @@
                    (-interpose " ")
                    (apply 'concat))))
     (vemv/verbosely
-     (message what))
+     (message "%s" what))
     (setq vemv/max-mini-window-height nil)
     what))
 
