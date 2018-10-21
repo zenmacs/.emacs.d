@@ -396,7 +396,7 @@ or something custom that returns a var, which must have :name and :test metadata
                                                                                  " meta :name)")
                                                                          vemv.clojure-interaction/sync-eval-to-string
                                                                          list)))
-                                                           (vemv/echo ns sym)
+                                                           (assert (and ns (car sym)))
                                                            (cider-test-update-last-test ns sym)
                                                            (cider-test-execute ns sym)))))
                               vemv/clojure-lightweight-reload-command)))
