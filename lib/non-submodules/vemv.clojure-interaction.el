@@ -128,7 +128,7 @@
 
 (setq vemv/cljr-building-ast-cache? nil) ;; XXX implement on new clj-refactor.el release
 
-(defun vemv/load-clojure-buffer (&optional callback)
+(defun vemv/load-clojure-buffer (&optional callback reload-command)
   (interactive)
   (if (vemv/ciderable-p)
       (if (vemv/current-main-buffer-is-cljs)
@@ -143,7 +143,9 @@
                                           (if vemv/using-component-reloaded-workflow
                                               (if vemv/cljr-building-ast-cache?
                                                   (message "Currently building AST cache. Wait a few seconds and try again.")
-                                                (cider-interactive-eval (or vemv/clojure-reload-command
+                                                ;; NOTE: has to be `cider-interactive-eval', so there's visual feedback + error reporting
+                                                (cider-interactive-eval (or reload-command
+                                                                            vemv/clojure-reload-command
                                                                             "(with-out-str
                                                                                (com.stuartsierra.component.user-helpers/reset))")
                                                                         callback))
@@ -334,27 +336,26 @@
   (interactive)
   (vemv/close-cider-error)
   (when (vemv/in-clojure-mode?)
-    (vemv/load-clojure-buffer
-     (vemv/on-nrepl-success
-      (vemv/advice-nrepl
-       (argless
-        (let* ((cljs (vemv/current-main-buffer-is-cljs))
-               (ns (vemv/current-ns))
-               (inferred (funcall cider-test-infer-test-ns ns))
-               (chosen (if (vemv/is-testing-ns ns inferred)
-                           ns
-                         (if cljs
-                             vemv/latest-cljs-test-ran
-                           vemv/latest-clojure-test-ran))))
-          (when chosen
-            (setq vemv/latest-clojure-test-ran chosen)
-            (if cljs
-                (vemv/send :cljs
-                           nil
-                           (concat "(cljs.test/run-tests '"
-                                   chosen
-                                   ")"))
-              (cider-test-execute chosen nil nil))))))))))
+    (vemv/load-clojure-buffer (vemv/on-nrepl-success (vemv/advice-nrepl
+                                                      (argless
+                                                       (let* ((cljs (vemv/current-main-buffer-is-cljs))
+                                                              (ns (vemv/current-ns))
+                                                              (inferred (funcall cider-test-infer-test-ns ns))
+                                                              (chosen (if (vemv/is-testing-ns ns inferred)
+                                                                          ns
+                                                                        (if cljs
+                                                                            vemv/latest-cljs-test-ran
+                                                                          vemv/latest-clojure-test-ran))))
+                                                         (when chosen
+                                                           (setq vemv/latest-clojure-test-ran chosen)
+                                                           (if cljs
+                                                               (vemv/send :cljs
+                                                                          nil
+                                                                          (concat "(cljs.test/run-tests '"
+                                                                                  chosen
+                                                                                  ")"))
+                                                             (cider-test-execute chosen nil nil)))))))
+                              vemv/clojure-lightweight-reload-command)))
 
 (defun vemv/run-this-deftest-cljs ()
   "Assuming `point` is at a deftest name, it runs it"
@@ -383,23 +384,22 @@ or something custom that returns a var, which must have :name and :test metadata
   (when (and (vemv/ciderable-p)
              (s-ends-with? ".clj" (buffer-file-name)))
     (vemv/close-cider-error)
-    (vemv/load-clojure-buffer
-     (vemv/on-nrepl-success
-      (with-selected-window vemv/main_window
-        (save-excursion
-          (unless (and (zero? (current-column))
-                       (looking-at-p "("))
-            (end-of-line)
-            (beginning-of-defun))
-          (let* ((ns (vemv/current-ns))
-                 (sym (-> (concat "(-> "
-                                  (vemv.clojure-interaction/sync-eval-to-string (vemv/sexpr-content))
-                                  " meta :name)")
-                          vemv.clojure-interaction/sync-eval-to-string
-                          list)))
-            (vemv/echo ns sym)
-            (cider-test-update-last-test ns sym)
-            (cider-test-execute ns sym))))))))
+    (vemv/load-clojure-buffer (vemv/on-nrepl-success (with-selected-window vemv/main_window
+                                                       (save-excursion
+                                                         (unless (and (zero? (current-column))
+                                                                      (looking-at-p "("))
+                                                           (end-of-line)
+                                                           (beginning-of-defun))
+                                                         (let* ((ns (vemv/current-ns))
+                                                                (sym (-> (concat "(-> "
+                                                                                 (vemv.clojure-interaction/sync-eval-to-string (vemv/sexpr-content))
+                                                                                 " meta :name)")
+                                                                         vemv.clojure-interaction/sync-eval-to-string
+                                                                         list)))
+                                                           (vemv/echo ns sym)
+                                                           (cider-test-update-last-test ns sym)
+                                                           (cider-test-execute ns sym)))))
+                              vemv/clojure-lightweight-reload-command)))
 
 (defun vemv/cider-find-keyword-silently (&optional arg)
   "Silent version of cider-find-keyword. Just returns the line/file.

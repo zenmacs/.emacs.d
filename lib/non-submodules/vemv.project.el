@@ -44,6 +44,7 @@
      (setq vemv/project-type nil) ;; :clj, :cljs (these two have an effect), or any other keyword (with the only purpose of preventing :clj/:cljs effects)
      (setq vemv/using-component-reloaded-workflow nil) ;; whether the project uses com.stuartsierra.component.user-helpers
      (setq vemv/clojure-reload-command nil) ;; The command, as a string, to reload code if `vemv/using-component-reloaded-workflow`.
+     (setq vemv/clojure-lightweight-reload-command nil) ;; like `vemv/clojure-reload-command', but with whatever 'lightweight' semantics you wish (e.g. reload the code but don't reset any components)
      (setq vemv/cider-port nil)
      (setq vemv/project-initializers nil) ;; an argless lambda which can run arbitrary code on CIDER connection
      (setq vemv/project-root-dir nil) ;; Where a project is located
