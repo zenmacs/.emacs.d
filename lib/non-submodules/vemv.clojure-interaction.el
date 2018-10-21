@@ -447,20 +447,21 @@ Also removes `noerror' from `search-forward-regexp' for accuracy"
                                 (call-interactively 'vemv/cider-find-keyword-silently))))))
       (if line-and-file
           (let* ((line (first line-and-file))
-                 (file (second line-and-file))
-                 (_ (vemv/echo line file))
-                 (vemv/max-mini-window-height 0.99)
-                 (buffer-count (length (vemv/all-buffers)))
-                 (buffer (cider-find-file file))
-                 (v (with-current-buffer buffer
-                      (save-excursion
-                        (goto-line line)
-                        (beginning-of-line)
-                        (font-lock-ensure)
-                        (vemv/sexpr-content nil :with-properties)))))
-            (when (< buffer-count (length (vemv/all-buffers)))
-              (kill-buffer buffer))
-            (vemv/echo v))
+                 (file (second line-and-file)))
+            (if (and line file)
+                (let* ((vemv/max-mini-window-height 0.99)
+                       (buffer-count (length (vemv/all-buffers)))
+                       (buffer (cider-find-file file))
+                       (v (with-current-buffer buffer
+                            (save-excursion
+                              (goto-line line)
+                              (beginning-of-line)
+                              (font-lock-ensure)
+                              (vemv/sexpr-content nil :with-properties)))))
+                  (when (< buffer-count (length (vemv/all-buffers)))
+                    (kill-buffer buffer))
+                  (vemv/echo v))
+              (user-error "Not found.")))
         (user-error "Not found.")))))
 
 (defun vemv/parse-requires (x)
