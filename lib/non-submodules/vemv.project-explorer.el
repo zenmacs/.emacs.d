@@ -101,7 +101,7 @@
           (while (not (string-equal goal (pe/get-filename)))
             (next-line))
 
-          (end-of-line)
+          (beginning-of-line)
 
           (global-hl-line-highlight))))))
 
