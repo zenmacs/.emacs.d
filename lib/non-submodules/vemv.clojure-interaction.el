@@ -325,9 +325,14 @@
       (vemv/close-this))))
 
 (defmacro vemv/on-nrepl-success (&rest body)
+  "Creates a callback apt for async and sync scenarios.
+When `vemv/using-component-reloaded-workflow', the callback will be repeatedly invoked, and we regard only the last one.
+When not, the callback will be invoked just once, so the code can be inconditionally run."
   `(lambda (&rest __args)
-     (when (ignore-errors
-             (-some-> __args car (nrepl-dict-get "status") (car) (string-equal "done")))
+     (if vemv/using-component-reloaded-workflow
+         (when (ignore-errors
+                 (-some-> __args car (nrepl-dict-get "status") (car) (string-equal "done")))
+           ,@body)
        ,@body)))
 
 (defun vemv/test-this-ns ()
