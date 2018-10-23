@@ -149,11 +149,10 @@
                                                                             "(with-out-str
                                                                                (com.stuartsierra.component.user-helpers/reset))")
                                                                         callback))
-                                            (cider-load-buffer)
-                                            (cider-load-all-project-ns)
-                                            (-some-> callback funcall)
-                                            ;; format code, which was previously skipped
-                                            (vemv/save-all-buffers-for-this-project)))))))
+                                            (with-current-buffer (window-buffer vemv/main_window)
+                                              (cider-load-buffer)
+                                              (cider-load-all-project-ns)
+                                              (-some-> callback funcall))))))))
     (if (vemv/in-a-lisp-mode?)
         (progn
           (vemv/save)
