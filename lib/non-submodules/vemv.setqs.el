@@ -113,6 +113,7 @@
       delete-by-moving-to-trash nil
       echo-keystrokes 0.02
       global-hl-line-sticky-flag t
+      helm-ag-command-option "--hidden"
       helm-display-header-line nil
       hi-lock-file-patterns-policy 'never
       highlight-indent-guides-character ?·
