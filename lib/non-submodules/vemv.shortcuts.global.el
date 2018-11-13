@@ -16,6 +16,15 @@
                                                      (switch-to-buffer "*shell-1*")
                                                      (vemv/send :shell nil (concat vemv.project/cd-command vemv/project-root-dir))
                                                      (comint-clear-buffer))
+      vemv/shortcuts/global/f6                      (argless
+                                                     (vemv/safe-select-window vemv/main_window)
+                                                     (let* ((what (vemv/send :shell nil (or (-some->> (file-name-directory (buffer-file-name))
+                                                                                                      (concat vemv.project/cd-command))
+                                                                                            (concat vemv.project/cd-command vemv/project-root-dir)))))
+                                                       (vemv/safe-select-window vemv/repl-window)
+                                                       (switch-to-buffer "*shell-1*")
+                                                       (vemv/send :shell nil what)
+                                                       (comint-clear-buffer)))
       vemv/shortcuts/global/f7                      'vemv/previous-project
       vemv/shortcuts/global/f8                      'vemv/after-file-open
       vemv/shortcuts/global/f9                      'vemv/next-project
