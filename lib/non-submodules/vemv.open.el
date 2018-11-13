@@ -30,9 +30,11 @@
   (interactive)
   (vemv/safe-select-frame)
   (vemv/safe-select-window vemv/main_window)
-  (let* ((default-directory (if (vemv/contains? (buffer-file-name) vemv/project-root-dir)
-                                default-directory
-                              vemv/project-clojure-dir))
+  (let* ((default-directory (if (memq major-mode '(typescript-mode js-mode))
+                                (file-name-directory (buffer-file-name))
+                              (if (vemv/contains? (buffer-file-name) vemv/project-root-dir)
+                                  default-directory
+                                vemv/project-clojure-dir)))
          (file (buffer-name (or (and filepath (find-file filepath))
                                 (ido-find-file)))))) ;; magical let - do not unwrap!
   (replying-yes ;; create intermediate directories

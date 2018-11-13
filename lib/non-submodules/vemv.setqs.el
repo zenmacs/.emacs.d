@@ -112,6 +112,9 @@
       custom-file "~/.emacs.d/custom.el"
       delete-by-moving-to-trash nil
       echo-keystrokes 0.02
+      flycheck-display-errors-function (lambda (errors)
+                                         (vemv/verbosely
+                                          (flycheck-display-error-messages errors)))
       global-hl-line-sticky-flag t
       helm-ag-command-option "--hidden"
       helm-display-header-line nil
@@ -153,6 +156,7 @@
       smie-indent-basic 2
       transient-mark-mode t
       truncate-partial-width-windows nil
+      typescript-indent-level 2
       vc-follow-symlinks t
       vemv/cljr-ast-load-counter 0
       vemv/launched nil
@@ -215,7 +219,8 @@ of the buffer into a formatted string."
 ;; `checkouts`: important one, can get huge with my `accessible-jars` plugin
 (setq pe/omit-regex (mapconcat 'identity
                                (list "^#" "~$" "^node_modules$" "tmp" ".git$" ".sass-cache" "checkouts" ".elc$"
-                                     ".lumo-cache" "target" "auto-save-list" "project-explorer-cache" "public")
+                                     ".lumo-cache" "target" "auto-save-list" "project-explorer-cache" "public"
+                                     "dist")
                                "\\|"))
 
 ;; Taken from ruby-mode

@@ -374,8 +374,14 @@
           (argless (yas-activate-extra-mode 'clojure-mode)))
 
 (unless vemv/terminal-emacs?
-  (dolist (mode (list 'emacs-lisp-mode-hook 'ruby-mode-hook 'clojure-mode-hook
-                      'js-mode-hook 'css-mode-hook 'html-mode-hook 'haml-mode-hook))
+  (dolist (mode (list 'clojure-mode-hook
+                      'css-mode-hook
+                      'emacs-lisp-mode-hook
+                      'haml-mode-hook
+                      'html-mode-hook
+                      'js-mode-hook
+                      'ruby-mode-hook
+                      'typescript-mode-hook))
     (add-hook mode (argless (call-interactively 'text-scale-increase)))))
 
 (advice-add 'pe/show-buffer :after 'vemv/after-file-open)
@@ -782,3 +788,22 @@ START and END are buffer positions."
             (define-key pdf-view-mode-map (kbd "C-n") 'vemv/new-frame)
             (define-key pdf-misc-menu-bar-minor-mode-map [menu-bar PDF\ Tools] nil)
             (define-key image-mode-map [menu-bar Image] nil)))
+
+(add-hook 'typescript-mode-hook (argless
+                                 (interactive)
+                                 (tide-setup)
+                                 (defvar wd-backend-tslint
+                                   (let ((config-file "/Users/vemv/wd-backend/tslint.json"))
+                                     (when (file-exists-p config-file)
+                                       (setq tide-format-options (tide-safe-json-read-file config-file)))))
+                                 ;; copied from js-mode
+                                 (setq-local paren-face-regexp "\\(\\+\\|\\?\\|,\\|=\\|<\\|>\\|[][(){}:.;$!]\\)")
+                                 (paren-face-mode 1)
+                                 (flycheck-mode +1)
+                                 (setq flycheck-check-syntax-automatically '(save mode-enabled))
+                                 (tide-hl-identifier-mode 1)
+                                 (smartparens-mode)
+                                 (vemv/set-keys-for-scope typescript-mode-map vemv/ruby-key-bindings)
+                                 (define-key typescript-mode-map [tab] 'vemv/tab)
+                                 (define-key typescript-mode-map [menu-bar Tools] nil)
+                                 (company-mode 1)))

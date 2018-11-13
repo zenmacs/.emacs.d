@@ -39,6 +39,7 @@
                      rubocop
                      simpleclip
                      smartparens
+                     tide
                      yasnippet))
     (unless (package-installed-p package)
       (vemv/verbosely
@@ -91,6 +92,8 @@
 
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize))
+
+(conj! exec-path "/Users/vemv/.nvm/versions/node/v10.13.0/bin/")
 
 (unless vemv/terminal-emacs?
   (require 'saveplace))

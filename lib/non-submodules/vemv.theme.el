@@ -189,6 +189,11 @@
                                        `(:foreground ,vemv-colors/yellow :bold t)))))
  `(font-lock-warning-face ((t (:bold t :background ,vemv-colors/warning-pink :foreground "white"))))
 
+ `(flycheck-fringe-warning ((t (:foreground "#000000"))))
+ `(flycheck-fringe-info    ((t (:foreground "#000000"))))
+ `(flycheck-info           ((t (:underline (:color ,vemv-colors/yellow :style wave)))))
+ `(flycheck-warning        ((t (:underline (:color ,vemv-colors/yellow :style wave)))))
+
  `(gui-element ((t (:background "#484848" :foreground "#96CBFE"))))
  `(region ((t (:background ,vemv-colors/purple))))
  `(mode-line ((t (:background "gray10" :foreground "#B6B6B6"))))
