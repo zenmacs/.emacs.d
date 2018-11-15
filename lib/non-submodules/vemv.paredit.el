@@ -10,7 +10,7 @@
 ;; I don't use kill-ring, since third-parties (e.g. paredit) can mess with it
 (setq vemv/kill-list (-repeat vemv/kill-list-bound nil))
 
-(defun vemv/save (&optional b skip-check-unused-requires skip-formatting)
+(defun vemv/save (&optional b skip-check-unused-requires skip-formatting avoid-recursion)
   (interactive)
   (when (buffer-file-name)
     (let* ((b (or b (current-buffer))))
@@ -40,7 +40,11 @@
               (end-of-buffer)
               (while (string-equal (vemv/current-char-at-point) "\n")
                 (delete-backward-char 1))))
+
+          (when (memq major-mode `(typescript-mode))
+            (set-buffer-modified-p t))
           (save-buffer)
+
           (unless skip-check-unused-requires
             (vemv/check-unused-requires))
           (when (eq major-mode 'ruby-mode)
@@ -58,7 +62,10 @@
                     (error "Buffer is not visiting a file"))))
               (rubocop-autocorrect-current-file))
             (when vemv-robe-connected
-              (vemv/send :ruby nil "reload!"))))))))
+              (vemv/send :ruby nil "reload!")))
+          (when (and (memq major-mode `(typescript-mode))
+                     (not avoid-recursion))
+            (vemv/save-other-buffers-for-this-project :for-flycheck)))))))
 
 (defun vemv/tab ()
   (interactive)

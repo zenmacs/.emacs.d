@@ -214,13 +214,17 @@
        (mapcar (lambda (b)
                  (vemv/save b skip-check-unused-requires skip-formatting)))))
 
-(defun vemv/save-other-buffers-for-this-project ()
+(defun vemv/save-other-buffers-for-this-project (&optional for-flycheck)
   (->> (vemv/all-buffers)
        (-filter 'vemv/buffer-of-current-project?)
        (-remove (lambda (x)
                   (string-equal (buffer-file-name)
                                 (buffer-file-name x))))
-       (mapcar 'vemv/save)))
+       (mapcar (lambda (b)
+                 (if for-flycheck
+                     (delay (argless (vemv/save b t t :avoid-recursion))
+                            3.5)
+                   (vemv/save b))))))
 
 (defun vemv/should-show-project? (x)
   (or (string-equal x vemv/current-project)
