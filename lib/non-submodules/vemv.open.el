@@ -1,3 +1,7 @@
+;; -*- lexical-binding: t; -*-
+
+(setq lexical-binding t)
+
 (provide 'vemv.open)
 
 (defun vemv/open-at-project-root ()
@@ -15,12 +19,21 @@
   (vemv/advice-nrepl)
   (vemv/ensure-repl-visible))
 
+(defvar vemv.after-file-open/avoid-recursion nil)
+
+(defun vemv/after-file-open-impl (&rest ignore)
+  (interactive)
+  (unless vemv.after-file-open/avoid-recursion
+    (let* ((vemv.after-file-open/avoid-recursion t))
+      (when (vemv/buffer-of-current-project-or-parent? (current-buffer))
+        (vemv/after-file-open-without-project-explorer-highlighting)
+        ;; skip debounced call so `vemv.after-file-open/avoid-recursion` is passed
+        (vemv/safe-show-current-file-in-project-explorer* (get-buffer-window))))))
+
 (defun vemv/after-file-open (&rest ignore)
   (interactive)
   (with-selected-window vemv/main_window
-    (when (vemv/buffer-of-current-project-or-parent? (current-buffer))
-      (vemv/after-file-open-without-project-explorer-highlighting)
-      (funcall vemv/safe-show-current-file-in-project-explorer))))
+    (vemv/after-file-open-impl)))
 
 (defvar vemv/after-file-open-watcher
   (add-hook 'focus-in-hook 'vemv/advice-nrepl))

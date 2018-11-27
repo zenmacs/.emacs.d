@@ -385,6 +385,7 @@
     (add-hook mode (argless (call-interactively 'text-scale-increase)))))
 
 (advice-add 'pe/show-buffer :after 'vemv/after-file-open)
+(advice-add 'select-window :after 'vemv/after-file-open-impl)
 (advice-add 'vemv/fiplr :after 'vemv/after-file-open)
 (advice-add 'vemv/open :after 'vemv/after-file-open)
 (advice-add 'vemv/next-file-buffer :after 'vemv/after-file-open)
