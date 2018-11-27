@@ -109,12 +109,18 @@
     (paredit-backward)
     (vemv/indent)))
 
+(defun vemv/before-paste ()
+  (when (region-active-p)
+    (kill-region (region-beginning) (region-end))))
+
 (defun vemv/paste-from-clipboard ()
+  (vemv/before-paste)
   (let ((content (substring-no-properties (simpleclip-get-contents))))
     (insert content)
     (vemv/maybe-indent-on-paste content)))
 
 (defun vemv/paste-from-kill-list ()
+  (vemv/before-paste)
   (let ((content (car vemv/kill-list)))
     (insert content)
     (vemv/maybe-indent-on-paste content)))
