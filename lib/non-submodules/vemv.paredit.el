@@ -188,9 +188,11 @@ inserting it at a new line."
 
     (back-to-indentation)
 
-    (if (some (lambda (char)
-                (equal char (vemv/current-char-at-point)))
-              '("(" "[" "{" "<" "\""))
+    (if (and
+         (vemv/in-a-lisp-mode?)
+         (some (lambda (char)
+                 (equal char (vemv/current-char-at-point)))
+               '("(" "[" "{" "<" "\"")))
         (progn
           (let ((content (vemv/sexpr-content))
                 (at-b (vemv/at-beginning-of-line-p)))
