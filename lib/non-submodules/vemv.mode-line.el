@@ -10,7 +10,12 @@
     (error "")))
 
 (defun vemv/abbreviate-ns (namespace)
-  (let* ((split (s-split "\\." namespace))
+  (let* ((split (s-split "\\." (if (vemv/contains? vemv/project-ns-prefix ".")
+                                   (s-replace (s-replace ".."
+                                                         ""
+                                                         (concat vemv/project-ns-prefix "."))
+                                              "" namespace)
+                                 namespace)))
          (name (car (last split)))
          (bbase (-remove (lambda (x)
                            (string-equal x vemv/project-ns-prefix))
