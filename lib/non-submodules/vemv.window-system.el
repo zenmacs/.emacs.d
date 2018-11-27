@@ -127,6 +127,7 @@
 
 (defun vemv/close-all-file-buffers ()
   (interactive)
+  (vemv/safe-select-window vemv/main_window)
   (->> vemv/chosen-file-buffer-order
        (gethash vemv/current-project)
        (-clone)
@@ -138,6 +139,7 @@
 
 (defun vemv/close-all-other-file-buffers ()
   (interactive)
+  (vemv/safe-select-window vemv/main_window)
   (let ((root (buffer-file-name (current-buffer))))
     (->> vemv/chosen-file-buffer-order
          (gethash vemv/current-project)
