@@ -223,7 +223,7 @@
        (mapcar (lambda (b)
                  (if for-flycheck
                      (delay (argless (vemv/save b t t :avoid-recursion))
-                            3.5)
+                            5)
                    (vemv/save b))))))
 
 (defun vemv/should-show-project? (x)
