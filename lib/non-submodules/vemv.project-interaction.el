@@ -49,14 +49,12 @@
                         (vemv/projects-from-central-config-or-dedicated-files)))
           (project-name (or found default-directory)))
      (assert (not (member default-directory (list "/" vemv-home (vemv/root-marker)))))
-     (assert (file-exists-p default-directory))
+     (assert (file-exists-p project-name))
      (assert (not (member project-name vemv/available-projects))
              nil
              (concat "project-name: " (pr-str project-name) " vemv/available-projects:" (pr-str vemv/available-projects)))
      (assert (not (member project-name (vemv/projects-for-workspace))))
-     (conj! vemv/on-the-fly-projects (if found
-                                         found
-                                       default-directory))
+     (conj! vemv/on-the-fly-projects project-name)
      (vemv/set-workspace (vemv/find-workspace chosen-workspace)
                          :skip-refresh)
      (vemv/add-project-to-current-workspace project-name)
