@@ -151,7 +151,7 @@
                          (vemv/close-this-buffer :noswitch)))))))
     (vemv/next-file-buffer)))
 
-;; XXX not used yet (although it can be invoked manyally)
+;; XXX not used yet (although it can be invoked manually): it will close some buffers from projects too.
 ;; The problem is that vemv/chosen-file-buffer-order can be incomplete - it can lack open buffers if one hasn't visited a given project.
 ;; i.e. the variable is filled lazily. Eager filling would need some rework (currently I can't get the root-dir of each project)
 (defun vemv/close-all-non-project-file-buffers ()
@@ -161,7 +161,8 @@
     (->> (vemv/all-buffers)
          (filter 'buffer-file-name)
          (-remove (lambda (x)
-                    (memq (buffer-file-name x) buffers-of-any-project))))))
+                    (memq (buffer-file-name x) buffers-of-any-project)))
+         (mapcar 'kill-buffer))))
 
 (defun vemv/maximize ()
   "Maximize the current frame. Presumes an X-window environment."
