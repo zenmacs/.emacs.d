@@ -19,16 +19,21 @@
   (vemv/advice-nrepl)
   (vemv/ensure-repl-visible))
 
+(defun vemv/after-file-open-impl (&optional skip-debouncing?)
+  (interactive)
+  (when (vemv/buffer-of-current-project-or-parent? (current-buffer))
+    (vemv/after-file-open-without-project-explorer-highlighting)
+    (if skip-debouncing?
+        (vemv/safe-show-current-file-in-project-explorer* (get-buffer-window))
+      (funcall vemv/safe-show-current-file-in-project-explorer))))
+
 (defvar vemv.after-file-open/avoid-recursion nil)
 
-(defun vemv/after-file-open-impl (&rest ignore)
-  (interactive)
-  (unless vemv.after-file-open/avoid-recursion
-    (let* ((vemv.after-file-open/avoid-recursion t))
-      (when (vemv/buffer-of-current-project-or-parent? (current-buffer))
-        (vemv/after-file-open-without-project-explorer-highlighting)
-        ;; skip debounced call so `vemv.after-file-open/avoid-recursion` is passed
-        (vemv/safe-show-current-file-in-project-explorer* (get-buffer-window))))))
+(defun vemv.after-file-open/skipping-debouncing (&rest ignore)
+  (when (vemv/buffer-of-current-project-or-parent? (current-buffer))
+    (unless (eq vemv.after-file-open/avoid-recursion (current-buffer))
+      (setq vemv.after-file-open/avoid-recursion (current-buffer))
+      (vemv/after-file-open-impl :skip-debouncing))))
 
 (defun vemv/after-file-open (&rest ignore)
   (interactive)

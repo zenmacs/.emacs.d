@@ -384,8 +384,8 @@
                       'typescript-mode-hook))
     (add-hook mode (argless (call-interactively 'text-scale-increase)))))
 
+(advice-add 'mouse-set-point :after 'vemv.after-file-open/skipping-debouncing)
 (advice-add 'pe/show-buffer :after 'vemv/after-file-open)
-(advice-add 'select-window :after 'vemv/after-file-open-impl)
 (advice-add 'vemv/fiplr :after 'vemv/after-file-open)
 (advice-add 'vemv/open :after 'vemv/after-file-open)
 (advice-add 'vemv/next-file-buffer :after 'vemv/after-file-open)
@@ -395,6 +395,7 @@
 (advice-add 'cider--find-var :after 'vemv/after-file-open)
 (advice-add 'cider--find-ns :after 'vemv/after-file-open)
 (advice-add 'xref-pop-marker-stack :after 'vemv/after-file-open)
+
 (advice-add 'cider-new-error-buffer :after (lambda (&rest _)
                                              (cider-interactive-eval "(try (clojure.core/prn clojure.core/*e)
                                                                               (catch java.lang.Throwable e))")
