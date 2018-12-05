@@ -33,7 +33,9 @@
 (add-hook 'project-explorer-mode-hook
           (argless
            (es-define-keys project-explorer-mode-map
-             (kbd "<mouse-1>") 'pe/left-click)))
+             (kbd "<mouse-1>") 'pe/left-click
+             (kbd "r") (argless
+                        (funcall vemv/maybe-change-project-graphically)))))
 
 (unless vemv/terminal-emacs?
   (dolist (key vemv/key-bindings-to-remove)
