@@ -117,6 +117,7 @@
       vemv/shortcuts/global/secondary-k             'vemv/kill-backward
       vemv/shortcuts/global/secondary-left          'backward-word
       vemv/shortcuts/global/secondary-left-bracket  (vemv/safe-paredit-command 'paredit-backward)
+      vemv/shortcuts/global/secondary-left-curly    (vemv/safe-paredit-command 'paredit-wrap-square)
       vemv/shortcuts/global/secondary-left-parens   (vemv/safe-paredit-command 'paredit-wrap-sexp)
       vemv/shortcuts/global/secondary-next          'previous-buffer
       vemv/shortcuts/global/secondary-o             'vemv/open-at-project-root
@@ -124,6 +125,7 @@
       vemv/shortcuts/global/secondary-RET           'vemv/toggle-ns-hiding
       vemv/shortcuts/global/secondary-right         'forward-word
       vemv/shortcuts/global/secondary-right-bracket (vemv/safe-paredit-command 'paredit-forward)
+      vemv/shortcuts/global/secondary-right-curly   (vemv/safe-paredit-command 'paredit-wrap-curly)
       vemv/shortcuts/global/secondary-s             'vemv/save-other-buffers-for-this-project
       vemv/shortcuts/global/secondary-t             'vemv/open-file-via-fiplr-then-close-previous-buffer
       vemv/shortcuts/global/secondary-up            (vemv/safe-paredit-command
