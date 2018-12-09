@@ -398,7 +398,9 @@
 
 (advice-add 'cider-new-error-buffer :after (lambda (&rest _)
                                              (cider-interactive-eval "(try (clojure.core/prn clojure.core/*e)
-                                                                              (catch java.lang.Throwable e))")
+                                                                              (catch #?(:clj java.lang.Throwable
+                                                                                        :cljs js/Error)
+                                                                                     e))")
                                              (delay (argless (when (and (-> vemv/main_window
                                                                             window-buffer
                                                                             vemv/buffer-of-current-running-project?)

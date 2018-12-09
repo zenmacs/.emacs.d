@@ -17,7 +17,7 @@
            (require 'figwheel-sidecar.system)
            (alter-var-root #'figwheel-sidecar.system/repl-function-docs
                            (constantly \"Results: Stored in vars *1, *2, *3, *e holds last exception object\"))
-           (catch Throwable e))
+           (catch java.lang.Throwable e))
         (figwheel-sidecar.repl-api/start-figwheel!)
         (figwheel-sidecar.repl-api/cljs-repl))")
 
