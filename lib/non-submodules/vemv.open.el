@@ -43,12 +43,13 @@
 (defvar vemv/after-file-open-watcher
   (add-hook 'focus-in-hook 'vemv/advice-nrepl))
 
-(defun vemv/open (&optional filepath)
+(defun vemv/open (&optional filepath open-at-pwd)
   "Opens a file (from FILEPATH or the user input)."
   (interactive)
   (vemv/safe-select-frame)
   (vemv/safe-select-window vemv/main_window)
-  (let* ((default-directory (if (memq major-mode '(typescript-mode js-mode))
+  (let* ((default-directory (if (or open-at-pwd
+                                    (memq major-mode '(typescript-mode js-mode)))
                                 (file-name-directory (buffer-file-name))
                               (if (vemv/contains? (buffer-file-name) vemv/project-root-dir)
                                   default-directory
