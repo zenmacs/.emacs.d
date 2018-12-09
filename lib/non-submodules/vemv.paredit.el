@@ -231,7 +231,11 @@ inserting it at a new line."
 
    Unlike paredit-kill, this function will only grab one sexpr (and no more, if they are contigous),
    and it doesn't alter the kill-ring.
-  (interactive)"
+
+   Sexprs can only be killed having the cursor placed at the beginning or end of them, or at whitespace characters between sexprs
+   But one cannot kill a sexpr (particularly symbols) when the cursor is placed in the middle: e.g. cursor `|` in `forbid|dden`"
+  (interactive)
+  (setq vemv.kill/did-kill-whitespace nil)
   (unless skip-kill-whitespace?
     (while (and (or (equal " " (vemv/current-char-at-point))
                     (equal "\n" (vemv/current-char-at-point))
@@ -243,19 +247,24 @@ inserting it at a new line."
                     (or (equal " " (vemv/current-char-at-point -1))
                         (equal "\n" (vemv/current-char-at-point -1)))
                   t))
+      (setq vemv.kill/did-kill-whitespace t)
       (if backward?
           (delete-backward-char 1)
         (delete-forward-char 1))))
-  (when (eq (point)
-            (save-excursion
-              (if backward?
-                  (progn
-                    (paredit-backward)
-                    (paredit-forward))
-                (progn
-                  (paredit-forward)
-                  (paredit-backward)))
-              (point)))
+  ;; For case `foo| bar`, where one space should be deleted, resulting in `foobar`, in which case we should delete `bar`
+  (when (or (and vemv.kill/did-kill-whitespace
+                 (not (memq (string-to-char (vemv/current-char-at-point))
+                            (string-to-list "()[]{}#@`~ \n"))))
+            (eq (point)
+                (save-excursion
+                  (if backward?
+                      (progn
+                        (paredit-backward)
+                        (paredit-forward))
+                    (progn
+                      (paredit-forward)
+                      (paredit-backward)))
+                  (point))))
     (ignore-errors
       (push-mark)
       (if backward? (paredit-backward) (paredit-forward))
