@@ -253,8 +253,14 @@
                                          (s-split "\n")
                                          (mapcar 's-trim)
                                          (s-join "\n"))))
-                          (s-join "\n\n"))))
-        (concat a
+                          (s-join "\n\n")))
+             (name (nrepl-dict-get h "name"))
+             (ns (nrepl-dict-get h "ns")))
+        (concat (if (and name ns)
+                    (concat (propertize (concat ns "/" name)
+                                        'face 'vemv-warning-face)
+                            "\n\n"))
+                a
                 (if (and a d)
                     "\n\n")
                 d)))))
