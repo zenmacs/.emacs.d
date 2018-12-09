@@ -50,6 +50,7 @@
                                                        (select-frame f)
                                                        (switch-to-buffer "*Messages*")))
       vemv/shortcuts/global/primary-S-s             'save-buffer
+      vemv/shortcuts/global/primary-S-w             'vemv/close-all-file-buffers
       vemv/shortcuts/global/primary-S-z             (argless
                                                      (require 'vemv.undo)
                                                      (call-interactively 'undo-tree-redo))
