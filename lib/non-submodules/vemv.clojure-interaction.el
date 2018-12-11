@@ -390,7 +390,13 @@ When not, the callback will be invoked just once, so the code can be incondition
   (vemv/send :cljs nil (concat "(cljs.test/run-tests '" (vemv/current-ns) ")")))
 
 (defun vemv.clojure-interaction/sync-eval-to-string (s)
-  (-> s cider-nrepl-sync-request:eval (nrepl-dict-get "value")))
+  (let* ((x (concat "(do (clojure.core/in-ns '" (vemv/current-ns) ") "  s  ")"))
+         (dict (cider-nrepl-sync-request:eval x))
+         (e (nrepl-dict-get dict "err"))
+         (v (nrepl-dict-get dict "value")))
+    (if e
+        (user-error (pr-str e))
+      v)))
 
 (defun vemv/run-this-deftest ()
   "Evaluates and runs the test definition form at point. It can be `deftest',
