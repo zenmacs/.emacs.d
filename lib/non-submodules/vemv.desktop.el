@@ -67,6 +67,7 @@
 (defun vemv/open-files-from-last-session! ()
   "Open every file that was open the last time Emacs was closed."
   (-some->> (vemv.desktop/ordered-file-buffers-list)
+            (filter 'file-writable-p) ;; avoid asking for sudo on Emacs startup
             (mapcar 'list)
             (vemv/sort-car-by-car (vemv/files-from-previous-session))
             (mapcar (lambda (e)

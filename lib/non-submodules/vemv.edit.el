@@ -117,3 +117,7 @@
    (when-let ((filename (buffer-file-name)))
      (delete-file filename)
      (kill-buffer))))
+
+(defun vemv/sudo ()
+  (interactive)
+  (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name)))
