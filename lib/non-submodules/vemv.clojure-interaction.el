@@ -2,6 +2,7 @@
 
 (setq lexical-binding t)
 
+(require 'vemv.buffer-querying)
 (provide 'vemv.clojure-interaction)
 
 (setq vemv/apply-tests-verbosely-counter 0)
@@ -160,17 +161,18 @@
           (-some-> callback funcall)))))
 
 (defun vemv/is-cljs-project? ()
-  (or (eq vemv/project-type :cljs)
-      (vemv/current-main-buffer-is-cljs)
-      (if-let ((p (vemv/project-dot-clj-file)))
-          (let* ((was-open (get-file-buffer p))
-                 (_ (unless was-open
-                      (find-file-noselect p)))
-                 (ret (with-current-buffer (get-file-buffer p)
-                        (vemv/contains? (buffer-string) "org.clojure/clojurescript"))))
-            (unless was-open
-              (kill-buffer (get-file-buffer p)))
-            ret))))
+  (and (not (eq vemv/project-type :clj))
+       (or (eq vemv/project-type :cljs)
+           (vemv/current-main-buffer-is-cljs)
+           (if-let ((p (vemv/project-dot-clj-file)))
+               (let* ((was-open (get-file-buffer p))
+                      (_ (unless was-open
+                           (find-file-noselect p)))
+                      (ret (with-current-buffer (get-file-buffer p)
+                             (vemv/contains? (buffer-string) "org.clojure/clojurescript"))))
+                 (unless was-open
+                   (kill-buffer (get-file-buffer p)))
+                 ret)))))
 
 (defun cider-repl-set-type (&optional type)
   "Backported from https://github.com/clojure-emacs/cider/issues/1976"

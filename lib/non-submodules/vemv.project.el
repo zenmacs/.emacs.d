@@ -1,4 +1,5 @@
 (require 'vemv.lang)
+(require 'vemv.clojure-interaction)
 (require 'vemv.project-interaction)
 (require 'vemv.open)
 (unless vemv/terminal-emacs?
@@ -148,7 +149,9 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
     (setq vemv/project-type (or vemv/project-type
                                 (if (file-exists-p (concat vemv/project-root-dir "Gemfile"))
                                     :ruby
-                                  :clj)))
+                                  (if (vemv/is-cljs-project?)
+                                      :cljs
+                                    :clj))))
 
     (setq vemv/project-initializers (or vemv/project-initializers (lambda ())))
 
