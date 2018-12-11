@@ -360,6 +360,8 @@ When not, the callback will be invoked just once, so the code can be incondition
                                                                         (if cljs
                                                                             vemv/latest-cljs-test-ran
                                                                           vemv/latest-clojure-test-ran))))
+                                                         (when (not chosen)
+                                                           (vemv/echo "Not detected as a testing ns: " ns))
                                                          (when chosen
                                                            (setq vemv/latest-clojure-test-ran chosen)
                                                            (if cljs
