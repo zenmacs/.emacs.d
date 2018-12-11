@@ -325,7 +325,8 @@
 (defun vemv/is-testing-ns (&optional n inferred)
   (let* ((n (or n (cider-current-ns t))))
     (or (string-equal n (or inferred (funcall cider-test-infer-test-ns n)))
-        (vemv/starts-with n "unit."))))
+        (vemv/starts-with n "acceptance.")
+        (vemv/ends-with n "-spec"))))
 
 ;; We close this buffer because otherwise it gets buried, leaving a useless extra window.
 ;; Customizing `cider-ancillary-buffers' didn't work.
