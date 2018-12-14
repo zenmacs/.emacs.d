@@ -195,7 +195,7 @@
 (defun vemv/clojure-init-or-send-sexpr ()
   (interactive)
   (when (vemv/in-clojure-mode?)
-    (if (and (not cider-launched) vemv/using-nrepl)
+    (if (and (not cider-launched))
         (progn
           (require 'cider)
           (require 'clj-refactor)
@@ -219,12 +219,10 @@
                                 (cider-connect "127.0.0.1" vemv/cider-port vemv/project-root-dir)
                               (cider-jack-in))))
                  1))
-      (if vemv/using-nrepl
-          (if (cider-connected-p)
-              (if (vemv/current-buffer-is-cljs)
-                  (vemv/send :cljs)
-                (vemv/send :clj)))
-        (vemv/send :shell)))))
+      (if (cider-connected-p)
+          (if (vemv/current-buffer-is-cljs)
+              (vemv/send :cljs)
+            (vemv/send :clj))))))
 
 (defun vemv/jump-to-clojure-definition ()
   (interactive)

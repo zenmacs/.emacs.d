@@ -22,8 +22,6 @@
         (figwheel-sidecar.repl-api/start-figwheel!)
         (figwheel-sidecar.repl-api/cljs-repl))")
 
-(setq vemv/using-nrepl t)
-
 (setq vemv/initial-cider-lein-parameters (unless vemv/terminal-emacs?
                                            cider-lein-parameters))
 
