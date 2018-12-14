@@ -415,8 +415,6 @@
 
 (add-hook 'clojure-mode-hook
           (argless (enable-paredit-mode)
-                   (when (-some->> (buffer-file-name) (s-contains? "/docsolver/"))
-                     (docsolver-mode 1))
                    (paren-face-mode 1)
                    (global-set-key (kbd "C-r") 'vemv/test-this-ns) ;; must be defined there. TODO: define all clojure bindings here
                    (setq-local mode-line-format tabbed-line-format)))

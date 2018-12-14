@@ -536,7 +536,7 @@ Also removes `noerror' from `search-forward-regexp' for accuracy"
     (replace-regexp "defn \\(\\_<.*?\\_>\\) \\["
                     "defn \\1\n  [")))
 
-(define-minor-mode docsolver-mode
+(define-minor-mode vemv.clojure/warn-mode
   "Highlights certain tokens as dangerous."
   :lighter ""
   (font-lock-add-keywords nil `(("\\b\\(when\\|=\\|and\\|or\\|if\\|if-not\\|when-not\\|->>\\|->\\)\\b" 0 'vemv-reverse-warning-face)))

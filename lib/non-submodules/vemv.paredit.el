@@ -21,10 +21,7 @@
                ;; for `indent-for-tab-command`:
                (last-command nil)
                (dc (string-equal "dc" (car vemv/current-workspace)))
-               (ds (string-equal "docsolver" (car vemv/current-workspace)))
                (yas (vemv/contains? (buffer-file-name) "/snippets/")))
-          (when (and ds (not skip-formatting))
-            (vemv/fix-defn-oneliners))
           (unless (or skip-formatting
                       yas
                       (member major-mode `(fundamental-mode ruby-mode conf-colon-mode)))
