@@ -68,13 +68,12 @@
 
 (defun vemv/show-clj-or-cljs-repl ()
   (when (vemv/ciderable-p)
-    (vemv/safe-select-window vemv/main_window)
-    (setq was (vemv/current-buffer-is-cljs))
-    (vemv/safe-select-window vemv/repl-window)
-    (if was
-        (switch-to-buffer vemv/cljs-repl-name)
-      (switch-to-buffer vemv/clj-repl-name))
-    (vemv/safe-select-window vemv/main_window)))
+    (let* ((was (with-selected-window vemv/main_window
+                  (vemv/current-buffer-is-cljs))))
+      (with-selected-window vemv/repl-window
+        (if was
+            (switch-to-buffer vemv/cljs-repl-name)
+          (switch-to-buffer vemv/clj-repl-name))))))
 
 (defun vemv/ensure-repl-visible ()
   (when (and (cider-connected-p)
