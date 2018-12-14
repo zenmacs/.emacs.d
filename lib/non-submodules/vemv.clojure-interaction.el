@@ -91,41 +91,6 @@
 
 (defun cljr--maybe-wrap-form ()) ;; void it
 
-;; we can use this in horizon when ns's properly use initialization patterns
-(defun vemv/clean-project-namespaces ()
-  (if (not vemv-cleaning-namespaces)
-      (vemv/echo "vemv-cleaning-namespaces set to false!")
-    (let* ((files (filter (lambda (x)
-                            (vemv/ends-with x ".cljs"))
-                          (directory-files-recursively "/Users/vemv/gpm/src/horizon/src/" ".cljs"))))
-      (vemv/safe-select-window vemv/repl-window)
-      (switch-to-buffer "*Messages*")
-      (vemv/safe-select-window vemv/main_window)
-      (vemv/open "/Users/vemv/gpm/src/horizon/project.clj")
-      (seq-doseq (filename files)
-        (vemv/safe-select-window vemv/main_window)
-        (vemv/open filename)
-        (setq lexical-binding t)
-        (setq whitespace-line-column 240)
-        (cljr-clean-ns)
-        (beginning-of-buffer)
-        (while (re-search-forward "(:require[^\-]" nil t)
-          (replace-match "(:require\n"))
-        (beginning-of-buffer)
-        (while (re-search-forward "(:require\-macros[^\n]" nil t)
-          (replace-match "(:require\-macros\n"))
-        (beginning-of-buffer)
-        (while (re-search-forward "(:import[^\-]" nil t)
-          (replace-match "(:import\n"))
-        (beginning-of-buffer)
-        (while (re-search-forward "(:use\-macros[^\n]" nil t)
-          (replace-match "(:use\-macros\n"))
-        (vemv/save)
-        (vemv/save)
-        (vemv/close-this-buffer)))
-    (vemv/echo "clean-project-namespaces done!")
-    (vemv/echo "Remember: goog* libspec can be spuriously removed.")))
-
 (setq vemv/cljr-building-ast-cache? nil) ;; XXX implement on new clj-refactor.el release
 
 (defun vemv/load-clojure-buffer (&optional callback reload-command)

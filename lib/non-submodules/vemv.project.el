@@ -30,7 +30,7 @@
 ;; - use inferred value as implicit argument to these defuns
 
 (defun vemv/root-marker ()
-  "A string that proves that a project is a full directory, rather than a project id (name - like 'gpm')"
+  "A string that proves that a project is a full directory, rather than a project id (name - like \"myproject\")"
   "/Users")
 
 (condition-case nil
