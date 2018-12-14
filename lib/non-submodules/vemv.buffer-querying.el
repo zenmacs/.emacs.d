@@ -92,7 +92,7 @@
   ;; better: derived-mode-p
   (vemv/in-a-clojure-mode?))
 
-(defun vemv/current-main-buffer-is-cljs ()
+(defun vemv/current-buffer-is-cljs ()
   (or (vemv/contains? (buffer-name) ".cljs")
       (and (vemv/contains? (buffer-name) ".cljc")
            (eq vemv/project-type :cljs))))

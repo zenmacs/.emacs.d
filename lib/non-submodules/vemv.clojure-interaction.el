@@ -32,7 +32,7 @@
   (interactive)
   (delay (argless (unless (or (not (buffer-file-name))
                               (not (vemv/buffer-of-current-running-project-or-children? (current-buffer)))
-                              (and (eq vemv/running-project-type :clj) (vemv/current-main-buffer-is-cljs)))
+                              (and (eq vemv/running-project-type :clj) (vemv/current-buffer-is-cljs)))
                     (when (and (vemv/ciderable-p)
                                (not (string-equal (vemv/current-ns)
                                                   (vemv/current-ns (window-buffer vemv/repl-window)))))
@@ -69,7 +69,7 @@
 (defun vemv/show-clj-or-cljs-repl ()
   (when (vemv/ciderable-p)
     (vemv/safe-select-window vemv/main_window)
-    (setq was (vemv/current-main-buffer-is-cljs))
+    (setq was (vemv/current-buffer-is-cljs))
     (vemv/safe-select-window vemv/repl-window)
     (if was
         (switch-to-buffer vemv/cljs-repl-name)
@@ -132,7 +132,7 @@
 (defun vemv/load-clojure-buffer (&optional callback reload-command)
   (interactive)
   (if (vemv/ciderable-p)
-      (if (vemv/current-main-buffer-is-cljs)
+      (if (vemv/current-buffer-is-cljs)
           (vemv/send :cljs nil "(.reload js/location true)")
         (progn
           ;; code has been potentially unloaded, so the underlying `vemv/check-unused-requires' will fail. Prevent that:
@@ -163,7 +163,7 @@
 (defun vemv/is-cljs-project? ()
   (and (not (eq vemv/project-type :clj))
        (or (eq vemv/project-type :cljs)
-           (vemv/current-main-buffer-is-cljs)
+           (vemv/current-buffer-is-cljs)
            (if-let ((p (vemv/project-dot-clj-file)))
                (let* ((was-open (get-file-buffer p))
                       (_ (unless was-open
@@ -222,7 +222,7 @@
                  1))
       (if vemv/using-nrepl
           (if (cider-connected-p)
-              (if (vemv/current-main-buffer-is-cljs)
+              (if (vemv/current-buffer-is-cljs)
                   (vemv/send :cljs)
                 (vemv/send :clj)))
         (vemv/send :shell)))))
@@ -353,7 +353,7 @@ When not, the callback will be invoked just once, so the code can be incondition
   (when (vemv/in-clojure-mode?)
     (vemv/load-clojure-buffer (vemv/on-nrepl-success (vemv/advice-nrepl
                                                       (argless
-                                                       (let* ((cljs (vemv/current-main-buffer-is-cljs))
+                                                       (let* ((cljs (vemv/current-buffer-is-cljs))
                                                               (ns (vemv/current-ns))
                                                               (inferred (funcall cider-test-infer-test-ns ns))
                                                               (chosen (if (vemv/is-testing-ns ns inferred)
