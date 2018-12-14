@@ -121,3 +121,15 @@
 (defun vemv/sudo ()
   (interactive)
   (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name)))
+
+(defun vemv/rename-this-file ()
+  (interactive)
+  (when-let* ((f (buffer-file-name)))
+    (let* ((n (read-string (concat "Rename: ") f)))
+      (when (not (string-equal f n))
+        (let* ((_ (rename-file f n))
+               (b (-some-> f get-file-buffer)))
+          (when (and b
+                     (not (buffer-modified-p b)))
+            (kill-buffer b)
+            (vemv/open n)))))))
