@@ -149,6 +149,7 @@
       vemv/shortcuts/global/tertiary-e              (argless (vemv/send nil nil nil :no-return))
       vemv/shortcuts/global/tertiary-end            'end-of-buffer
       vemv/shortcuts/global/tertiary-f              (argless
+                                                     (vemv/save)
                                                      (require 'vemv.helm)
                                                      (vemv/with-helm-follow nil
                                                        (call-interactively 'helm-do-ag-this-file)))
