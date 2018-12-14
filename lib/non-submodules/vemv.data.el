@@ -22,7 +22,7 @@
                                     [menu-bar buffer]))
 
 (setq vemv/key-bindings-to-dummy
-      '([mouse-6] [mouse-7]
+      '([mouse-3] [mouse-6] [mouse-7]
         [double-mouse-6] [double-mouse-7]
         [triple-mouse-6] [triple-mouse-7]
         ;; [triple-wheel-up] [triple-wheel-down] ;; don't override these.
