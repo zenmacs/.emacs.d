@@ -89,6 +89,26 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
   (let ((default-directory "~/.emacs.d/lib"))
     (normal-top-level-add-subdirs-to-load-path))
 
+  (setq vemv/overrides-directory "~/.emacs.d.overrides/")
+  (setq vemv/overrides-lib-directory "~/.emacs.d.overrides/lib/")
+  (setq vemv/overrides-file (concat vemv/overrides-lib-directory "emacs.d.overrides.el")) []
+  (setq vemv/overrides-project-file (concat vemv/overrides-lib-directory "vemv.project.overrides.el"))
+  (setq vemv/emacs-project-file (concat vemv/overrides-lib-directory "vemv.project.emacs.el"))
+
+  (defun vemv/possibly-create-overrides-dir! ()
+    (unless (file-exists-p vemv/overrides-directory)
+      (make-directory vemv/overrides-directory))
+    (unless (file-exists-p vemv/overrides-lib-directory)
+      (make-directory vemv/overrides-lib-directory))
+    (unless (file-exists-p vemv/overrides-file)
+      (shell-command-to-string (concat "cp ~/.emacs.d/templates/emacs.overrides.el " vemv/overrides-file)))
+    (unless (file-exists-p vemv/overrides-project-file)
+      (shell-command-to-string (concat "cp ~/.emacs.d/templates/vemv.project.overrides.el " vemv/overrides-project-file)))
+    (unless (file-exists-p vemv/emacs-project-file)
+      (shell-command-to-string (concat "cp ~/.emacs.d/templates/vemv.project.emacs.el " vemv/emacs-project-file))))
+
+  (vemv/possibly-create-overrides-dir!)
+
   (when (eq system-type 'darwin)
     (global-set-key (kbd "C-q") 'save-buffers-kill-emacs) ;; (redundantly) set C-q, in case of failure during init.el load
     (setq mac-control-modifier 'super)
@@ -109,10 +129,8 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
   (require 'cl) ;; for assert
 
   (unless vemv/terminal-emacs?
-    (let ((default-directory "~/.emacs.d.overrides/"))
-      (assert (file-exists-p default-directory)
-              nil
-              (concat default-directory " not found. Please follow the readme here: https://github.com/vemv/.emacs.d"))
+    (let ((default-directory vemv/overrides-directory))
+      (assert (file-exists-p default-directory))
       (normal-top-level-add-subdirs-to-load-path)))
 
   (defmacro vemv/verbosely (&rest forms)
@@ -171,11 +189,22 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
     (setq vemv/available-workspaces nil))
   (setq vemv/on-the-fly-projects nil)
 
+  (defun vemv/create-missing-project-files! ()
+    (interactive)
+    (dolist (project (-difference vemv/available-projects vemv/on-the-fly-projects))
+      (let* ((prefix "vemv.project.")
+             (f (concat vemv-home "/.emacs.d.overrides/lib/" prefix project ".el")))
+        (unless (file-exists-p f)
+          (with-current-buffer (find-file-noselect f)
+            (insert "(provide '" prefix project  ")\n")
+            (save-buffer))))))
+
   (defun vemv/set-available-projects! ()
     (setq vemv/available-projects (-mapcat 'second vemv/available-workspaces))
     (setq vemv/on-the-fly-projects (filter (lambda (x)
                                              (not (member x vemv/available-projects)))
-                                           vemv/on-the-fly-projects)))
+                                           vemv/on-the-fly-projects))
+    (vemv/create-missing-project-files!))
 
   (vemv/set-available-projects!)
   (setq cider-launched nil)
