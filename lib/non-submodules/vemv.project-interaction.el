@@ -231,12 +231,26 @@
       (member x vemv/on-the-fly-projects)))
 
 (defun vemv/refresh-available-projects ()
+
+  ;; Remember: the following sets `vemv/available-workspaces`, which will be handled in the next step.
   (load "emacs.d.overrides")
-  (vemv/set-available-projects!)
+
+  ;; Prepare things for `vemv/set-available-projects!`:
   (dolist (workspace vemv/available-workspaces)
-    (mapcar (lambda (x)
-              (vemv/add-project-to-current-workspace x))
-            (-difference (second workspace) (second (vemv/find-workspace (car workspace))))))
+    (let* ((ws-name (car workspace)))
+      (when (not (member ws-name (mapcar 'car vemv/all-workspaces)))
+        (add-to-list 'vemv/all-workspaces workspace t))))
+
+  (vemv/set-available-projects!)
+
+  (dolist (workspace vemv/available-workspaces)
+    (let* ((ws-name (car workspace)))
+      (when (string-equal ws-name ;; temporary workaround - there should be no `when`. See next XXX
+                          (car (car vemv/all-workspaces)))
+        (mapcar (lambda (x)
+                  (vemv/add-project-to-current-workspace x)) ;; XXX should not be add-project-to-current-workspace, but add-project-to-given-workspace (with `workspace` argument)
+                (-difference (second workspace) (second (vemv/find-workspace (car workspace))))))))
+
   (vemv/refresh-workspace-projects))
 
 (defun vemv/force-refresh-project! ()

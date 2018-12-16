@@ -50,17 +50,20 @@
 
 (defun vemv/add-project-to-current-workspace (project)
   (let* ((curr (car vemv/all-workspaces))
-         (name (car curr)))
+         (name (car curr))
+         (projects (second curr)))
+    (add-to-list 'projects project t)
     (setq vemv/all-workspaces
-          (cons (list name (cons project (second curr)))
+          (cons (list name projects)
                 (cdr vemv/all-workspaces)))))
 
 (defun vemv/refresh-workspace-projects ()
-  (let* ((curr (car vemv/all-workspaces))
-         (name (car curr)))
-    (setq vemv/all-workspaces
-          (cons (list name (filter 'vemv/should-show-project? (second curr)))
-                (cdr vemv/all-workspaces)))))
+  (setq vemv/all-workspaces
+        (mapcar (lambda (w)
+                  (let* ((curr w)
+                         (name (car curr)))
+                    (list name (filter 'vemv/should-show-project? (second curr)))))
+                vemv/all-workspaces)))
 
 (defun vemv/next-project-within-workspace ()
   (let* ((curr (car vemv/all-workspaces))
