@@ -1,9 +1,8 @@
-;; These two reduce `(emacs-init-time)`:
-
 (setq vemv/terminal-emacs? (getenv "TERMINAL_EMACS"))
 
 (defvar vemv/input-enabled t)
 
+;; These two reduce `(emacs-init-time)`:
 (let ((file-name-handler-alist nil)
       (gc-cons-threshold (* 200 1000 1000)))
 
@@ -89,8 +88,10 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
   (let ((default-directory "~/.emacs.d/lib"))
     (normal-top-level-add-subdirs-to-load-path))
 
-  (setq vemv/overrides-directory "~/.emacs.d.overrides/")
-  (setq vemv/overrides-lib-directory "~/.emacs.d.overrides/lib/")
+  (setq vemv-home (getenv "HOME"))
+
+  (setq vemv/overrides-directory (concat vemv-home "/.emacs.d.overrides/"))
+  (setq vemv/overrides-lib-directory (concat vemv/overrides-directory "lib/"))
   (setq vemv/overrides-file (concat vemv/overrides-lib-directory "emacs.d.overrides.el")) []
   (setq vemv/overrides-project-file (concat vemv/overrides-lib-directory "vemv.project.overrides.el"))
   (setq vemv/emacs-project-file (concat vemv/overrides-lib-directory "vemv.project.emacs.el"))
@@ -121,8 +122,6 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
 
   (when (window-system)
     (set-face-attribute 'default nil :font vemv-font))
-
-  (setq vemv-home (getenv "HOME"))
 
   (setenv "SHELL" "/bin/zsh")
 

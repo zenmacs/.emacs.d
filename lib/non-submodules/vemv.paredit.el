@@ -62,7 +62,11 @@
               (vemv/send :ruby nil "reload!")))
           (when (and (memq major-mode `(typescript-mode))
                      (not avoid-recursion))
-            (vemv/save-other-buffers-for-this-project :for-flycheck)))))))
+            (vemv/save-other-buffers-for-this-project :for-flycheck))
+          (when (string-equal (buffer-file-name) vemv/overrides-file)
+            (vemv/refresh-available-projects)
+            (with-selected-window vemv/project-explorer-window
+              (funcall vemv/maybe-change-project-graphically))))))))
 
 (defun vemv/tab ()
   (interactive)
