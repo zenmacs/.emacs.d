@@ -22,7 +22,8 @@
                (last-command nil)
                (dc (string-equal "dc" (car vemv/current-workspace)))
                (yas (vemv/contains? (buffer-file-name) "/snippets/")))
-          (unless (or skip-formatting
+          (unless (or vemv.project/skip-formatting
+                      skip-formatting
                       yas
                       (member major-mode `(fundamental-mode ruby-mode conf-colon-mode)))
             (unless dc

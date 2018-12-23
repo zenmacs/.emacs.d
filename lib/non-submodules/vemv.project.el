@@ -71,6 +71,7 @@
      (setq whitespace-line-column nil)
      (setq vemv/before-figwheel-fn nil)
      (setq vemv.project/default-git-branch "master")
+     (setq vemv.project/skip-formatting nil)
      (setq vemv.project/cd-command "cd ") ;; the command that will be used in *shell-1* to change directories as you change projects.
      (setq vemv/pry-prompt "pry") ;; The pry prompt as per your `~/.pryrc' or such. Will affect robe-mode initialization process, so make sure to reflect any customized value here.
      (when (not vemv-cleaning-namespaces)
