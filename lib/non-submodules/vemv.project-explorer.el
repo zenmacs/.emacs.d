@@ -81,15 +81,18 @@
                       "/"))
             expanded-fragments)))
 
-(setq vemv.project.reasonable-file-count?/threshold 2000)
+(setq vemv.project.reasonable-file-count?/threshold 3000)
 
 ;; `pe/fold` has some scalability limits, hindering `vemv/show-current-file-in-project-explorer-impl`
 (defun vemv.project/reasonable-file-count? ()
-  (-some->> (shell-command-to-string (concat "tree -fi " vemv/project-root-dir  " | wc -l"))
-            (s-match "[0-9]+")
-            (car)
-            (string-to-number)
-            (> vemv.project.reasonable-file-count?/threshold)))
+  (let* ((count (-some->> (shell-command-to-string (concat "tree -fi " vemv/project-root-dir  " | wc -l"))
+                          (s-match "[0-9]+")
+                          (car)
+                          (string-to-number))))
+    (or (-some->> count (> vemv.project.reasonable-file-count?/threshold))
+        (progn
+          (vemv/echo "vemv.project.reasonable-file-count?/threshold surpassed: " count ". Highlighting in project-explorer disabled accordingly. General performance might suffer in any case.")
+          nil))))
 
 (defun vemv/show-current-file-in-project-explorer-impl (original-window)
   (let ((buffer-truename (vemv/main-window-buffer-filename original-window)))
