@@ -490,9 +490,7 @@ Also removes `noerror' from `search-forward-regexp' for accuracy"
                                         (propertize " - There are unused requires:\n"
                                                     'face 'vemv-warning-face)
                                         "\n"))))
-        (when message
-          (vemv/echo message)
-          (shell-command-to-string (concat "terminal-notifier -message '" message "'")))))))
+        (-some-> message vemv/echo)))))
 
 (defun vemv/fix-defn-oneliners ()
   "Places a newline, if needed, between defn names and their arglists."
