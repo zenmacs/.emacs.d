@@ -100,7 +100,8 @@
           (vemv/send :cljs nil "(.reload js/location true)")
         (progn
           ;; code has been potentially unloaded, so the underlying `vemv/check-unused-requires' will fail. Prevent that:
-          (vemv/save-all-buffers-for-this-project :skip-check-unused-requires :skip-formatting)
+          (ignore-errors ;; ignore-errors important, else the whole `vemv/load-clojure-buffer` operation can fail silently
+            (vemv/save-all-buffers-for-this-project :skip-check-unused-requires :skip-formatting))
           (vemv/advice-nrepl)
           (vemv/clear-cider-repl-buffer nil
                                         (argless
