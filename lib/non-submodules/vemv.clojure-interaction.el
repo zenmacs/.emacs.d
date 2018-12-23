@@ -438,12 +438,14 @@ Also removes `noerror' from `search-forward-regexp' for accuracy"
                 (let* ((vemv/max-mini-window-height 0.99)
                        (buffer-count (length (vemv/all-buffers)))
                        (buffer (cider-find-file file))
-                       (v (with-current-buffer buffer
-                            (save-excursion
-                              (goto-line line)
-                              (beginning-of-line)
-                              (font-lock-ensure)
-                              (vemv/sexpr-content nil :with-properties)))))
+                       (v (if buffer
+                              (with-current-buffer buffer
+                                (save-excursion
+                                  (goto-line line)
+                                  (beginning-of-line)
+                                  (font-lock-ensure)
+                                  (vemv/sexpr-content nil :with-properties)))
+                            (user-error "Couldn't open buffer."))))
                   (when (< buffer-count (length (vemv/all-buffers)))
                     (kill-buffer buffer))
                   (vemv/echo v))
