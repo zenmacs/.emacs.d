@@ -343,12 +343,6 @@
 ;; "C-S-z"
 (setq vemv/shortcuts/clojure/primary-S-z vemv/shortcuts/global/primary-S-z)
 
-;; "C-0"
-(setq vemv/shortcuts/clojure/primary-0 vemv/shortcuts/global/primary-0)
-
-;; "C-M-0"
-(setq vemv/shortcuts/clojure/primary-secondary-0 vemv/shortcuts/global/primary-secondary-0)
-
 ;; "C-1"
 (setq vemv/shortcuts/clojure/primary-1 vemv/shortcuts/global/primary-1)
 

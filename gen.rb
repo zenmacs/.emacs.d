@@ -101,6 +101,7 @@ def emit_setqs scope: 'global', modifier_mappings: {"primary" => 'C', "secondary
 
       next if char.include?('[f')
       next if NO_C.include?(char) && modifier_mappings[modifier] == 'C'
+      next if char == '0' && modifier == 'primary' # C-0 reserved as a prefix for modes such as clojure-mode
 
       binding = "vemv/shortcuts/#{scope}/#{modifier}-#{REPLACEMENTS[char]}"
       value = scope == 'global' ? informative_stub(binding) : "vemv/shortcuts/global/#{modifier}-#{REPLACEMENTS[char]}"
@@ -190,6 +191,7 @@ def emit_bindings scope: 'global', modifier_mappings: {"primary" => 'C', "second
     (('a'..'z').to_a + (0..9).to_a.map(&:to_s) + SPECIAL).each do |char|
       next if char.include?('[f')
       next if NO_C.include?(char) && modifier_mappings[modifier] == 'C'
+      next if char == '0' && modifier == 'primary' # C-0 reserved as a prefix for modes such as clojure-mode
       command = "vemv/shortcuts/#{scope}/#{modifier}-#{REPLACEMENTS[char]}"
       result += %|    "#{modifier_mappings[modifier]}-#{char}" (argless (if #{command} (vemv/keyboard-funcall :#{command} #{command})))\n|
       if modifier == 'primary'

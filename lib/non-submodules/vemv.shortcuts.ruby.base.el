@@ -343,12 +343,6 @@
 ;; "C-S-z"
 (setq vemv/shortcuts/ruby/primary-S-z vemv/shortcuts/global/primary-S-z)
 
-;; "C-0"
-(setq vemv/shortcuts/ruby/primary-0 vemv/shortcuts/global/primary-0)
-
-;; "C-M-0"
-(setq vemv/shortcuts/ruby/primary-secondary-0 vemv/shortcuts/global/primary-secondary-0)
-
 ;; "C-1"
 (setq vemv/shortcuts/ruby/primary-1 vemv/shortcuts/global/primary-1)
 

@@ -343,12 +343,6 @@
 ;; "C-S-z"
 (setq vemv/shortcuts/global/primary-S-z (argless (message "You pressed `vemv/shortcuts/global/primary-S-z`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
-;; "C-0"
-(setq vemv/shortcuts/global/primary-0 (argless (message "You pressed `vemv/shortcuts/global/primary-0`! For making this binding useful, customize it (you can find instructions at the wiki)")))
-
-;; "C-M-0"
-(setq vemv/shortcuts/global/primary-secondary-0 (argless (message "You pressed `vemv/shortcuts/global/primary-secondary-0`! For making this binding useful, customize it (you can find instructions at the wiki)")))
-
 ;; "C-1"
 (setq vemv/shortcuts/global/primary-1 (argless (message "You pressed `vemv/shortcuts/global/primary-1`! For making this binding useful, customize it (you can find instructions at the wiki)")))
 
