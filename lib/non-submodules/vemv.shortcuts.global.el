@@ -178,9 +178,7 @@
 ;; other S-RET syntaxes don't work. TODO: abstract away this
 (global-set-key [(shift return)] (argless
                                   (if (vemv/in-a-clojure-mode?)
-                                      (progn
-                                        (vemv/send vemv/project-type nil "")
-                                        (vemv/clear-cider-repl-buffer))
+                                      (vemv/clear-cider-repl-buffer)
                                     (if (eq major-mode 'messages-buffer-mode)
                                         (let ((inhibit-read-only t))
                                           (erase-buffer))
