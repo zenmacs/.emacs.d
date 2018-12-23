@@ -78,9 +78,9 @@ In emacs.d.overrides.el you can:
 (setq vemv.project.reasonable-file-count?/threshold 1000) ;; customize a global (non-project-specific) config value
 ```
 
-And more. You can also define user-specific functions, for arbitrary purposes (creating new functionalities), or also for creating helper functiona for DRYing out project configuration (e.g. a set of projects must have the same configuration options).
+And more. You can also define user-specific functions, for arbitrary purposes (creating new functionalities), or also for creating helper functions for DRYing out project configuration (e.g. a set of projects must have the same configuration options).
 
-As for the project-specific configuration files: these are great places for the stuff that varies between projects. Different formatting rules, directory structures, and so on.
+As for the project-specific configuration files: these are great places for the stuff that varies between projects. Different formatting rules, expected directory structures, and so on.
 
 Project files are created automatically, based on the value of `vemv/available-workspaces`. Creation happens both on Emacs startup, and every time you save `emacs.d.overrides.el`. This reduces the friction of creating config files.
 

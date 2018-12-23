@@ -44,7 +44,8 @@
   (add-hook 'focus-in-hook 'vemv/advice-nrepl))
 
 (defun vemv/open (&optional filepath open-at-pwd)
-  "Opens a file (from FILEPATH or the user input)."
+  "Opens a file (from FILEPATH or the user input).
+OPEN-AT-PWD decides the initial pwd of the prompt."
   (interactive)
   (vemv/safe-select-frame)
   (vemv/safe-select-window vemv/main_window)
