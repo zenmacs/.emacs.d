@@ -193,3 +193,6 @@
 
 ;; same here. control-ret is interpreted as s-return rather than as tertiary-RET
 (global-set-key [(s return)] 'vemv/load-clojure-buffer)
+(global-set-key (kbd "C-M-<return>") (argless
+                                      (when (vemv/ciderable-p)
+                                        (vemv/load-clojure-buffer nil vemv/clojure-lightweight-reload-command))))
