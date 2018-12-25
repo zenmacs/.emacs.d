@@ -33,15 +33,18 @@
 ;; Works around `max-mini-window-height', which Emacs doesn't always honor
 (defvar vemv/max-mini-window-height nil)
 
+(defun vemv/force-concat (&rest xs)
+  (->> xs
+       (mapcar (lambda (x)
+                 (if (stringp x)
+                     x
+                   (pr-str x))))
+       (-interpose " ")
+       (apply 'concat)))
+
 (defun vemv/echo (&rest xs)
   (setq max-mini-window-height (or vemv/max-mini-window-height max-mini-window-height))
-  (let ((what (->> xs
-                   (mapcar (lambda (x)
-                             (if (stringp x)
-                                 x
-                               (pr-str x))))
-                   (-interpose " ")
-                   (apply 'concat))))
+  (let ((what (apply 'vemv/force-concat xs)))
     (vemv/verbosely
      (message "%s" what))
     (setq vemv/max-mini-window-height nil)

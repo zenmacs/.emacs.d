@@ -85,14 +85,22 @@
 
 ;; `pe/fold` has some scalability limits, hindering `vemv/show-current-file-in-project-explorer-impl`
 (defun vemv.project/reasonable-file-count? ()
-  (let* ((count (-some->> (shell-command-to-string (concat "tree -fi " vemv/project-root-dir  " | wc -l"))
-                          (s-match "[0-9]+")
-                          (car)
-                          (string-to-number))))
-    (or (-some->> count (> vemv.project.reasonable-file-count?/threshold))
+  (let* ((command (concat "tree -fi " vemv/project-root-dir " -I " pe/omit-regex " | wc -l"))
+         (result (vemv/shell-command-to-tuple command)) ;; extra care here because reusing an Elisp regex (pe/omit-regex) in bash is risky
+         (return-code (car result))
+         (output (second result)))
+    (if (not (zero? return-code))
         (progn
-          (vemv/echo "vemv.project.reasonable-file-count?/threshold surpassed: " count ". Highlighting in project-explorer disabled accordingly. General performance might suffer in any case.")
-          nil))))
+          (vemv/echo "vemv.project/reasonable-file-count? command returned non-zero code: " output)
+          nil)
+      (let* ((count (-some->> output
+                              (s-match "[0-9]+")
+                              (car)
+                              (string-to-number))))
+        (or (-some->> count (> vemv.project.reasonable-file-count?/threshold))
+            (progn
+              (message (vemv/force-concat "vemv.project.reasonable-file-count?/threshold surpassed: " count ". Highlighting in project-explorer disabled accordingly. General performance might suffer in any case."))
+              nil))))))
 
 (defun vemv/show-current-file-in-project-explorer-impl (original-window)
   (let ((buffer-truename (vemv/main-window-buffer-filename original-window)))

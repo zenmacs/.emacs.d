@@ -103,3 +103,12 @@
       (progn
         (apply f args))
     (vemv/echo "Input disabled by `vemv/keyboard-funcall'. Press primary-secondary-8 to re-enable it.")))
+
+(defun vemv/shell-command-to-tuple (command)
+  "Like `shell-command-to-string', but returns a (<return-code> <output>) tuple instead of just <output>"
+  (let* ((v nil)
+         (s (with-output-to-string
+              (with-current-buffer
+                  standard-output
+                (setq v (process-file shell-file-name nil t nil shell-command-switch command))))))
+    (list v s)))
