@@ -60,7 +60,8 @@
       vemv/shortcuts/global/primary-bar             (argless
                                                      (insert "\n"))
       vemv/shortcuts/global/primary-backspace       'vemv/delete-this-line
-      vemv/shortcuts/global/primary-backtick        'other-frame
+      vemv/shortcuts/global/primary-backtick        (argless
+                                                     (call-interactively 'other-frame))
       vemv/shortcuts/global/primary-bang            (argless
                                                      (revert-buffer t t t))
       vemv/shortcuts/global/primary-dash            'vemv/echo-clojure-source
