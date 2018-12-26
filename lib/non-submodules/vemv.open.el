@@ -50,7 +50,7 @@ OPEN-AT-PWD decides the initial pwd of the prompt."
   (vemv/safe-select-frame)
   (vemv/safe-select-window vemv/main_window)
   (let* ((default-directory (if (or open-at-pwd
-                                    (memq major-mode '(typescript-mode js-mode)))
+                                    (member major-mode '(typescript-mode js-mode)))
                                 (file-name-directory (buffer-file-name))
                               (if (vemv/contains? (buffer-file-name) vemv/project-root-dir)
                                   default-directory

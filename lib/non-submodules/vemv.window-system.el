@@ -161,7 +161,7 @@
     (->> (vemv/all-buffers)
          (filter 'buffer-file-name)
          (-remove (lambda (x)
-                    (memq (buffer-file-name x) buffers-of-any-project)))
+                    (member (buffer-file-name x) buffers-of-any-project)))
          (mapcar 'kill-buffer))))
 
 (defun vemv/maximize ()

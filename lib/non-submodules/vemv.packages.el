@@ -90,7 +90,7 @@
 (require 'benchmark-init)
 (add-hook 'after-init-hook 'benchmark-init/deactivate)
 
-(when (memq window-system '(mac ns x))
+(when (member window-system '(mac ns x))
   (exec-path-from-shell-initialize))
 
 (conj! exec-path "/Users/vemv/.nvm/versions/node/v10.13.0/bin/")

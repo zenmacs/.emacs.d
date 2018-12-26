@@ -39,7 +39,7 @@
               (while (string-equal (vemv/current-char-at-point) "\n")
                 (delete-backward-char 1))))
 
-          (when (memq major-mode `(typescript-mode))
+          (when (member major-mode `(typescript-mode))
             (set-buffer-modified-p t))
           (save-buffer)
 
@@ -61,7 +61,7 @@
               (rubocop-autocorrect-current-file))
             (when vemv-robe-connected
               (vemv/send :ruby nil "reload!")))
-          (when (and (memq major-mode `(typescript-mode))
+          (when (and (member major-mode `(typescript-mode))
                      (not avoid-recursion))
             (vemv/save-other-buffers-for-this-project :for-flycheck))
           (when (string-equal (buffer-file-name) vemv/overrides-file)
@@ -255,8 +255,8 @@ inserting it at a new line."
         (delete-forward-char 1))))
   ;; For case `foo| bar`, where one space should be deleted, resulting in `foobar`, in which case we should delete `bar`
   (when (or (and vemv.kill/did-kill-whitespace
-                 (not (memq (string-to-char (vemv/current-char-at-point))
-                            (string-to-list "()[]{}#@`~ \n"))))
+                 (not (member (string-to-char (vemv/current-char-at-point))
+                              (string-to-list "()[]{}#@`~ \n"))))
             (eq (point)
                 (save-excursion
                   (if backward?
