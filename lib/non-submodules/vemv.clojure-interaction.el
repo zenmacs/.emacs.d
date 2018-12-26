@@ -224,7 +224,7 @@
         (concat (if (and name ns)
                     (concat (propertize (concat ns "/" name)
                                         'face 'vemv-warning-face)
-                            "\n\n"))
+                            (when a "\n\n")))
                 a
                 (if (and a d)
                     "\n\n")
