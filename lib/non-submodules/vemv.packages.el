@@ -144,6 +144,7 @@
 ;; restart emacs.
 
 (unless vemv/terminal-emacs?
+  (byte-recompile-directory vemv/overrides-forks-directory)
   (let* ((lib-dir (expand-file-name "~/.emacs.d/lib/"))
          (dirs (->> lib-dir
                     directory-files

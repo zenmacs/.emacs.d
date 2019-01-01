@@ -91,6 +91,7 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
   (setq vemv-home (getenv "HOME"))
 
   (setq vemv/overrides-directory (concat vemv-home "/.emacs.d.overrides/"))
+  (setq vemv/overrides-forks-directory (concat vemv/overrides-directory "forks/"))
   (setq vemv/overrides-lib-directory (concat vemv/overrides-directory "lib/"))
   (setq vemv/overrides-file (concat vemv/overrides-lib-directory "emacs.d.overrides.el")) []
   (setq vemv/overrides-project-file (concat vemv/overrides-lib-directory "vemv.project.overrides.el"))
@@ -101,6 +102,8 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
       (make-directory vemv/overrides-directory))
     (unless (file-exists-p vemv/overrides-lib-directory)
       (make-directory vemv/overrides-lib-directory))
+    (unless (file-exists-p vemv/overrides-forks-directory)
+      (make-directory vemv/overrides-forks-directory))
     (unless (file-exists-p vemv/overrides-file)
       (shell-command-to-string (concat "cp ~/.emacs.d/templates/emacs.overrides.el " vemv/overrides-file)))
     (unless (file-exists-p vemv/overrides-project-file)
@@ -109,6 +112,10 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
       (shell-command-to-string (concat "cp ~/.emacs.d/templates/vemv.project.emacs.el " vemv/emacs-project-file))))
 
   (vemv/possibly-create-overrides-dir!)
+
+  ;; the ~/.emacs.d.overrides/forks directory allows one to add custom copies of built-in .el libraries,
+  ;; allowing otherwise impossible changes, or ensuring one's patches (defadvice, etc) don't go stale.
+  (add-to-list 'load-path vemv/overrides-forks-directory)
 
   (when (eq system-type 'darwin)
     (global-set-key (kbd "C-q") 'save-buffers-kill-emacs) ;; (redundantly) set C-q, in case of failure during init.el load
