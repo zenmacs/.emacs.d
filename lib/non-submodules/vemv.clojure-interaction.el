@@ -294,7 +294,7 @@
 ;; We close this buffer because otherwise it gets buried, leaving a useless extra window.
 ;; Customizing `cider-ancillary-buffers' didn't work.
 (defun vemv/close-cider-error ()
-  (when-let (w (get-buffer-window "*cider-error*"))
+  (when-let* ((w (get-buffer-window "*cider-error*")))
     (with-selected-window w
       (vemv/close-this))))
 
@@ -471,12 +471,12 @@ Also removes `noerror' from `search-forward-regexp' for accuracy"
   (when (and (vemv/ciderable-p)
              (member major-mode '(clojure-mode clojurec-mode)) ;; cljs more likely to contain side-effectful requires
              (cider-ns-form))
-    (when-let ((clean (cljr--call-middleware-sync
-                       (cljr--create-msg "clean-ns"
-                                         "path" (cljr--project-relative-path (buffer-file-name))
-                                         "libspec-whitelist" cljr-libspec-whitelist
-                                         "prune-ns-form" "true")
-                       "ns")))
+    (when-let* ((clean (cljr--call-middleware-sync
+                        (cljr--create-msg "clean-ns"
+                                          "path" (cljr--project-relative-path (buffer-file-name))
+                                          "libspec-whitelist" cljr-libspec-whitelist
+                                          "prune-ns-form" "true")
+                        "ns")))
       (let* ((ideal (->> clean read vemv/parse-requires))
              (actual (->> (cider-ns-form) read vemv/parse-requires))
              (diff (-difference actual ideal))

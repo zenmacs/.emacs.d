@@ -114,7 +114,7 @@
   "Kills the current buffer and deletes the file it is visiting."
   (interactive)
   (replying-yes
-   (when-let ((filename (buffer-file-name)))
+   (when-let* ((filename (buffer-file-name)))
      (delete-file filename)
      (kill-buffer))))
 

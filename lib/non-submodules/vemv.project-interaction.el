@@ -115,9 +115,9 @@
   (vemv/buffer-of-current-project? b vemv/parent-project-root-dirs))
 
 (defun vemv/buffer-of-current-running-project? (b &optional candidates)
-  (when-let ((f (-some->> b
-                          buffer-file-name
-                          file-truename)))
+  (when-let* ((f (-some->> b
+                           buffer-file-name
+                           file-truename)))
     (->> candidates
          (cons vemv/running-project-root-dir)
          (-find (lambda (x)
