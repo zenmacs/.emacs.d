@@ -1,0 +1,3 @@
+#name: system
+# --
+(-> com.stuartsierra.component.repl/system $1)
