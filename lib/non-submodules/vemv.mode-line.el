@@ -100,7 +100,8 @@
 
 (defun vemv/present-one-tab-per-project-file ()
   (if (not (vemv/buffer-of-current-project? (current-buffer)))
-      (buffer-name)
+      (concat (buffer-name) (when (buffer-modified-p)
+                              "*"))
     (if-let* ((all (->> (gethash vemv/current-project vemv/chosen-file-buffer-order)
                         (filter 'identity)
                         (mapcar 'vemv/mode-line-for-buffer))))
