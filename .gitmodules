@@ -6,7 +6,7 @@
 	url = https://github.com/auto-complete/popup-el.git
 [submodule "lib/project-explorer"]
 	path = lib/project-explorer
-	url = https://github.com/vemv/project-explorer.git
+	url = https://github.com/zenmacs/project-explorer.git
 [submodule "lib/es-lib"]
 	path = lib/es-lib
 	url = https://github.com/sabof/es-lib.git
@@ -27,13 +27,10 @@
 	url = https://github.com/sabof/es-windows.git
 [submodule "lib/cider"]
 	path = lib/cider
-	url = https://github.com/vemv/cider.git
+	url = https://github.com/zenmacs/cider.git
 [submodule "lib/clojure-mode"]
 	path = lib/clojure-mode
-	url = https://github.com/vemv/clojure-mode.git
+	url = https://github.com/zenmacs/clojure-mode.git
 [submodule "lib/clj-refactor"]
 	path = lib/clj-refactor
-	url = https://github.com/vemv/clj-refactor.el.git
-[submodule "lib/emacs-git-gutter"]
-	path = lib/emacs-git-gutter
-	url = https://github.com/vemv/emacs-git-gutter.git
+	url = https://github.com/zenmacs/clj-refactor.el.git
