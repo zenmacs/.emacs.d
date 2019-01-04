@@ -1,30 +1,30 @@
 [submodule "lib/smex"]
 	path = lib/smex
-	url = https://github.com/nonsequitur/smex.git
+	url = https://github.com/zenmacs/smex.git
 [submodule "lib/popup"]
 	path = lib/popup
-	url = https://github.com/auto-complete/popup-el.git
+	url = https://github.com/zenmacs/popup-el.git
 [submodule "lib/project-explorer"]
 	path = lib/project-explorer
 	url = https://github.com/zenmacs/project-explorer.git
 [submodule "lib/es-lib"]
 	path = lib/es-lib
-	url = https://github.com/sabof/es-lib.git
+	url = https://github.com/zenmacs/es-lib.git
 [submodule "lib/pkg-info"]
 	path = lib/pkg-info
-	url = https://github.com/lunaryorn/pkg-info.el.git
+	url = https://github.com/zenmacs/pkg-info.el.git
 [submodule "lib/epl"]
 	path = lib/epl
-	url = https://github.com/cask/epl.git
+	url = https://github.com/zenmacs/epl.git
 [submodule "lib/spinner"]
 	path = lib/spinner
-	url = https://github.com/Malabarba/spinner.el.git
+	url = https://github.com/zenmacs/spinner.el.git
 [submodule "lib/seq"]
 	path = lib/seq
-	url = https://github.com/NicolasPetton/seq.el.git
+	url = https://github.com/zenmacs/seq.el.git
 [submodule "lib/es-windows"]
 	path = lib/es-windows
-	url = https://github.com/sabof/es-windows.git
+	url = https://github.com/zenmacs/es-windows.git
 [submodule "lib/cider"]
 	path = lib/cider
 	url = https://github.com/zenmacs/cider.git
