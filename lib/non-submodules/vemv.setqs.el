@@ -93,6 +93,7 @@
       back-to-indentation-state nil
       backup-directory-alist `((".*" . ,temporary-file-directory))
       backup-directory-alist `((".*" . ,temporary-file-directory))
+      cider-auto-jump-to-error nil
       cider-repl-display-help-banner' nil
       cider-repl-pop-to-buffer-on-connect nil
       cider-show-error-buffer nil
