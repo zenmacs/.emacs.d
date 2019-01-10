@@ -125,7 +125,7 @@
 (defun vemv/rename-this-file ()
   (interactive)
   (when-let* ((f (buffer-file-name)))
-    (let* ((n (read-string (concat "Rename: ") f)))
+    (let* ((n (read-string (concat "Rename " f " to: ") f)))
       (when (not (string-equal f n))
         (let* ((_ (rename-file f n))
                (b (-some-> f get-file-buffer)))
