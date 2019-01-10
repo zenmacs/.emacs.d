@@ -302,12 +302,19 @@
   "Creates a callback apt for async and sync scenarios.
 When `vemv/using-component-reloaded-workflow', the callback will be repeatedly invoked, and we regard only the last one.
 When not, the callback will be invoked just once, so the code can be inconditionally run."
-  `(lambda (&rest __args)
-     (if vemv/using-component-reloaded-workflow
-         (when (ignore-errors
-                 (-some-> __args car (nrepl-dict-get "status") (car) (string-equal "done")))
-           ,@body)
-       ,@body)))
+  `(let* ((__errors nil))
+     (lambda (&rest __args)
+       (if vemv/using-component-reloaded-workflow
+           (when-let* ((dict (-some-> __args car)))
+             (let* ((e (nrepl-dict-get dict "err")))
+               (when e
+                 (push e __errors)
+                 (vemv/echo (s-trim-right e))))
+             (when (ignore-errors
+                     (and (-some-> dict (nrepl-dict-get "status") (car) (string-equal "done"))
+                          (not __errors)))
+               ,@body))
+         ,@body))))
 
 (defun vemv/test-this-ns ()
   "Runs the tests for the current namespace, or if not applicable, for the latest applicable ns."
