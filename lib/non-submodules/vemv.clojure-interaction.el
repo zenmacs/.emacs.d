@@ -264,6 +264,7 @@
 (defun vemv/clear-cider-repl-buffer (&optional recurring callback)
   (interactive)
   (when (cider-connected-p)
+    (vemv/show-clj-or-cljs-repl)
     (vemv/save-window-excursion
      (vemv/safe-select-window vemv/repl-window)
      (end-of-buffer)
