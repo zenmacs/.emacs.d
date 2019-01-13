@@ -100,6 +100,7 @@
       cider-stacktrace-default-positive-filters '(project)
       cider-stacktrace-default-filters '(tooling dup repl)
       cider-stacktrace-fill-column nil
+      cider-repl-history-file (concat vemv-home "/.cider-repl-history")
       column-number-mode t
       company-dabbrev-char-regexp "\\sw\\|_\\|-\\|!\\|\\?\\|*\\|+"
       company-echo-truncate-lines nil
