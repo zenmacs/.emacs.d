@@ -51,6 +51,14 @@
               (end-of-buffer)
               (insert content)
 
+              (when (member where (list :clj :cljs))
+                (end-of-buffer)
+                (paredit-backward)
+                (ignore-errors ;; don't choke at "text is read-only". happens when sending a sexpr with leading whitespace.
+                  (vemv/indent))
+                (unless no-return
+                  (end-of-buffer)))
+
               (unless no-return
                 (case where
                   (:ielm (ielm-return))
