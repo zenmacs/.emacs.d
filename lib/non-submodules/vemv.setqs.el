@@ -220,7 +220,7 @@ of the buffer into a formatted string."
 (setq pe/omit-regex (mapconcat 'identity
                                (list "^#" "~$" "^node_modules$" "tmp" ".git$" ".sass-cache" "checkouts" ".elc$"
                                      ".lumo-cache" "target" "auto-save-list" "project-explorer-cache" "public"
-                                     "dist" "generated")
+                                     "dist" "generated" ".ok$" ".DS_Store" ".lein-*" ".nrepl-*")
                                "\\|"))
 
 ;; Taken from ruby-mode
