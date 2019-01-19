@@ -31,7 +31,8 @@
 (defun vemv/advice-nrepl* (&optional after)
   (interactive)
   (delay (argless (unless (or (not (buffer-file-name))
-                              (not (vemv/buffer-of-current-running-project-or-children? (current-buffer)))
+                              ;; disabled for now. Don't know the original intent; now I find it desirable to have a repl in a 3rd party ns.
+                              ;; (not (vemv/buffer-of-current-running-project-or-children? (current-buffer)))
                               (and (eq vemv/running-project-type :clj) (vemv/current-buffer-is-cljs)))
                     (when (and (vemv/ciderable-p)
                                (not (string-equal (vemv/current-ns)

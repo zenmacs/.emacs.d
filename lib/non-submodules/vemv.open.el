@@ -9,23 +9,25 @@
   (let ((default-directory vemv/project-root-dir))
     (call-interactively 'vemv/open)))
 
-(defun vemv/after-file-open-without-project-explorer-highlighting ()
+(defun vemv/after-file-open-without-project-explorer-highlighting (of-current-project?)
   (interactive)
-  (when (and (vemv/in-clojure-mode?)
-             (not vemv/ns-shown))
-    (vemv/toggle-ns-hiding :after-file-open))
-  (vemv/clean-chosen-file-buffer-order)
-  (setq-local mode-line-format tabbed-line-format)
+  (when of-current-project?
+    (when (and (vemv/in-clojure-mode?)
+               (not vemv/ns-shown))
+      (vemv/toggle-ns-hiding :after-file-open))
+    (vemv/clean-chosen-file-buffer-order)
+    (setq-local mode-line-format tabbed-line-format))
   (vemv/advice-nrepl)
   (vemv/ensure-repl-visible))
 
 (defun vemv/after-file-open-impl (&optional skip-debouncing?)
   (interactive)
-  (when (vemv/buffer-of-current-project-or-parent? (current-buffer))
-    (vemv/after-file-open-without-project-explorer-highlighting)
-    (if skip-debouncing?
-        (vemv/safe-show-current-file-in-project-explorer* (get-buffer-window))
-      (funcall vemv/safe-show-current-file-in-project-explorer))))
+  (let* ((of-current-project? (vemv/buffer-of-current-project-or-parent? (current-buffer))))
+    (vemv/after-file-open-without-project-explorer-highlighting of-current-project?)
+    (when of-current-project?
+      (if skip-debouncing?
+          (vemv/safe-show-current-file-in-project-explorer* (get-buffer-window))
+        (funcall vemv/safe-show-current-file-in-project-explorer)))))
 
 (defvar vemv.after-file-open/avoid-recursion nil)
 
