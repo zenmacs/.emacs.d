@@ -223,13 +223,13 @@
              (name (nrepl-dict-get h "name"))
              (ns (nrepl-dict-get h "ns")))
         (concat (if (and name ns)
-                    (concat (propertize (concat ns "/" name)
-                                        'face 'vemv-warning-face)
-                            (when a "\n\n")))
-                a
-                (if (and a d)
-                    "\n\n")
-                d)))))
+                    (propertize (concat ns "/" name)
+                                'face 'vemv-warning-face)
+                  name)
+                (when a
+                  (concat "\n\n" a))
+                (when d
+                  (concat "\n\n" d)))))))
 
 (defun vemv/message-clojure-doc ()
   (interactive)
