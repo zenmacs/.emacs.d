@@ -242,6 +242,19 @@
           (vemv/echo "No docs found.")))
     (vemv/echo "Not connected.")))
 
+(defun vemv.message-clojure-doc/of-current-invocation ()
+  "Like `vemv/message-clojure-doc', but instead of looking up thing-at-point,
+it looks up the thing currently being invoked, i.e. the first element of the first list that wraps thing-at-point."
+  (interactive)
+  (save-excursion
+    (while (and (not (string-equal (vemv/current-char-at-point) "("))
+                (not (eq 1 (point))))
+      (paredit-backward-up))
+    (when (string-equal (vemv/current-char-at-point) "(")
+      (forward-char)
+      (paredit-forward)
+      (vemv/message-clojure-doc))))
+
 (defun cider-company-docsig (thing)
   "Adds the docstring"
   (let* ((eldoc-info (cider-eldoc-info thing))

@@ -445,6 +445,7 @@
                               (define-key clojure-mode-map (kbd "C-M-0") 'hydra-cljr-help-menu/body)
                               (define-key clojure-mode-map (kbd ";") 'vemv/semicolon)
                               (define-key clojure-mode-map (kbd "<tab>") 'vemv/tab)
+                              (define-key clojure-mode-map (kbd "<s-tab>") 'vemv.message-clojure-doc/of-current-invocation)
                               ;; XXX backtab not handled by gen.rb
                               (define-key clojure-mode-map (kbd "<backtab>") (argless
                                                                               (let ((vemv/max-mini-window-height 0.99))
