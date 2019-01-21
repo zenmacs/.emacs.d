@@ -160,7 +160,7 @@ def emit_bindings scope: 'global', modifier_mappings: {"primary" => 'C', "second
       (('a'..'z').to_a + (0..9).to_a.map(&:to_s) + SPECIAL).each do |char|
         next if char.include?('[f')
         next if NO_C.include?(char) && modifier_mappings[modifier] == 'C'
-        result += %|#{spaces}"#{modifier_mappings[modifier]}-#{char}"|
+        (result += %|#{spaces}"#{modifier_mappings[modifier]}-#{char}"|) unless char == '0' && modifier == 'primary'
         result += %|#{spaces}"#{modifier_mappings[modifier]}-S-#{char}"|
         if modifier == 'primary'
           result += %|#{spaces}"#{modifier_mappings[modifier]}-M-#{char}"|
