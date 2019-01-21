@@ -149,6 +149,7 @@
       vemv/shortcuts/global/tertiary-backspace      'vemv/unindent-region
       vemv/shortcuts/global/tertiary-a              'vemv/copy-inserting-at-kill-list
       vemv/shortcuts/global/tertiary-backtick       'vemv/jump-to-clojure-definition
+      vemv/shortcuts/global/tertiary-bar            (vemv/safe-paredit-command 'paredit-split-sexp)
       vemv/shortcuts/global/tertiary-down           'end-of-defun
       vemv/shortcuts/global/tertiary-e              (argless (vemv/send nil nil nil :no-return))
       vemv/shortcuts/global/tertiary-end            'end-of-buffer
