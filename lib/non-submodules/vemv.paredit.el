@@ -403,12 +403,13 @@ inserting it at a new line."
 (defun vemv/onelineize ()
   "Turns the current sexpr into a oneliner"
   (interactive)
-  (let ((replacement (replace-regexp-in-string "[\s|\n]+" " " (vemv/sexpr-content))))
-    (vemv/kill nil t t)
-    (insert (concat replacement " "))
-    (when (string-equal " " (vemv/char-at-left))
-      (paredit-backward-delete))
-    (call-interactively 'paredit-backward)))
+  (when (member (vemv/current-char-at-point) `("(" "[" "{"))
+    (let ((replacement (replace-regexp-in-string "[\s|\n]+" " " (vemv/sexpr-content))))
+      (vemv/kill nil t t)
+      (insert (concat replacement " "))
+      (when (string-equal " " (vemv/char-at-left))
+        (paredit-backward-delete))
+      (call-interactively 'paredit-backward))))
 
 (defun vemv/normal-indentation ()
   "https://stackoverflow.com/a/14196835/569050"
