@@ -304,7 +304,11 @@ it looks up the thing currently being invoked, i.e. the first element of the fir
   (let* ((n (or n (cider-current-ns t))))
     (or (string-equal n (or inferred (funcall cider-test-infer-test-ns n)))
         (vemv/starts-with n "acceptance.")
-        (vemv/ends-with n "-spec"))))
+        (vemv/starts-with n "pepkey.unit")
+        (vemv/starts-with n "unit.")
+        (vemv/starts-with n "pepkey.functional")
+        (vemv/ends-with n "-spec")
+        (vemv/ends-with n "-test"))))
 
 ;; We close this buffer because otherwise it gets buried, leaving a useless extra window.
 ;; Customizing `cider-ancillary-buffers' didn't work.
