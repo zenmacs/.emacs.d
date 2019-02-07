@@ -1,0 +1,19 @@
+#name: testemplate
+# --
+
+(ns pepkey.functional.
+  (:require
+   [clojure.test :refer :all]
+   [pepkey.functional.support.helpers :refer :all]
+   [acceptance.support.seeds :as support.seeds :refer [basic-seed]]
+   [acceptance.support.fixtures :as support.fixtures]))
+
+(use-fixtures :once
+  (fn [t]
+    (support.fixtures/setup-system basic-seed t)))
+    
+(deftest works
+  (request {:handler
+            :login? true
+            :as-admin? false
+            :perform! true}))

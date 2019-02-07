@@ -1,0 +1,4 @@
+#name: ppre
+# --
+{:pre [$1]
+:post []}

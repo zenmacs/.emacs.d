@@ -1,0 +1,3 @@
+#name: schema
+# --
+(-> com.stuartsierra.component.repl/system :database :connection pepkey.datomic.schema/fetch-schema clojure.pprint/pprint)

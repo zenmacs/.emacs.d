@@ -1,4 +1,3 @@
 #name: pre
 # --
-{:pre [$1]
-:post []}
+{:pre [$1]}

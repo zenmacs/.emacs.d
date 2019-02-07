@@ -1,3 +1,0 @@
-#name: suite
-# --
-(clojure.test/run-all-tests #"unit\..*")
