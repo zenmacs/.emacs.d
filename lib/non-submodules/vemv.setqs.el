@@ -169,7 +169,8 @@
       x-select-enable-clipboard nil
       yas-key-syntaxes '("w_")
       yas-use-menu nil
-      yas-verbosity 1)
+      yas-verbosity 1
+      *grizzl-read-max-results* 1)
 
 (custom-set-variables
  '(xref-prompt-for-identifier nil)
@@ -224,7 +225,7 @@ of the buffer into a formatted string."
 (setq pe/omit-regex (mapconcat 'identity
                                (list "^#" "~$" "^node_modules$" "tmp" ".git$" ".sass-cache" "checkouts" ".elc$"
                                      ".lumo-cache" "target" "auto-save-list" "project-explorer-cache" "public"
-                                     "dist" "generated" ".ok$" ".DS_Store" ".lein-*" ".nrepl-*")
+                                     "dist" "generated" ".ok$" ".DS_Store" ".lein-*" ".nrepl-* " ".eastwood")
                                "\\|"))
 
 ;; Taken from ruby-mode
