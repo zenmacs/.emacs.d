@@ -449,7 +449,7 @@ Adds kw-to-find-fallback."
                     (beginning-of-buffer)
                     (search-forward-regexp kw-to-find-fallback nil)))
               (list (vemv/current-line-number)
-                    (buffer-file-name)))))
+                    (cider-sync-request:ns-path (cider-current-ns))))))
       (user-error "Can't find namespace `%s'" ns))))
 
 (defun vemv/echo-clojure-source ()
