@@ -415,7 +415,9 @@ or something custom that returns a var, which must have :name and :test metadata
 
 (defun vemv/cider-find-keyword-silently (&optional arg)
   "Silent version of cider-find-keyword. Just returns the line/file.
-Also removes `noerror' from `search-forward-regexp' for accuracy"
+Also removes `noerror' from `search-forward-regexp' for accuracy.
+
+Adds kw-to-find-fallback."
   (interactive "P")
   (cider-ensure-connected)
   (let* ((kw (let ((kw-at-point (cider-symbol-at-point 'look-back)))
@@ -430,7 +432,8 @@ Also removes `noerror' from `search-forward-regexp' for accuracy"
          (kw-ns (if ns-qualifier
                     (cider-resolve-alias (cider-current-ns) ns-qualifier)
                   (cider-current-ns)))
-         (kw-to-find (concat "::" (replace-regexp-in-string "^:+\\(.+/\\)?" "" kw) " ")))
+         (kw-to-find (concat "::" (replace-regexp-in-string "^:+\\(.+/\\)?" "" kw) "")) ;; " " should be here but it causes occasional false positives. actually with " " one also can get false positives. only fix is to update cider.
+         (kw-to-find-fallback (concat "::" (replace-regexp-in-string "^:+\\(.+/\\)?" "" kw) ""))) ;; no " "
 
     (when (and ns-qualifier (string= kw-ns (cider-current-ns)))
       (error "Could not resolve alias `%s' in `%s'" ns-qualifier (cider-current-ns)))
@@ -439,7 +442,12 @@ Also removes `noerror' from `search-forward-regexp' for accuracy"
           (with-current-buffer buffer
             (save-excursion
               (beginning-of-buffer)
-              (search-forward-regexp kw-to-find nil)
+              (or (ignore-errors
+                    (search-forward-regexp kw-to-find nil)
+                    t)
+                  (progn
+                    (beginning-of-buffer)
+                    (search-forward-regexp kw-to-find-fallback nil)))
               (list (vemv/current-line-number)
                     (buffer-file-name)))))
       (user-error "Can't find namespace `%s'" ns))))
