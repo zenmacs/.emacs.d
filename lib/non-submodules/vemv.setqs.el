@@ -1,3 +1,4 @@
+(require 'warnings)
 (require 'vemv.theme)
 (provide 'vemv.setqs)
 
@@ -40,6 +41,9 @@
 (unless vemv/terminal-emacs?
   (add-to-list 'sp-no-reindent-after-kill-modes 'ruby-mode)
   (add-to-list 'sp-no-reindent-after-kill-modes 'haml-mode))
+
+;; disable annoying popup when large values are printed to the repl
+(add-to-list 'warning-suppress-types '(undo discard-info))
 
 (setq pe/project-root-function (lambda (&rest _)
                                  vemv/project-root-dir))
