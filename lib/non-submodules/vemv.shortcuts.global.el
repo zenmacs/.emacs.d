@@ -42,6 +42,7 @@
       vemv/shortcuts/global/primary-6               'vemv/emacs-reload
       vemv/shortcuts/global/primary-4               'vemv/thread
       vemv/shortcuts/global/primary-8               'vemv/toggle-verbosity
+      vemv/shortcuts/global/primary-S-a             'vemv/git-add-A
       vemv/shortcuts/global/primary-S-d             (argless
                                                      (require 'vemv.helm)
                                                      (vemv/helm-search-and-replace-with-previews))

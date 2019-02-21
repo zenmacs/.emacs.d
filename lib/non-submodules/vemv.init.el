@@ -23,6 +23,7 @@
 (require 'vemv.keyboard-init)
 (unless vemv/terminal-emacs?
   (require 'vemv.undo)) ;; Shouldn't be needed, but otherwise I can't redo the first undo for some unknown reason
+(require 'vemv.git)
 (provide 'vemv.init)
 
 (show-paren-mode 1)
