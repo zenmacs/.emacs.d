@@ -39,6 +39,11 @@
   "."
   :group 'vemv)
 
+(defface clojure-type-metadata-face
+  `((t :foreground ,vemv-colors/paren-grey-light :italic t))
+  "."
+  :group 'vemv)
+
 (setq vemv-default-autocomplete-popup-background-color "#A2A2A2")
 (setq vemv-default-autocomplete-popup-background-color-lighter "#cccccc")
 (setq vemv-default-autocomplete-popup-foreground-color "#333333")
@@ -115,7 +120,7 @@
  `(cursor ((t (:foreground "#4D575F" :background "#CFCFCF"))))
  `(blue ((t (:foreground "blue"))))
  `(bold ((t (:bold t))))
- `(bold-italic ((t (:bold t :italc t))))
+ `(bold-italic ((t (:bold t :italic t))))
  `(border-glyph ((t (nil))))
  `(buffers-tab ((t (:foreground "#F8F8F8"))))
 
