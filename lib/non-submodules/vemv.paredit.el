@@ -43,8 +43,6 @@
             (set-buffer-modified-p t))
           (save-buffer)
 
-          (unless skip-check-unused-requires
-            (vemv/check-unused-requires))
           (when (eq major-mode 'ruby-mode)
             (unless skip-formatting
               (require 'rubocop)

@@ -505,32 +505,6 @@ Adds kw-to-find-fallback."
                          x))
                      (aref 0))))))
 
-(defun vemv/check-unused-requires ()
-  (interactive)
-  (when (and (vemv/ciderable-p)
-             (member major-mode '(clojure-mode clojurec-mode)) ;; cljs more likely to contain side-effectful requires
-             (cider-ns-form))
-    (when-let* ((clean (cljr--call-middleware-sync
-                        (cljr--create-msg "clean-ns"
-                                          "path" (cljr--project-relative-path (buffer-file-name))
-                                          "libspec-whitelist" cljr-libspec-whitelist
-                                          "prune-ns-form" "true")
-                        "ns")))
-      (let* ((ideal (->> clean read vemv/parse-requires))
-             (actual (->> (cider-ns-form) read vemv/parse-requires))
-             (diff (-difference actual ideal))
-             (message (-some->> diff
-                                (mapcar 'pr-str)
-                                (mapcar (lambda (x)
-                                          (s-replace "\\" "" x)))
-                                (s-join "\n")
-                                (concat (propertize (vemv/current-ns)
-                                                    'face 'vemv-cider-connection-face)
-                                        (propertize " - There are unused requires:\n"
-                                                    'face 'vemv-warning-face)
-                                        "\n"))))
-        (-some-> message vemv/echo)))))
-
 (defun vemv/fix-defn-oneliners ()
   "Places a newline, if needed, between defn names and their arglists."
   (interactive)
