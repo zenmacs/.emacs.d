@@ -38,7 +38,10 @@
              (destination-buffer (if foreign?
                                      (buffer-name (window-buffer vemv/repl-window))
                                    destination-buffer)))
-        (if (and (vemv/in-a-clojure-mode?)
+        ;; I don't remember why I implemented "Can't eval in a different project!" rule in the first place.
+        ;; Probably related with a cljs-specific pain point.
+        (if (and (with-current-buffer (window-buffer vemv/main_window)
+                   (vemv/current-buffer-is-cljs))
                  foreign?
                  (not vemv/parent-project-root-dirs)) ;; implementation could be more accurate, does the job for now
             (vemv/echo "Can't eval in a different project!")
