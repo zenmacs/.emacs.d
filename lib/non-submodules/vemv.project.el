@@ -37,6 +37,9 @@
     (load (concat "vemv.project." vemv/current-project))
   (error nil))
 
+;; intentionally outside vemv.project/reset* so it can be refreshed in a single file
+(defvar vemv.project.default-lein-profiles nil)
+
 (defmacro vemv.project/reset* ()
   `(progn
      (set-variable 'cider-lein-parameters vemv/initial-cider-lein-parameters)
@@ -46,7 +49,7 @@
      (setq vemv/clojure-lightweight-reload-command nil) ;; like `vemv/clojure-reload-command', but with whatever 'lightweight' semantics you wish (e.g. reload the code but don't reset any components)
      (setq vemv/clojure-test-refresh-command nil)
      (setq vemv/cider-port nil)
-     (setq vemv/project-initializers nil) ;; an argless lambda which can run arbitrary code on CIDER connection
+     (setq vemv/project-initializers nil) ;; an argless lambda which can run arbitrary code before connecting to CIDER.
      (setq vemv/project-root-dir nil) ;; Where a project is located
      (setq vemv/project-clojure-dir nil) ;; Within a project, a directory that contains the Leiningen project. Leave unset if it equals `vemv/project-root-dir`
      (setq vemv/project-fiplr-dir nil) ;; The dir within which fiplr completions will be performed. Normally unnecessary.
