@@ -3,6 +3,10 @@
 (require 'vemv.lang.core)
 (provide 'vemv.lang)
 
+(defun vemv/safe-switch-to-buffer (b)
+  (switch-to-buffer (or (get-buffer b)
+                        (user-error (concat "Could not find buffer: " b)))))
+
 (defun vemv/send (&optional where backward? content no-return)
   "Does the following, sequentially:
    * Copy the next sexp (or on truthy `backward?' arg, the previous sexp);
@@ -49,7 +53,7 @@
                    (not (get-buffer "*rails*")))
               (vemv/echo "Disconnected!")
             (with-selected-window vemv/repl-window
-              (switch-to-buffer destination-buffer)
+              (vemv/safe-switch-to-buffer destination-buffer)
 
               (end-of-buffer)
               (insert content)
@@ -87,7 +91,7 @@
                                                                                 (inc a))))
                                        "*")))
          (default-directory vemv/project-root-dir))
-    (switch-to-buffer (buffer-name b) nil t)
+    (vemv/safe-switch-to-buffer (buffer-name b) nil t)
     (shell b)
     (setq-local comint-process-echoes t) ;; disable command echoing
     ))

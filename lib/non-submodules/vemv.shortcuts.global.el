@@ -192,11 +192,11 @@
                                           (erase-buffer))
                                       (with-selected-window vemv/repl-window
                                         (if (vemv/in-a-lisp-mode?)
-                                            (switch-to-buffer "*ielm*")
+                                            (vemv/safe-switch-to-buffer "*ielm*")
                                           (if (and (member major-mode '(ruby-mode inf-ruby-mode))
                                                    (get-buffer "*rails*"))
-                                              (switch-to-buffer "*rails*")
-                                            (switch-to-buffer "*shell-1*")))
+                                              (vemv/safe-switch-to-buffer "*rails*")
+                                            (vemv/safe-switch-to-buffer "*shell-1*")))
                                         (comint-clear-buffer))))))
 
 ;; same here. control-ret is interpreted as s-return rather than as tertiary-RET

@@ -73,8 +73,8 @@
                   (vemv/current-buffer-is-cljs))))
       (with-selected-window vemv/repl-window
         (if was
-            (switch-to-buffer vemv/cljs-repl-name)
-          (switch-to-buffer vemv/clj-repl-name))))))
+            (vemv/safe-switch-to-buffer vemv/cljs-repl-name)
+          (vemv/safe-switch-to-buffer vemv/clj-repl-name))))))
 
 (defun vemv/ensure-repl-visible ()
   (when (and (cider-connected-p)
