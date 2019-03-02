@@ -366,7 +366,7 @@ When not, the callback will be invoked just once, so the code can be incondition
                                                                                   chosen
                                                                                   ")"))
                                                              (cider-test-execute chosen nil nil)))))))
-                              vemv/clojure-lightweight-reload-command)))
+                              vemv/clojure-test-refresh-command)))
 
 (defun vemv/run-this-deftest-cljs ()
   "Assuming `point` is at a deftest name, it runs it"
