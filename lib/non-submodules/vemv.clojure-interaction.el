@@ -535,3 +535,29 @@ Adds kw-to-find-fallback."
     (cond (neg t)
           ((and pos-filters (not pos)) t)
           (t nil))))
+
+(defun zenmacs.clojure-interaction/show-java-decompilation-of-top-level-sexpr ()
+  "Jumps to the Java decompilation of the current top-level sexpr.
+
+`clj-java-decompiler.core' must be already `require'd into the running JVM process."
+  (interactive)
+  (when (and (vemv/ciderable-p)
+             (not (vemv/current-buffer-is-cljs)))
+    (unless nil ;; XXX at-beginning-of-defun-p
+      (beginning-of-defun))
+    (let* ((s (vemv.clojure-interaction/sync-eval-to-string (concat "(with-out-str (clj-java-decompiler.core/decompile "
+                                                                    (vemv/sexpr-content)
+                                                                    "))")))
+           (s (->> s
+                   (s-chop-prefix "\"")
+                   (s-chop-suffix "\"")
+                   (vemv/unescape)
+                   (s-chop-prefix "\n")))
+           (b (get-buffer-create "*zenmacs-java-decompilation*")))
+      (with-current-buffer b
+        (erase-buffer)
+        (insert s)
+        (java-mode)
+        (font-lock-ensure))
+      (xref-push-marker-stack)
+      (switch-to-buffer b))))

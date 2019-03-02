@@ -173,6 +173,7 @@
       vemv/shortcuts/global/tertiary-r              'vemv/run-this-deftest
       vemv/shortcuts/global/tertiary-right          'vemv/next-file-buffer
       vemv/shortcuts/global/tertiary-s              'vemv/save-all-buffers-for-this-project
+      vemv/shortcuts/global/tertiary-slash          'zenmacs.clojure-interaction/show-java-decompilation-of-top-level-sexpr
       vemv/shortcuts/global/tertiary-t              (argless
                                                      (vemv/fiplr (lambda (filename)
                                                                    (find-file filename)

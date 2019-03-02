@@ -130,3 +130,7 @@
                   standard-output
                 (setq v (process-file shell-file-name nil t nil shell-command-switch command))))))
     (list v s)))
+
+(defun vemv/unescape (s)
+  "Removes escaped escapings from the string `s'."
+  (read (format "\"%s\"" s)))

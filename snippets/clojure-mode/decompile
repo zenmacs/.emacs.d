@@ -1,0 +1,3 @@
+#name: decompile
+# --
+(clj-java-decompiler.core/decompile $1)
