@@ -3,9 +3,11 @@
 (require 'vemv.lang.core)
 (provide 'vemv.lang)
 
-(defun vemv/safe-switch-to-buffer (b)
-  (switch-to-buffer (or (get-buffer b)
-                        (user-error (concat "Could not find buffer: " b)))))
+(defun vemv/safe-switch-to-buffer (b &rest args)
+  (apply 'switch-to-buffer
+         (or (get-buffer b)
+             (user-error (concat "Could not find buffer: " b)))
+         args))
 
 (defun vemv/send (&optional where backward? content no-return)
   "Does the following, sequentially:
