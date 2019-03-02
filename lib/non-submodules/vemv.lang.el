@@ -58,6 +58,9 @@
                 (end-of-buffer)
                 (paredit-backward)
                 (ignore-errors ;; don't choke at "text is read-only". happens when sending a sexpr with leading whitespace.
+                  (when no-return
+                    (paredit-wrap-round)
+                    (insert "-> "))
                   (vemv/indent))
                 (unless no-return
                   (end-of-buffer)))
