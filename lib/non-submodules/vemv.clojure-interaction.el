@@ -175,6 +175,14 @@
           (setq vemv/running-project-root-dir vemv/project-root-dir)
           (setq vemv/running-project-type vemv/project-type)
           (delay (argless (funcall vemv/project-initializers)
+                          (unless vemv/cider-port
+                            (let* ((s (concat "source ~/.zshrc; " ;; XXX don't assume zsh
+                                              vemv.project/cd-command
+                                              vemv/project-clojure-dir
+                                              "; lein with-profile "
+                                              (s-join "," vemv.project.default-lein-profiles)
+                                              " do clean, deps")))
+                              (shell-command-to-string s)))
                           (vemv/safe-select-window vemv/main_window)
                           (if (vemv/is-cljs-project?)
                               (progn
