@@ -425,7 +425,7 @@ or something custom that returns a var, which must have :name and :test metadata
                                                            (assert (and ns (car sym)))
                                                            (cider-test-update-last-test ns sym)
                                                            (cider-test-execute ns sym)))))
-                              vemv/clojure-lightweight-reload-command)))
+                              vemv/clojure-test-refresh-command)))
 
 (defun vemv/cider-find-keyword-silently (&optional arg)
   "Silent version of cider-find-keyword. Just returns the line/file.
