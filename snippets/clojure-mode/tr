@@ -1,0 +1,3 @@
+#name: tr
+# --
+(acceptance.support.helpers/tr $1)
