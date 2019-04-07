@@ -543,8 +543,8 @@ Adds kw-to-find-fallback."
   (interactive)
   (when (and (vemv/ciderable-p)
              (not (vemv/current-buffer-is-cljs)))
-    (unless nil ;; XXX at-beginning-of-defun-p
-      (beginning-of-defun))
+    (end-of-defun)
+    (beginning-of-defun)
     (let* ((s (vemv.clojure-interaction/sync-eval-to-string (concat "(with-out-str (clj-java-decompiler.core/decompile "
                                                                     (vemv/sexpr-content)
                                                                     "))")))
