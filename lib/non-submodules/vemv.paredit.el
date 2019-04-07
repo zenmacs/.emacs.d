@@ -58,7 +58,7 @@
                     (error "Buffer is not visiting a file"))))
               (rubocop-autocorrect-current-file))
             (when vemv-robe-connected
-              (vemv/send :ruby nil "reload!")))
+              (vemv/send :ruby nil "$VERBOSE = nil; reload!")))
           (when (and (member major-mode `(typescript-mode))
                      (not avoid-recursion))
             (vemv/save-other-buffers-for-this-project :for-flycheck))
