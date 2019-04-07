@@ -172,6 +172,19 @@
       yas-verbosity 1
       *grizzl-read-max-results* 1)
 
+(setq cljr-magic-require-namespaces
+      '(("io"   . "clojure.java.io")
+        ("set"  . "clojure.set")
+        ("pprint"  . "clojure.pprint")
+        ("clojure.java.shell"  . "shell")
+        ("speced"  . "nedap.utils.speced")
+        ("spec"  . "clojure.spec.alpha")
+        ("reducers"  . "clojure.core.reducers")
+        ("async"  . "clojure.core.async")
+        ("string"  . "clojure.string")
+        ("walk" . "clojure.walk")
+        ("zip"  . "clojure.zip")))
+
 (custom-set-variables
  '(xref-prompt-for-identifier nil)
  '(cider-connection-message-fn nil)
