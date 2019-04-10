@@ -134,6 +134,8 @@
       vemv/shortcuts/global/secondary-right-bracket (vemv/safe-paredit-command 'paredit-forward)
       vemv/shortcuts/global/secondary-right-curly   (vemv/safe-paredit-command 'paredit-wrap-curly)
       vemv/shortcuts/global/secondary-s             'vemv/save-other-buffers-for-this-project
+      vemv/shortcuts/global/secondary-semicolon     (argless
+                                                     (insert " ;; "))
       vemv/shortcuts/global/secondary-t             'vemv/open-file-via-fiplr-then-close-previous-buffer
       vemv/shortcuts/global/secondary-up            (vemv/safe-paredit-command
                                                      (argless
@@ -145,6 +147,11 @@
                                                         (paredit-splice-sexp-killing-backward))))
       vemv/shortcuts/global/secondary-x             'vemv/smex
       vemv/shortcuts/global/secondary-w             'vemv/close-all-other-file-buffers
+      vemv/shortcuts/global/tertiary-1              (vemv/safe-paredit-command 'vemv/thread-first-all--but-last)
+      vemv/shortcuts/global/tertiary-2              (vemv/safe-paredit-command 'vemv/thread-first-all--and-last)
+      vemv/shortcuts/global/tertiary-3              (vemv/safe-paredit-command 'vemv/thread-last-all--but-last)
+      vemv/shortcuts/global/tertiary-4              (vemv/safe-paredit-command 'vemv/thread-last-all--and-last)
+      vemv/shortcuts/global/tertiary-5              (vemv/safe-paredit-command 'clojure-unwind-all)
       vemv/shortcuts/global/tertiary-9              (vemv/safe-paredit-command 'paredit-backward-up)
       vemv/shortcuts/global/tertiary-0              (vemv/safe-paredit-command 'paredit-forward-up)
       vemv/shortcuts/global/tertiary-RET            'vemv/load-clojure-buffer

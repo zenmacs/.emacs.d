@@ -463,16 +463,42 @@ inserting it at a new line."
 (setq vemv/thread-message
       "Press 1 to thread-first,\n      2 to fully thread-first,\n      3 to thread-last, or\n      4 to fully thread-last:\n\n")
 
+(setq vemv.offer-onelineize/choices (string-to-list "1234"))
+
+(defun vemv/offer-onelineize ()
+  (unless (eq (read-char-choice "Press any of (1, 2, 3, 4) to `vemv/onelineize` the result, or RET for leaving it as-is:"
+                                (cons 13 vemv.offer-onelineize/choices))
+              13)
+    (vemv/onelineize))
+  ;; read-char-choice leaves some hanging output:
+  (message ""))
+
 (defun vemv/thread ()
   (interactive)
-  (let* ((choices (string-to-list "1234"))
-         (choice (read-char-choice vemv/thread-message choices)))
+  (let* ((choice (read-char-choice vemv/thread-message vemv.offer-onelineize/choices)))
     (case choice
       (?1 (clojure-thread-first-all t))
       (?2 (clojure-thread-first-all nil))
       (?3 (clojure-thread-last-all t))
       (?4 (clojure-thread-last-all nil)))
-    (unless (eq (read-char-choice "Press any of (1, 2, 3, 4) to `vemv/onelineize` the result, or RET for leaving it as-is:"
-                                  (cons 13 choices))
-                13)
-      (vemv/onelineize))))
+    (vemv/offer-onelineize)))
+
+(defun vemv/thread-first-all--but-last ()
+  (interactive)
+  (clojure-thread-first-all t)
+  (vemv/offer-onelineize))
+
+(defun vemv/thread-first-all--and-last ()
+  (interactive)
+  (clojure-thread-first-all nil)
+  (vemv/offer-onelineize))
+
+(defun vemv/thread-last-all--but-last ()
+  (interactive)
+  (clojure-thread-last-all t)
+  (vemv/offer-onelineize))
+
+(defun vemv/thread-last-all--and-last ()
+  (interactive)
+  (clojure-thread-last-all nil)
+  (vemv/offer-onelineize))
