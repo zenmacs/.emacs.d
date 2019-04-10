@@ -170,7 +170,7 @@
       yas-key-syntaxes '("w_")
       yas-use-menu nil
       yas-verbosity 1
-      *grizzl-read-max-results* 1)
+      *grizzl-read-max-results* 10)
 
 (setq cljr-magic-require-namespaces
       '(("io"   . "clojure.java.io")
