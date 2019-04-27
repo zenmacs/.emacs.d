@@ -1,0 +1,6 @@
+#name: are
+# --
+(are [input expected] (testing input
+                        (= expected
+                           (sut/$1 input)))
+  $2)

@@ -1,0 +1,3 @@
+#name: doc
+# --
+(clojure.repl/doc $1)

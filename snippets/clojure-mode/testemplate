@@ -4,16 +4,19 @@
 (ns pepkey.functional.
   (:require
    [clojure.test :refer :all]
+   [nedap.test.are]
    [pepkey.functional.support.helpers :refer :all]
+   [pepkey.unit.support :refer [measuring-time]]
    [acceptance.support.seeds :as support.seeds :refer [basic-seed]]
-   [acceptance.support.fixtures :as support.fixtures]))
+   [acceptance.support.fixtures :refer [*running-system* setup-system]]))
 
 (use-fixtures :once
-  (fn [t]
-    (support.fixtures/setup-system basic-seed t)))
+  (measuring-time
+    (fn [tests]
+      (setup-system @basic-seed tests))))
     
 (deftest works
-  (request {:handler
+  (request {:handler :sut/_
             :login? true
             :as-admin? false
             :perform! true}))

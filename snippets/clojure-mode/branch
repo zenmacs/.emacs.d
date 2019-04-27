@@ -1,0 +1,3 @@
+#name: branch
+# --
+(formatting-stack.branch-formatter/format-and-lint-branch! :target-branch  "master" :in-background? false)

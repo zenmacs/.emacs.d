@@ -4,7 +4,7 @@
   '[:find $1
     :in $
     :where ]
-  (-> com.stuartsierra.component.repl/system
+  (-> (or com.stuartsierra.component.repl/system acceptance.support.fixtures/*running-system*)
       :config
       pepkey.components.config/database-url
       datomic.api/connect
