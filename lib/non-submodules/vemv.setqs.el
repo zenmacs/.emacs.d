@@ -231,8 +231,8 @@ of the buffer into a formatted string."
 ;; note that fiplr would break with a nil value.
 (setq fiplr-ignored-globs
       ;; `directories` entries must be single-segment, i.e `a/b` doesn't work.
-      '((directories (".git" "tmp" ".svn" ".hg" ".bzr" ".lumo-cache"
-                      "node_modules" "coverage" "target"))
+      '((directories (".git" "tmp" ".svn" ".hg" ".bzr" ".lumo-cache" "pom.xml" "semantic"
+                      "node_modules" "coverage" "target" ".cljs_rhino_repl"))
         (files (".#*" "*~" "*.DS_Store"))))
 
 ;; Without this, performance can freeze (update: not so much given we know correctly use `pe/omit-gitignore')
