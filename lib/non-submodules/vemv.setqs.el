@@ -205,6 +205,8 @@
  '(tree-widget-image-enable nil)
  '(cljr-auto-sort-ns nil)
  '(cljr-project-clean-prompt nil)
+ '(cljr-clojure-test-declaration "[ :as sut] [clojure.test :refer :all]")
+ '(cljr-cljs-clojure-test-declaration "[ :as sut] [cljs.test :as t :include-macros true]")
  '(cljr-favor-private-function nil)
  '(cljr-auto-clean-ns nil)
  '(cljr-libspec-whitelist '("^cljsns" "^slingshot.test" "^monger.joda-time" "^monger.json" "^cljsjs" "leongersen.*")))
