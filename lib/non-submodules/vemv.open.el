@@ -104,7 +104,8 @@ OPEN-AT-PWD decides the initial pwd of the prompt."
                              (and the-file
                                   (file-exists-p the-file) ;; file-truename can make up nonexisting files
                                   (vemv/contains? (file-truename the-file) ;; expand symlinks
-                                                  vemv/project-clojure-dir)))
+                                                  vemv/project-clojure-dir)
+                                  (not (file-directory-p the-file))))
                          the-file
                        vemv/default-clojure-file))
            (the-file (if the-file (file-truename the-file))))
