@@ -1,3 +1,12 @@
 #name: ast
 # --
-(time (refactor-nrepl.analyzer/warm-ast-cache))
+(try
+  (clojure.core/require 'refactor-nrepl.core)
+  (clojure.core/require 'refactor-nrepl.middleware)
+  (clojure.core/require 'refactor-nrepl.analyzer)
+  (time
+    (-> 'refactor-nrepl.analyzer/warm-ast-cache resolve deref .call))
+  (catch Throwable _
+    (clojure.core/reset! @#'refactor-nrepl.analyzer/ast-cache {})
+    (clojure.core/println "Retrying...")
+    (-> 'refactor-nrepl.analyzer/warm-ast-cache resolve deref .call)))
