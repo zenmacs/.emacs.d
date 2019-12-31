@@ -70,9 +70,10 @@
 (defun vemv/show-clj-or-cljs-repl ()
   (when (vemv/ciderable-p)
     (let* ((was (with-selected-window vemv/main_window
-                  (vemv/current-buffer-is-cljs))))
+                  (vemv/current-buffer-is-cljs)))
+           (should (get-buffer vemv/cljs-repl-name)))
       (with-selected-window vemv/repl-window
-        (if was
+        (if (and was should)
             (vemv/safe-switch-to-buffer vemv/cljs-repl-name)
           (vemv/safe-switch-to-buffer vemv/clj-repl-name))))))
 
