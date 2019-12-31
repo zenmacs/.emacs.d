@@ -1,6 +1,7 @@
 #name: are
 # --
 (are [input expected] (testing input
-                        (= expected
-                           (sut/$1 input)))
+                        (is (= expected
+                               (sut/$1 input)))
+                        true)
   $2)

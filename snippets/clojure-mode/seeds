@@ -1,7 +1,7 @@
 #name: seeds
 # --
 @(datomic.api/transact
-   (-> com.stuartsierra.component.repl/system
+   (-> (pepkey.core/running-system)
       :config
       pepkey.components.config/database-url
       datomic.api/connect)

@@ -1,0 +1,11 @@
+#name: cleanup
+# --
+(do
+  (doseq [alias (keys (ns-aliases *ns*))]
+    (try
+      (ns-unalias *ns* alias)
+      (catch Exception _)))
+  (doseq [alias (keys (ns-refers *ns*))]
+    (try
+      (ns-unmap *ns* alias)
+      (catch Exception _))))

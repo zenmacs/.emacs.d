@@ -1,3 +1,27 @@
 #name: doc
 # --
-(clojure.repl/doc $1)
+quote ((fn [x]
+
+            (cond
+              (not (symbol? x)) ;; ::some-spec
+              (eval \`(nedap.speced.def/doc ~(eval x)))
+
+              (try ;; Integer/parseInt
+                (eval x)
+                false
+                (catch Exception _
+                  true))
+              (eval \`(clojure.java.javadoc/javadoc ~(-> x str (clojure.string/split #"/") first symbol)))
+
+              (try ;; Integer
+                (-> x eval class?)
+                (catch Exception _
+                  false))
+              (eval \`(clojure.java.javadoc/javadoc ~(-> x eval)))
+
+              true ;; +, clojure.core/+
+              (eval \`(nedap.speced.def/doc ~(-> x))))
+
+
+
+            ))

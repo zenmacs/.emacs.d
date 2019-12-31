@@ -1,12 +1,19 @@
 #name: ast
 # --
 (try
+  (clojure.core/some-> 'vemv-warm/vemv-warm resolve deref deref)
   (clojure.core/require 'refactor-nrepl.core)
   (clojure.core/require 'refactor-nrepl.middleware)
   (clojure.core/require 'refactor-nrepl.analyzer)
   (time
-    (-> 'refactor-nrepl.analyzer/warm-ast-cache resolve deref .call))
+    (->> (-> 'refactor-nrepl.analyzer/warm-ast-cache resolve deref .call)
+         (partition 2)
+         (remove (fn [[k v]] (= v "OK")))
+         (into {} (map vec))))
   (catch Throwable _
-    (clojure.core/reset! @#'refactor-nrepl.analyzer/ast-cache {})
+    (clojure.core/reset! (-> 'refactor-nrepl.analyzer/ast-cache resolve deref) {})
     (clojure.core/println "Retrying...")
-    (-> 'refactor-nrepl.analyzer/warm-ast-cache resolve deref .call)))
+    (->> (-> 'refactor-nrepl.analyzer/warm-ast-cache resolve deref .call)
+         (partition 2)
+         (remove (fn [[k v]] (= v "OK")))
+         (into {} (map vec)))))
