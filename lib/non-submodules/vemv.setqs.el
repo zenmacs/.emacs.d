@@ -204,6 +204,7 @@
  '(pe/inline-folders nil)
  '(tree-widget-image-enable nil)
  '(cljr-auto-sort-ns nil)
+ '(cljr-assume-language-context "clj")
  '(cljr-project-clean-prompt nil)
  '(cljr-clojure-test-declaration "[ :as sut] [clojure.test :refer :all]")
  '(cljr-cljs-clojure-test-declaration "[ :as sut] [cljs.test :as t :include-macros true]")
