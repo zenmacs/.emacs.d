@@ -315,12 +315,14 @@ it looks up the thing currently being invoked, i.e. the first element of the fir
         (vemv/starts-with n "unit.")
         (vemv/starts-with n "functional.")
         (vemv/starts-with n "integration.")
+        (vemv/starts-with n "generative.")
 
         (vemv/contains? n ".t-")
         (vemv/contains? n ".acceptance.")
         (vemv/contains? n ".unit.")
         (vemv/contains? n ".functional.")
         (vemv/contains? n ".integration.")
+        (vemv/contains? n ".generative.")
 
         (vemv/ends-with n "-spec")
         (vemv/ends-with n "-test"))))
