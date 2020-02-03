@@ -240,10 +240,10 @@ of the buffer into a formatted string."
 ;; `public`: for Rails' `public/assets`
 ;; `checkouts`: important one, can get huge with my `accessible-jars` plugin
 (setq pe/omit-regex (mapconcat 'identity
-                               (list "^#" "~$" "^node_modules$" "tmp" ".git$" ".sass-cache" "checkouts" ".elc$" "backups"
-                                     "pom.xml" "semantic"
-                                     ".lumo-cache" "target" "auto-save-list" "project-explorer-cache" "public" ".nrepl-port"
-                                     "dist" "generated" ".ok$" ".DS_Store" ".lein-*" ".nrepl-* " ".eastwood" ".cljs_rhino_repl")
+                               (list "^#" "~$" "^node_modules$" "^tmp" ".git$" ".sass-cache" "^checkouts" ".elc$" "^backups"
+                                     "pom.xml" "^semantic"
+                                     ".lumo-cache" "^target" "auto-save-list" "project-explorer-cache" "^public" ".nrepl-port"
+                                     "^dist" "^generated" ".ok$" ".DS_Store" ".lein-*" ".nrepl-* " ".eastwood" ".cljs_rhino_repl")
                                "\\|"))
 
 ;; Taken from ruby-mode
