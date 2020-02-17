@@ -444,6 +444,8 @@
                                 (vemv/set-keys-for-scope clojure-mode-map vemv/clojure-key-bindings))
                               (define-key clojure-mode-map (kbd "C-M-0") 'hydra-cljr-help-menu/body)
                               (define-key clojure-mode-map (kbd ";") 'vemv/semicolon)
+                              (define-key clojure-mode-map (kbd "s-;") (argless
+                                                                        (insert "#_ ")))
                               (define-key clojure-mode-map (kbd "<tab>") 'vemv/tab)
                               (define-key clojure-mode-map (kbd "<s-tab>") 'vemv.message-clojure-doc/of-current-invocation)
                               ;; XXX backtab not handled by gen.rb
