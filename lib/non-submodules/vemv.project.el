@@ -149,12 +149,19 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
                                                                         ""
                                                                       "/")))
 
-    (setq vemv/project-type (or vemv/project-type
-                                (if (file-exists-p (concat vemv/project-root-dir "Gemfile"))
-                                    :ruby
-                                  (if (vemv/is-cljs-project?)
-                                      :cljs
-                                    :clj))))
+    (let* ((chosen-project-type vemv/project-type))
+      (setq vemv/project-type (or vemv/project-type
+                                  (if (file-exists-p (concat vemv/project-root-dir "Gemfile"))
+                                      :ruby
+                                    ;; (`:cljs` project detection disabled for now / not particularly reliable or needed)
+                                    :clj)))
+
+
+      (when (and (not chosen-project-type)
+                 (eq vemv/project-type :clj)
+                 (fboundp 'vemv/default-clj-setup))
+        ;; `vemv/default-clj-setup` is a personal function - cannot be hardcoded
+        (vemv/default-clj-setup)))
 
     (setq vemv/project-initializers (or vemv/project-initializers (lambda ())))
 
