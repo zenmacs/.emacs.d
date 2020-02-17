@@ -154,14 +154,12 @@ OPEN-AT-PWD decides the initial pwd of the prompt."
   (interactive)
   (mapcar 'vemv/open (vemv/all-git-modified-files)))
 
+;; Notes:
+;; * an inline diff cannot work well, since that would easily leave unbalanced parentheses
+;; * The git-gutter package is not polished enough to use.
 (defun vemv/open-git-diff-against ()
   (interactive)
   (require 'magit-diff)
-  (require 'git-gutter)
-  (defsubst git-gutter:show-gutter-p (diffinfos)
-    t)
-  (defsubst git-gutter:reset-window-margin-p ()
-    nil)
   (select-window vemv/main_window)
   (let* ((default-directory vemv/project-root-dir)
          (branch (magit-diff-read-range-or-commit "Branch" vemv.project/default-git-branch))
@@ -170,11 +168,4 @@ OPEN-AT-PWD decides the initial pwd of the prompt."
                      (vemv/git-file-list-for nil)
                      (-filter 'file-exists-p))))
     (mapcar 'find-file-noselect files)
-    ;; disabled until git-gutter reworked
-    (comm mapcar (lambda (x)
-                   (with-current-buffer (get-file-buffer x)
-                     (switch-to-buffer (current-buffer) t t)
-                     (setq git-gutter:diff-option branch)
-                     (git-gutter-mode)))
-          files)
     (vemv/next-file-buffer)))
