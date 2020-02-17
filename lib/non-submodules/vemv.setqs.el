@@ -243,7 +243,8 @@ of the buffer into a formatted string."
                                (list "^#" "~$" "^node_modules$" "^tmp" ".git$" ".sass-cache" "^checkouts" ".elc$" "^backups"
                                      "pom.xml" "^semantic"
                                      ".lumo-cache" "^target" "auto-save-list" "project-explorer-cache" "^public" ".nrepl-port"
-                                     "^dist" "^generated" ".ok$" ".DS_Store" ".lein-*" ".nrepl-* " ".eastwood" ".cljs_rhino_repl")
+                                     "^dist" "^generated" ".ok$" ".DS_Store" ".lein-*" ".nrepl-* " ".eastwood" ".cljs_rhino_repl"
+                                     "^.clj-kondo" "^coverage")
                                "\\|"))
 
 ;; Taken from ruby-mode
