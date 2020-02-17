@@ -1,0 +1,3 @@
+#name: suite
+# --
+(do (clojure.tools.namespace.repl/clear) (clojure.core/alter-var-root #'clojure.test/*load-tests* (clojure.core/constantly true)) (clojure.tools.namespace.repl/refresh :after 'clojure.test/run-all-tests))
