@@ -548,9 +548,19 @@ Adds kw-to-find-fallback."
              (not (vemv/current-buffer-is-cljs)))
     (end-of-defun)
     (beginning-of-defun)
-    (let* ((s (vemv.clojure-interaction/sync-eval-to-string (concat "(with-out-str (clj-java-decompiler.core/decompile "
-                                                                    (vemv/sexpr-content)
+    (let* ((bounds (save-excursion
+                     (goto-char (cadr (cider-sexp-at-point 'bounds)))
+                     (cider-last-sexp 'bounds)))
+           (content (vemv/sexpr-content))
+           (s (vemv.clojure-interaction/sync-eval-to-string (concat "(clojure.core/with-out-str (clj-java-decompiler.core/decompile "
+                                                                    content
                                                                     "))")))
+           ;; eval again for preserving metadata:
+           (_ (cider-interactive-eval (concat "(eval '" content ")")
+                                      nil
+                                      ;; specify line/column info (which also ensures :file correctness):
+                                      (list (-> bounds car)
+                                            (-> bounds car))))
            (s (->> s
                    (s-chop-prefix "\"")
                    (s-chop-suffix "\"")
