@@ -167,5 +167,22 @@ OPEN-AT-PWD decides the initial pwd of the prompt."
                      (concat "git diff --name-only ")
                      (vemv/git-file-list-for nil)
                      (-filter 'file-exists-p))))
+
+
+    ;; close file buffers, so that the GUI popup becomes clearer, allowing easy navigation through large diffs:
+    (->> (buffer-list)
+         (mapcar (lambda (b)
+                   (let* ((f (buffer-file-name b)))
+                     (when (and f
+                                (or (s-ends-with? ".clj" f)
+                                    (s-ends-with? ".cljc" f)
+                                    (s-ends-with? ".cljs" f)
+                                    (s-ends-with? ".edn" f)
+                                    (s-ends-with? ".rb" f)
+                                    (s-ends-with? ".ts" f)
+                                    (s-ends-with? ".js" f)))
+                       (with-current-buffer b
+                         (vemv/close-this-buffer :noswitch)))))))
+
     (mapcar 'find-file-noselect files)
     (vemv/next-file-buffer)))
