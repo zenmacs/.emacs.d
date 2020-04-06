@@ -160,6 +160,17 @@
           (setq cider-repl-type "cljs")
           (cider-create-sibling-cljs-repl b))))))
 
+
+(defun vemv/lein-deps-command ()
+  (concat "source ~/.zshrc; " ;; XXX don't assume zsh
+          vemv.project/cd-command
+          vemv/project-clojure-dir
+          "; export ZENMACS_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2> /dev/null | ruby -e \"puts STDIN.read.split('/').last || 'master'\")"
+          "; if git diff $ZENMACS_BRANCH --exit-code -- project.clj > /dev/null; then; else"
+          "; lein with-profile "
+          (s-join "," vemv.project.default-lein-profiles)
+          " do clean, deps; fi"))
+
 (defun vemv/clojure-init-or-send-sexpr ()
   (interactive)
   (when (vemv/in-clojure-mode?)
@@ -177,12 +188,7 @@
           (setq vemv/running-project-type vemv/project-type)
           (delay (argless (funcall vemv/project-initializers)
                           (unless vemv/cider-port
-                            (let* ((s (concat "source ~/.zshrc; " ;; XXX don't assume zsh
-                                              vemv.project/cd-command
-                                              vemv/project-clojure-dir
-                                              "; lein with-profile "
-                                              (s-join "," vemv.project.default-lein-profiles)
-                                              " do clean, deps")))
+                            (let* ((s (vemv/lein-deps-command)))
                               (shell-command-to-string s)))
                           (vemv/safe-select-window vemv/main_window)
                           (if (vemv/is-cljs-project?)
