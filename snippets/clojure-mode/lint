@@ -1,0 +1,1 @@
+(formatting-stack.core/format! :formatters [] :in-background? false :linters (->> formatting-stack.project-formatter/default-linters reverse (take 1)))
