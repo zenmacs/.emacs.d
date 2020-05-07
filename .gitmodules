@@ -34,3 +34,6 @@
 [submodule "lib/clj-refactor"]
 	path = lib/clj-refactor
 	url = https://github.com/zenmacs/clj-refactor.el.git
+[submodule "lib/helm-ag"]
+	path = lib/helm-ag
+	url = https://github.com/zenmacs/helm-ag.git

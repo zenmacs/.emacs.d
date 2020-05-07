@@ -20,11 +20,12 @@
                      company
                      dash
                      edn
+                     ert
                      exec-path-from-shell
                      fiplr
                      git-timemachine
                      haml-mode
-                     helm-ag
+                     helm-projectile
                      highlight-indent-guides
                      hydra
                      ido-at-point
