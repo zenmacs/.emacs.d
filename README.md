@@ -41,7 +41,7 @@ I am aware of this weakness. Be assured, dear reader, that if this project takes
 
 * Note that you need an Unix-y OS.
 * Watch the video so you know what to expect.
-* Get Emacs (26 or 25). For macOS I wholeheartedly recommend `brew install railwaycat/emacsmacport/emacs-mac --with-gnutls, --with-no-title-bars`.
+* Get Emacs (26 or 25). For macOS I recommend `brew install railwaycat/emacsmacport/emacs-mac`.
 * Possibly, disable unnecessary OS system shortcuts (example: `Control + left` in macOS) which may take precedence over Emacs.
 * Backup and remove `~/.emacs.d` if that directory existed already
 * Clone the repo into `~`, so Emacs will pick up `~/.emacs.d` on startup
