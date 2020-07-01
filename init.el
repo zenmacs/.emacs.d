@@ -129,6 +129,10 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
                       "Monaco-12"
                     "DejaVu Sans Mono-13"))
 
+  (setq vemv-font-smaller (if (eq system-type 'darwin)
+                              "Monaco-11"
+                            "DejaVu Sans Mono-10"))
+
   (when (window-system)
     (set-face-attribute 'default nil :font vemv-font))
 

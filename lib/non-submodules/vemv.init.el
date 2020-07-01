@@ -56,7 +56,9 @@
 
 (when (window-system)
   (delay (argless
-          (set-face-attribute 'default nil :font vemv-font))
+          (set-face-attribute 'default nil :font vemv-font)
+          (set-face-attribute 'mode-line nil :font vemv-font-smaller)
+          (set-face-attribute 'mode-line-inactive nil :font vemv-font-smaller))
          1))
 
 (defun undo (&rest args)
