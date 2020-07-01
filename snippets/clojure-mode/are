@@ -1,4 +1,9 @@
 #name: are
+# Ensures the following best practices are honored:
+#  * Bindings are best expressed in `[input expected]` order. It's most intuitive to create an Input->Output mapping, not O->I
+#  * The `=` call is passed in `expected input` order, because that's the clojure.test API.
+#  * There's a `testing`, for informative reporting, did the test fail
+#  * There's a `true` at tail position, so that failures aren't duplicated or confusing.
 # --
 (are [input expected] (testing input
                         (is (= expected
