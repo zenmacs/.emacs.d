@@ -114,7 +114,7 @@
       confirm-nonexistent-file-or-buffer nil
       create-lockfiles nil ;; no .#filenames
       css-indent-offset 2
-      custom-file "~/.emacs.d/custom.el"
+      custom-file "~/.emacs.d/custom.el" ;; not to be used anymore - I want everything to be set in `vemv.setqs` instead. This setq avoids the default, so that we can decide to not `load` the custom file at all.
       delete-by-moving-to-trash nil
       echo-keystrokes 0.02
       flycheck-display-errors-function (lambda (errors)

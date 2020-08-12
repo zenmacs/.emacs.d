@@ -39,9 +39,7 @@
   (global-set-key [menu-bar File] nil) ;; b/c recentf-mode
   (global-company-mode)
   (menu-bar-mode)
-  (yas-global-mode 1)
-  (shell-command-to-string "touch ~/.emacs.d/custom.el")
-  (load custom-file))
+  (yas-global-mode 1))
 
 (global-auto-revert-mode t) ;; refresh buffers on external changes to the underlying files
 (global-hl-line-mode t)
