@@ -393,6 +393,15 @@ When not, the callback will be invoked just once, so the code can be incondition
                ,@body))
          ,@body))))
 
+(defun vemv/remove-log-files! ()
+  (vemv.clojure-interaction/sync-eval-to-string
+   "(->> [\"dev.log\" \"test.log\"]
+       (mapv (fn [logfile]
+                 (let [f (-> \"user.dir\" System/getProperty (clojure.java.io/file \"log\" logfile))]
+                   (when (-> f .exists)
+                     [logfile :deleted (-> f .delete)]
+                     (-> f .createNewFile))))))"))
+
 (defun vemv/test-this-ns ()
   "Runs the tests for the current namespace, or if not applicable, for the latest applicable ns."
   (interactive)
@@ -418,7 +427,9 @@ When not, the callback will be invoked just once, so the code can be incondition
                                                                           (concat "(cljs.test/run-tests '"
                                                                                   chosen
                                                                                   ")"))
-                                                             (cider-test-execute chosen nil nil)))))))
+                                                             (progn
+                                                               (vemv/remove-log-files!)
+                                                               (cider-test-execute chosen nil nil))))))))
                               vemv/clojure-test-refresh-command)))
 
 (defun vemv/run-this-deftest-cljs ()
@@ -454,6 +465,7 @@ or something custom that returns a var, which must have :name and :test metadata
   (when (and (vemv/ciderable-p)
              (s-ends-with? ".clj" (buffer-file-name)))
     (vemv/close-cider-error)
+    (vemv/remove-log-files!)
     (vemv/load-clojure-buffer (vemv/on-nrepl-success (with-selected-window vemv/main_window
                                                        (save-excursion
                                                          (unless (and (zero? (current-column))
