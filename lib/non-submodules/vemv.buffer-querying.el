@@ -92,6 +92,11 @@
   ;; better: derived-mode-p
   (vemv/in-a-clojure-mode?))
 
+(defun vemv/current-buffer-is-jvm-clj ()
+  (or (s-ends-with? ".clj" (buffer-name) )
+      (and (vemv/contains? (buffer-name) ".cljc")
+           (not (eq vemv/project-type :cljs)))))
+
 (defun vemv/current-buffer-is-cljs ()
   (or (vemv/contains? (buffer-name) ".cljs")
       (and (vemv/contains? (buffer-name) ".cljc")

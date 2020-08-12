@@ -221,30 +221,65 @@
           (call-interactively 'cider-find-keyword)
         (cider-find-var)))))
 
+(defun vemv/docstring-of-ctor (x)
+  (read (vemv.clojure-interaction/sync-eval-to-string
+         (concat "(let [c (-> \"" x "\" (clojure.string/replace #\"\\.$\" \"\") read-string eval)
+                   cn (.getName c)
+                   imports (into {}
+                                 (map (fn [[k v]]
+                                          [(-> v .getName symbol)
+                                           k]))
+                                 (ns-imports *ns*))
+                   ctors (->> c
+                              clojure.reflect/reflect
+                              :members
+                              (filter (partial instance? clojure.reflect.Constructor))
+                              (map :parameter-types)
+                              (map (fn [syms]
+                                       (->> syms
+                                            (mapv (fn [sym]
+                                                      (get imports sym sym))))))
+                              (sort-by count)
+                              (clojure.string/join \\newline))]
+             ctors)"))))
+
+(defun vemv/propertize-class (s)
+  (propertize s 'face 'vemv-warning-face))
+
 (defun vemv/docstring-of-var (var)
   (let ((cider-prompt-for-symbol nil)
         (h (ignore-errors
              (cider-var-info var))))
     (when h
-      (let* ((a (nrepl-dict-get h "arglists-str"))
+      (let* ((c (nrepl-dict-get h "class"))
+             (a (nrepl-dict-get h "arglists-str"))
              (d (-some->> (nrepl-dict-get h "doc")
-                          (s-split "\n\n")
-                          (mapcar (lambda (x)
-                                    (->> x
-                                         (s-split "\n")
-                                         (mapcar 's-trim)
-                                         (s-join "\n"))))
-                          (s-join "\n\n")))
+                  (s-split "\n\n")
+                  (mapcar (lambda (x)
+                            (->> x
+                                 (s-split "\n")
+                                 (mapcar 's-trim)
+                                 (s-join "\n"))))
+                  (s-join "\n\n")))
              (name (nrepl-dict-get h "name"))
              (ns (nrepl-dict-get h "ns")))
-        (concat (if (and name ns)
-                    (propertize (concat ns "/" name)
-                                'face 'vemv-warning-face)
-                  name)
-                (when a
-                  (concat "\n\n" a))
-                (when d
-                  (concat "\n\n" d)))))))
+        (if c
+            (if (and (s-ends-with? "." var)
+                     (vemv/current-buffer-is-jvm-clj))
+                (concat (vemv/propertize-class c)
+                        "\n\n"
+                        (vemv/docstring-of-ctor var))
+              (if (s-contains? "/" var)
+                  (concat (vemv/propertize-class var)
+                          "\n\n" (nrepl-dict-get h "arglists-str"))
+                (vemv/propertize-class c)))
+          (concat (if (and name ns)
+                      (vemv/propertize-class (concat ns "/" name))
+                    name)
+                  (when a
+                    (concat "\n\n" a))
+                  (when d
+                    (concat "\n\n" d))))))))
 
 (defun vemv/message-clojure-doc ()
   (interactive)
