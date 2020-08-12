@@ -11,6 +11,8 @@
     x)
   (defun put-clojure-indent (&rest _)))
 
+(defvar vemv/clj-repl-name nil)
+
 (setq vemv/default-cider-cljs-lein-repl
       "(do (require 'figwheel-sidecar.repl-api)
 
@@ -63,7 +65,7 @@
      (setq vemv/modifiers/secondary nil)
      (setq vemv/modifiers/tertiary nil)
      (setq cljr-warn-on-eval t) ;; https://github.com/clojure-emacs/cider/issues/2327
-     (setq vemv/clj-repl-name nil)
+     ;; (setq vemv/clj-repl-name nil) ;; let the first connection be sticky across projects. handy for monorepos
      (setq vemv/cljs-repl-name nil)
      (setq vemv/no-newline-at-eof nil)
      (setq vemv/comment-indent-function 'comment-indent-default)
@@ -182,9 +184,13 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
 
     (setq vemv/repl-identifier (or vemv/repl-identifier (cider-project-name vemv/project-root-dir)))
 
-    (if vemv/cider-port
-        (setq vemv/clj-repl-name (concat "*cider-repl 127.0.0.1*"))
-      (setq vemv/clj-repl-name (concat "*cider-repl " vemv/repl-identifier "*")))
+    ;; let the first connection be sticky across projects. handy for monorepos
+    (when (not (and vemv/clj-repl-name
+                    (cider-connected-p)))
+
+      (if vemv/cider-port
+          (setq vemv/clj-repl-name (concat "*cider-repl 127.0.0.1*"))
+        (setq vemv/clj-repl-name (concat "*cider-repl " vemv/repl-identifier "*"))))
 
     (if "using cider 0.16"
         (setq vemv/cljs-repl-name (concat "*cider-repl CLJS " vemv/repl-identifier "*"))
