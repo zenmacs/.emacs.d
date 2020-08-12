@@ -246,6 +246,9 @@
 (defun vemv/propertize-class (s)
   (propertize s 'face 'vemv-warning-face))
 
+(defun vemv/propertize-interface (s)
+  (propertize s 'face 'clojure-type-metadata-face))
+
 (defun vemv/docstring-of-var (var)
   (let ((cider-prompt-for-symbol nil)
         (h (ignore-errors
@@ -272,7 +275,19 @@
               (if (s-contains? "/" var)
                   (concat (vemv/propertize-class var)
                           "\n\n" (nrepl-dict-get h "arglists-str"))
-                (vemv/propertize-class c)))
+                (let* ((i (nrepl-dict-get h "interfaces"))
+                       (i-info (when (first i)
+                                 (concat "\n\nimplements " (->> i
+                                                                (mapcar 'vemv/propertize-interface)
+                                                                (s-join ", ")))))
+                       (super (nrepl-dict-get h "super"))
+                       (super-info (when (and super
+                                              (not (string-equal super "java.lang.Object")))
+                                     (concat " extends " (vemv/propertize-interface super)))))
+                  "super" "java.lang.Object"
+                  (concat (vemv/propertize-class c)
+                          super-info
+                          i-info))))
           (concat (if (and name ns)
                       (vemv/propertize-class (concat ns "/" name))
                     name)
