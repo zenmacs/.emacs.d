@@ -206,7 +206,7 @@
  '(cljr-auto-sort-ns nil)
  '(cljr-assume-language-context "clj")
  '(cljr-project-clean-prompt nil)
- '(cljr-clojure-test-declaration "[ :as sut] [clojure.test :refer :all]")
+ '(cljr-clojure-test-declaration "[clojure.test :refer [are deftest is join-fixtures testing use-fixtures]]")
  '(cljr-cljs-clojure-test-declaration "[ :as sut] [cljs.test :as t :include-macros true]")
  '(cljr-favor-private-function nil)
  '(cljr-auto-clean-ns nil)
