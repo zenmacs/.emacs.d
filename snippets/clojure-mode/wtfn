@@ -1,0 +1,9 @@
+#name: wtfn
+# --
+(->> (all-ns)
+     (map ns-publics)
+     (mapcat vals)
+     (distinct)
+     (filter (fn [var-ref]
+               (->> var-ref symbol str (re-find #"$1"))))
+     (clojure.pprint/pprint))
