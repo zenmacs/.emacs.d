@@ -118,11 +118,16 @@
           (beginning-of-buffer)
 
           (seq-doseq (f (butlast final-fragments))
-            (while (not (string-equal f (pe/current-directory)))
+            (while (and (not (string-match-p pe/omit-regex f))
+                        (not (string-equal f (pe/current-directory)))
+                        (not (eq (- (point) 1)
+                                 (buffer-size))))
               (next-line))
             (pe/return))
 
-          (while (not (string-equal goal (pe/get-filename)))
+          (while (and (not (string-equal goal (pe/get-filename)))
+                      (not (eq (- (point) 1)
+                               (buffer-size))))
             (next-line))
 
           (beginning-of-line)
