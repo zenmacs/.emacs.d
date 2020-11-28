@@ -137,7 +137,7 @@ OPEN-AT-PWD decides the initial pwd of the prompt."
 
 (defun vemv/git-unstaged-files ()
   "The new and modified files, that are not in the staging area. Does not include deleted files."
-  (vemv/git-file-list-for "\"^ M \\|^??\""))
+  (vemv/git-file-list-for "\"^ M \\|^??\\|^UU\""))
 
 (defun vemv/all-git-modified-files ()
   (-concat (vemv/git-staged-files) (vemv/git-unstaged-files)))
