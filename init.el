@@ -28,6 +28,10 @@
   (progn
     "Stuff that needs to be performed immediately, for a visually pleasant startup"
 
+    (when (window-system)
+      (add-to-list 'default-frame-alist '(fullscreen . fullboth))
+      (add-to-list 'default-frame-alist '(fullscreen-restore . fullboth)))
+
     (setq-default line-spacing 1) ;; NOTE: might mess up the echo area
 
     (setq-default frame-title-format '("%b"))
