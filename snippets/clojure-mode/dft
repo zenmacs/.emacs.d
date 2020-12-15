@@ -1,0 +1,9 @@
+#name: dft
+# --
+(deftest $1
+  (testing "$2"
+    (are [input expected] (testing input
+                            (is (= expected
+                                   (sut/$1 input)))
+                            true)
+      $3)))

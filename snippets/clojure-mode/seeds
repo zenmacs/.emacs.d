@@ -1,8 +1,0 @@
-#name: seeds
-# --
-@(datomic.api/transact
-   (-> (pepkey.core/running-system)
-      :config
-      pepkey.components.config/database-url
-      datomic.api/connect)
-    (-> $1 pepkey.datomic.test-helpers/link-entities :items))

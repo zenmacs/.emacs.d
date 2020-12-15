@@ -1,3 +1,0 @@
-#name: schema
-# --
-(-> (pepkey.core/running-system) :database :connection pepkey.datomic.schema/fetch-schema clojure.pprint/pprint)

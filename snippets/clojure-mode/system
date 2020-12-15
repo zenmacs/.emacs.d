@@ -1,3 +1,0 @@
-#name: system
-# --
-(-> (pepkey.core/running-system) $1)

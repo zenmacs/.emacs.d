@@ -1,8 +1,0 @@
-#name: tx
-# --
-@(datomic.api/transact
-   (-> com.stuartsierra.component.repl/system
-      :config
-      pepkey.components.config/database-url
-      datomic.api/connect)
-    [[$1]])

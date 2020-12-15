@@ -1,6 +1,6 @@
 #name: diff
 # --
-(->
+$0(->
   $1
   (lambdaisland.deep-diff/diff $2)
   lambdaisland.deep-diff/pretty-print)
