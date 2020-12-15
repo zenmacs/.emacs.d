@@ -11,13 +11,20 @@
 
 (defun vemv/after-file-open-without-project-explorer-highlighting (of-current-project?)
   (interactive)
+
   (when of-current-project?
-    (when (and (vemv/in-clojure-mode?)
-               (not vemv/ns-shown))
-      (vemv/toggle-ns-hiding :after-file-open))
-    (vemv/clean-chosen-file-buffer-order)
+    (let* ((t? (cljr--in-tests-p)))
+      (when (and (vemv/in-clojure-mode?)
+                 (not vemv/ns-shown)
+                 (not t?))
+        (vemv/toggle-ns-hiding :after-file-open))
+      (when t?
+        (setq-local vemv/ns-shown t))
+      (vemv/clean-chosen-file-buffer-order))
     (setq-local mode-line-format tabbed-line-format))
+
   (vemv/advice-nrepl)
+
   (vemv/ensure-repl-visible))
 
 (defun vemv/after-file-open-impl (&optional skip-debouncing?)
