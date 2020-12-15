@@ -277,8 +277,6 @@
 
  `(window-number-face ((t (:background "grey10" :foreground "#696969"))))
 
- `(yas/field-highlight-face ((t (:background "deep pink" :foreground "black"))))
-
  ;; Emacs 25:
  `(show-paren-match-face ((t ,(if (eq :ruby vemv/project-type)
                                   `(:foreground ,vemv-default-foreground-color :background ,vemv-colors/purple)

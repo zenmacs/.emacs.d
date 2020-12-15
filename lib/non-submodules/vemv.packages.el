@@ -113,7 +113,9 @@
 (unless vemv/terminal-emacs?
   (require 'desktop)
   (require 'smartparens-config)
-  (require 'yasnippet))
+  (require 'yasnippet)
+  (custom-set-faces
+   '(yas-field-highlight-face ((t (:inherit nil))))))
 
 (autoload 'ido-at-point-mode "ido-at-point")
 
