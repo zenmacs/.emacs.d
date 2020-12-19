@@ -25,7 +25,6 @@
                      fiplr
                      git-timemachine
                      haml-mode
-                     helm-projectile
                      highlight-indent-guides
                      hydra
                      ido-at-point
