@@ -53,7 +53,7 @@
   (add-hook 'focus-in-hook 'vemv/advice-nrepl))
 
 (defun vemv/open (&optional filepath open-at-pwd)
-  "Opens a file (from FILEPATH or the user input).
+  "Opens a file (from FILEPATH or the user input), creating it if it didn't exist already (per the provided path).
 OPEN-AT-PWD decides the initial pwd of the prompt."
   (interactive)
   (vemv/safe-select-frame)
@@ -65,8 +65,9 @@ OPEN-AT-PWD decides the initial pwd of the prompt."
                               (if (vemv/contains? (buffer-file-name) vemv/project-root-dir)
                                   default-directory
                                 vemv/project-clojure-dir)))
+         ;; magical let - do not unwrap!
          (file (buffer-name (or (and filepath (find-file filepath))
-                                (ido-find-file)))))) ;; magical let - do not unwrap!
+                                (ido-file-internal ido-default-file-method nil nil "(C-f to toggle completion) "))))))
   (replying-yes ;; create intermediate directories
    (save-buffer))
   (vemv/refresh-file-caches (argless
