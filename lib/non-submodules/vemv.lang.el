@@ -99,8 +99,9 @@
     ))
 
 (defun vemv/smex ()
-  (when vemv/launched
-    (smex)))
+  (if vemv/launched
+      (smex)
+    (error "`vemv/launched` is nil. Check *Messages*")))
 
 (defun vemv/emacs-reload ()
   (let ((was-verbose vemv/verbose-mode))
