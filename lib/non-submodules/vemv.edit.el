@@ -115,8 +115,16 @@
   (interactive)
   (replying-yes
    (when-let* ((filename (buffer-file-name)))
+     (->> vemv/chosen-file-buffer-order
+          (gethash vemv/current-project)
+          (-clone)
+          (mapcar (lambda (_b)
+                    (if (string-equal _b filename)
+                        (when-let* ((b (get-file-buffer _b)))
+                          (with-current-buffer b
+                            (vemv/close-this-buffer :noswitch)))))))
      (delete-file filename)
-     (kill-buffer))))
+     (vemv/refresh-file-caches nil :force))))
 
 (defun vemv/sudo ()
   (interactive)
