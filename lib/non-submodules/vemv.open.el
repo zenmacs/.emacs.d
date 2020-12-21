@@ -52,6 +52,14 @@
 (defvar vemv/after-file-open-watcher
   (add-hook 'focus-in-hook 'vemv/advice-nrepl))
 
+(defun vemv/maybe-replace-dashes-for-clj (f dir)
+  (if (and (or (s-ends-with? ".clj" f)
+               (s-ends-with? ".cljc" f)
+               (s-ends-with? ".cljs" f))
+           (s-starts-with? dir f))
+      (concat dir (s-replace "-" "_" (s-replace dir "" f)))
+    f))
+
 (defun vemv/open (&optional filepath open-at-pwd)
   "Opens a file (from FILEPATH or the user input), creating it if it didn't exist already (per the provided path).
 OPEN-AT-PWD decides the initial pwd of the prompt."
@@ -66,8 +74,9 @@ OPEN-AT-PWD decides the initial pwd of the prompt."
                                   default-directory
                                 vemv/project-clojure-dir)))
          ;; magical let - do not unwrap!
-         (file (buffer-name (or (and filepath (find-file filepath))
-                                (ido-file-internal ido-default-file-method nil nil "(C-f to toggle completion) "))))))
+         (file (buffer-name (find-file (or filepath
+                                           (vemv/maybe-replace-dashes-for-clj (ido-read-file-name "(C-f to toggle completion) ")
+                                                                              default-directory)))))))
   (replying-yes ;; create intermediate directories
    (save-buffer))
   (vemv/refresh-file-caches (argless
