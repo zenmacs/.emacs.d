@@ -123,6 +123,7 @@
       global-hl-line-sticky-flag t
       helm-ag-command-option "--hidden"
       helm-display-header-line nil
+      helm-truncate-lines t
       hi-lock-file-patterns-policy 'never
       highlight-indent-guides-character ?·
       highlight-indent-guides-method 'character
