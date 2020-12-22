@@ -478,7 +478,8 @@ When not, the callback will be invoked just once, so the code can be incondition
   "Evaluates and runs the test definition form at point. It can be `deftest',
 or something custom that returns a var, which must have :name and :test metadata."
   (when (and (vemv/ciderable-p)
-             (s-ends-with? ".clj" (buffer-file-name)))
+             (or (s-ends-with? ".clj" (buffer-file-name))
+                 (s-ends-with? ".cljc" (buffer-file-name))))
     (vemv/close-cider-error)
     (vemv/remove-log-files!)
     (vemv/load-clojure-buffer (vemv/on-nrepl-success (with-selected-window vemv/main_window
