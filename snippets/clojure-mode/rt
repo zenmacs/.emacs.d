@@ -1,7 +1,7 @@
 (clojure.core/when-let [v (do
                             (clojure.core/when-not clojure.test/*load-tests*
                               (clojure.tools.namespace.repl/clear)
-                              (clojure.core/alter-var-root clojure.test/*load-tests* (clojure.core/constantly true)))
+                              (clojure.core/alter-var-root #'clojure.test/*load-tests* (clojure.core/constantly true)))
                             (clojure.core/time (clojure.tools.namespace.repl/refresh :after 'clojure.test/run-tests)))]
   (clojure.core/when (clojure.core/instance? java.lang.Throwable v)
     (clojure.core/when (clojure.core/instance? java.io.FileNotFoundException v)
