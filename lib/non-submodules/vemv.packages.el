@@ -19,7 +19,6 @@
   (dolist (package '(benchmark-init
                      company
                      dash
-                     edn
                      ert
                      exec-path-from-shell
                      fiplr
@@ -32,6 +31,7 @@
                      magit
                      multiple-cursors
                      paren-face
+                     parseedn
                      pdf-tools
                      queue
                      robe
