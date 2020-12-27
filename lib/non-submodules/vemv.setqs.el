@@ -246,7 +246,7 @@ of the buffer into a formatted string."
                                      "pom.xml" "^semantic"
                                      ".lumo-cache" "^target" "auto-save-list" "project-explorer-cache" "^public" ".nrepl-port"
                                      "^dist" "^generated" ".ok$" ".DS_Store" ".lein-*" ".nrepl-* " ".eastwood" ".cljs_rhino_repl"
-                                     "^.clj-kondo" "^coverage")
+                                     "^.clj-kondo" "^coverage" "\.*.log$")
                                "\\|"))
 
 ;; Taken from ruby-mode
