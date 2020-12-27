@@ -219,7 +219,28 @@
            (cider-prompt-for-symbol nil))
       (if curr-token-is-qualified-kw
           (call-interactively 'cider-find-keyword)
-        (cider-find-var)))))
+        (let* ((maybe-jar-ref (read (vemv.clojure-interaction/sync-eval-to-string
+                                     (concat "
+(clojure.core/let [x '" curr-token "
+                   y (try (clojure.core/-> x clojure.core/pr-str (clojure.string/split #\"/\") clojure.core/first clojure.core/read-string clojure.core/eval) (catch java.lang.Exception _))]
+  (clojure.core/if-not (clojure.core/class? y)
+     nil
+     (clojure.core/-> y clojure.core/pr-str clojure.core/munge (clojure.string/replace \".\" \"/\") (clojure.core/str \".java\") (clojure.java.io/resource) clojure.core/str)))")))))
+          (if (s-blank? maybe-jar-ref)
+              (cider-find-var)
+            (when-let* ((x (cider-find-file maybe-jar-ref)))
+              ;; for some reason beginning-of-buffer doesn't appear to work if the buffer was open already.
+              ;; maybe some lib it's interfering? (there's one that remembers/restores POINT)
+              (kill-buffer x)
+              (let* ((x (cider-find-file maybe-jar-ref)))
+                (xref-push-marker-stack)
+                (with-current-buffer x
+                  (beginning-of-buffer)
+                  (re-search-forward c-Java-defun-prompt-regexp)
+                  (when (s-contains? "/" curr-token)
+                    (re-search-forward (concat (->> curr-token (s-split "/") last car) "\s*\("))
+                    (left-char)))
+                (switch-to-buffer x)))))))))
 
 (defun vemv/docstring-of-ctor (x)
   (read (vemv.clojure-interaction/sync-eval-to-string
