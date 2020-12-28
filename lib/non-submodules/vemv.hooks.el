@@ -780,3 +780,12 @@ START and END are buffer positions."
                                  (define-key typescript-mode-map [tab] 'vemv/tab)
                                  (define-key typescript-mode-map [menu-bar Tools] nil)
                                  (company-mode 1)))
+
+(defun zenmacs/remove-dos-eol ()
+  "Do not show ^M in files containing mixed UNIX and DOS line endings."
+  (interactive)
+  (when (not buffer-display-table)
+    (setq buffer-display-table (make-display-table)))
+  (aset buffer-display-table ?\^M []))
+
+(add-hook 'java-mode-hook 'zenmacs/remove-dos-eol)
