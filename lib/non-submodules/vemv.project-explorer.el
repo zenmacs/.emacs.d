@@ -118,7 +118,8 @@
           (beginning-of-buffer)
 
           (seq-doseq (f (butlast final-fragments))
-            (while (and (not (string-match-p pe/omit-regex f))
+            (while (and f
+                        (not (string-match-p pe/omit-regex f))
                         (not (string-equal f (pe/current-directory)))
                         (not (eq (- (point) 1)
                                  (buffer-size))))
