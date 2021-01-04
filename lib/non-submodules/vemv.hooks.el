@@ -379,6 +379,7 @@
                       'emacs-lisp-mode-hook
                       'haml-mode-hook
                       'html-mode-hook
+                      'java-mode-hook
                       'js-mode-hook
                       'ruby-mode-hook
                       'typescript-mode-hook))

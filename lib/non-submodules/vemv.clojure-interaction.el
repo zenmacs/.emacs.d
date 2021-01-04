@@ -206,6 +206,13 @@
               (vemv/send :cljs)
             (vemv/send :clj))))))
 
+(defun vemv/maybe-classify-token (token)
+  "Extracts the class out of TOKEN if possible."
+  (let* ((maybe-class (->> token (s-split "/") car)))
+    (if (equal maybe-class (s-downcase maybe-class))
+        token
+      maybe-class)))
+
 (defun vemv/jump-to-clojure-definition ()
   (interactive)
   (if (not (vemv/in-clojure-mode?))
@@ -214,18 +221,20 @@
         (if (eq major-mode 'typescript-mode)
             (tide-jump-to-definition)
           (call-interactively 'xref-find-definitions)))
-    (let* ((curr-token (cider-symbol-at-point 'look-back))
-           (curr-token-is-qualified-kw (vemv/starts-with curr-token "::"))
-           (cider-prompt-for-symbol nil))
+    (let* ((cider-prompt-for-symbol nil)
+           (curr-token (cider-symbol-at-point 'look-back))
+           (curr-token-is-qualified-kw (vemv/starts-with curr-token "::")))
       (if curr-token-is-qualified-kw
           (call-interactively 'cider-find-keyword)
-        (let* ((maybe-jar-ref (read (vemv.clojure-interaction/sync-eval-to-string
-                                     (concat "
+        (let* ((curr-token (vemv/maybe-classify-token curr-token))
+               (command (concat "
 (clojure.core/let [x '" curr-token "
                    y (try (clojure.core/-> x clojure.core/pr-str (clojure.string/split #\"/\") clojure.core/first clojure.core/read-string clojure.core/eval) (catch java.lang.Exception _))]
   (clojure.core/if-not (clojure.core/class? y)
      nil
-     (clojure.core/-> y clojure.core/pr-str clojure.core/munge (clojure.string/replace \".\" \"/\") (clojure.core/str \".java\") (clojure.java.io/resource) clojure.core/str)))")))))
+     (clojure.core/-> y clojure.core/pr-str clojure.core/munge (clojure.string/replace \".\" \"/\") (clojure.core/str \".java\") (clojure.java.io/resource) clojure.core/str)))"))
+               (maybe-jar-ref (read (vemv.clojure-interaction/sync-eval-to-string
+                                     command))))
           (if (s-blank? maybe-jar-ref)
               (cider-find-var)
             (when-let* ((x (cider-find-file maybe-jar-ref)))
@@ -235,8 +244,8 @@
               (let* ((x (cider-find-file maybe-jar-ref)))
                 (xref-push-marker-stack)
                 (with-current-buffer x
-                  (beginning-of-buffer)
-                  (re-search-forward c-Java-defun-prompt-regexp)
+                  (end-of-buffer)
+                  (beginning-of-defun)
                   (when (s-contains? "/" curr-token)
                     (re-search-forward (concat (->> curr-token (s-split "/") last car) "\s*\("))
                     (left-char)))
