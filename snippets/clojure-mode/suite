@@ -1,3 +1,20 @@
 #name: suite
 # --
-(do (clojure.tools.namespace.repl/clear) (clojure.core/alter-var-root #'clojure.test/*load-tests* (clojure.core/constantly true)) (time (clojure.tools.namespace.repl/refresh :after 'clojure.test/run-all-tests)))
+(do
+  (clojure.core/create-ns 'vemv)
+  (clojure.core/intern 'vemv 'run-all-tests (clojure.core/fn []
+                                 (clojure.core/->> (clojure.core/all-ns)
+                                      (clojure.core/filter (clojure.core/fn [n]
+                                                (clojure.core/->> n
+                                                     clojure.core/ns-publics
+                                                     clojure.core/vals
+                                                     (clojure.core/some (clojure.core/fn [var-ref]
+                                                             {:pre [(clojure.core/var? var-ref)]}
+                                                             (clojure.core/-> var-ref clojure.core/meta :test))))))
+                                      (clojure.core/sort-by clojure.core/pr-str)
+                                      (clojure.core/reverse) ;; unit first
+                                      (clojure.core/apply clojure.test/run-tests))))
+  (clojure.tools.namespace.repl/clear)
+  (clojure.core/alter-var-root #'clojure.test/*load-tests* (clojure.core/constantly true))
+  (clojure.core/time
+    (clojure.tools.namespace.repl/refresh :after 'vemv/run-all-tests)))

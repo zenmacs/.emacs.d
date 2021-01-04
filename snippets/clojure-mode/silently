@@ -1,0 +1,18 @@
+#name: silently
+# --
+(let [silently--old System/out
+      silently--pw (java.io.PrintWriter. "/dev/null")
+      silently--ps (java.io.PrintStream. (proxy [java.io.OutputStream] []
+                                 (write
+                                   ([a])
+                                   ([a b c])
+                                   ([a b c d e]))))]
+  (binding [*out* silently--pw
+            *err* silently--pw]
+    (try
+      (System/setOut silently--ps)
+      (System/setErr silently--ps)
+      $1
+      (finally
+        (System/setOut silently--old)
+        (System/setErr silently--old)))))
