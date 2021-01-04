@@ -395,6 +395,8 @@
 (advice-add 'cider--find-var :after 'vemv/after-file-open)
 (advice-add 'cider--find-ns :after 'vemv/after-file-open)
 (advice-add 'xref-pop-marker-stack :after 'vemv/after-file-open)
+;; for then using `emacs` from iTerm:
+(advice-add 'pop-to-buffer-same-window :after 'vemv/after-file-open)
 
 (advice-add 'cider-new-error-buffer :after (lambda (&rest _)
                                              (cider-interactive-eval "(try (clojure.core/prn clojure.core/*e)
