@@ -121,9 +121,10 @@
                                          (vemv/verbosely
                                           (flycheck-display-error-messages errors)))
       global-hl-line-sticky-flag t
-      helm-ag-command-option "--hidden"
       helm-display-header-line nil
       helm-truncate-lines t
+      helm-ag-base-command "rg --no-heading"
+      helm-ag-success-exit-status '(0 2)
       hi-lock-file-patterns-policy 'never
       highlight-indent-guides-character ?·
       highlight-indent-guides-method 'character
