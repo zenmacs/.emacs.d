@@ -16,7 +16,9 @@
     (let* ((t? (cljr--in-tests-p)))
       (when (and (vemv/in-clojure-mode?)
                  (not vemv/ns-shown)
-                 (not t?))
+                 (or (not t?)
+                     (and t?
+                          (not (buffer-modified-p)))))
         (vemv/toggle-ns-hiding :after-file-open))
       (when t?
         (setq-local vemv/ns-shown t))
