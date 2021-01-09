@@ -34,7 +34,15 @@
 
     (setq-default line-spacing 1) ;; NOTE: might mess up the echo area
 
-    (setq-default frame-title-format '("%b"))
+    (setq vemv/main_frame (selected-frame))
+
+    (defun vemv/good-frame-p ()
+      (eq vemv/main_frame (selected-frame)))
+
+    (setq frame-title-format
+          '("%b"
+            (:eval (when (not (vemv/good-frame-p))
+                     " (other)"))))
 
     (setq vemv/should-start-in-verbose-mode nil)
 

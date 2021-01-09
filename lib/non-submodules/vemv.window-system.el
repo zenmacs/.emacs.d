@@ -81,11 +81,6 @@
   (member (or window (selected-window))
           (list vemv/main_window vemv/repl-window vemv/project-explorer-window)))
 
-(setq vemv/main_frame (selected-frame))
-
-(defun vemv/good-frame-p ()
-  (eq vemv/main_frame (selected-frame)))
-
 (defun vemv/close-this-window ()
   (delete-window))
 
