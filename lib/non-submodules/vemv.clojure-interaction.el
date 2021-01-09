@@ -211,7 +211,7 @@
   (let* ((maybe-class (->> token (s-split "/") car)))
     (if (equal maybe-class (s-downcase maybe-class))
         token
-      maybe-class)))
+      (replace-regexp-in-string "\\.$" "" maybe-class))))
 
 (defun vemv/jump-to-clojure-definition ()
   (interactive)
@@ -226,7 +226,8 @@
            (curr-token-is-qualified-kw (vemv/starts-with curr-token "::")))
       (if curr-token-is-qualified-kw
           (call-interactively 'cider-find-keyword)
-        (let* ((curr-token (vemv/maybe-classify-token curr-token))
+        (let* ((original-token curr-token)
+               (curr-token (vemv/maybe-classify-token curr-token))
                (command (concat "
 (clojure.core/let [x '" curr-token "
                    y (try (clojure.core/-> x clojure.core/pr-str (clojure.string/split #\"/\") clojure.core/first clojure.core/read-string clojure.core/eval) (catch java.lang.Exception _))]
@@ -246,8 +247,11 @@
                 (with-current-buffer x
                   (end-of-buffer)
                   (beginning-of-defun)
-                  (when (s-contains? "/" curr-token)
-                    (re-search-forward (concat (->> curr-token (s-split "/") last car) "\s*\("))
+                  (when (s-contains? "/" original-token)
+                    (re-search-forward (concat "\s" (->> original-token (s-split "/") last car) "\s*\("))
+                    (left-char))
+                  (when (s-ends-with? "." original-token)
+                    (re-search-forward (concat "\s" curr-token "\s*\("))
                     (left-char)))
                 (switch-to-buffer x)))))))))
 
