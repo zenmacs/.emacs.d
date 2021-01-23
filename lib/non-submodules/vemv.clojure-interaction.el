@@ -304,6 +304,10 @@
                                  (mapcar 's-trim)
                                  (s-join "\n"))))
                   (s-join "\n\n")))
+             (d (if (and d
+                         (> (length (s-lines d)) 40))
+                    "..."
+                  d))
              (name (nrepl-dict-get h "name"))
              (ns (nrepl-dict-get h "ns")))
         (if c
@@ -341,9 +345,7 @@
   (if (vemv/ciderable-p)
       (let* ((docstring (vemv/docstring-of-var (cider-symbol-at-point 'look-back))))
         (if docstring
-            (if (> (length (s-lines docstring)) 40)
-                (vemv/echo "Docstring too long, jump to it instead.")
-              (vemv/echo docstring))
+            (vemv/echo docstring)
           (vemv/echo "No docs found.")))
     (vemv/echo "Not connected.")))
 
