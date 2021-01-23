@@ -141,3 +141,15 @@
                      (not (buffer-modified-p b)))
             (kill-buffer b)
             (vemv/open n)))))))
+
+(defun vemv/downcase-region ()
+  (interactive)
+  (downcase-region (mark) (point)))
+
+(defun vemv/upcase-region ()
+  (interactive)
+  (upcase-region (mark) (point)))
+
+(defun vemv/capitalize-region ()
+  (interactive)
+  (capitalize-region (mark) (point)))
