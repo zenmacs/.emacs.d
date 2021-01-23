@@ -4,6 +4,22 @@
 
 (provide 'vemv.open)
 
+(defun vemv/jump-to-first-git-modified-line ()
+  (interactive)
+  (when (and (not buffer-read-only)
+             (not (equal major-mode 'image-mode))
+             (equal 1 (vemv/current-line-number))
+             (buffer-file-name))
+    (let* ((line (condition-case nil
+                     (read (shell-command-to-string (concat "cd " default-directory  "; ~/.emacs.d/scripts/first_diff_line.sh " (buffer-file-name))))
+                   (error
+                    nil))))
+      (when line
+        (condition-case nil
+            (goto-line line)
+          (error
+           nil))))))
+
 (defun vemv/open-at-project-root ()
   (interactive)
   (let ((default-directory vemv/project-root-dir))
@@ -49,6 +65,7 @@
 (defun vemv/after-file-open (&rest ignore)
   (interactive)
   (with-selected-window vemv/main_window
+    (vemv/jump-to-first-git-modified-line)
     (vemv/after-file-open-impl)))
 
 (defvar vemv/after-file-open-watcher
