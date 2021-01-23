@@ -50,6 +50,11 @@
 
 (setq vemv-default-background-color "#4D575F")
 (setq vemv-default-background-color-slightly-darker "#404950")
+
+(when vemv/terminal-emacs?
+  (setq vemv-default-background-color "#555555")
+  (setq vemv-default-background-color-slightly-darker "#555555"))
+
 (setq vemv-default-foreground-color "#F5F5F5")
 (setq vemv-default-foreground-color-much-darker "#a8a8a8")
 (setq vemv-default-foreground-color-very-slightly-darker "#ededed")
@@ -85,10 +90,11 @@
 (defvar vemv/blue-face 'vemv/blue-face)
 (defvar clojure-global-constant-face 'clojure-global-constant-face)
 
-(set-fringe-bitmap-face 'left-arrow 'vemv-cider-connection-face)
-(set-fringe-bitmap-face 'left-curly-arrow 'vemv-cider-connection-face)
-(set-fringe-bitmap-face 'right-arrow 'vemv-cider-connection-face)
-(set-fringe-bitmap-face 'right-curly-arrow 'vemv-cider-connection-face)
+(when (not vemv/terminal-emacs?)
+  (set-fringe-bitmap-face 'left-arrow 'vemv-cider-connection-face)
+  (set-fringe-bitmap-face 'left-curly-arrow 'vemv-cider-connection-face)
+  (set-fringe-bitmap-face 'right-arrow 'vemv-cider-connection-face)
+  (set-fringe-bitmap-face 'right-curly-arrow 'vemv-cider-connection-face))
 
 (custom-theme-set-faces
  'vemv

@@ -1,5 +1,20 @@
 (setq vemv/terminal-emacs? (getenv "TERMINAL_EMACS"))
 
+;; must be early for emacs client/daemon
+(defun hack-local-variables-confirm (f &rest args)
+  "Disables annoying dialog 'The local variables list in :x contains values that may not be safe"
+  t)
+
+(defun load-vemv-theme (frame)
+  (with-selected-frame frame
+    (with-current-buffer (get-buffer "*scratch*")
+      (erase-buffer))
+    (load "vemv.theme")))
+
+(when vemv/terminal-emacs?
+  (add-hook 'after-make-frame-functions #'load-vemv-theme)
+  (setq initial-scratch-message ""))
+
 (defvar vemv/input-enabled t)
 
 ;; These two reduce `(emacs-init-time)`:
@@ -132,7 +147,11 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
   (add-to-list 'load-path vemv/overrides-forks-directory)
 
   (when (eq system-type 'darwin)
-    (global-set-key (kbd "C-q") 'save-buffers-kill-emacs) ;; (redundantly) set C-q, in case of failure during init.el load
+    (if vemv/terminal-emacs?
+        (progn
+          (global-set-key (kbd "C-q") 'save-buffers-kill-terminal)
+          (global-set-key (kbd "C-s") 'vemv/save))
+      (global-set-key (kbd "C-q") 'save-buffers-kill-emacs)) ;; (redundantly) set C-q, in case of failure during init.el load
     (setq mac-control-modifier 'super)
     (setq mac-option-modifier 'meta)
     (setq mac-command-modifier 'control))

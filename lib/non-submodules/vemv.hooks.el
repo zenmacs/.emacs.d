@@ -588,11 +588,8 @@
 
 (advice-add 'save-buffer :around 'vemv/honoring-newline-at-eof-setting)
 
-(defun hack-local-variables-confirm (f &rest args)
-  "Disables annoying dialog 'The local variables list in :x contains values that may not be safe"
-  t)
-
-(when pe/cache-enabled
+(when (and pe/cache-enabled
+           (not vemv/terminal-emacs?))
   (add-hook 'kill-emacs-hook 'pe/cache-clear))
 
 (defun grizzl-format-match (match-str selected)

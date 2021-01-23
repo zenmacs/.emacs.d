@@ -49,7 +49,8 @@
   (interactive)
   (let* ((of-current-project? (vemv/buffer-of-current-project-or-parent? (current-buffer))))
     (vemv/after-file-open-without-project-explorer-highlighting of-current-project?)
-    (when of-current-project?
+    (when (and of-current-project?
+               (not vemv/terminal-emacs?))
       (if skip-debouncing?
           (vemv/safe-show-current-file-in-project-explorer* (get-buffer-window))
         (funcall vemv/safe-show-current-file-in-project-explorer)))))

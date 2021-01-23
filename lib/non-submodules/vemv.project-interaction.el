@@ -80,7 +80,8 @@
                  0.3)))))
 
   (when (not (gethash vemv/current-project vemv/chosen-file-buffer-order))
-    (vemv/open-recent-file-for-this-project!))
+    (when (not vemv/terminal-emacs?)
+      (vemv/open-recent-file-for-this-project!)))
 
   (vemv/next-file-buffer)
   (vemv/previous-file-buffer)
