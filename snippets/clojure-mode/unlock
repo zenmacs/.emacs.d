@@ -1,4 +1,4 @@
-#name: cleanup
+#name: unlock
 # --
 (do
   (doseq [alias (keys (ns-aliases *ns*))]
