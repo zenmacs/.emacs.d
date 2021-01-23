@@ -248,8 +248,14 @@
                   (end-of-buffer)
                   (beginning-of-defun)
                   (when (s-contains? "/" original-token)
-                    (re-search-forward (concat "\s" (->> original-token (s-split "/") last car) "\s*\("))
-                    (left-char))
+                    (condition-case nil
+                        (progn ;; search for an method:
+                          (re-search-forward (concat "\s" (->> original-token (s-split "/") last car) "\s*\("))
+                          (left-char))
+                      (error ;; search for an enum value:
+                       (progn
+                         (re-search-forward (concat "\s" (->> original-token (s-split "/") last car) "\s*"))
+                         (left-char)))))
                   (when (s-ends-with? "." original-token)
                     (re-search-forward (concat "\s" curr-token "\s*\("))
                     (left-char)))
