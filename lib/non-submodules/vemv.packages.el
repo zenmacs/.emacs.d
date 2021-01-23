@@ -137,6 +137,9 @@
 (add-to-list 'auto-mode-alist
              '("\\(?:Brewfile\\|Capfile\\|Gemfile$\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'" . ruby-mode))
 
+
+(add-to-list 'auto-mode-alist '("\\.org$" . fundamental-mode))
+
 ;; Eases editing locally-modified packages.
 ;; Also makes things faster.
 ;; Example:
