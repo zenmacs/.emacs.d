@@ -1,19 +1,20 @@
 #name: ast
 # --
 (try
-  (clojure.core/some-> 'vemv-warm/vemv-warm resolve deref deref)
+  (clojure.core/some-> 'vemv-warm/vemv-warm clojure.core/resolve clojure.core/deref clojure.core/deref)
   (clojure.core/require 'refactor-nrepl.core)
   (clojure.core/require 'refactor-nrepl.middleware)
   (clojure.core/require 'refactor-nrepl.analyzer)
-  (time
-    (->> (-> 'refactor-nrepl.analyzer/warm-ast-cache resolve deref .call)
-         (partition 2)
-         (remove (fn [[k v]] (= v "OK")))
-         (into {} (map vec))))
-  (catch Throwable _
-    (clojure.core/reset! (-> 'refactor-nrepl.analyzer/ast-cache resolve deref) {})
+  (clojure.core/time
+    (->> (-> 'refactor-nrepl.analyzer/warm-ast-cache clojure.core/resolve clojure.core/deref .call)
+         (clojure.core/partition 2)
+         (clojure.core/remove (clojure.core/fn [[k v]] (clojure.core/= v "OK")))
+         (clojure.core/into {} (clojure.core/map clojure.core/vec))))
+  (catch java.lang.Throwable _
+    (clojure.core/reset! (clojure.core/-> 'refactor-nrepl.analyzer/ast-cache clojure.core/resolve clojure.core/deref) {})
     (clojure.core/println "Retrying...")
-    (->> (-> 'refactor-nrepl.analyzer/warm-ast-cache resolve deref .call)
-         (partition 2)
-         (remove (fn [[k v]] (= v "OK")))
-         (into {} (map vec)))))
+    (clojure.core/time
+      (->> (-> 'refactor-nrepl.analyzer/warm-ast-cache clojure.core/resolve clojure.core/deref .call)
+           (clojure.core/partition 2)
+           (clojure.core/remove (clojure.core/fn [[k v]] (clojure.core/= v "OK")))
+           (clojure.core/into {} (clojure.core/map clojure.core/vec))))))
