@@ -517,6 +517,11 @@ When not, the callback will be invoked just once, so the code can be incondition
                      [logfile :deleted (-> f .delete)]
                      (-> f .createNewFile))))))"))
 
+(defun vemv/test-vars-for-this-ns (chosen)
+  (read
+   (vemv.clojure-interaction/sync-eval-to-string
+    (concat "(->> \"" chosen "\" symbol find-ns ns-publics vals (filter (comp :test meta)) (remove (comp (some-fn :disabled :sleepy :generative :integration :acceptance :functional :benchmark) meta)) (map (comp str name symbol)))"))))
+
 (defun vemv/test-this-ns ()
   "Runs the tests for the current namespace, or if not applicable, for the latest applicable ns."
   (interactive)
@@ -544,7 +549,10 @@ When not, the callback will be invoked just once, so the code can be incondition
                                                                                   ")"))
                                                              (progn
                                                                (vemv/remove-log-files!)
-                                                               (cider-test-execute chosen nil nil))))))))
+                                                               (cider-test-execute chosen
+                                                                                   (when (not cljs)
+                                                                                     (vemv/test-vars-for-this-ns chosen))
+                                                                                   nil))))))))
                               vemv/clojure-test-refresh-command)))
 
 (defun vemv/run-this-deftest-cljs ()
