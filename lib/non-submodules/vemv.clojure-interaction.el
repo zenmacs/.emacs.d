@@ -370,11 +370,26 @@
                        (super (nrepl-dict-get h "super"))
                        (super-info (when (and super
                                               (not (string-equal super "java.lang.Object")))
-                                     (concat " extends " (vemv/propertize-interface super)))))
-                  "super" "java.lang.Object"
-                  (concat (vemv/propertize-class c)
-                          super-info
-                          i-info))))
+                                     (concat " extends " (vemv/propertize-interface super))))
+                       (arglists-info (when a
+                                        (->> a
+                                             (s-replace "[" "")
+                                             (s-replace "]" "")
+                                             (s-replace " " ", ")
+                                             (s-split "\n")
+                                             (mapcar (lambda (s)
+                                                       (concat (vemv/propertize-class c)
+                                                               var
+                                                               "("
+                                                               (vemv/propertize-interface s)
+                                                               ")")))
+                                             (s-join "\n")))))
+                  (if arglists-info
+                      arglists-info
+                    (concat (vemv/propertize-class c)
+                            arglists-info
+                            super-info
+                            i-info)))))
           (concat (if (and name ns)
                       (vemv/propertize-class (concat ns "/" name))
                     name)
