@@ -84,8 +84,9 @@
   "Opens a file (from FILEPATH or the user input), creating it if it didn't exist already (per the provided path).
 OPEN-AT-PWD decides the initial pwd of the prompt."
   (interactive)
-  (vemv/safe-select-frame)
-  (vemv/safe-select-window vemv/main_window)
+  (when (not vemv/terminal-emacs?)
+    (vemv/safe-select-frame)
+    (vemv/safe-select-window vemv/main_window))
   (let* ((default-directory (if (and (or open-at-pwd
                                          (member major-mode '(typescript-mode js-mode)))
                                      (buffer-file-name))
@@ -99,9 +100,10 @@ OPEN-AT-PWD decides the initial pwd of the prompt."
                                                                               default-directory)))))))
   (replying-yes ;; create intermediate directories
    (save-buffer))
-  (vemv/refresh-file-caches (argless
-                             (vemv/safe-select-window vemv/main_window))
-                            :force))
+  (when (not vemv/terminal-emacs?)
+    (vemv/refresh-file-caches (argless
+                               (vemv/safe-select-window vemv/main_window))
+                              :force)))
 
 (defun vemv/open-at-pwd ()
   (interactive)
