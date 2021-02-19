@@ -55,7 +55,7 @@
      (setq vemv/project-root-dir nil) ;; Where a project is located
      (setq vemv/project-clojure-dir nil) ;; Within a project, a directory that contains the Leiningen project. Leave unset if it equals `vemv/project-root-dir`
      (setq vemv/project-fiplr-dir nil) ;; The dir within which fiplr completions will be performed. Normally unnecessary.
-     (setq vemv/project-ns-prefix nil) ;; The prefix that every namespace in this project shares. Will be ommitted from each tab reprsenting a file/ns.
+     (setq vemv/project-ns-prefix nil) ;; The prefix that every namespace in this project shares. Will be omitted from each tab representing a file/ns.
      (setq vemv/repl-identifier nil) ;; The name that CIDER assigns to the project in its repls. Normally well-inferred; use this setting as a workaround.
      (setq vemv/default-clojure-file nil) ;; The file that will be open with the project, if no files were open for this project last time you quit Emacs.
      (setq vemv/parent-project-root-dirs nil) ;; The root dirs (as in `vemv/project-root-dir`) of parent projects of this project. Set vemv.project/chilren-root-dirs too if setting this.
@@ -95,9 +95,15 @@
 (vemv.project/reset)
 
 (defun vemv/project-dot-clj-file ()
-  (let ((f (concat vemv/project-clojure-dir "project.clj")))
-    (when (file-exists-p f)
-      f)))
+  (or (let ((f (concat vemv/project-clojure-dir "project.clj")))
+        (when (file-exists-p f)
+          f))
+      (let ((f (concat vemv/project-clojure-dir "deps.edn")))
+        (when (file-exists-p f)
+          f))
+      (let ((f (concat vemv/project-clojure-dir "profiles.clj")))
+        (when (file-exists-p f)
+          f))))
 
 (defun vemv/on-the-fly-project? (which)
   "An on-the-fly project is one that was opened via a command.
@@ -201,17 +207,38 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
         (setq vemv/cljs-repl-name (concat "*cider-repl CLJS " vemv/repl-identifier "*"))
       (setq vemv/cljs-repl-name (concat "*cider-repl " vemv/repl-identifier "(cljs)*")))
 
+    (mapcar (lambda (ext)
+              (let* ((f (concat vemv/project-clojure-dir
+                                "src/"
+                                (->> vemv/project-ns-prefix
+                                     (s-replace "." "/")
+                                     (s-replace "-" "_"))
+                                "/core.clj"
+                                (if (eq vemv/project-type :cljs)
+                                    "s"
+                                  ""))))
+                f))
+            '(".clj" ".cljs" ".cljc"))
+
     (setq vemv/default-clojure-file
           (or
            vemv/default-clojure-file
-           ;; XXX should be the first existing file: .clj, .cljs or .cljc
-           (concat vemv/project-clojure-dir
-                   "src/"
-                   vemv/project-ns-prefix
-                   "/core.clj"
-                   (if (eq vemv/project-type :cljs)
-                       "s"
-                     ""))))
+           (->> '(".clj" ".cljs" ".cljc")
+                (mapcar (lambda (ext)
+                          (let* ((f (concat vemv/project-clojure-dir
+                                            "src/"
+                                            (->> vemv/project-ns-prefix
+                                                 (s-replace "." "/")
+                                                 (s-replace "-" "_"))
+                                            "/core.clj"
+                                            (if (eq vemv/project-type :cljs)
+                                                "s"
+                                              ""))))
+                            (when (file-exists-p f)
+                              f))))
+                (filter 'identity)
+                car)
+           (vemv/project-dot-clj-file)))
 
     (setq vemv-cleaning-namespaces nil)
     (setq vemv/modifiers/primary "C")
