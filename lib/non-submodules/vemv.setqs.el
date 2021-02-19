@@ -241,6 +241,7 @@ of the buffer into a formatted string."
                                (list "^#" "~$" "^node_modules$" "^tmp" ".git$" ".sass-cache" "^checkouts" ".elc$" "^backups"
                                      "^integration-testing$"
                                      "pom.xml" "^semantic"
+                                     "classes" "^.cpcache"
                                      ".lumo-cache" "^target" "auto-save-list" "project-explorer-cache" "^public" ".nrepl-port"
                                      "^dist" "^generated" ".ok$" ".DS_Store" ".lein-*" ".nrepl-* " ".eastwood" ".cljs_rhino_repl"
                                      "^.clj-kondo" "^coverage" "\.*.log$")
