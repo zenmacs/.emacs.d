@@ -597,14 +597,21 @@ or something custom that returns a var, which must have :name and :test metadata
                                                            (end-of-line)
                                                            (beginning-of-defun))
                                                          (let* ((ns (vemv/current-ns))
-                                                                (sym (-> (concat "(-> "
+                                                                (_ (assert ns))
+                                                                (sym (-> (concat "(clojure.core/let [{:keys [name test]} (clojure.core/meta "
                                                                                  (vemv.clojure-interaction/sync-eval-to-string (vemv/sexpr-content))
-                                                                                 " meta :name)")
+                                                                                 ")] (clojure.core/when test name))")
                                                                          vemv.clojure-interaction/sync-eval-to-string
-                                                                         list)))
-                                                           (assert (and ns (car sym)))
-                                                           (cider-test-update-last-test ns sym)
-                                                           (cider-test-execute ns sym)))))
+                                                                         list))
+                                                                (ok? (not (equal sym (list "nil")))))
+                                                           (when ok?
+                                                             (cider-test-update-last-test ns sym))
+                                                           (if ok?
+                                                               (cider-test-execute ns sym)
+                                                             (if (and cider-test-last-test-ns
+                                                                      cider-test-last-test-var)
+                                                                 (cider-test-execute cider-test-last-test-ns
+                                                                                     cider-test-last-test-var)))))))
                               vemv/clojure-test-refresh-command)))
 
 (defun vemv/cider-find-keyword-silently (&optional arg)
