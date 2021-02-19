@@ -247,6 +247,27 @@
                   v))
           v)))))
 
+(defun vemv/aws-source (var)
+  "jar + method name"
+  (if-let* ((info (cider-var-info var)))
+      (let* ((ns (nrepl-dict-get info "ns"))
+             (name (nrepl-dict-get info "name")))
+        (when (and (not (s-blank? ns))
+                   (not (s-blank? name)))
+          (let* ((v (read (vemv.clojure-interaction/sync-eval-to-string (concat "(clojure.core/binding [clojure.core/*print-namespace-maps* false]"
+                                                                                " (clojure.core/some-> (resolve '"
+                                                                                ns
+                                                                                "/"
+                                                                                name
+                                                                                ") "
+                                                                                "clojure.core/meta "
+                                                                                "((juxt :amazonica/source :amazonica/method-name))"
+                                                                                "seq))")))))
+            (when (and v
+                       (first v)
+                       (-> v last first))
+              v))))))
+
 (defun vemv/jump-to-clojure-definition ()
   (interactive)
   (if (not (or (vemv/in-clojure-mode?)
@@ -278,7 +299,13 @@
      nil
      (clojure.core/-> y clojure.core/pr-str clojure.core/munge (clojure.string/replace \".\" \"/\") (clojure.core/str \".java\") (clojure.java.io/resource) clojure.core/str)))"))
                (maybe-jar-ref (read (vemv.clojure-interaction/sync-eval-to-string
-                                     command))))
+                                     command)))
+               (found-jar-ref? maybe-jar-ref)
+               (aws (when (not found-jar-ref?)
+                      (vemv/aws-source curr-token)))
+               (maybe-jar-ref (or maybe-jar-ref
+                                  (and aws (car aws))))
+               (aws-method (and aws (-> aws last car))))
           (if (s-blank? maybe-jar-ref)
               (cider-find-var)
             (when-let* ((x (cider-find-file maybe-jar-ref)))
@@ -290,15 +317,20 @@
                 (with-current-buffer x
                   (end-of-buffer)
                   (beginning-of-defun)
-                  (when (s-contains? "/" original-token)
+                  (when (or aws-method (s-contains? "/" original-token))
                     (condition-case nil
                         (progn ;; search for an method:
-                          (re-search-forward (concat "\s" (->> original-token (s-split "/") last car) "\s*\("))
+                          (re-search-forward (concat "\s"
+                                                     (or aws-method
+                                                         (->> original-token (s-split "/") last car))
+                                                     "\s*\("))
                           (left-char))
                       (error ;; search for an enum value:
-                       (progn
-                         (re-search-forward (concat "\s" (->> original-token (s-split "/") last car) "\s*"))
-                         (left-char)))))
+                       (condition-case nil
+                           (progn
+                             (re-search-forward (concat "\s" (->> original-token (s-split "/") last car) "\s*"))
+                             (left-char))
+                         (error nil)))))
                   (when (s-ends-with? "." original-token)
                     (re-search-forward (concat "\s" curr-token "\s*\("))
                     (left-char)))
