@@ -50,10 +50,12 @@
 
 (setq vemv-default-background-color "#4D575F")
 (setq vemv-default-background-color-slightly-darker "#404950")
+(setq vemv-highlight-face "#444F57")
 
 (when vemv/terminal-emacs?
   (setq vemv-default-background-color "#555555")
-  (setq vemv-default-background-color-slightly-darker "#555555"))
+  (setq vemv-default-background-color-slightly-darker "#555555")
+  (setq vemv-highlight-face "#4a4a4a"))
 
 (setq vemv-default-foreground-color "#F5F5F5")
 (setq vemv-default-foreground-color-much-darker "#a8a8a8")
@@ -210,7 +212,7 @@
  `(mode-line ((t (:background "gray10" :foreground "#B6B6B6"))))
  `(mode-line-inactive ((t (:background "gray10" :foreground "#B6B6B6"))))
 
- `(highlight ((t (:background "#444F57"))))
+ `(highlight ((t (:background ,vemv-highlight-face))))
  `(isearch ((t (:background "deep pink" :foreground "black"))))
  `(isearch-fail ((t (:background "red4"))))
  `(lazy-highlight ((t (:background "yellow" :foreground "black"))))
