@@ -209,8 +209,8 @@
 
  `(gui-element ((t (:background "#484848" :foreground "#96CBFE"))))
  `(region ((t (:background ,vemv-colors/purple))))
- `(mode-line ((t (:background "gray10" :foreground "#B6B6B6"))))
- `(mode-line-inactive ((t (:background "gray10" :foreground "#B6B6B6"))))
+ `(mode-line ((t (:background "gray10" :foreground "#B6B6B6" :height 110))))
+ `(mode-line-inactive ((t (:background "gray10" :foreground "#B6B6B6" :height 110))))
 
  `(highlight ((t (:background ,vemv-highlight-face))))
  `(isearch ((t (:background "deep pink" :foreground "black"))))

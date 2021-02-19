@@ -52,13 +52,6 @@
 ;; Not in vemv.setqs, something else would reset it later
 (setq show-help-function nil)
 
-(when (window-system)
-  (delay (argless
-          (set-face-attribute 'default nil :font vemv-font)
-          (set-face-attribute 'mode-line nil :font vemv-font-smaller)
-          (set-face-attribute 'mode-line-inactive nil :font vemv-font-smaller))
-         1))
-
 (defun undo (&rest args)
   (interactive)
   (require 'undo-tree)
