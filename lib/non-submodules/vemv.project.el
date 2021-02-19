@@ -65,8 +65,13 @@
      (setq vemv/modifiers/secondary nil)
      (setq vemv/modifiers/tertiary nil)
      (setq cljr-warn-on-eval t) ;; https://github.com/clojure-emacs/cider/issues/2327
-     ;; (setq vemv/clj-repl-name nil) ;; let the first connection be sticky across projects. handy for monorepos
+
+     ;; Reason for commenting out:
+     ;; let the first connection be sticky across projects. handy for monorepos
+     ;;   (update some months later: maybe not needed now given the new `vemv/safe-clj-repl-name` fn)
+     ;; (setq vemv/clj-repl-name nil)
      (setq vemv/cljs-repl-name nil)
+
      (setq vemv/no-newline-at-eof nil)
      (setq vemv/comment-indent-function 'comment-indent-default)
      (setq comment-indent-function vemv/comment-indent-function)

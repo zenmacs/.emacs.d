@@ -399,22 +399,24 @@
 ;; for then using `emacs` from iTerm:
 (advice-add 'pop-to-buffer-same-window :after 'vemv/after-file-open)
 
-(advice-add 'cider-new-error-buffer :after (lambda (&rest _)
-                                             (cider-interactive-eval "(try (clojure.core/prn clojure.core/*e)
-                                                                              (catch #?(:clj java.lang.Throwable
-                                                                                        :cljs js/Error)
-                                                                                     e))")
-                                             (delay (argless (when (and (-> vemv/main_window
-                                                                            window-buffer
-                                                                            vemv/buffer-of-current-running-project?)
-                                                                        (get-buffer vemv/clj-repl-name))
-                                                               (vemv/save-window-excursion
-                                                                (vemv/safe-select-window vemv/repl-window)
-                                                                (switch-to-buffer vemv/clj-repl-name t t)
-                                                                (end-of-buffer)
-                                                                (paredit-backward)
-                                                                (paredit-backward))))
-                                                    0.7)))
+(advice-add 'cider-new-error-buffer
+            :after
+            (lambda (&rest _)
+              (cider-interactive-eval "(try (clojure.core/prn clojure.core/*e)
+                                         (catch #?(:clj java.lang.Throwable
+                                                   :cljs js/Error)
+                                                e))")
+              (delay (argless (when (and (-> vemv/main_window
+                                             window-buffer
+                                             vemv/buffer-of-current-running-project?)
+                                         (get-buffer (vemv/safe-clj-repl-name vemv/clj-repl-name)))
+                                (vemv/save-window-excursion
+                                 (vemv/safe-select-window vemv/repl-window)
+                                 (switch-to-buffer (vemv/safe-clj-repl-name vemv/clj-repl-name) t t)
+                                 (end-of-buffer)
+                                 (paredit-backward)
+                                 (paredit-backward))))
+                     0.7)))
 
 (add-hook 'clojure-mode-hook
           (argless (enable-paredit-mode)

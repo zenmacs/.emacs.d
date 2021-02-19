@@ -13,6 +13,14 @@
    (cider-connected-p)
    vemv-cider-connected))
 
+(defun vemv/safe-clj-repl-name (destination-buffer)
+  (let* ((n "*cider-repl 127.0.0.1*"))
+    (if (and (or (not destination-buffer)
+                 (not (get-buffer destination-buffer)))
+             (get-buffer n))
+        (buffer-name (get-buffer n))
+      destination-buffer)))
+
 (defun vemv/apply-tests-verbosely (f &rest args)
   (let* ((old vemv/verbose-mode)
          (counter vemv/apply-tests-verbosely-counter)
@@ -75,7 +83,7 @@
       (with-selected-window vemv/repl-window
         (if (and was should)
             (vemv/safe-switch-to-buffer vemv/cljs-repl-name)
-          (vemv/safe-switch-to-buffer vemv/clj-repl-name))))))
+          (vemv/safe-switch-to-buffer (vemv/safe-clj-repl-name vemv/clj-repl-name)))))))
 
 (defun vemv/ensure-repl-visible ()
   (when (and (cider-connected-p)

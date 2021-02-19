@@ -43,6 +43,9 @@
              (foreign? (not (seq-contains (vemv/all-buffer-names) destination-buffer)))
              (destination-buffer (if foreign?
                                      (buffer-name (window-buffer vemv/repl-window))
+                                   destination-buffer))
+             (destination-buffer (if (equal where :clj)
+                                     (vemv/safe-clj-repl-name destination-buffer)
                                    destination-buffer)))
         ;; I don't remember why I implemented "Can't eval in a different project!" rule in the first place.
         ;; Probably related with a cljs-specific pain point.

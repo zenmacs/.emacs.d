@@ -62,7 +62,7 @@
 (defun vemv/noncloseable-buffer-p ()
   (-any? (lambda (x)
            (vemv/contains? (buffer-name) x))
-         (list vemv/clj-repl-name
+         (list (vemv/safe-clj-repl-name vemv/clj-repl-name)
                vemv/cljs-repl-name
                "project-explorer"
                "shell-1"
