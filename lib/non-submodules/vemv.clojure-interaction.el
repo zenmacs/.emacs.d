@@ -509,13 +509,14 @@ When not, the callback will be invoked just once, so the code can be incondition
          ,@body))))
 
 (defun vemv/remove-log-files! ()
-  (vemv.clojure-interaction/sync-eval-to-string
-   "(->> [\"dev.log\" \"test.log\"]
+  (comm ;; the Tailer I use lately does not support log rotation
+   (vemv.clojure-interaction/sync-eval-to-string
+    "(->> [\"dev.log\" \"test.log\"]
        (mapv (fn [logfile]
                  (let [f (-> \"user.dir\" System/getProperty (clojure.java.io/file \"log\" logfile))]
                    (when (-> f .exists)
                      [logfile :deleted (-> f .delete)]
-                     (-> f .createNewFile))))))"))
+                     (-> f .createNewFile))))))")))
 
 (defun vemv/test-vars-for-this-ns (chosen)
   (read
