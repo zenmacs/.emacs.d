@@ -268,6 +268,50 @@
                        (-> v last first))
               v))))))
 
+(defun vemv/find-protocol-method (x)
+  "Finds a protocol method from a bare symbol. Only needed when using frameworks like Trapperkeeper."
+  (when (s-contains? "/iroh" default-directory)
+    (let* ((data (read (vemv.clojure-interaction/sync-eval-to-string (concat "(let [found (->> (user.linters.util/project-namespaces)
+                                                                                 (keep find-ns)
+                                                                                 (map ns-publics)
+                                                                                 (mapcat vals)
+                                                                                 (filter var?)
+                                                                                 (map deref)
+                                                                                 (filter map?)
+                                                                                 (filter :method-builders)
+                                                                                 (map :method-builders)
+                                                                                 (mapcat keys)
+                                                                                 (filter (comp #{'"
+                                                                             x
+                                                                             "                       } :name meta))
+                                                                                 (map meta))]
+                                                                  (when (= 1 (count found))
+                                                                    (let [[{:keys [protocol file line column name doc ns arglists]}] found]
+                                                                      (list (or file
+                                                                                (-> ns meta :file)
+                                                                                (-> ns str symbol user.linters.util/ns-sym->filename))
+                                                                            (or line (-> protocol meta :line))
+                                                                            (or column (-> protocol meta :column))
+                                                                            (str ns)
+                                                                            doc
+                                                                            (cond-> arglists (= (count arglists) 1) first, true pr-str)
+                                                                            (str name)))))"))))
+           (file (car data))
+           (line     (-> data rest car))
+           (column   (-> data rest rest car))
+           (ns       (-> data rest rest rest car))
+           (doc      (-> data rest rest rest rest car))
+           (arglists (-> data rest rest rest rest rest car))
+           (name     (-> data rest rest rest rest rest rest car)))
+      (when data
+        (nrepl-dict "arglists-str" arglists
+                    "doc" doc
+                    "name" name
+                    "ns" ns
+                    "line" line
+                    "file" file
+                    "column" column)))))
+
 (defun vemv/jump-to-clojure-definition ()
   (interactive)
   (if (not (or (vemv/in-clojure-mode?)
@@ -305,36 +349,52 @@
                       (vemv/aws-source curr-token)))
                (maybe-jar-ref (or maybe-jar-ref
                                   (and aws (car aws))))
-               (aws-method (and aws (-> aws last car))))
-          (if (s-blank? maybe-jar-ref)
+               (aws-method (and aws (-> aws last car)))
+               (protocol-method (when (and (not found-jar-ref?)
+                                           (not aws))
+                                  (vemv/find-protocol-method original-token))))
+          (if (and (s-blank? maybe-jar-ref) (not protocol-method))
               (cider-find-var)
-            (when-let* ((x (cider-find-file maybe-jar-ref)))
-              ;; for some reason beginning-of-buffer doesn't appear to work if the buffer was open already.
-              ;; maybe some lib it's interfering? (there's one that remembers/restores POINT)
-              (kill-buffer x)
-              (let* ((x (cider-find-file maybe-jar-ref)))
-                (xref-push-marker-stack)
-                (with-current-buffer x
-                  (end-of-buffer)
-                  (beginning-of-defun)
-                  (when (or aws-method (s-contains? "/" original-token))
-                    (condition-case nil
-                        (progn ;; search for an method:
-                          (re-search-forward (concat "\s"
-                                                     (or aws-method
-                                                         (->> original-token (s-split "/") last car))
-                                                     "\s*\("))
-                          (left-char))
-                      (error ;; search for an enum value:
-                       (condition-case nil
-                           (progn
-                             (re-search-forward (concat "\s" (->> original-token (s-split "/") last car) "\s*"))
-                             (left-char))
-                         (error nil)))))
-                  (when (s-ends-with? "." original-token)
-                    (re-search-forward (concat "\s" curr-token "\s*\("))
-                    (left-char)))
-                (switch-to-buffer x)))))))))
+            (if protocol-method
+                (when (nrepl-dict-get protocol-method "file")
+                  (let* ((file (nrepl-dict-get protocol-method "file"))
+                         (line (nrepl-dict-get protocol-method "line"))
+                         (name (nrepl-dict-get protocol-method "name"))
+                         (buffer (cider-find-file file)))
+                    (if buffer
+                        (cider-jump-to buffer
+                                       (if line
+                                           (cons line nil)
+                                         name)
+                                       nil)
+                      (error "Failed when trying to jump to a detected protocol definition."))))
+              (when-let* ((x (cider-find-file maybe-jar-ref)))
+                ;; for some reason beginning-of-buffer doesn't appear to work if the buffer was open already.
+                ;; maybe some lib it's interfering? (there's one that remembers/restores POINT)
+                (kill-buffer x)
+                (let* ((x (cider-find-file maybe-jar-ref)))
+                  (xref-push-marker-stack)
+                  (with-current-buffer x
+                    (end-of-buffer)
+                    (beginning-of-defun)
+                    (when (or aws-method (s-contains? "/" original-token))
+                      (condition-case nil
+                          (progn ;; search for an method:
+                            (re-search-forward (concat "\s"
+                                                       (or aws-method
+                                                           (->> original-token (s-split "/") last car))
+                                                       "\s*\("))
+                            (left-char))
+                        (error ;; search for an enum value:
+                         (condition-case nil
+                             (progn
+                               (re-search-forward (concat "\s" (->> original-token (s-split "/") last car) "\s*"))
+                               (left-char))
+                           (error nil)))))
+                    (when (s-ends-with? "." original-token)
+                      (re-search-forward (concat "\s" curr-token "\s*\("))
+                      (left-char)))
+                  (switch-to-buffer x))))))))))
 
 (defun vemv/docstring-of-ctor (x)
   (read (vemv.clojure-interaction/sync-eval-to-string
@@ -365,9 +425,11 @@
   (propertize s 'face 'clojure-type-metadata-face))
 
 (defun vemv/docstring-of-var (var)
-  (let ((cider-prompt-for-symbol nil)
-        (h (ignore-errors
-             (cider-var-info var))))
+  (let* ((cider-prompt-for-symbol nil)
+         (h (ignore-errors
+              (cider-var-info var)))
+         (h (or h
+                (vemv/find-protocol-method var))))
     (when h
       (let* ((c (nrepl-dict-get h "class"))
              (a (nrepl-dict-get h "arglists-str"))
@@ -690,7 +752,10 @@ Adds kw-to-find-fallback."
   "Shows the Clojure source of the symbol at point."
   (interactive)
   (when (vemv/ciderable-p)
-    (let* ((info (cider-var-info (cider-symbol-at-point 'look-back)))
+    (let* ((var (cider-symbol-at-point 'look-back))
+           (info (cider-var-info var))
+           (info (or info
+                     (vemv/find-protocol-method var)))
            (line-and-file (if info
                               (list (nrepl-dict-get info "line")
                                     (nrepl-dict-get info "file"))
