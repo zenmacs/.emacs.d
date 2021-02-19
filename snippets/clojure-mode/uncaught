@@ -1,0 +1,4 @@
+(-> (reify Thread$UncaughtExceptionHandler
+        (uncaughtException [_ thread e]
+          (-> e pr-str println)))
+      (Thread/setDefaultUncaughtExceptionHandler))
