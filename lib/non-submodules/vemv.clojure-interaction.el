@@ -211,18 +211,46 @@
   (let* ((maybe-class (->> token (s-split "/") car)))
     (if (equal maybe-class (s-downcase maybe-class))
         token
-      (replace-regexp-in-string "\\.$" "" maybe-class))))
+      (let* ((v (replace-regexp-in-string "\\.$" "" maybe-class)))
+        (if (equal major-mode 'java-mode)
+            (let* ((pkg-name (->> (s-match-strings-all "package .*" (substring-no-properties (buffer-string)))
+                                  first
+                                  first
+                                  (s-replace "package " "")
+                                  (s-replace ";" "")))
+                   (candidates (->> token
+                                    cljr--call-middleware-to-resolve-missing
+                                    (seq-map (lambda (c)
+                                               (symbol-name (gethash :name c))))))
+                   (only-candidate (if (equal 1 (length candidates))
+                                       (car candidates))))
+              (or only-candidate
+                  (->> candidates
+                       (filter (lambda (s)
+                                 (s-starts-with? pkg-name s)))
+                       car)
+                  v))
+          v)))))
 
 (defun vemv/jump-to-clojure-definition ()
   (interactive)
-  (if (not (vemv/in-clojure-mode?))
+  (if (not (or (vemv/in-clojure-mode?)
+               (equal major-mode 'java-mode)))
       (if (eq major-mode 'ruby-mode)
           (call-interactively 'robe-jump)
         (if (eq major-mode 'typescript-mode)
             (tide-jump-to-definition)
           (call-interactively 'xref-find-definitions)))
     (let* ((cider-prompt-for-symbol nil)
-           (curr-token (cider-symbol-at-point 'look-back))
+           (curr-token (if (and (equal major-mode 'java-mode)
+                                (s-match "import" (vemv/current-line-contents))
+                                (not (s-match "\*" (vemv/current-line-contents))))
+                           (->> (s-match-strings-all "import.*" (vemv/current-line-contents))
+                                first
+                                first
+                                (s-replace "import " "")
+                                (s-replace ";" ""))
+                         (cider-symbol-at-point 'look-back)))
            (curr-token-is-qualified-kw (vemv/starts-with curr-token "::")))
       (if curr-token-is-qualified-kw
           (call-interactively 'cider-find-keyword)
