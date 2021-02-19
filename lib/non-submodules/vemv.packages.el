@@ -21,7 +21,8 @@
 (setq vemv/packages-refreshed nil)
 
 (unless vemv/terminal-emacs?
-  (dolist (package '(benchmark-init
+  (dolist (package '(async
+                     benchmark-init
                      company
                      dash
                      ert
