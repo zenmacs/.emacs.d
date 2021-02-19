@@ -12,60 +12,62 @@
 
 (defun vemv/save (&optional b skip-check-unused-requires skip-formatting avoid-recursion)
   (interactive)
-  (when (buffer-file-name)
-    (let* ((b (or b (current-buffer))))
-      (with-current-buffer b
-        (when (vemv/in-a-lisp-mode?)
-          (check-parens))
-        (let* ((line (vemv/current-line-number))
-               ;; for `indent-for-tab-command`:
-               (last-command nil)
-               (dc (string-equal "dc" (car vemv/current-workspace)))
-               (yas (vemv/contains? (buffer-file-name) "/snippets/")))
-          (unless (or vemv.project/skip-formatting
-                      skip-formatting
-                      yas
-                      (member major-mode `(fundamental-mode ruby-mode conf-colon-mode)))
-            (unless dc
-              (delete-trailing-whitespace))
-            (call-interactively 'mark-whole-buffer)
-            (call-interactively 'indent-for-tab-command)
-            (pop-mark))
-          (goto-line line)
-          (vemv/end-of-line-code* nil)
-          (when (or vemv/no-newline-at-eof yas)
-            (save-excursion
-              (end-of-buffer)
-              (while (string-equal (vemv/current-char-at-point) "\n")
-                (delete-backward-char 1))))
+  (let* ((bfn (buffer-file-name)))
+    (when (and bfn
+               (not (s-contains? ".jar:" bfn)))
+      (let* ((b (or b (current-buffer))))
+        (with-current-buffer b
+          (when (vemv/in-a-lisp-mode?)
+            (check-parens))
+          (let* ((line (vemv/current-line-number))
+                 ;; for `indent-for-tab-command`:
+                 (last-command nil)
+                 (dc (string-equal "dc" (car vemv/current-workspace)))
+                 (yas (vemv/contains? (buffer-file-name) "/snippets/")))
+            (unless (or vemv.project/skip-formatting
+                        skip-formatting
+                        yas
+                        (member major-mode `(fundamental-mode ruby-mode conf-colon-mode)))
+              (unless dc
+                (delete-trailing-whitespace))
+              (call-interactively 'mark-whole-buffer)
+              (call-interactively 'indent-for-tab-command)
+              (pop-mark))
+            (goto-line line)
+            (vemv/end-of-line-code* nil)
+            (when (or vemv/no-newline-at-eof yas)
+              (save-excursion
+                (end-of-buffer)
+                (while (string-equal (vemv/current-char-at-point) "\n")
+                  (delete-backward-char 1))))
 
-          (when (member major-mode `(typescript-mode))
-            (set-buffer-modified-p t))
-          (save-buffer)
+            (when (member major-mode `(typescript-mode))
+              (set-buffer-modified-p t))
+            (save-buffer)
 
-          (when (eq major-mode 'ruby-mode)
-            (unless skip-formatting
-              (require 'rubocop)
-              (defun rubocop--file-command (command)
-                "Removes compilation-mode stuff"
-                (rubocop-ensure-installed)
-                (let ((file-name (buffer-file-name (current-buffer))))
-                  (if file-name
-                      ;; make sure we run RuboCop from a project's root if the command is executed within a project
-                      (let ((default-directory (or (rubocop-project-root 'no-error) default-directory)))
-                        (shell-command-to-string (rubocop-build-command command (rubocop-local-file-name file-name)))
-                        (revert-buffer t t t))
-                    (error "Buffer is not visiting a file"))))
-              (rubocop-autocorrect-current-file))
-            (when vemv-robe-connected
-              (vemv/send :ruby nil "$VERBOSE = nil; reload!")))
-          (when (and (member major-mode `(typescript-mode))
-                     (not avoid-recursion))
-            (vemv/save-other-buffers-for-this-project :for-flycheck))
-          (when (string-equal (buffer-file-name) vemv/overrides-file)
-            (vemv/refresh-available-projects)
-            (with-selected-window vemv/project-explorer-window
-              (funcall vemv/maybe-change-project-graphically))))))))
+            (when (eq major-mode 'ruby-mode)
+              (unless skip-formatting
+                (require 'rubocop)
+                (defun rubocop--file-command (command)
+                  "Removes compilation-mode stuff"
+                  (rubocop-ensure-installed)
+                  (let ((file-name (buffer-file-name (current-buffer))))
+                    (if file-name
+                        ;; make sure we run RuboCop from a project's root if the command is executed within a project
+                        (let ((default-directory (or (rubocop-project-root 'no-error) default-directory)))
+                          (shell-command-to-string (rubocop-build-command command (rubocop-local-file-name file-name)))
+                          (revert-buffer t t t))
+                      (error "Buffer is not visiting a file"))))
+                (rubocop-autocorrect-current-file))
+              (when vemv-robe-connected
+                (vemv/send :ruby nil "$VERBOSE = nil; reload!")))
+            (when (and (member major-mode `(typescript-mode))
+                       (not avoid-recursion))
+              (vemv/save-other-buffers-for-this-project :for-flycheck))
+            (when (string-equal (buffer-file-name) vemv/overrides-file)
+              (vemv/refresh-available-projects)
+              (with-selected-window vemv/project-explorer-window
+                (funcall vemv/maybe-change-project-graphically)))))))))
 
 (defun vemv/tab ()
   (interactive)
