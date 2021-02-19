@@ -287,3 +287,13 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
 (defun display-startup-echo-area-message ())
 
 (message (concat "\n------------------------------ Emacs loaded in: " (emacs-init-time) " ------------------------------\n"))
+
+(unless vemv/terminal-emacs?
+
+  ;; use a socket dir different from the default one, so that a vanilla emacs server can work without conflict.
+  (setq server-socket-dir "~/.emacs.d/socket")
+
+  ;; start a server, but not a regular one for using emacsclient as an editor, but instead for doing `eval`,
+  ;; which allows controlling GUI emacs from a terminal.
+  ;; sample usage: emacsclient --eval "(vemv/open-project \"$PWD\")" --socket-name="$(echo ~/.emacs.d/socket/server)"
+  (server-start))

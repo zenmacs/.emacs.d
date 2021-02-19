@@ -33,20 +33,25 @@
        (-concat (vemv/projects-with-initialization-files))
        -uniq))
 
-(defun vemv/open-project ()
+(defun vemv/open-project (&optional project-path)
   "Can open a project without configuration whatsoever, or a disabled project (in overrides.el) with(out) a dedicated .el file"
   (interactive)
   (load "emacs.d.overrides")
   (vemv/set-available-projects!)
   (vemv/save-window-excursion
-   (let* ((chosen-workspace (ido-completing-read "In which workspace should the project be opened? " (vemv/workspace-names)))
+   (let* ((chosen-workspace (if project-path
+                                (car (vemv/workspace-names))
+                              (ido-completing-read "In which workspace should the project be opened? " (vemv/workspace-names))))
           (_ (assert (member chosen-workspace (vemv/workspace-names))))
-          (default-directory (vemv/dir-opened-from-home))
-          (found (-find (lambda (x)
-                          (let ((dfp (vemv/dir-for-project x)))
-                            (or (vemv/contains? default-directory dfp)
-                                (vemv/contains? dfp default-directory))))
-                        (vemv/projects-from-central-config-or-dedicated-files)))
+          (default-directory (if project-path
+                                 project-path
+                               (vemv/dir-opened-from-home)))
+          (found (or project-path
+                     (-find (lambda (x)
+                              (let ((dfp (vemv/dir-for-project x)))
+                                (or (vemv/contains? default-directory dfp)
+                                    (vemv/contains? dfp default-directory))))
+                            (vemv/projects-from-central-config-or-dedicated-files))))
           (project-name (or found default-directory)))
      (assert (not (member default-directory (list "/" vemv-home (vemv/root-marker)))))
      (assert (file-exists-p project-name))
@@ -58,7 +63,10 @@
      (vemv/set-workspace (vemv/find-workspace chosen-workspace)
                          :skip-refresh)
      (vemv/add-project-to-current-workspace project-name)
-     (vemv/force-refresh-project!))))
+     (vemv/force-refresh-project!)
+     (vemv/previous-project)
+     (when project-path ;; we were called from emacsclient --eval - show the result:
+       (select-frame-set-input-focus (selected-frame))))))
 
 (defun vemv/maybe-change-project-graphically-impl (&optional done)
   (if (or cider-launched vemv-cider-connected (cider-connected-p))
