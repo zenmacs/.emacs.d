@@ -24,14 +24,18 @@
          (base (rest bbase))
          (onechars (mapcar (lambda (x)
                              (vemv.abbreviate-ns/format-intermediate-fragment x))
-                           base)))
-    (concat fname
-            (if fname "." "")
-            (s-join "." onechars)
-            (if (> (length onechars) 0)
-                "."
-              "")
-            name)))
+                           base))
+         (pid (-> vemv/all-workspaces car second car)))
+    (if (and (s-starts-with? "iroh" pid)
+             (not (equal pid "iroh")))
+        name
+      (concat fname
+              (if fname "." "")
+              (s-join "." onechars)
+              (if (> (length onechars) 0)
+                  "."
+                "")
+              name))))
 
 (defun vemv/mode-line-for-buffer (buffer-filename)
   (let* ((buf (get-file-buffer buffer-filename))
