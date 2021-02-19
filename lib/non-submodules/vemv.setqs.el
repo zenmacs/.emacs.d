@@ -79,13 +79,6 @@
                        (when (vemv/good-window-p)
                          (vemv/present-one-tab-per-project-file))))))
 
-;; http://www.emacswiki.org/emacs/BackupDirectory
-(setq backup-by-copying t
-      delete-old-versions t
-      kept-new-versions 6
-      kept-old-versions 2
-      version-control t)
-
 (unless vemv/terminal-emacs?
   ;; https://github.com/company-mode/company-mode/issues/808
   (setq company-backends (-remove (lambda (x)
@@ -94,11 +87,10 @@
                                   company-backends))
   (push 'company-robe company-backends))
 
-(setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
-      auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
+(setq auto-save-default nil
+      auto-save-list-file-prefix nil
       back-to-indentation-state nil
-      backup-directory-alist `((".*" . ,temporary-file-directory))
-      backup-directory-alist `((".*" . ,temporary-file-directory))
+      backup-inhibited t
       cider-auto-jump-to-error nil
       cider-repl-display-help-banner' nil
       cider-repl-pop-to-buffer-on-connect nil
@@ -141,6 +133,7 @@
       exec-path-from-shell-check-startup-files nil
       magit-completing-read-function 'magit-ido-completing-read
       magit-turn-on-auto-revert-mode nil
+      make-backup-files nil
       max-mini-window-height 0.25
       mouse-buffer-menu-maxlen 99999
       mouse-buffer-menu-mode-mult 1
