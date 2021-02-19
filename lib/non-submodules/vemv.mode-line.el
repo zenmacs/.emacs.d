@@ -41,6 +41,7 @@
   (let* ((buf (get-file-buffer buffer-filename))
          (buffer-name (buffer-name buf))
          (is-project-dot-clj (vemv/contains? buffer-name "project.clj"))
+         (is-profiles-dot-clj (vemv/contains? buffer-name "profiles.clj"))
          (is-clj (vemv/contains? buffer-name ".clj"))
          (is-rails-view (or (vemv/contains? buffer-filename ".haml")
                             (vemv/contains? buffer-filename ".erb")))
@@ -48,11 +49,13 @@
          (close-sym (intern (concat "vemv/mode-line-for-buffer/" buffer-filename "-close")))
          (namespace (if is-project-dot-clj
                         "project.clj"
-                      (if is-clj
-                          (vemv/abbreviate-ns (with-current-buffer buffer-name
-                                                (or (ignore-errors
-                                                      (cider-current-ns))
-                                                    buffer-name))))))
+                      (if is-profiles-dot-clj
+                          "profiles.clj"
+                        (if is-clj
+                            (vemv/abbreviate-ns (with-current-buffer buffer-name
+                                                  (or (ignore-errors
+                                                        (cider-current-ns))
+                                                      buffer-name)))))))
          (is-modified (with-current-buffer buffer-name
                         (buffer-modified-p)))
          (shortname (concat (if is-clj
