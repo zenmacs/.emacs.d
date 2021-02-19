@@ -5,14 +5,59 @@
   "Disables annoying dialog 'The local variables list in :x contains values that may not be safe"
   t)
 
-(defun load-vemv-theme (frame)
-  (with-selected-frame frame
-    (with-current-buffer (get-buffer "*scratch*")
-      (erase-buffer))
-    (load "vemv.theme")))
+(when vemv/terminal-emacs?
+  (setq original-y-or-n-p 'y-or-n-p)
+  (defalias 'original-y-or-n-p (symbol-function 'y-or-n-p))
+  (defun default-yes-sometimes (prompt)
+    (if (or
+         (string-match "Revert buffer" prompt)
+         (string-match "has a running process" prompt)
+         (string-match "does not exist; create" prompt)
+         (string-match "modified; kill anyway" prompt)
+         (string-match "Delete buffer using" prompt)
+         (string-match "Kill buffer of" prompt)
+         (string-match "Kill Dired buffer of" prompt)
+         (string-match "delete buffer using" prompt))
+        t
+      (original-y-or-n-p prompt)))
+  (defalias 'yes-or-no-p 'default-yes-sometimes)
+  (defalias 'y-or-n-p 'default-yes-sometimes))
+
+(defun vemv/client-init (frame)
+  (unless (display-graphic-p)
+    (setq-default revert-without-query t)
+    (with-selected-frame frame
+      (with-current-buffer (get-buffer "*scratch*")
+        (erase-buffer))
+      (require 'vemv.init)
+      (setq vemv/main_window (selected-window))
+      (setq vemv/repl-window nil)
+      (setq vemv/project-explorer-window nil)
+      ;; this must be a hook for file-open
+      (let* ((f (list "  "
+                      '(:eval (when (and (buffer-file-name) (buffer-modified-p))
+                                "*"))
+                      '(:eval (buffer-name))
+                      " "
+                      '(:eval (when (buffer-file-name)
+                                (propertize "%l:%c" 'face 'font-lock-line-and-column-face))))))
+        (setq mode-line-format f)
+        (setq-default mode-line-format f))
+      (xterm-mouse-mode 1)
+      (global-set-key (kbd "<mouse-4>") 'scroll-down-line)
+      (global-set-key (kbd "<mouse-5>") 'scroll-up-line)
+      (global-set-key (kbd "C-z") 'undo)
+      (global-set-key (kbd "C-a") 'vemv/copy-inserting-at-kill-list)
+      (global-set-key (kbd "C-v") 'vemv/paste-from-kill-list)
+      (global-set-key (kbd "C-b") 'vemv/duplicate)
+      (global-set-key (kbd "C-f") 'vemv/search-in-this-buffer)
+      (global-set-key (kbd "C-g") 'vemv/repeat-last-search-in-this-buffer)
+      (global-set-key (kbd "C-l") 'vemv/delete-this-line)
+      (global-set-key (kbd "C-o") 'vemv/open-at-pwd)
+      (global-set-key (kbd "C-w") 'vemv/close-this))))
 
 (when vemv/terminal-emacs?
-  (add-hook 'after-make-frame-functions #'load-vemv-theme)
+  (add-hook 'after-make-frame-functions #'vemv/client-init)
   (setq initial-scratch-message ""))
 
 (defvar vemv/input-enabled t)

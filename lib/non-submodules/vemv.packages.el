@@ -5,6 +5,11 @@
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
+(when vemv/terminal-emacs?
+  (setq package-load-list '(all
+                            (unwanted-package magit)
+                            )))
+
 (package-initialize)
 
 (add-to-list 'same-window-buffer-names "*Compile-Log*")

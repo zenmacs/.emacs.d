@@ -8,6 +8,8 @@
 (setq-default truncate-lines t)
 (setq-default save-place t)
 (setq-default indent-tabs-mode nil)
+(when vemv/terminal-emacs?
+  (setq-default revert-without-query t))
 (setq-default mode-line-format
               (list "  "
                     '(:eval (when (and (buffer-file-name) (buffer-modified-p))
