@@ -271,46 +271,71 @@
 (defun vemv/find-protocol-method (x)
   "Finds a protocol method from a bare symbol. Only needed when using frameworks like Trapperkeeper."
   (when (s-contains? "/iroh" default-directory)
-    (let* ((data (read (vemv.clojure-interaction/sync-eval-to-string (concat "(let [found (->> (user.linters.util/project-namespaces)
-                                                                                 (keep find-ns)
-                                                                                 (map ns-publics)
-                                                                                 (mapcat vals)
-                                                                                 (filter var?)
-                                                                                 (map deref)
-                                                                                 (filter map?)
-                                                                                 (filter :method-builders)
-                                                                                 (map :method-builders)
-                                                                                 (mapcat keys)
-                                                                                 (filter (comp #{'"
-                                                                             x
-                                                                             "                       } :name meta))
-                                                                                 (map meta))]
-                                                                  (when (= 1 (count found))
-                                                                    (let [[{:keys [protocol file line column name doc ns arglists]}] found]
-                                                                      (list (or file
-                                                                                (-> ns meta :file)
-                                                                                (-> ns str symbol user.linters.util/ns-sym->filename))
-                                                                            (or line (-> protocol meta :line))
-                                                                            (or column (-> protocol meta :column))
-                                                                            (str ns)
-                                                                            doc
-                                                                            (cond-> arglists (= (count arglists) 1) first, true pr-str)
-                                                                            (str name)))))"))))
-           (file (car data))
-           (line     (-> data rest car))
-           (column   (-> data rest rest car))
-           (ns       (-> data rest rest rest car))
-           (doc      (-> data rest rest rest rest car))
-           (arglists (-> data rest rest rest rest rest car))
-           (name     (-> data rest rest rest rest rest rest car)))
-      (when data
-        (nrepl-dict "arglists-str" arglists
-                    "doc" doc
-                    "name" name
-                    "ns" ns
-                    "line" line
-                    "file" file
-                    "column" column)))))
+    (when-let* ((data (read (vemv.clojure-interaction/sync-eval-to-string (concat "(let [found (->> (user.linters.util/project-namespaces)
+                                                                                                    (keep find-ns)
+                                                                                                    (map ns-publics)
+                                                                                                    (mapcat vals)
+                                                                                                    (filter var?)
+                                                                                                    (map deref)
+                                                                                                    (filter map?)
+                                                                                                    (filter :method-builders)
+                                                                                                    (map :method-builders)
+                                                                                                    (mapcat keys)
+                                                                                                    (filter (comp #{'"
+                                                                                  x
+                                                                                  "                       } :name meta))
+                                                                                                    (map meta)
+                                                                                                    (group-by :name) ;; this group-by is a bit superfluous - the keys won't be used
+                                                                                                    (map (fn [[k v]]
+                                                                                                            (let [extract (fn [s]
+                                                                                                                            (clojure.string/split s #\"\\.\"))
+                                                                                                                  n-e (-> *ns* str extract)
+                                                                                                                  ranked (->> v
+                                                                                                                              (map (fn [{:keys [protocol] :as thing}]
+                                                                                                                                     [thing (->> protocol
+                                                                                                                                                 symbol
+                                                                                                                                                 str
+                                                                                                                                                 extract
+                                                                                                                                                 (map = n-e)
+                                                                                                                                                 (take-while true?)
+                                                                                                                                                 count)])))
+                                                                                                                  same? (->> ranked (map second) (apply =))]
+                                                                                                              [k (if same?
+                                                                                                                   v
+                                                                                                                   (->> ranked
+                                                                                                                       (sort-by second)
+                                                                                                                       reverse
+                                                                                                                       ffirst
+                                                                                                                       vector))])))
+                                                                                                    (into {})
+                                                                                                    (vals)
+                                                                                                    (apply concat))]
+                                                                                     (when (= 1 (count found))
+                                                                                       (let [[{:keys [protocol file line column name doc ns arglists]}] found]
+                                                                                         (list (or file
+                                                                                                   (-> ns meta :file)
+                                                                                                   (-> ns str symbol user.linters.util/ns-sym->filename))
+                                                                                               (or line (-> protocol meta :line))
+                                                                                               (or column (-> protocol meta :column))
+                                                                                               (str ns)
+                                                                                               doc
+                                                                                               (cond-> arglists (= (count arglists) 1) first, true pr-str)
+                                                                                               (str name)))))")))))
+      (let* ((file     (-> data car))
+             (line     (-> data rest car))
+             (column   (-> data rest rest car))
+             (ns       (-> data rest rest rest car))
+             (doc      (-> data rest rest rest rest car))
+             (arglists (-> data rest rest rest rest rest car))
+             (name     (-> data rest rest rest rest rest rest car)))
+        (when (-some 'identity data)
+          (nrepl-dict "arglists-str" arglists
+                      "doc" doc
+                      "name" name
+                      "ns" ns
+                      "line" line
+                      "file" file
+                      "column" column))))))
 
 (defun vemv/jump-to-clojure-definition ()
   (interactive)
