@@ -5,6 +5,7 @@
 (provide 'vemv.search)
 
 (defun vemv/search-in-this-buffer ()
+  (interactive)
   (ignore-errors
     (call-interactively 'search-forward)
     (setq vemv-last-search (first minibuffer-history))))

@@ -106,6 +106,7 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
             nil))))
 
     (defun vemv/toggle-verbosity ()
+      (interactive)
       (vemv/set-verbosity-to (not vemv/verbose-mode)))
 
     (vemv/toggle-verbosity)

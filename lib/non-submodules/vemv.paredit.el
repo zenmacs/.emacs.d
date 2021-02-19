@@ -84,6 +84,7 @@
 
 (defun vemv/dumb-cut ()
   "Cuts the current selection, regardless of paredit boundaries"
+  (interactive)
   (when (region-active-p)
     (let ((content (vemv/selected-region)))
       (call-interactively 'kill-region)
@@ -116,12 +117,14 @@
     (kill-region (region-beginning) (region-end))))
 
 (defun vemv/paste-from-clipboard ()
+  (interactive)
   (vemv/before-paste)
   (let ((content (substring-no-properties (simpleclip-get-contents))))
     (insert content)
     (vemv/maybe-indent-on-paste content)))
 
 (defun vemv/paste-from-kill-list ()
+  (interactive)
   (vemv/before-paste)
   (let ((content (car vemv/kill-list)))
     (insert content)
