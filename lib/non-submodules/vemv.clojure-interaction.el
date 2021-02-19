@@ -195,6 +195,13 @@
           (setq vemv/running-project-root-dir vemv/project-root-dir)
           (setq vemv/running-project-type vemv/project-type)
           (delay (argless (funcall vemv/project-initializers)
+                          (when (and (not vemv/cider-port)
+                                     (file-exists-p ".nrepl-port")
+                                     (not (equal ""
+                                                 (shell-command-to-string (concat "lsof -i:"
+                                                                                  (vemv/slurp ".nrepl-port"))))))
+                            (setq vemv/cider-port
+                                  (read (vemv/slurp ".nrepl-port"))))
                           (unless vemv/cider-port
                             (let* ((s (vemv/lein-deps-command)))
                               (shell-command-to-string s)))
