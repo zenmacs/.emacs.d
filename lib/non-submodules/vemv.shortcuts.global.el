@@ -90,7 +90,7 @@
       vemv/shortcuts/global/primary-k               'vemv/kill
       vemv/shortcuts/global/primary-left            (vemv/safe-paredit-command 'paredit-forward-barf-sexp)
       vemv/shortcuts/global/primary-n               'vemv/new-frame
-      vemv/shortcuts/global/primary-o               (argless (vemv/open nil :open-at-pwd))
+      vemv/shortcuts/global/primary-o               'vemv/open-at-pwd
       vemv/shortcuts/global/primary-p               'vemv/repeat-last-search-in-this-buffer
       vemv/shortcuts/global/primary-q               'save-buffers-kill-terminal
       vemv/shortcuts/global/primary-r               'vemv/test-this-ns

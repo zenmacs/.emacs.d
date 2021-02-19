@@ -103,6 +103,10 @@ OPEN-AT-PWD decides the initial pwd of the prompt."
                              (vemv/safe-select-window vemv/main_window))
                             :force))
 
+(defun vemv/open-at-pwd ()
+  (interactive)
+  (vemv/open nil :open-at-pwd))
+
 (defvar vemv.fiplr.cache/all-git-modified-files)
 
 (defun vemv/fiplr (&optional opener)
