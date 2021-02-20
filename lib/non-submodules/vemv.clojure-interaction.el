@@ -311,10 +311,12 @@
                                                                                                     (vals)
                                                                                                     (apply concat))]
                                                                                      (when (= 1 (count found))
-                                                                                       (let [[{:keys [protocol file line column name doc ns arglists]}] found]
-                                                                                         (list (or file
+                                                                                       (let [[{:keys [protocol file line column name doc ns arglists]}] found
+                                                                                             f (or file
                                                                                                    (-> ns meta :file)
-                                                                                                   (-> ns str symbol user.linters.util/ns-sym->filename))
+                                                                                                   (-> ns str symbol user.linters.util/ns-sym->filename))]
+                                                                                         (list (or (some-> f clojure.java.io/resource str (clojure.string/replace \"file:\" \"\"))
+                                                                                                   f)
                                                                                                (or line (-> protocol meta :line))
                                                                                                (or column (-> protocol meta :column))
                                                                                                (str ns)
