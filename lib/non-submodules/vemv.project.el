@@ -263,3 +263,81 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
 
 (unless vemv/terminal-emacs?
   (vemv/refresh-current-project vemv/current-project))
+
+;; inspired by cljr--find-source-ns-of-test-ns
+(defun cljr--find-test-namespaces-of-source-ns (ns file)
+  (let* ((ns-chunks (split-string ns "[.]" t))
+         (name (car (last ns-chunks)))
+         (other-files (mapcar (lambda (prefix)
+                                (list (concat vemv/project-root-dir
+                                              "test/"
+                                              prefix
+                                              "/"
+                                              (s-replace vemv/project-root-dir
+                                                         ""
+                                                         (s-replace "src/"
+                                                                    ""
+                                                                    (buffer-file-name))))))
+                              '("unit"
+                                "integration"
+                                "functional"
+                                "acceptance"
+                                "generative")))
+         (other-files (filter 'file-exists-p (reduce 'nconc other-files)))
+         (candidates (seq-map (lambda (file-name)
+                                (replace-regexp-in-string "^test/"
+                                                          ""
+                                                          (s-replace vemv/project-root-dir
+                                                                     ""
+                                                                     (replace-regexp-in-string "_"
+                                                                                               "-"
+                                                                                               (file-name-sans-extension file-name)))))
+
+                              (seq-remove (lambda (x)
+                                            (or (not x)
+                                                (equal x ".")
+                                                (not (file-exists-p x))
+                                                (file-directory-p x)))
+                                          (nconc (ignore-errors
+                                                   (directory-files (replace-regexp-in-string "src/" "test/" (file-name-directory file) t t)
+                                                                    t))
+                                                 other-files))))
+
+         (test-nss (seq-filter (lambda (it)
+                                 (let* ((clean (replace-regexp-in-string "-test$" "" it))
+                                        (clean (s-replace "/" "." clean))
+                                        (clean (if other-files
+                                                   (replace-regexp-in-string "^\\." "" (replace-regexp-in-string "^unit\\\|integration\\\|functional\\\|acceptance\\\|generative" "" clean))
+                                                 clean)))
+                                   (equal clean ns)))
+                               candidates)))
+    (mapcar (lambda (test-ns)
+              (replace-regexp-in-string "/" "." test-ns))
+            test-nss)))
+
+(defun vemv/find-implementation-or-test (file-name)
+  (unless (and file-name
+               (file-exists-p file-name))
+    (error "The current buffer is not visiting a file"))
+  (let* ((f (if (cljr--in-tests-p)
+                'cljr--find-source-ns-of-test-ns
+              'cljr--find-test-namespaces-of-source-ns))
+         (namespaces-as-strings (let ((x (funcall f
+                                                  (clojure-find-ns)
+                                                  file-name)))
+                                  (if x
+                                      (if (listp x)
+                                          x
+                                        (list x))
+                                    (error "No counterpart found")))))
+    (when namespaces-as-strings
+      (xref-push-marker-stack)
+      (read (vemv.clojure-interaction/sync-eval-to-string
+             (concat "(clojure.core/->> '" (pr-str namespaces-as-strings)  " (clojure.core/map (clojure.core/comp vemv/ns-sym->filename clojure.core/symbol)))"))))))
+
+(defun vemv/toggle-between-implementation-and-test ()
+  "Toggle between a Clojure implementation file and its test file."
+  (interactive)
+  (when (vemv/in-a-clojure-mode?)
+    (mapcar 'vemv/open
+            (vemv/find-implementation-or-test (buffer-file-name)))))

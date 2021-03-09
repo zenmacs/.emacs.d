@@ -40,6 +40,7 @@
       ;; NOTE: don't wrap it in vemv/safe-paredit-command, it already does so internally:
       vemv/shortcuts/global/primary-3               'vemv/indent
       vemv/shortcuts/global/primary-6               'vemv/emacs-reload
+      vemv/shortcuts/global/primary-7               'vemv/toggle-between-implementation-and-test
       vemv/shortcuts/global/primary-4               'vemv/thread
       vemv/shortcuts/global/primary-5               (argless
                                                      (let* ((clojure-align-binding-forms (apply 'list "speced/let" '("let" "when-let" "when-some" "if-let" "if-some" "binding" "loop" "doseq" "for" "with-open" "with-local-vars" "with-redefs"))))
