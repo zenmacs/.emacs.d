@@ -1,0 +1,9 @@
+#name: jmx
+# --
+(require '[clojure.java.jmx :as jmx])
+(clojure.pprint/pprint (->> (jmx/mbean-names "*:*") (map (fn [x]
+                                                           (let [b (-> x bean :canonicalName)
+                                                                 as (jmx/attribute-names b)]
+                                                             (->> as
+                                                                  (map (fn [a]
+                                                                         [b a (jmx/read b a)]))))))))
