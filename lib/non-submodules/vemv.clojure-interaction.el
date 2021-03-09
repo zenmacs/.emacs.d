@@ -119,6 +119,12 @@
                                           (if vemv/using-component-reloaded-workflow
                                               (if vemv/cljr-building-ast-cache?
                                                   (message "Currently building AST cache. Wait a few seconds and try again.")
+                                                ;; Clear the fringes that are rendered after as successful `(refresh)`.
+                                                ;; This way, one can be sure of when a new `(refresh)` has actually completed:
+                                                (with-selected-window vemv/repl-window
+                                                  (dolist (o (overlays-in (window-start) (window-end)))
+                                                    (when (overlay-get o 'cider-temporary)
+                                                      (delete-overlay o))))
                                                 ;; NOTE: has to be `cider-interactive-eval', so there's visual feedback + error reporting
                                                 (cider-interactive-eval (or reload-command
                                                                             vemv/clojure-reload-command
