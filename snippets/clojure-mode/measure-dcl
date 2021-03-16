@@ -1,0 +1,11 @@
+#name: measure-dcl
+# --
+(loop [l (clojure.lang.RT/baseLoader)
+       i 1]
+  (if-let [n (try
+               (-> l bean :parent)
+               (catch Throwable _))]
+    (if (identical? n l)
+      i
+      (recur n (inc i)))
+    i))
