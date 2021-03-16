@@ -167,16 +167,16 @@ OPEN-AT-PWD decides the initial pwd of the prompt."
                     (concat "cd " default-directory "; "
                             "cd $(git rev-parse --show-toplevel); "
                             git-command (when grep-options
-                                          (concat " | grep " grep-options " | sed s/^...//"))
+                                          (concat " | grep " grep-options " | sed s/^...// | sed \"s/.* -> //\""))
                             " | while read line; do echo \"$PWD/$line\"; done"))))
     (-some->> command
-              shell-command-to-string
-              s-lines
-              (-remove 's-blank?))))
+      shell-command-to-string
+      s-lines
+      (-remove 's-blank?))))
 
 (defun vemv/git-staged-files ()
   "The new and modified files, that are in the staging area. Does not include deleted files."
-  (vemv/git-file-list-for "\"^M \\|^A\""))
+  (vemv/git-file-list-for "\"^M \\|^A\\|R \""))
 
 (defun vemv/git-unstaged-files ()
   "The new and modified files, that are not in the staging area. Does not include deleted files."
