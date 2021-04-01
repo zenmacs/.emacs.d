@@ -460,14 +460,12 @@
 
 (add-hook 'cider-connected-hook
           (argless
-           (delay (argless
-                   (setq vemv-cider-connecting nil)
-                   (setq vemv-cider-connected t)
-                   (vemv/show-clj-or-cljs-repl)
-                   (when (not vemv-cleaning-namespaces)
-                     (vemv/advice-nrepl))
-                   (define-key clojure-mode-map (kbd "/") 'cljr-slash))
-                  2)))
+           (setq vemv-cider-connecting nil)
+           (setq vemv-cider-connected t)
+           (vemv/show-clj-or-cljs-repl)
+           (when (not vemv-cleaning-namespaces)
+             (vemv/advice-nrepl))
+           (define-key clojure-mode-map (kbd "/") 'cljr-slash)))
 
 (add-hook 'cider-repl-mode-hook #'paredit-mode)
 
