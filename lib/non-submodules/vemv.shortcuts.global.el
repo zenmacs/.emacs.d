@@ -119,6 +119,7 @@
                                                       (kill-emacs)))
       vemv/shortcuts/global/prior                   'cua-scroll-down
       vemv/shortcuts/global/right                   'right-char
+      vemv/shortcuts/global/secondary-7             'vemv/toggle-between-domain-and-web
       vemv/shortcuts/global/secondary-S-k           'vemv/kill-backward-copying-content
       vemv/shortcuts/global/secondary-a             'vemv/copy-sexpr-content-backward
       vemv/shortcuts/global/secondary-backspace     (vemv/safe-paredit-command 'paredit-backward-kill-word)
@@ -156,6 +157,7 @@
       vemv/shortcuts/global/tertiary-3              (vemv/safe-paredit-command 'vemv/thread-last-all--but-last)
       vemv/shortcuts/global/tertiary-4              (vemv/safe-paredit-command 'vemv/thread-last-all--and-last)
       vemv/shortcuts/global/tertiary-5              (vemv/safe-paredit-command 'clojure-unwind-all)
+      vemv/shortcuts/global/tertiary-7              'vemv/toggle-between-api-and-implementation
       vemv/shortcuts/global/tertiary-9              (vemv/safe-paredit-command 'paredit-backward-up)
       vemv/shortcuts/global/tertiary-0              (vemv/safe-paredit-command 'paredit-forward-up)
       vemv/shortcuts/global/tertiary-RET            'vemv/load-clojure-buffer

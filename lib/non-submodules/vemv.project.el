@@ -265,7 +265,7 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
   (vemv/refresh-current-project vemv/current-project))
 
 ;; inspired by cljr--find-source-ns-of-test-ns
-(defun cljr--find-test-namespaces-of-source-ns (ns file)
+(defun vemv/find-test-namespaces-of-source-ns (ns file)
   (let* ((ns-chunks (split-string ns "[.]" t))
          (name (car (last ns-chunks)))
          (other-files (mapcar (lambda (prefix)
@@ -315,13 +315,73 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
               (replace-regexp-in-string "/" "." test-ns))
             test-nss)))
 
-(defun vemv/find-implementation-or-test (file-name)
+(defun vemv/in-clojure-implementation? ()
+  (condition-case nil
+      (let* ((n (clojure-find-ns))
+             (f (buffer-file-name)))
+        (or (string-match-p "\\.core$" n)
+            (string-match-p "\\.impl$" n)))
+    (error nil)))
+
+(defun vemv/in-web-ns? ()
+  (condition-case nil
+      (let* ((n (clojure-find-ns))
+             (f (buffer-file-name)))
+        (or (string-match-p "\\.web-service$" n)
+            (string-match-p "-web-service$" n)
+            (string-match-p "\\.web-service-test$" n)
+            (string-match-p "-web-service-test$" n)))
+    (error nil)))
+
+(defun vemv/find-related-files (ns file substitutions)
+  (let* ((ns-chunks (split-string ns "[.]" t))
+         (name (car (last ns-chunks)))
+         (candidates (seq-map (lambda (file-name)
+                                (s-replace "src/"
+                                           ""
+                                           (s-replace "test/"
+                                                      ""
+                                                      (s-replace vemv/project-root-dir
+                                                                 ""
+                                                                 (replace-regexp-in-string "_"
+                                                                                           "-"
+                                                                                           (file-name-sans-extension file-name))))))
+
+                              (seq-remove (lambda (x)
+                                            (or (equal x file)
+                                                (not (file-exists-p x))))
+                                          (mapcar (lambda (pair)
+                                                    (let* ((from (car pair))
+                                                           (to (car (last pair))))
+                                                      (replace-regexp-in-string from to file)))
+                                                  substitutions)))))
+    (mapcar (lambda (test-ns)
+              (replace-regexp-in-string "/" "." test-ns))
+            candidates)))
+
+(defun vemv/find-impl-namespaces-of-api-ns (ns file)
+  (vemv/find-related-files ns file '(("\\.clj" "/impl.clj")
+                                     ("\\.clj" "/core.clj"))))
+
+(defun vemv/find-api-namespaces-of-impl-ns (ns file)
+  (vemv/find-related-files ns file '(("/impl\\.clj" ".clj")
+                                     ("/core\\.clj" ".clj"))))
+
+(defun vemv/find-web-namespaces-of-ns (ns file)
+  (vemv/find-related-files ns file '(("service\\.clj" "web_service.clj")
+                                     ("service_test\\.clj" "web_service_test.clj"))))
+
+(defun vemv/find-non-web-namespaces-of-ns (ns file)
+  (vemv/find-related-files ns file '(("web_service\\.clj" "service.clj")
+                                     ("web_service_test\\.clj" "service_test.clj"))))
+
+(defun vemv/toggle-related-files (file-name pred choice-1 choice-2)
   (unless (and file-name
                (file-exists-p file-name))
     (error "The current buffer is not visiting a file"))
-  (let* ((f (if (cljr--in-tests-p)
-                'cljr--find-source-ns-of-test-ns
-              'cljr--find-test-namespaces-of-source-ns))
+  (let* ((f (if (funcall pred)
+                choice-1
+              choice-2))
          (namespaces-as-strings (let ((x (funcall f
                                                   (clojure-find-ns)
                                                   file-name)))
@@ -333,11 +393,33 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
     (when namespaces-as-strings
       (xref-push-marker-stack)
       (read (vemv.clojure-interaction/sync-eval-to-string
-             (concat "(clojure.core/->> '" (pr-str namespaces-as-strings)  " (clojure.core/map (clojure.core/comp vemv/ns-sym->filename clojure.core/symbol)))"))))))
+             (concat "(clojure.core/->> '" (pr-str namespaces-as-strings) " (clojure.core/map (clojure.core/comp vemv/ns-sym->filename clojure.core/symbol)))"))))))
+
+(defun vemv/find-implementation-or-test (file-name)
+  (vemv/toggle-related-files file-name 'cljr--in-tests-p 'cljr--find-source-ns-of-test-ns 'vemv/find-test-namespaces-of-source-ns))
+
+(defun vemv/find-api-or-implementation (file-name)
+  (vemv/toggle-related-files file-name 'vemv/in-clojure-implementation? 'vemv/find-api-namespaces-of-impl-ns 'vemv/find-impl-namespaces-of-api-ns))
+
+(defun vemv/find-domain-or-web (file-name)
+  (vemv/toggle-related-files file-name 'vemv/in-web-ns? 'vemv/find-non-web-namespaces-of-ns 'vemv/find-web-namespaces-of-ns))
+
+(defun vemv/open-by-toggle-fn (f)
+  (when (vemv/in-a-clojure-mode?)
+    (mapcar 'vemv/open
+            (funcall f (buffer-file-name)))))
 
 (defun vemv/toggle-between-implementation-and-test ()
   "Toggle between a Clojure implementation file and its test file."
   (interactive)
-  (when (vemv/in-a-clojure-mode?)
-    (mapcar 'vemv/open
-            (vemv/find-implementation-or-test (buffer-file-name)))))
+  (vemv/open-by-toggle-fn 'vemv/find-implementation-or-test))
+
+(defun vemv/toggle-between-api-and-implementation ()
+  "Toggle between a Clojure API and implementation file."
+  (interactive)
+  (vemv/open-by-toggle-fn 'vemv/find-api-or-implementation))
+
+(defun vemv/toggle-between-domain-and-web ()
+  "Toggle between a web service and its domain layer."
+  (interactive)
+  (vemv/open-by-toggle-fn 'vemv/find-domain-or-web))
