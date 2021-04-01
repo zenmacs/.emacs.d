@@ -23,6 +23,7 @@
                  ;; for `indent-for-tab-command`:
                  (last-command nil)
                  (dc (string-equal "dc" (car vemv/current-workspace)))
+                 (iroh (s-contains? "/iroh" default-directory))
                  (yas (vemv/contains? (buffer-file-name) "/snippets/")))
             (unless (or vemv.project/skip-formatting
                         skip-formatting
@@ -30,8 +31,9 @@
                         (member major-mode `(fundamental-mode ruby-mode conf-colon-mode)))
               (unless dc
                 (delete-trailing-whitespace))
-              (call-interactively 'mark-whole-buffer)
-              (call-interactively 'indent-for-tab-command)
+              (unless iroh
+                (call-interactively 'mark-whole-buffer)
+                (call-interactively 'indent-for-tab-command))
               (pop-mark))
             (goto-line line)
             (vemv/end-of-line-code* nil)
