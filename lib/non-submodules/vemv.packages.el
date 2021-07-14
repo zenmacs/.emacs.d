@@ -38,7 +38,7 @@
                      multiple-cursors
                      paren-face
                      parseedn
-                     pdf-tools
+                     ;; pdf-tools
                      queue
                      robe
                      rspec-mode

@@ -110,6 +110,7 @@
   (let ((was-verbose vemv/verbose-mode))
     (when (not was-verbose)
       (vemv/toggle-verbosity))
+    ;; XXX more files? (follow a logical order)
     (load "vemv.lang")
     (load "vemv.project")
     (load "vemv.workspace")

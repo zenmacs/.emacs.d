@@ -648,7 +648,8 @@
 (defun vemv/maybe-activate-pdf-tools (&rest _)
   (unless vemv.maybe-activate-pdf-tools/activated
     (setq vemv.maybe-activate-pdf-tools/activated t)
-    (pdf-tools-install t t)))
+    (comm
+     (pdf-tools-install t t))))
 
 (advice-add 'find-file
             :before 'vemv/maybe-activate-pdf-tools)
