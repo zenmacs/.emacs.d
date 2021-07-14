@@ -43,6 +43,14 @@
                                                    (funcall done-fn)
                                                    (setq vemv/launched t)))))))
 
+;; XXX dedupe while not breaking emacsclient
+(defun vemv/slurp (fname)
+  (if fname ;; redundant check, might kill occasional bug
+      (with-temp-buffer
+        (insert-file-contents fname)
+        (buffer-string))
+    ""))
+
 (defun vemv/close-this-buffer (&optional noswitch)
   (setq-local vemv/ns-shown nil)
   (if (and (buffer-file-name)
