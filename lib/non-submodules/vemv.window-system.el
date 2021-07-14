@@ -27,6 +27,7 @@
 
       (vemv/next-window)
       (setq vemv/main_window (selected-window))
+      (enlarge-window-horizontally 7)
 
       (vemv/next-window)
       (setq vemv/repl-window (selected-window))
