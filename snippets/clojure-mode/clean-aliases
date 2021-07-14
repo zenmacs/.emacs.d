@@ -1,0 +1,9 @@
+(formatting-stack.core/format! :strategies [formatting-stack.strategies/all-files
+                                            formatting-stack.strategies/namespaces-within-refresh-dirs-only]
+                               :formatters [(-> 'formatting-stack.alias-rewriter.formatter/new
+                                                requiring-resolve
+                                                .invoke)]
+                               :linters []
+                               :reporter formatting-stack.project-formatter/default-reporter
+                               :processors []
+                               :in-background? false)
