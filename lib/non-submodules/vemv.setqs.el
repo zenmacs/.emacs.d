@@ -95,7 +95,7 @@
       cider-repl-display-help-banner' nil
       cider-repl-pop-to-buffer-on-connect nil
       cider-show-error-buffer nil
-      cider-stacktrace-default-positive-filters '(project)
+      cider-stacktrace-default-positive-filters '()
       cider-stacktrace-default-filters '(tooling dup repl)
       cider-stacktrace-fill-column nil
       cider-font-lock-reader-conditionals nil
