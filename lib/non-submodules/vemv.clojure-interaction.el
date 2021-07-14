@@ -209,8 +209,9 @@
                             (setq vemv/cider-port
                                   (read (vemv/slurp ".nrepl-port"))))
                           (unless vemv/cider-port
-                            (let* ((s (vemv/lein-deps-command)))
-                              (shell-command-to-string s)))
+                            (comm
+                             (let* ((s (vemv/lein-deps-command)))
+                               (shell-command-to-string s))))
                           (vemv/safe-select-window vemv/main_window)
                           (if (vemv/is-cljs-project?)
                               (progn
@@ -220,7 +221,8 @@
                                   (cider-jack-in-clojurescript)))
                             (if vemv/cider-port
                                 (cider-connect "127.0.0.1" vemv/cider-port vemv/project-root-dir)
-                              (cider-jack-in))))
+                              (comm
+                               (cider-jack-in)))))
                  1))
       (if (cider-connected-p)
           (if (vemv/current-buffer-is-cljs)
