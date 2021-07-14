@@ -609,6 +609,8 @@ it looks up the thing currently being invoked, i.e. the first element of the fir
         (vemv/contains? n ".integration.")
         (vemv/contains? n ".generative.")
 
+        (vemv/contains? n ".test.")
+
         (vemv/ends-with n "-spec")
         (vemv/ends-with n "-test"))))
 
