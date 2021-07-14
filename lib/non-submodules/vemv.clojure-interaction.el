@@ -263,14 +263,14 @@
         (when (and (not (s-blank? ns))
                    (not (s-blank? name)))
           (let* ((v (read (vemv.clojure-interaction/sync-eval-to-string (concat "(clojure.core/binding [clojure.core/*print-namespace-maps* false]"
-                                                                                " (clojure.core/some-> (resolve '"
+                                                                                " (clojure.core/some-> (clojure.core/resolve '"
                                                                                 ns
                                                                                 "/"
                                                                                 name
                                                                                 ") "
                                                                                 "clojure.core/meta "
-                                                                                "((juxt :amazonica/source :amazonica/method-name))"
-                                                                                "seq))")))))
+                                                                                "((clojure.core/juxt :amazonica/source :amazonica/method-name))"
+                                                                                "clojure.core/seq))")))))
             (when (and v
                        (first v)
                        (-> v last first))
@@ -640,17 +640,17 @@ When not, the callback will be invoked just once, so the code can be incondition
 (defun vemv/remove-log-files! ()
   (comm ;; the Tailer I use lately does not support log rotation
    (vemv.clojure-interaction/sync-eval-to-string
-    "(->> [\"dev.log\" \"test.log\"]
-       (mapv (fn [logfile]
-                 (let [f (-> \"user.dir\" System/getProperty (clojure.java.io/file \"log\" logfile))]
-                   (when (-> f .exists)
-                     [logfile :deleted (-> f .delete)]
-                     (-> f .createNewFile))))))")))
+    "(clojure.core/->> [\"dev.log\" \"test.log\"]
+       (clojure.core/mapv (clojure.core/fn [logfile]
+                            (clojure.core/let [f (clojure.core/-> \"user.dir\" System/getProperty (clojure.java.io/file \"log\" logfile))]
+                              (clojure.core/when (clojure.core/-> f .exists)
+                                [logfile :deleted (clojure.core/-> f .delete)]
+                                (clojure.core/-> f .createNewFile))))))")))
 
 (defun vemv/test-vars-for-this-ns (chosen)
   (read
    (vemv.clojure-interaction/sync-eval-to-string
-    (concat "(->> \"" chosen "\" symbol find-ns ns-publics vals (filter (comp :test meta)) (remove (comp (some-fn :disabled :sleepy :generative :integration :acceptance :functional :benchmark) meta)) (map (comp str name symbol)))"))))
+    (concat "(clojure.core/->> \"" chosen "\" clojure.core/symbol clojure.core/find-ns clojure.core/ns-publics clojure.core/vals (clojure.core/filter (clojure.core/comp :test clojure.core/meta)) (clojure.core/remove (clojure.core/comp (clojure.core/some-fn :disabled :sleepy :generative :integration :acceptance :functional :benchmark) clojure.core/meta)) (clojure.core/map (clojure.core/comp clojure.core/str clojure.core/name clojure.core/symbol)))"))))
 
 (defun vemv/test-this-ns ()
   "Runs the tests for the current namespace, or if not applicable, for the latest applicable ns."
