@@ -146,6 +146,8 @@
 
 (add-to-list 'auto-mode-alist '("\\.org$" . fundamental-mode))
 
+(add-to-list 'auto-mode-alist '("\\.md$" . fundamental-mode))
+
 (add-to-list 'auto-mode-alist '("bootstrap.cfg" . clojure-mode))
 
 ;; Eases editing locally-modified packages.
