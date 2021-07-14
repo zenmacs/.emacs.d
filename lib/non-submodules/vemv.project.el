@@ -269,21 +269,36 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
   (let* ((ns-chunks (split-string ns "[.]" t))
          (name (car (last ns-chunks)))
          (other-files (mapcar (lambda (prefix)
-                                (list (concat vemv/project-root-dir
-                                              "test/"
-                                              prefix
-                                              "/"
-                                              (s-replace vemv/project-root-dir
-                                                         ""
-                                                         (s-replace "src/"
-                                                                    ""
-                                                                    (buffer-file-name))))))
+                                (concat vemv/project-root-dir
+                                        "test/"
+                                        prefix
+                                        "/"
+                                        (s-replace vemv/project-root-dir
+                                                   ""
+                                                   (s-replace "src/"
+                                                              ""
+                                                              (buffer-file-name)))))
                               '("unit"
                                 "integration"
                                 "functional"
                                 "acceptance"
                                 "generative")))
-         (other-files (filter 'file-exists-p (reduce 'nconc other-files)))
+         (oother-files (mapcar (lambda (pair)
+                                 (let* ((from (car pair))
+                                        (to (car (last pair)))
+                                        (x
+                                         (concat vemv/project-root-dir
+                                                 "test/"
+                                                 (s-replace vemv/project-root-dir
+                                                            ""
+                                                            (s-replace "src/"
+                                                                       ""
+                                                                       (replace-regexp-in-string from
+                                                                                                 to
+                                                                                                 (buffer-file-name)))))))
+                                   x))
+                               '(("web_service/routes\\.clj" "web_service_test.clj"))))
+         (other-files (filter 'file-exists-p (nconc other-files oother-files)))
          (candidates (seq-map (lambda (file-name)
                                 (replace-regexp-in-string "^test/"
                                                           ""
@@ -309,7 +324,9 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
                                         (clean (if other-files
                                                    (replace-regexp-in-string "^\\." "" (replace-regexp-in-string "^unit\\\|integration\\\|functional\\\|acceptance\\\|generative" "" clean))
                                                  clean)))
-                                   (equal clean ns)))
+                                   (or (equal clean ns)
+                                       (equal clean
+                                              (replace-regexp-in-string "web-service\\.routes" "web-service" ns)))))
                                candidates)))
     (mapcar (lambda (test-ns)
               (replace-regexp-in-string "/" "." test-ns))
@@ -320,17 +337,21 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
       (let* ((n (clojure-find-ns))
              (f (buffer-file-name)))
         (or (string-match-p "\\.core$" n)
-            (string-match-p "\\.impl$" n)))
+            (string-match-p "\\.impl$" n)
+            (string-match-p "\\.routes$" n)
+            (string-match-p "\\.test-helpers$" n)
+            (string-match-p "\\.core-test$" n)
+            (string-match-p "\\.impl-test$" n)
+            (string-match-p "\\.routes-test$" n)))
     (error nil)))
 
 (defun vemv/in-web-ns? ()
   (condition-case nil
       (let* ((n (clojure-find-ns))
              (f (buffer-file-name)))
-        (or (string-match-p "\\.web-service$" n)
-            (string-match-p "-web-service$" n)
-            (string-match-p "\\.web-service-test$" n)
-            (string-match-p "-web-service-test$" n)))
+        (or (string-match-p "web-service$" n)
+            (string-match-p "web-service-test$" n)
+            (string-match-p "web-service\\." n)))
     (error nil)))
 
 (defun vemv/find-related-files (ns file substitutions)
@@ -361,19 +382,38 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
 
 (defun vemv/find-impl-namespaces-of-api-ns (ns file)
   (vemv/find-related-files ns file '(("\\.clj" "/impl.clj")
-                                     ("\\.clj" "/core.clj"))))
+                                     ("\\.clj" "/core.clj")
+                                     ("\\.clj" "/routes.clj")
+                                     ("_test\\.clj" "/impl_test.clj")
+                                     ("_test\\.clj" "/core_test.clj")
+                                     ("_test\\.clj" "/routes_test.clj")
+                                     ("_test\\.clj" "/test_helpers.clj"))))
 
 (defun vemv/find-api-namespaces-of-impl-ns (ns file)
   (vemv/find-related-files ns file '(("/impl\\.clj" ".clj")
-                                     ("/core\\.clj" ".clj"))))
+                                     ("/core\\.clj" ".clj")
+                                     ("/routes\\.clj" ".clj")
+                                     ("/impl_test\\.clj" "_test.clj")
+                                     ("/core_test\\.clj" "_test.clj")
+                                     ("/routes_test\\.clj" "_test.clj")
+                                     ("/test_helpers\\.clj" "_test.clj"))))
 
 (defun vemv/find-web-namespaces-of-ns (ns file)
   (vemv/find-related-files ns file '(("service\\.clj" "web_service.clj")
-                                     ("service_test\\.clj" "web_service_test.clj"))))
+                                     ("service_test\\.clj" "web_service_test.clj")
+                                     ("service/core\\.clj" "web_service/routes.clj")
+                                     ("service/core_test\\.clj" "web_service/routes_test.clj")
+                                     ("service/core_test\\.clj" "web_service_test.clj")
+                                     ("service/test\\.clj" "web_service_test.clj")
+                                     ("service/test_helpers\\.clj" "web_service/test_helpers.clj"))))
 
 (defun vemv/find-non-web-namespaces-of-ns (ns file)
   (vemv/find-related-files ns file '(("web_service\\.clj" "service.clj")
-                                     ("web_service_test\\.clj" "service_test.clj"))))
+                                     ("web_service/routes\\.clj" "service/core.clj")
+                                     ("web_service/routes_test\\.clj" "service/core_test.clj")
+                                     ("web_service/routes_test\\.clj" "service_test.clj")
+                                     ("web_service_test\\.clj" "service_test.clj")
+                                     ("web_service/test_helpers\\.clj" "service/test_helpers.clj"))))
 
 (defun vemv/toggle-related-files (file-name pred choice-1 choice-2)
   (unless (and file-name
