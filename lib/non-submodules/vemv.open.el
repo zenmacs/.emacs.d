@@ -73,7 +73,9 @@
   (add-hook 'focus-in-hook 'vemv/advice-nrepl))
 
 (defun vemv/maybe-replace-dashes-for-clj (f dir)
-  (if (and (or (s-ends-with? ".clj" f)
+  (if (and (file-exists-p f)
+           (string-empty-p (vemv/slurp f))
+           (or (s-ends-with? ".clj" f)
                (s-ends-with? ".cljc" f)
                (s-ends-with? ".cljs" f))
            (s-starts-with? dir f))
