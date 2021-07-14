@@ -240,8 +240,11 @@ of the buffer into a formatted string."
 (setq pe/omit-regex (mapconcat 'identity
                                (list "^#" "~$" "^node_modules$" "^tmp" ".git$" ".sass-cache" "^checkouts" ".elc$" "^backups"
                                      "^integration-testing$"
+                                     "^unzipped-jdk-source$"
                                      "pom.xml" "^semantic"
                                      "classes" "^.cpcache"
+                                     "crux"
+                                     "core.async"
                                      ".lumo-cache" "^target" "auto-save-list" "project-explorer-cache" "^public" ".nrepl-port"
                                      "^dist" "^generated" ".ok$" ".DS_Store" ".lein-*" ".nrepl-* " ".eastwood" ".cljs_rhino_repl"
                                      "^.clj-kondo" "^coverage" "\.*.log$")
