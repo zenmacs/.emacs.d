@@ -54,7 +54,7 @@
                         (if is-clj
                             (vemv/abbreviate-ns (with-current-buffer buffer-name
                                                   (or (ignore-errors
-                                                        (cider-current-ns))
+                                                        (clojure-find-ns))
                                                       buffer-name)))))))
          (is-modified (with-current-buffer buffer-name
                         (buffer-modified-p)))
