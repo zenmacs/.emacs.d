@@ -28,10 +28,11 @@
             (unless (or vemv.project/skip-formatting
                         skip-formatting
                         yas
-                        (member major-mode `(fundamental-mode ruby-mode conf-colon-mode)))
+                        (member major-mode `(fundamental-mode ruby-mode)))
               (unless dc
                 (delete-trailing-whitespace))
-              (unless iroh
+              (unless (or iroh
+                          (member major-mode `(conf-colon-mode)))
                 (call-interactively 'mark-whole-buffer)
                 (call-interactively 'indent-for-tab-command))
               (pop-mark))
