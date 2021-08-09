@@ -1,0 +1,1 @@
+(clojure.core/-> (clash.api.config/read-config) :postgres (clojure.core/assoc-in [:spec :dbname] "clash_test_template") clash.api.postgres.migrate/migrate)
