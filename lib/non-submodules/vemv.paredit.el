@@ -23,7 +23,7 @@
                  ;; for `indent-for-tab-command`:
                  (last-command nil)
                  (dc (string-equal "dc" (car vemv/current-workspace)))
-                 (iroh (s-contains? "/iroh" default-directory))
+                 (clash? (s-contains? "/clash-backend" default-directory))
                  (yas (vemv/contains? (buffer-file-name) "/snippets/")))
             (unless (or vemv.project/skip-formatting
                         skip-formatting
@@ -31,9 +31,15 @@
                         (member major-mode `(fundamental-mode ruby-mode)))
               (unless dc
                 (delete-trailing-whitespace))
-              (unless (or iroh
+              (unless (or clash?
                           (member major-mode `(conf-colon-mode)))
                 (call-interactively 'mark-whole-buffer)
+                (call-interactively 'indent-for-tab-command))
+              (when clash?
+                (save-excursion
+                  (beginning-of-defun)
+                  (vemv/indent))
+                (beginning-of-line)
                 (call-interactively 'indent-for-tab-command))
               (pop-mark))
             (goto-line line)
