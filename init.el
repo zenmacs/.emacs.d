@@ -1,3 +1,6 @@
+;; avoid an annoying auto-inserted comment:
+(setq package--init-file-ensured t)
+
 (setq vemv/terminal-emacs? (getenv "TERMINAL_EMACS"))
 
 ;; must be early for emacs client/daemon
