@@ -373,17 +373,24 @@
 (add-hook 'cider-repl-mode-hook
           (argless (yas-activate-extra-mode 'clojure-mode)))
 
+(defvar vemv/text-scale-increase-once--increased? nil)
+
+(defun vemv/text-scale-increase-once ()
+  (when (not vemv/text-scale-increase-once--increased?)
+    (setq-local vemv/text-scale-increase-once--increased? t)
+    (call-interactively 'text-scale-increase)))
+
 (unless vemv/terminal-emacs?
   (dolist (mode (list 'clojure-mode-hook
                       'css-mode-hook
                       'emacs-lisp-mode-hook
                       'haml-mode-hook
                       'html-mode-hook
-                      'java-mode-hook
                       'js-mode-hook
+                      'java-mode-hook
                       'ruby-mode-hook
                       'typescript-mode-hook))
-    (add-hook mode (argless (call-interactively 'text-scale-increase)))))
+    (add-hook mode (argless (vemv/text-scale-increase-once)))))
 
 (advice-add 'mouse-set-point :after 'vemv.after-file-open/skipping-debouncing)
 (advice-add 'pe/show-buffer :after 'vemv/after-file-open)
