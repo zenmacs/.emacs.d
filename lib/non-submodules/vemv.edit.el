@@ -136,6 +136,7 @@
   (when-let* ((f (buffer-file-name)))
     (let* ((n (read-string (concat "Rename " f " to: ") f)))
       (when (not (string-equal f n))
+        (make-directory (file-name-directory n) t)
         (let* ((_ (rename-file f n))
                (b (-some-> f get-file-buffer)))
           (when (and b
