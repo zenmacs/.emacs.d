@@ -571,7 +571,8 @@
          (yas (vemv/contains? (buffer-file-name) "/snippets/"))
          (require-final-newline (and (not vemv/no-newline-at-eof)
                                      (not dc)
-                                     (not yas))))
+                                     (not yas)
+                                     (not (s-ends-with? ".pem" (buffer-file-name))))))
     (apply f args)))
 
 (advice-add 'save-buffer :around 'vemv/honoring-newline-at-eof-setting)
