@@ -831,41 +831,59 @@ Adds kw-to-find-fallback."
                     (cider-sync-request:ns-path (cider-current-ns))))))
       (user-error "Can't find namespace `%s'" ns))))
 
-(defun vemv/echo-clojure-source ()
-  "Shows the Clojure source of the symbol at point."
-  (interactive)
-  (when (vemv/ciderable-p)
-    (let* ((var (cider-symbol-at-point 'look-back))
-           (info (cider-var-info var))
-           (info (or info
-                     (vemv/find-protocol-method var)))
-           (line-and-file (if info
-                              (list (nrepl-dict-get info "line")
-                                    (nrepl-dict-get info "file"))
+(defun vemv/echo-clojure-source* (&optional which-var)
+  (let* ((var (or which-var (cider-symbol-at-point 'look-back)))
+         (info (cider-var-info var))
+         (info (or info
+                   (if which-var
+                       nil
+                     (vemv/find-protocol-method var))))
+         (line-and-file (if info
+                            (list (nrepl-dict-get info "line")
+                                  (nrepl-dict-get info "file"))
+                          (when (not which-var)
                             (let* ((curr-token (cider-symbol-at-point 'look-back))
                                    (curr-token-is-qualified-kw (vemv/starts-with curr-token "::"))
                                    (cider-prompt-for-symbol nil))
                               (when curr-token-is-qualified-kw
-                                (call-interactively 'vemv/cider-find-keyword-silently))))))
-      (if line-and-file
-          (let* ((line (first line-and-file))
-                 (file (second line-and-file)))
-            (if (and line file)
-                (let* ((vemv/max-mini-window-height 0.99)
-                       (buffer-count (length (vemv/all-buffers)))
-                       (buffer (cider-find-file file))
-                       (v (if buffer
-                              (with-current-buffer buffer
-                                (save-excursion
-                                  (goto-line line)
-                                  (beginning-of-line)
-                                  (font-lock-ensure)
-                                  (vemv/sexpr-content nil :with-properties)))
-                            (user-error "Couldn't open buffer."))))
-                  (when (< buffer-count (length (vemv/all-buffers)))
-                    (kill-buffer buffer))
-                  (vemv/echo v))
-              (user-error "Not found.")))
+                                (call-interactively 'vemv/cider-find-keyword-silently)))))))
+    (when line-and-file
+      (let* ((line (first line-and-file))
+             (file (second line-and-file)))
+        (if (and line file)
+            (let* ((buffer-count (length (vemv/all-buffers)))
+                   (buffer (cider-find-file file))
+                   (v (if buffer
+                          (with-current-buffer buffer
+                            (save-excursion
+                              (goto-line line)
+                              (beginning-of-line)
+                              (font-lock-ensure)
+                              (vemv/sexpr-content nil :with-properties)))
+                        (if which-var
+                            nil
+                          (user-error "Couldn't open buffer.")))))
+              (when (< buffer-count (length (vemv/all-buffers)))
+                (kill-buffer buffer))
+              v)
+
+          (if which-var
+              nil
+            (user-error "Not found.")))))))
+
+(defun vemv/echo-clojure-source (&optional which-var)
+  "Shows the Clojure source of the symbol at point."
+  (interactive)
+  (when (vemv/ciderable-p)
+    (let* ((s1 (vemv/echo-clojure-source*))
+           (s2 (when s1
+                 (let* ((v (vemv/echo-clojure-source* (concat (cider-symbol-at-point 'look-back)
+                                                              "--fdef-source"))))
+                   (when v
+                     (concat v "\n\n"))))))
+      (if s1
+          (let* ((vemv/max-mini-window-height 0.99))
+            (vemv/echo (concat s2 s1)))
         (user-error "Not found.")))))
 
 (defun vemv/parse-requires (x)
