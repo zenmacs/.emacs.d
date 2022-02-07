@@ -54,6 +54,17 @@
 (defun vemv/advice-nrepl (&optional x)
   (funcall vemv/debounced-advice-nrepl x))
 
+(defun vemv/do-toggle-ns-hiding ()
+  (if vemv/ns-shown
+      (hs-show-all)
+    (let* ((hs-block-start-regexp "(ns")
+           (hs-block-end-regexp ")")
+           (hs-hide-comments-when-hiding-all nil)
+           (hs-adjust-block-beginning (lambda (initial)
+                                        (save-excursion
+                                          (point)))))
+      (apply #'hs-hide-all ()))))
+
 (defun vemv/toggle-ns-hiding (&optional after-file-open)
   (interactive)
   (when (not vemv-cleaning-namespaces)
@@ -65,15 +76,28 @@
                                   (if vemv/ns-shown
                                       nil
                                     curr-buff-name)))
-      (if vemv/ns-shown
-          (hs-show-all)
-        (let* ((hs-block-start-regexp "(ns")
-               (hs-block-end-regexp ")")
-               (hs-hide-comments-when-hiding-all nil)
-               (hs-adjust-block-beginning (lambda (initial)
-                                            (save-excursion
-                                              (point)))))
-          (apply #'hs-hide-all ()))))))
+      (vemv/do-toggle-ns-hiding))))
+
+(defvar vemv/toggle-all--hidden nil)
+
+(defun vemv/toggle-all ()
+  (interactive)
+  (if vemv/toggle-all--hidden
+      (progn
+        (call-interactively 'text-scale-decrease)
+        (setq-local line-spacing 1)
+        (call-interactively 'hs-show-all)
+        (when (vemv/in-a-clojure-mode?)
+          (when (not vemv/ns-shown)
+            (vemv/do-toggle-ns-hiding)))
+        (when (not (eq (selected-window) vemv/main_window))
+          (vemv/close-this)))
+    (progn
+      (call-interactively 'text-scale-increase)
+      (setq-local line-spacing 20)
+      (call-interactively 'hs-hide-all)
+      (vemv/new-frame)))
+  (setq-local vemv/toggle-all--hidden (not vemv/toggle-all--hidden)))
 
 (defun vemv/show-clj-or-cljs-repl ()
   (when (vemv/ciderable-p)

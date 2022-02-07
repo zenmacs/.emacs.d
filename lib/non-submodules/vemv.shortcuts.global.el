@@ -124,6 +124,7 @@
       vemv/shortcuts/global/secondary-a             'vemv/copy-sexpr-content-backward
       vemv/shortcuts/global/secondary-backspace     (vemv/safe-paredit-command 'paredit-backward-kill-word)
       vemv/shortcuts/global/secondary-backtick      'xref-pop-marker-stack
+      vemv/shortcuts/global/secondary-bar           'vemv/toggle-all
       vemv/shortcuts/global/secondary-colon         (argless (call-interactively 'eval-expression))
       vemv/shortcuts/global/secondary-e             (argless (vemv/send nil t))
       vemv/shortcuts/global/secondary-k             'vemv/kill-backward
