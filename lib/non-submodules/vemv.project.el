@@ -64,7 +64,8 @@
      (setq vemv/modifiers/primary nil)
      (setq vemv/modifiers/secondary nil)
      (setq vemv/modifiers/tertiary nil)
-     (setq cljr-warn-on-eval t) ;; https://github.com/clojure-emacs/cider/issues/2327
+     (setq cljr-warn-on-eval nil) ;; https://github.com/clojure-emacs/cider/issues/2327
+     (setq cljr-eagerly-build-asts-on-startup nil)
 
      ;; Reason for commenting out:
      ;; let the first connection be sticky across projects. handy for monorepos
