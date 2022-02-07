@@ -45,6 +45,7 @@
                      rubocop
                      simpleclip
                      smartparens
+                     swift-mode
                      string-inflection
                      tide
                      yasnippet))
