@@ -166,6 +166,7 @@
       whitespace-style '(face lines-tail)
       x-select-enable-clipboard nil
       yas-key-syntaxes '("w_")
+      yas-triggers-in-field t
       yas-use-menu nil
       yas-verbosity 1
       *grizzl-read-max-results* 10)
