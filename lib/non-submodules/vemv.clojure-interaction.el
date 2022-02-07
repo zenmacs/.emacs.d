@@ -614,6 +614,10 @@ it looks up the thing currently being invoked, i.e. the first element of the fir
 (defun vemv/clear-cider-repl-buffer (&optional recurring callback)
   (interactive)
   (when (cider-connected-p)
+    (vemv/close-cider-error)
+    (when-let* ((w (get-buffer-window "*cider-test-report*")))
+      (with-selected-window w
+        (vemv/close-this)))
     (vemv/show-clj-or-cljs-repl)
     (vemv/save-window-excursion
      (vemv/safe-select-window vemv/repl-window)
