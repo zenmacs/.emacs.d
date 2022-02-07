@@ -11,7 +11,12 @@
              (equal 1 (vemv/current-line-number))
              (buffer-file-name))
     (let* ((line (condition-case nil
-                     (read (shell-command-to-string (concat "cd " default-directory  "; ~/.emacs.d/scripts/first_diff_line.sh " (buffer-file-name))))
+                     (read (shell-command-to-string (concat "cd "
+                                                            default-directory
+                                                            "; ~/.emacs.d/scripts/first_diff_line.sh "
+                                                            (s-replace vemv/project-root-dir
+                                                                       ""
+                                                                       (buffer-file-name)))))
                    (error
                     nil))))
       (when line
