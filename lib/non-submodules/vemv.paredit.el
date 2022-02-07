@@ -23,7 +23,8 @@
                  ;; for `indent-for-tab-command`:
                  (last-command nil)
                  (dc (string-equal "dc" (car vemv/current-workspace)))
-                 (clash? (s-contains? "/clash-backend" default-directory))
+                 (clash? (or (s-contains? "/clash-backend" default-directory)
+                             (s-contains? "/lingo/" default-directory)))
                  (yas (vemv/contains? (buffer-file-name) "/snippets/")))
             (unless (or vemv.project/skip-formatting
                         skip-formatting
@@ -32,10 +33,11 @@
               (unless dc
                 (delete-trailing-whitespace))
               (unless (or clash?
-                          (member major-mode `(conf-colon-mode)))
+                          (member major-mode `(conf-colon-mode sql-mode makefile-automake-mode makefile-bsdmake-mode)))
                 (call-interactively 'mark-whole-buffer)
                 (call-interactively 'indent-for-tab-command))
-              (when clash?
+              (when (and clash?
+                         (vemv/in-a-clojure-mode?))
                 (save-excursion
                   (beginning-of-defun)
                   (vemv/indent))
