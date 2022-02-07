@@ -45,6 +45,7 @@
                      rubocop
                      simpleclip
                      smartparens
+                     string-inflection
                      tide
                      yasnippet))
     (unless (package-installed-p package)

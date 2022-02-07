@@ -2,6 +2,7 @@
 
 (setq lexical-binding t)
 
+(require 'string-inflection)
 (provide 'vemv.edit)
 
 (defun vemv/replace-regexp-entire-buffer (pattern replacement)
@@ -153,3 +154,11 @@
 (defun vemv/capitalize-region ()
   (interactive)
   (capitalize-region (mark) (point)))
+
+(defalias 'kebab-region 'string-inflection-kebab-case)
+
+(defalias 'underscore-region 'string-inflection-underscore)
+
+(defalias 'camel-region 'string-inflection-camelcase)
+
+(defalias 'lower-camel-region 'string-inflection-lower-camelcase)
