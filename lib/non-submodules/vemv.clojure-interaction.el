@@ -411,10 +411,14 @@
                (curr-token (vemv/maybe-classify-token curr-token))
                (command (concat "
 (clojure.core/let [x '" curr-token "
-                   y (try (clojure.core/-> x clojure.core/pr-str (clojure.string/split #\"/\") clojure.core/first clojure.core/read-string clojure.core/eval) (catch java.lang.Exception _))]
-  (clojure.core/if-not (clojure.core/class? y)
-     nil
-     (clojure.core/-> y clojure.core/pr-str clojure.core/munge (clojure.string/replace \".\" \"/\") (clojure.core/str \".java\") (clojure.java.io/resource) clojure.core/str)))"))
+                     y (try (clojure.core/-> x clojure.core/pr-str (clojure.string/split #\"/\") clojure.core/first clojure.core/read-string clojure.core/eval) (catch java.lang.Exception _))
+                     module-qualified-resource #(do (clojure.java.io/resource (clojure.core/str %2 \"/\" %1)))]
+                  (clojure.core/if-not (clojure.core/class? y)
+                                       nil
+                                       (clojure.core/or (clojure.core/some-> y clojure.core/pr-str clojure.core/munge (clojure.string/replace \".\" \"/\") (clojure.core/str \".java\") (clojure.java.io/resource) clojure.core/str)
+                                                        (clojure.core/when-let [module-name (try (clojure.core/some-> y .getModule .getName) (catch Exception e (.printStackTrace e) nil))]
+                                                                               (clojure.core/some-> y clojure.core/pr-str clojure.core/munge (clojure.string/replace \".\" \"/\") (clojure.core/str \".java\") (module-qualified-resource module-name)  clojure.core/str)))
+                                       ))"))
                (maybe-jar-ref (read (vemv.clojure-interaction/sync-eval-to-string
                                      command)))
                (found-jar-ref? maybe-jar-ref)
