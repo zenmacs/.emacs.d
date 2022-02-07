@@ -142,6 +142,7 @@
       vemv/shortcuts/global/secondary-s             'vemv/save-other-buffers-for-this-project
       vemv/shortcuts/global/secondary-semicolon     (argless
                                                      (insert " ;; "))
+      vemv/shortcuts/global/secondary-single-quote 'vemv/focus
       vemv/shortcuts/global/secondary-t             'vemv/open-file-via-fiplr-then-close-previous-buffer
       vemv/shortcuts/global/secondary-up            (vemv/safe-paredit-command
                                                      (argless

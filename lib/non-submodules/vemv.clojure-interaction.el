@@ -99,6 +99,20 @@
       (vemv/new-frame)))
   (setq-local vemv/toggle-all--hidden (not vemv/toggle-all--hidden)))
 
+(defvar vemv/focus--focused nil)
+
+(defun vemv/focus ()
+  (interactive)
+  (if vemv/focus--focused
+      (progn
+        (call-interactively 'text-scale-decrease)
+        (when (not (eq (selected-window) vemv/main_window))
+          (vemv/close-this)))
+    (progn
+      (call-interactively 'text-scale-increase)
+      (vemv/new-frame)))
+  (setq-local vemv/focus--focused (not vemv/focus--focused)))
+
 (defun vemv/show-clj-or-cljs-repl ()
   (when (vemv/ciderable-p)
     (let* ((was (with-selected-window vemv/main_window
