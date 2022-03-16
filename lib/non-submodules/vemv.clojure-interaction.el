@@ -572,7 +572,9 @@
 (defun vemv/message-clojure-doc ()
   (interactive)
   (if (vemv/ciderable-p)
-      (let* ((docstring (vemv/docstring-of-var (cider-symbol-at-point 'look-back))))
+      (let* ((docstring (vemv/docstring-of-var (->> (cider-symbol-at-point 'look-back)
+                                                    (string-remove-prefix "#'")
+                                                    (string-remove-prefix "'")))))
         (if docstring
             (vemv/echo docstring)
           (vemv/echo "No docs found.")))
@@ -832,7 +834,9 @@ Adds kw-to-find-fallback."
       (user-error "Can't find namespace `%s'" ns))))
 
 (defun vemv/echo-clojure-source* (&optional which-var)
-  (let* ((var (or which-var (cider-symbol-at-point 'look-back)))
+  (let* ((var (or which-var (->> (cider-symbol-at-point 'look-back)
+                                 (string-remove-prefix "#'")
+                                 (string-remove-prefix "'"))))
          (info (cider-var-info var))
          (info (or info
                    (if which-var
@@ -842,7 +846,9 @@ Adds kw-to-find-fallback."
                             (list (nrepl-dict-get info "line")
                                   (nrepl-dict-get info "file"))
                           (when (not which-var)
-                            (let* ((curr-token (cider-symbol-at-point 'look-back))
+                            (let* ((curr-token (->> (cider-symbol-at-point 'look-back)
+                                                    (string-remove-prefix "#'")
+                                                    (string-remove-prefix "'")))
                                    (curr-token-is-qualified-kw (vemv/starts-with curr-token "::"))
                                    (cider-prompt-for-symbol nil))
                               (when curr-token-is-qualified-kw
@@ -877,7 +883,9 @@ Adds kw-to-find-fallback."
   (when (vemv/ciderable-p)
     (let* ((s1 (vemv/echo-clojure-source*))
            (s2 (when s1
-                 (let* ((v (vemv/echo-clojure-source* (concat (cider-symbol-at-point 'look-back)
+                 (let* ((v (vemv/echo-clojure-source* (concat (->> (cider-symbol-at-point 'look-back)
+                                                                   (string-remove-prefix "#'")
+                                                                   (string-remove-prefix "'"))
                                                               "--fdef-source"))))
                    (when v
                      (concat v "\n\n"))))))
