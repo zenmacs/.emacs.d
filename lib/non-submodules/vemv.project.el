@@ -6,9 +6,12 @@
   (require 'cider)) ;; Ideally would not be there as it slightly slows down things.
 (provide 'vemv.project)
 
-(when vemv/terminal-emacs?
+;; on a terminal, or on cider latest
+(when (not (fboundp 'cider-project-name))
   (defun cider-project-name (x)
-    x)
+    x))
+
+(when vemv/terminal-emacs?
   (defun put-clojure-indent (&rest _)))
 
 (defvar vemv/clj-repl-name nil)

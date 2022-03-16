@@ -1,3 +1,4 @@
+(require 'vemv.project)
 (provide 'vemv.mode-line)
 
 (defun vemv.abbreviate-ns/format-intermediate-fragment (x)
