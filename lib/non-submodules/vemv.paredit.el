@@ -23,8 +23,7 @@
                  ;; for `indent-for-tab-command`:
                  (last-command nil)
                  (dc (string-equal "dc" (car vemv/current-workspace)))
-                 (clash? (or (s-contains? "/clash-backend" default-directory)
-                             (s-contains? "/lingo/" default-directory)))
+                 (clash? (or (s-contains? "/monorail" default-directory)))
                  (yas (vemv/contains? (buffer-file-name) "/snippets/")))
             (unless (or vemv.project/skip-formatting
                         skip-formatting
