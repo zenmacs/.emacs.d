@@ -536,6 +536,15 @@
  (advice-add 'pe/left-click ':around 'vemv/pe/left-click)
  (advice-add 'pe/middle-click ':before 'vemv/pe/middle-click))
 
+(defun vemv/kill-emacs-only-if-scratch-is-empty (f &rest args)
+  (if (equal ""
+             (with-current-buffer (get-buffer "*scratch*")
+               (buffer-string)))
+      (apply f args)
+    (vemv/echo "*scratch* is not empty!")))
+
+(advice-add 'kill-emacs ':around 'vemv/kill-emacs-only-if-scratch-is-empty)
+
 ;; https://github.com/DarthFennec/highlight-indent-guides/issues/44#issuecomment-411486188
 (defadvice highlight-indent-guides--update-line-cache
     (around my-update-line-cache activate)
