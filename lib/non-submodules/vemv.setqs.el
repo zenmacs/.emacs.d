@@ -251,7 +251,7 @@ of the buffer into a formatted string."
                                      "classes" "^.cpcache"
                                      "crux"
                                      "core.async"
-                                     ".lumo-cache" "^target" "auto-save-list" "project-explorer-cache" "^public" ".nrepl-port"
+                                     ".lumo-cache" "^target" "auto-save-list" "project-explorer-cache" "^public$" ".nrepl-port"
                                      "^dist" "^generated" ".ok$" ".DS_Store" ".lein-*" ".nrepl-* " ".eastwood" ".cljs_rhino_repl"
                                      "^.clj-kondo" "^coverage" "\.*.log$")
                                "\\|"))
