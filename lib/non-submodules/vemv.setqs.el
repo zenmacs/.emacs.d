@@ -172,7 +172,8 @@
       *grizzl-read-max-results* 10)
 
 (setq cljr-magic-require-namespaces
-      '(("io"   . "clojure.java.io")
+      '(("case"   . "camel-snake-kebab.core")
+        ("io"   . "clojure.java.io")
         ("set"  . "clojure.set")
         ("math.c" . "clojure.math.combinatorics")
         ("combinatorics" . "clojure.math.combinatorics")
