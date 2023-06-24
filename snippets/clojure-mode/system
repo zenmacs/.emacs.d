@@ -1,1 +1,1 @@
-(-> com.stuartsierra.component.repl/system)
+(-> (or com.stuartsierra.component.repl/system integrant.repl.state/system) $1)
