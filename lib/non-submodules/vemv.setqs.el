@@ -173,6 +173,7 @@
 
 (setq cljr-magic-require-namespaces
       '(("case"   . "camel-snake-kebab.core")
+        ("edn" . "clojure.edn")
         ("io"   . "clojure.java.io")
         ("set"  . "clojure.set")
         ("math.c" . "clojure.math.combinatorics")
