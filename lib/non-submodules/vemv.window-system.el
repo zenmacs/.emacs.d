@@ -209,7 +209,9 @@
 
 (defun vemv/new-frame ()
   (interactive)
-  (make-frame `((width . ,(frame-width)) (height . ,(frame-height)))))
+  (make-frame `((width . ,(frame-width)) (height . ,(frame-height))))
+  (when (> (frame-width) 189)
+    (set-window-margins (selected-window) 63)))
 
 (defun vemv/next-window ()
   "Switch to the next window."
