@@ -536,6 +536,20 @@
  (advice-add 'pe/left-click ':around 'vemv/pe/left-click)
  (advice-add 'pe/middle-click ':before 'vemv/pe/middle-click))
 
+(defun vemv/close-jar-files-unconditionally (&rest _)
+  (condition-case nil
+      (->> (buffer-list)
+           (mapcar (lambda (b)
+                     (let* ((f (buffer-file-name b)))
+                       (when (and f
+                                  (s-contains? ".jar:" f))
+                         (with-current-buffer b
+                           (set-buffer-modified-p nil)
+                           (kill-this-buffer)))))))
+    (error nil)))
+
+(advice-add 'save-buffers-kill-terminal :before 'vemv/close-jar-files-unconditionally)
+
 (defun vemv/kill-emacs-only-if-scratch-is-empty (f &rest args)
   (if (equal ""
              (with-current-buffer (get-buffer "*scratch*")
