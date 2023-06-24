@@ -23,6 +23,7 @@
 (unless vemv/terminal-emacs?
   (dolist (package '(async
                      benchmark-init
+                     buttercup
                      company
                      dash
                      ert
