@@ -26,6 +26,7 @@
                      buttercup
                      company
                      dash
+                     dockerfile-mode
                      ert
                      exec-path-from-shell
                      fiplr
