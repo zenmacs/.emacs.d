@@ -410,7 +410,11 @@
           (argless (enable-paredit-mode)
                    (paren-face-mode 1)
                    (global-set-key (kbd "C-r") 'vemv/test-this-ns) ;; must be defined there. TODO: define all clojure bindings here
-                   (setq-local mode-line-format tabbed-line-format)))
+                   (setq-local mode-line-format tabbed-line-format)
+                   (let* ((f (buffer-file-name)))
+                     (when (and f
+                                (s-contains? ".jar:" f))
+                       (read-only-mode -1)))))
 
 (add-hook 'emacs-lisp-mode-hook (argless
                                  (enable-paredit-mode)
