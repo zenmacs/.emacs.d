@@ -965,3 +965,29 @@ Adds kw-to-find-fallback."
         (font-lock-ensure))
       (xref-push-marker-stack)
       (switch-to-buffer b))))
+
+(defun vemv/set-cljs-repl-name ()
+  (let* ((id (s-replace "/Users/vemv/" "~/" vemv/repl-identifier))
+         (id (s-replace-regexp "/$" "" id))
+         (port (condition-case nil
+                   (nrepl--port-from-file (expand-file-name ".shadow-cljs/nrepl.port"
+                                                            vemv/project-root-dir))
+                 (error nil))))
+    (setq vemv/cljs-repl-name (->> (list (concat "*cider-repl "
+                                                 id
+                                                 ":localhost:"
+                                                 port
+                                                 "(cljs:shadow)*")
+                                         (concat "*cider-repl "
+                                                 id
+                                                 ":localhost:"
+                                                 port
+                                                 "(cljs)*")
+                                         (concat "*cider-repl "
+                                                 id
+                                                 ":localhost:"
+                                                 port
+                                                 "(clj)*"))
+                                   (filter (lambda (s)
+                                             (get-buffer s)))
+                                   (car)))))

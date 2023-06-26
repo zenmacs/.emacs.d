@@ -91,7 +91,7 @@
      (setq vemv/pry-prompt "pry") ;; The pry prompt as per your `~/.pryrc' or such. Will affect robe-mode initialization process, so make sure to reflect any customized value here.
      (setq vemv.project.reasonable-file-count?/threshold 3000)
      (when (not vemv-cleaning-namespaces)
-       (setq cider-cljs-lein-repl vemv/default-cider-cljs-lein-repl))))
+       (comm (setq cider-cljs-lein-repl vemv/default-cider-cljs-lein-repl)))))
 
 (defun vemv.project/reset ()
   (vemv.project/reset*))
@@ -207,9 +207,12 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
           (setq vemv/clj-repl-name (concat "*cider-repl 127.0.0.1*"))
         (setq vemv/clj-repl-name (concat "*cider-repl " vemv/repl-identifier "*"))))
 
-    (if "using cider 0.16"
-        (setq vemv/cljs-repl-name (concat "*cider-repl CLJS " vemv/repl-identifier "*"))
-      (setq vemv/cljs-repl-name (concat "*cider-repl " vemv/repl-identifier "(cljs)*")))
+    (if (boundp 'cider-clojure-cli-command)
+        ;; recent:
+        (vemv/set-cljs-repl-name)
+
+      ;; forked:
+      (setq vemv/cljs-repl-name (concat "*cider-repl CLJS " vemv/repl-identifier "*")))
 
     (mapcar (lambda (ext)
               (let* ((f (concat vemv/project-clojure-dir
