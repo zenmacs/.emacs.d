@@ -103,8 +103,6 @@
 (when (member window-system '(mac ns x))
   (exec-path-from-shell-initialize))
 
-(conj! exec-path "/Users/vemv/.nvm/versions/node/v10.13.0/bin/")
-
 (unless vemv/terminal-emacs?
   (require 'saveplace))
 (require 'popup)
