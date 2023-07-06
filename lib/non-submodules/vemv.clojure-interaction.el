@@ -117,7 +117,8 @@
   (when (vemv/ciderable-p)
     (let* ((was (with-selected-window vemv/main_window
                   (vemv/current-buffer-is-cljs)))
-           (should (get-buffer vemv/cljs-repl-name)))
+           (should (when vemv/cljs-repl-name
+                     (get-buffer vemv/cljs-repl-name))))
       (with-selected-window vemv/repl-window
         (if (and was should)
             (vemv/safe-switch-to-buffer vemv/cljs-repl-name)
