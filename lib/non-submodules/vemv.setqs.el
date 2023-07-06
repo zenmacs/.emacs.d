@@ -192,6 +192,7 @@
  '(xref-prompt-for-identifier nil)
  '(cider-connection-message-fn nil)
  '(cider-use-tooltips nil)
+ '(cider-enrich-classpath t)
  '(cider-preferred-build-tool "lein")
  ;; '(cider-default-cljs-repl 'figwheel)
  '(cider-repl-auto-detect-type nil) ;; prevents repl buffers from magically changing from cljs type to clj type, which doesn't makessense for shadow-cljs repl buffers (they're always cljs)
