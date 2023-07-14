@@ -204,8 +204,12 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
                     (cider-connected-p)))
 
       (if vemv/cider-port
-          (setq vemv/clj-repl-name (concat "*cider-repl 127.0.0.1*"))
-        (setq vemv/clj-repl-name (concat "*cider-repl " vemv/repl-identifier "*"))))
+          (if (boundp 'cider-clojure-cli-command)
+              (vemv/set-clj-repl-name)
+            (setq vemv/clj-repl-name (concat "*cider-repl 127.0.0.1*")))
+        (if (boundp 'cider-clojure-cli-command)
+            (vemv/set-clj-repl-name)
+          (setq vemv/clj-repl-name (concat "*cider-repl " vemv/repl-identifier "*")))))
 
     (if (boundp 'cider-clojure-cli-command)
         ;; recent:

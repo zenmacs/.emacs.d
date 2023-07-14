@@ -13,10 +13,41 @@
    (cider-connected-p)
    vemv-cider-connected))
 
+(defun vemv/calc-clj-repl-name ()
+  (let* ((id (s-replace "/Users/vemv/" "~/" vemv/repl-identifier))
+         (id (s-replace-regexp "/$" "" id))
+         (port? vemv/cider-port)
+         (port (or vemv/cider-port
+                   (when (and (file-exists-p ".nrepl-port")
+                              (not (equal ""
+                                          (shell-command-to-string (concat "lsof -i:"
+                                                                           (vemv/slurp ".nrepl-port"))))))
+                     (read (vemv/slurp ".nrepl-port"))))))
+    (when (not port?)
+      (setq vemv/cider-port port)) ;; cache this computation
+    (->> (list (concat "*cider-repl "
+                       id
+                       ":127.0.0.1:"
+                       (when port
+                         (prin1-to-string port))
+                       "(clj)*")
+               (concat "*cider-repl "
+                       id
+                       ":localhost:"
+                       (when port
+                         (prin1-to-string port))
+                       "(clj)*"))
+         (filter (lambda (s)
+                   (get-buffer s)))
+         (car))))
+
 (defun vemv/safe-clj-repl-name (destination-buffer)
-  (let* ((n "*cider-repl 127.0.0.1*"))
+  (let* ((n (if (boundp 'cider-clojure-cli-command)
+                (vemv/calc-clj-repl-name)
+              "*cider-repl 127.0.0.1*")))
     (if (and (or (not destination-buffer)
                  (not (get-buffer destination-buffer)))
+             n
              (get-buffer n))
         (buffer-name (get-buffer n))
       destination-buffer)))
@@ -227,7 +258,7 @@
 (defun vemv/clojure-init-or-send-sexpr ()
   (interactive)
   (when (vemv/in-clojure-mode?)
-    (if (and (not cider-launched))
+    (if (not cider-launched)
         (progn
           (require 'cider)
           (require 'clj-refactor)
@@ -256,12 +287,15 @@
                               (progn
                                 (-some-> vemv/before-figwheel-fn funcall)
                                 (if vemv/cider-port
-                                    (cider-connect-clojurescript vemv/cider-port)
-                                  (cider-jack-in-clojurescript)))
+                                    (cider-connect-cljs vemv/cider-port)
+                                  (cider-jack-in-cljs ())))
                             (if vemv/cider-port
-                                (cider-connect "127.0.0.1" vemv/cider-port vemv/project-root-dir)
-                              (comm
-                               (cider-jack-in)))))
+                                (if (boundp 'cider-clojure-cli-command)
+                                    (cider-connect `(:host "127.0.0.1"
+                                                           :port ,vemv/cider-port
+                                                           :project-dir ,vemv/project-root-dir))
+                                  (cider-connect "127.0.0.1" vemv/cider-port vemv/project-root-dir))
+                              (cider-jack-in-clj ()))))
                  1))
       (if (cider-connected-p)
           (if (vemv/current-buffer-is-cljs)
@@ -966,6 +1000,9 @@ Adds kw-to-find-fallback."
         (font-lock-ensure))
       (xref-push-marker-stack)
       (switch-to-buffer b))))
+
+(defun vemv/set-clj-repl-name ()
+  (setq vemv/clj-repl-name (vemv/calc-clj-repl-name)))
 
 (defun vemv/set-cljs-repl-name ()
   (let* ((id (s-replace "/Users/vemv/" "~/" vemv/repl-identifier))

@@ -469,11 +469,24 @@
 (add-hook 'html-mode-hook (argless
                            (define-key html-mode-map [tab] 'vemv/tab)))
 
+(advice-add 'cider-jack-in :after (lambda (&rest args)
+                                    (setq vemv-cider-connecting t)))
+
+(advice-add 'cider-jack-in-clj :after (lambda (&rest args)
+                                        (setq vemv-cider-connecting t)))
+
+(advice-add 'cider-jack-in-cljs :after (lambda (&rest args)
+                                         (setq vemv-cider-connecting t)))
+
+(advice-add 'cider-jack-in-clj&cljs :after (lambda (&rest args)
+                                             (setq vemv-cider-connecting t)))
+
 (add-hook 'cider-connected-hook
           (argless
            (setq vemv-cider-connecting nil)
            (setq vemv-cider-connected t)
            (when (boundp 'cider-clojure-cli-command)
+             (vemv/set-clj-repl-name)
              (vemv/set-cljs-repl-name))
            (vemv/show-clj-or-cljs-repl)
            (when (not vemv-cleaning-namespaces)
