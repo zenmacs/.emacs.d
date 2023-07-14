@@ -208,6 +208,7 @@
  '(pe/inline-folders nil)
  '(tree-widget-image-enable nil)
  '(cljr-auto-sort-ns nil)
+ '(cljr-slash-uses-suggest-libspec t)
  '(cljr-suppress-middleware-warnings t)
  '(cljr-assume-language-context "clj")
  '(cljr-project-clean-prompt nil)
