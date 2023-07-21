@@ -13,16 +13,19 @@
    (cider-connected-p)
    vemv-cider-connected))
 
+(defun vemv/active-port (filename)
+  (when (and (file-exists-p filename)
+             (not (equal ""
+                         (shell-command-to-string (concat "lsof -i:"
+                                                          (vemv/slurp filename))))))
+    (read (vemv/slurp filename))))
+
 (defun vemv/calc-clj-repl-name ()
   (let* ((id (s-replace "/Users/vemv/" "~/" vemv/repl-identifier))
          (id (s-replace-regexp "/$" "" id))
          (port? vemv/cider-port)
          (port (or vemv/cider-port
-                   (when (and (file-exists-p ".nrepl-port")
-                              (not (equal ""
-                                          (shell-command-to-string (concat "lsof -i:"
-                                                                           (vemv/slurp ".nrepl-port"))))))
-                     (read (vemv/slurp ".nrepl-port"))))))
+                   (vemv/active-port ".nrepl-port"))))
     (when (not port?)
       (setq vemv/cider-port port)) ;; cache this computation
     (->> (list (concat "*cider-repl "
@@ -271,13 +274,11 @@
           (setq vemv/running-project-root-dir vemv/project-root-dir)
           (setq vemv/running-project-type vemv/project-type)
           (delay (argless (funcall vemv/project-initializers)
-                          (when (and (not vemv/cider-port)
-                                     (file-exists-p ".nrepl-port")
-                                     (not (equal ""
-                                                 (shell-command-to-string (concat "lsof -i:"
-                                                                                  (vemv/slurp ".nrepl-port"))))))
+                          (when (not vemv/cider-port)
                             (setq vemv/cider-port
-                                  (read (vemv/slurp ".nrepl-port"))))
+                                  (or (vemv/active-port ".nrepl-port")
+                                      (when (eq vemv/project-type :cljs)
+                                        (vemv/active-port ".shadow-cljs/nrepl.port")))))
                           (unless vemv/cider-port
                             (comm
                              (let* ((s (vemv/lein-deps-command)))
@@ -287,7 +288,11 @@
                               (progn
                                 (-some-> vemv/before-figwheel-fn funcall)
                                 (if vemv/cider-port
-                                    (cider-connect-cljs vemv/cider-port)
+                                    (if (boundp 'cider-clojure-cli-command)
+                                        (cider-connect-cljs `(:host "127.0.0.1"
+                                                                    :port ,vemv/cider-port
+                                                                    :project-dir ,vemv/project-root-dir))
+                                      (cider-connect-cljs vemv/cider-port))
                                   (cider-jack-in-cljs ())))
                             (if vemv/cider-port
                                 (if (boundp 'cider-clojure-cli-command)

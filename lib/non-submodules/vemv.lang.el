@@ -5,7 +5,8 @@
 
 (defun vemv/safe-switch-to-buffer (b &rest args)
   (apply 'switch-to-buffer
-         (or (get-buffer b)
+         (or (and b
+                  (get-buffer b))
              (user-error (concat "Could not find buffer: " (prin1-to-string b))))
          args))
 
