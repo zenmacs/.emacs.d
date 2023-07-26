@@ -35,6 +35,7 @@
                      highlight-indent-guides
                      hydra
                      ido-at-point
+                     ido-completing-read+
                      inflections
                      magit
                      multiple-cursors
