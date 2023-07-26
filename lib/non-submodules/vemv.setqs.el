@@ -198,6 +198,13 @@
  '(cider-repl-auto-detect-type nil) ;; prevents repl buffers from magically changing from cljs type to clj type, which doesn't makessense for shadow-cljs repl buffers (they're always cljs)
  '(cider-repl-display-help-banner nil)
  '(cider-font-lock-dynamically '(macro deprecated))
+
+ ;; this ensures stdout is visible. However printng will be slower.
+ ;; it could be selectively set to t for the following cases:
+ ;; shadow-cljs repls (they need to communicate things like disconnected status)
+ ;; (refresh)
+ ;; ctrl-j, cmd-e
+ '(cider-repl-display-output-before-window-boundaries t)
  '(cua-remap-control-v nil)
  '(cljr-after-warming-ast-cache-hook (lambda (_)
                                        (setq vemv/cljr-ast-load-counter (inc vemv/cljr-ast-load-counter))))
