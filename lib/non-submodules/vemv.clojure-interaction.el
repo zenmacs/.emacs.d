@@ -237,7 +237,7 @@
                         '("clj" "cljs")))))
     (setq cider-repl-type type)))
 
-(defun cider-connect-clojurescript (port)
+(defun legacy/cider-connect-clojurescript (port)
   "Forked from https://github.com/clojure-emacs/cider/issues/1976"
   (interactive)
   (let ((cider-repl-type "cljs"))
@@ -289,10 +289,12 @@
                                 (-some-> vemv/before-figwheel-fn funcall)
                                 (if vemv/cider-port
                                     (if (boundp 'cider-clojure-cli-command)
-                                        (cider-connect-cljs `(:host "127.0.0.1"
-                                                                    :port ,vemv/cider-port
-                                                                    :project-dir ,vemv/project-root-dir))
-                                      (cider-connect-cljs vemv/cider-port))
+                                        ;; cider-connect-clj&cljs loses shadow detection?
+                                        (cider-connect-clj&cljs `(:host "127.0.0.1"
+                                                                        :cljs-repl-type shadow
+                                                                        :port ,vemv/cider-port
+                                                                        :project-dir ,vemv/project-root-dir))
+                                      (legacy/cider-connect-clojurescript vemv/cider-port))
                                   (cider-jack-in-cljs ())))
                             (if vemv/cider-port
                                 (if (boundp 'cider-clojure-cli-command)
@@ -1029,6 +1031,21 @@ Adds kw-to-find-fallback."
                                          (concat "*cider-repl "
                                                  id
                                                  ":localhost:"
+                                                 port
+                                                 "(clj)*")
+                                         (concat "*cider-repl "
+                                                 id
+                                                 ":127.0.0.1:"
+                                                 port
+                                                 "(cljs:shadow)*")
+                                         (concat "*cider-repl "
+                                                 id
+                                                 ":127.0.0.1:"
+                                                 port
+                                                 "(cljs)*")
+                                         (concat "*cider-repl "
+                                                 id
+                                                 ":127.0.0.1:"
                                                  port
                                                  "(clj)*"))
                                    (filter (lambda (s)
