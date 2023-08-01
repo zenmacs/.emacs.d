@@ -291,7 +291,6 @@
                                 (-some-> vemv/before-figwheel-fn funcall)
                                 (if vemv/cider-port
                                     (if (boundp 'cider-clojure-cli-command)
-                                        ;; cider-connect-clj&cljs loses shadow detection?
                                         (cider-connect-clj&cljs `(:host "127.0.0.1"
                                                                         :cljs-repl-type shadow
                                                                         :port ,vemv/cider-port
@@ -798,7 +797,7 @@ When not, the callback will be invoked just once, so the code can be incondition
 
 (defun vemv.clojure-interaction/sync-eval-to-string (s)
   (let* ((x (concat "(do (clojure.core/in-ns '" (vemv/current-ns) ") "  s  ")"))
-         (dict (cider-nrepl-sync-request:eval x))
+         (dict (cider-sync-tooling-eval x)) ;; used to be cider-nrepl-sync-request:eval, but this one is better for cljs (this way, we avoid running jvm code in a cljs repl, which would fail)
          (e (nrepl-dict-get dict "err"))
          (v (nrepl-dict-get dict "value")))
     (if e
