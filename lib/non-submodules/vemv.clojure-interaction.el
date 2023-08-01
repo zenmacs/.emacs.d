@@ -25,7 +25,9 @@
          (id (s-replace-regexp "/$" "" id))
          (port? vemv/cider-port)
          (port (or vemv/cider-port
-                   (vemv/active-port ".nrepl-port"))))
+                   (vemv/active-port ".nrepl-port")
+                   ;; the jvm repl started by shadow:
+                   (vemv/active-port ".shadow-cljs/nrepl.port"))))
     (when (not port?)
       (setq vemv/cider-port port)) ;; cache this computation
     (->> (list (concat "*cider-repl "
