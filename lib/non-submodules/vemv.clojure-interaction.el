@@ -182,7 +182,7 @@
   (interactive)
   (if (vemv/ciderable-p)
       (if (vemv/current-buffer-is-cljs)
-          (vemv/send :cljs nil "(.reload js/location true)")
+          (-some-> callback funcall)
         (progn
           ;; code has been potentially unloaded, so the underlying `vemv/check-unused-requires' will fail. Prevent that:
           (ignore-errors ;; ignore-errors important, else the whole `vemv/load-clojure-buffer` operation can fail silently
@@ -788,10 +788,9 @@ When not, the callback will be invoked just once, so the code can be incondition
                         (when chosen
                           (vemv/send :cljs
                                      nil
-                                     (concat  "(.reload js/location true) "
-                                              "(cljs.test/run-block ["
-                                              chosen
-                                              "])")))))))
+                                     (concat "(cljs.test/run-block ["
+                                             chosen
+                                             "])")))))))
 (defun vemv/dumb-cljs-test ()
   "Needs M-x cider-load-buffer first"
   (interactive)
