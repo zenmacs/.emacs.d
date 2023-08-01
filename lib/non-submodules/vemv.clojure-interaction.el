@@ -544,6 +544,50 @@
 (defun vemv/propertize-interface (s)
   (propertize s 'face 'clojure-type-metadata-face))
 
+(defun vemv/replace-backtick-words (s)
+  "Replace each backtick-delimited word in S with the same word, propertized with font-lock-comment-face."
+  (let* ((input-string (propertize s 'face 'font-lock-string-face))
+         (start 0))
+    (while (string-match "`\\([^`]+\\)`" input-string start)
+      (let* ((match-string (match-string 1 input-string))
+             (propertized-match-string (propertize match-string 'face 'clojure-keyword-face)))
+        (setq input-string (replace-match propertized-match-string t t input-string))
+        (setq start (- (match-end 0)
+                       ;; 2, because we removed two backticks:
+                       2))))
+    input-string))
+
+(defun vemv/remove-irrelevant-docstring-suffix (s)
+  (let* ((vemv/remove-irrelevant-docstring-suffix--found nil))
+    (cl-reduce (lambda (new-s crit)
+                 (if vemv/remove-irrelevant-docstring-suffix--found
+                     vemv/remove-irrelevant-docstring-suffix--found
+                   (let* ((split (s-split crit new-s))
+                          (head (car split))
+                          (garbage (when (> (length split)
+                                            1)
+                                     (-> split last car))))
+                     (when (and garbage
+                                (not (equal garbage "")))
+                       (setq vemv/remove-irrelevant-docstring-suffix--found head))
+                     head)))
+               '("Example usage"
+                 "Example use"
+                 "Examples:"
+                 "\\*\\*Example"
+                 "#### Example Use:"
+                 "Usage:"
+                 "To use, "
+                 "An example of use"
+                 "To obtain the current value from the Signal"
+                 "`reg-sub` arguments are:"
+                 "You can explore"
+                 "Your event handlers will look like this:"
+                 "This facility is useful"
+                 "If a dispatch looked like this:"
+                 "Warning:  calling `clojure.data/diff` on large")
+               :initial-value s)))
+
 (defun vemv/docstring-of-var (var)
   (let* ((cider-prompt-for-symbol nil)
          (h (ignore-errors
@@ -561,6 +605,10 @@
                                  (mapcar 's-trim)
                                  (s-join "\n"))))
                   (s-join "\n\n")))
+             (d (when d (s-trim (condition-case nil
+                                    (vemv/replace-backtick-words
+                                     (vemv/remove-irrelevant-docstring-suffix d))
+                                  (error d)))))
              (d (if (and d
                          (> (length (s-lines d)) 40))
                     "..."
@@ -604,13 +652,14 @@
                             arglists-info
                             super-info
                             i-info)))))
-          (concat (if (and name ns)
-                      (vemv/propertize-class (concat ns "/" name))
-                    name)
-                  (when a
-                    (concat "\n\n" a))
-                  (when d
-                    (concat "\n\n" d))))))))
+          (let* ((v (concat (if (and name ns)
+                                (vemv/propertize-class (concat ns "/" name))
+                              name)
+                            (when a
+                              (concat "\n\n" a))
+                            (when d
+                              (concat "\n\n" d)))))
+            v))))))
 
 (defun vemv/message-clojure-doc ()
   (interactive)
