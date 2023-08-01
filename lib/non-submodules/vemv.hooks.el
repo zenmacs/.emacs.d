@@ -603,6 +603,12 @@
 
 (advice-add 'helm-ag--edit :after 'vemv/ag-replace)
 
+(advice-add 'cider-repl-type-for-buffer :filter-return (lambda (result)
+                                                         (if (and (eq result 'multi)
+                                                                  (eq vemv/project-type :cljs))
+                                                             'cljs
+                                                           result)))
+
 (advice-add 'cider-test-run-test :around 'vemv/apply-tests-verbosely)
 (advice-add 'cider-test-run-ns-tests :around 'vemv/apply-tests-verbosely)
 (advice-add 'cider-test-run-project-tests :around 'vemv/apply-tests-verbosely)
