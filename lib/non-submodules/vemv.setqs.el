@@ -58,26 +58,38 @@
 
 (setq tabbed-line-format
       (list
-       '(:eval (concat (propertize "  %l:%c " 'face 'font-lock-line-and-column-face)
-                       (when debug-on-error
-                         (propertize "debug-on-error " 'face 'vemv-default-foreground-face-very-slightly-darker))
-                       (when (and (not vemv-cider-connecting)
-                                  (not vemv-cider-connected)
-                                  (vemv/in-a-clojure-mode?)
-                                  (vemv/clojure-project?))
-                         (propertize "Disconnected " 'face 'font-lock-line-and-column-face))
-                       (when (and (not vemv-robe-connecting)
-                                  (not vemv-robe-connected)
-                                  (eq :ruby vemv/project-type))
-                         (propertize "Disconnected " 'face 'font-lock-line-and-column-face))
-                       (when vemv/verbose-mode
-                         (propertize "Verbose " 'face 'font-lock-line-and-column-face))
-                       (when (and vemv-cider-connecting (vemv/in-a-clojure-mode?))
-                         (propertize "Connecting... " 'face 'vemv-cider-connection-face))
-                       (when (and vemv-robe-connecting (eq :ruby vemv/project-type))
-                         (propertize "Connecting... " 'face 'vemv-cider-connection-face))
-                       (when (vemv/good-window-p)
-                         (vemv/present-one-tab-per-project-file))))))
+       '(:eval (let* ((clj-disconnected? (and (not vemv-cider-connecting)
+                                              (not vemv-cider-connected)
+                                              (vemv/in-a-clojure-mode?)
+                                              (vemv/clojure-project?)))
+                      (ruby-disconnected? (and (not vemv-robe-connecting)
+                                               (not vemv-robe-connected)
+                                               (eq :ruby vemv/project-type)))
+                      (ruby-connecting? (and vemv-robe-connecting (eq :ruby vemv/project-type)))
+                      (clj-connecting? (and (not ruby-connecting?) vemv-cider-connecting (vemv/in-a-clojure-mode?))))
+                 (concat (propertize "  %l:%c " 'face 'font-lock-line-and-column-face)
+                         (when debug-on-error
+                           (propertize "debug-on-error " 'face 'vemv-default-foreground-face-very-slightly-darker))
+                         (when clj-disconnected?
+                           (propertize "Disconnected " 'face 'font-lock-line-and-column-face))
+                         (when ruby-disconnected?
+                           (propertize "Disconnected " 'face 'font-lock-line-and-column-face))
+                         (when-let* ((relevant? (and (not clj-disconnected?) ;; avoid computations for most buffers
+                                                     (not clj-connecting?)
+                                                     (not ruby-connecting?)))
+                                     (bfn (buffer-file-name))
+                                     (clj? (vemv/contains? bfn ".clj"))
+                                     (test? (vemv/contains? bfn "test"))
+                                     (ff? (bound-and-true-p cider-test-fail-fast)))
+                           (propertize "ff " 'face 'font-lock-line-and-column-face))
+                         (when vemv/verbose-mode
+                           (propertize "Verbose " 'face 'font-lock-line-and-column-face))
+                         (when clj-connecting?
+                           (propertize "Connecting... " 'face 'vemv-cider-connection-face))
+                         (when ruby-connecting?
+                           (propertize "Connecting... " 'face 'vemv-cider-connection-face))
+                         (when (vemv/good-window-p)
+                           (vemv/present-one-tab-per-project-file)))))))
 
 (unless vemv/terminal-emacs?
   ;; https://github.com/company-mode/company-mode/issues/808
