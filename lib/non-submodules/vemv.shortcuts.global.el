@@ -127,6 +127,7 @@
       vemv/shortcuts/global/secondary-bar           'vemv/toggle-all
       vemv/shortcuts/global/secondary-colon         (argless (call-interactively 'eval-expression))
       vemv/shortcuts/global/secondary-e             (argless (vemv/send nil t))
+      vemv/shortcuts/global/secondary-f             'cider-test-toggle-fail-fast
       vemv/shortcuts/global/secondary-k             'vemv/kill-backward
       vemv/shortcuts/global/secondary-left          'backward-word
       vemv/shortcuts/global/secondary-left-bracket  (vemv/safe-paredit-command 'paredit-backward)
