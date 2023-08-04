@@ -207,14 +207,17 @@
                                     (if (eq major-mode 'messages-buffer-mode)
                                         (let ((inhibit-read-only t))
                                           (erase-buffer))
-                                      (with-selected-window vemv/repl-window
-                                        (if (vemv/in-a-lisp-mode?)
-                                            (vemv/safe-switch-to-buffer "*ielm*")
-                                          (if (and (member major-mode '(ruby-mode inf-ruby-mode))
-                                                   (get-buffer "*rails*"))
-                                              (vemv/safe-switch-to-buffer "*rails*")
-                                            (vemv/safe-switch-to-buffer "*shell-1*")))
-                                        (comint-clear-buffer))))))
+                                      (let* ((l? (vemv/in-a-lisp-mode?))
+                                             (r? (and (not l?)
+                                                      (member major-mode '(ruby-mode inf-ruby-mode))
+                                                      (get-buffer "*rails*"))))
+                                        (with-selected-window vemv/repl-window
+                                          (if l?
+                                              (vemv/safe-switch-to-buffer "*ielm*")
+                                            (if r?
+                                                (vemv/safe-switch-to-buffer "*rails*")
+                                              (vemv/safe-switch-to-buffer "*shell-1*")))
+                                          (comint-clear-buffer)))))))
 
 ;; same here. control-ret is interpreted as s-return rather than as tertiary-RET
 (global-set-key [(s return)] 'vemv/load-clojure-buffer)
