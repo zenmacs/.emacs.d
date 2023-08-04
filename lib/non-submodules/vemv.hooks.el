@@ -769,7 +769,8 @@ START and END are buffer positions."
          (line-shift (- (or (button-get button 'line) 0)
                         (or (nrepl-dict-get info "line") 1)))
          ;; give priority to `info` files as `info` returns full paths.
-         (info (nrepl-dict-put info "file" (or (nrepl-dict-get info "file")
+         (info (nrepl-dict-put info "file" (or (and (nrepl-dict-p info)
+                                                    (nrepl-dict-get info "file"))
                                                (button-get button 'file)))))
     (cider--jump-to-loc-from-info info)
     (forward-line line-shift)

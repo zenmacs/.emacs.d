@@ -769,14 +769,16 @@ When not, the callback will be invoked just once, so the code can be incondition
      (lambda (&rest __args)
        (if vemv/using-component-reloaded-workflow
            (when-let* ((dict (-some-> __args car)))
-             (let* ((e (nrepl-dict-get dict "err")))
-               (when e
-                 (push e __errors)
-                 (vemv/echo (s-trim-right e))))
-             (when (ignore-errors
-                     (and (-some-> dict (nrepl-dict-get "status") (car) (string-equal "done"))
-                          (not __errors)))
-               ,@body))
+             (when (nrepl-dict-p dict)
+               (let* ((e (nrepl-dict-get dict "err")))
+                 (when e
+                   (push e __errors)
+                   (vemv/echo (s-trim-right e))))
+               (when (ignore-errors
+                       (and (-some-> dict (nrepl-dict-get "status") (car) (string-equal "done"))
+                            (not __errors)
+                            (not (member "changed-namespaces" (nrepl-dict-keys dict)))))
+                 ,@body)))
          ,@body))))
 
 (defun vemv/remove-log-files! ()
@@ -847,8 +849,10 @@ When not, the callback will be invoked just once, so the code can be incondition
 (defun vemv.clojure-interaction/sync-eval-to-string (s)
   (let* ((x (concat "(do (clojure.core/in-ns '" (vemv/current-ns) ") "  s  ")"))
          (dict (cider-sync-tooling-eval x)) ;; used to be cider-nrepl-sync-request:eval, but this one is better for cljs (this way, we avoid running jvm code in a cljs repl, which would fail)
-         (e (nrepl-dict-get dict "err"))
-         (v (nrepl-dict-get dict "value")))
+         (e (when (nrepl-dict-p dict)
+              (nrepl-dict-get dict "err")))
+         (v (when (nrepl-dict-p dict)
+              (nrepl-dict-get dict "value"))))
     (if e
         (user-error (pr-str e))
       v)))
