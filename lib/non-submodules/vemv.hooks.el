@@ -338,6 +338,9 @@
       (with-current-buffer b
         (progn
           (beginning-of-buffer)
+          ;; we wait for `pry` to show up over a `rails c` session.
+          ;; this indicates that we're ready to robe.
+          ;; note that IDK how to make `pry` show up on `.bin/console`, so this won't work on gem development.
           (if (search-forward vemv/pry-prompt nil t)
               (progn
                 (robe-start)
