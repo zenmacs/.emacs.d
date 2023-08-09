@@ -433,14 +433,16 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
   (let* ((f (if (funcall pred)
                 choice-1
               choice-2))
-         (namespaces-as-strings (let ((x (funcall f
-                                                  (clojure-find-ns)
-                                                  file-name)))
-                                  (if x
-                                      (if (listp x)
-                                          x
-                                        (list x))
-                                    (error "No counterpart found")))))
+         (namespaces-as-strings (let* ((x (funcall f
+                                                   (clojure-find-ns)
+                                                   file-name))
+                                       (y (if x
+                                              (if (listp x)
+                                                  x
+                                                (list x))
+                                            (error "No counterpart found"))))
+                                  (mapcar #'substring-no-properties
+                                          y))))
     (when namespaces-as-strings
       (xref-push-marker-stack)
       (read (vemv.clojure-interaction/sync-eval-to-string
