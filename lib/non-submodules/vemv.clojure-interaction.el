@@ -78,10 +78,13 @@
                               ;; disabled for now. Don't know the original intent; now I find it desirable to have a repl in a 3rd party ns.
                               ;; (not (vemv/buffer-of-current-running-project-or-children? (current-buffer)))
                               (and (eq vemv/running-project-type :clj) (vemv/current-buffer-is-cljs)))
-                    (when (and (vemv/ciderable-p)
-                               (not (string-equal (vemv/current-ns)
-                                                  (vemv/current-ns (window-buffer vemv/repl-window)))))
-                      (-some-> (vemv/current-ns) cider-repl-set-ns))
+                    (let* ((c (vemv/ciderable-p)))
+                      (when c
+                        (setq xref-backend-functions '(cider--xref-backend)))
+                      (when (and c
+                                 (not (string-equal (vemv/current-ns)
+                                                    (vemv/current-ns (window-buffer vemv/repl-window)))))
+                        (-some-> (vemv/current-ns) cider-repl-set-ns)))
                     (-some-> after funcall)))
          1))
 
@@ -266,6 +269,8 @@
     (if (not cider-launched)
         (progn
           (require 'cider)
+          (require 'cider-find)
+          (require 'cider-xref)
           (require 'clj-refactor)
           (electric-indent-mode -1)
           (clj-refactor-mode 1)
