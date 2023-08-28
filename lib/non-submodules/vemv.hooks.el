@@ -758,27 +758,6 @@ START and END are buffer positions."
 				                    :box '(:line-width -1 :color "#4D575F"))))))))))))
                  extended-region))))
 
-(defun cider-stacktrace-navigate (button)
-  "Removes the second argument from cider--jump-to-loc-from-info, avoiding the usage of random windows"
-  (let* ((var (button-get button 'var))
-         (class (button-get button 'class))
-         (method (button-get button 'method))
-         (info (or (and var (cider-var-info var))
-                   (and class method (cider-member-info class method))
-                   (nrepl-dict)))
-         ;; Stacktrace returns more accurate line numbers, but if the function's
-         ;; line was unreliable, then so is the stacktrace by the same amount.
-         ;; Set `line-shift' to the number of lines from the beginning of defn.
-         (line-shift (- (or (button-get button 'line) 0)
-                        (or (nrepl-dict-get info "line") 1)))
-         ;; give priority to `info` files as `info` returns full paths.
-         (info (nrepl-dict-put info "file" (or (and (nrepl-dict-p info)
-                                                    (nrepl-dict-get info "file"))
-                                               (button-get button 'file)))))
-    (cider--jump-to-loc-from-info info)
-    (forward-line line-shift)
-    (back-to-indentation)))
-
 (defun magit-diff (rev-or-range &optional args files)
   "Adds `vemv.project/default-git-branch' awareness."
   (interactive (cons (progn
@@ -833,3 +812,13 @@ START and END are buffer positions."
   (aset buffer-display-table ?\^M []))
 
 (add-hook 'java-mode-hook 'zenmacs/remove-dos-eol)
+
+(defun vemv/use-main_window (buffer alist)
+  (prog1
+      (window--display-buffer buffer vemv/main_window 'reuse alist)
+    (unless (cdr (assq 'inhibit-switch-frame alist))
+      (window--maybe-raise-frame (window-frame vemv/main_window)))))
+
+(advice-add 'cider-stacktrace-navigate :around (lambda (f &rest args)
+                                                 (let ((cider-jump-to-pop-to-buffer-actions '((vemv/use-main_window))))
+                                                   (apply f args))))
