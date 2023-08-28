@@ -103,7 +103,7 @@
 
 (defun vemv/current-ns (&optional which-buffer)
   (with-current-buffer (buffer-name which-buffer)
-    (cider-current-ns)))
+    (cider-current-ns :no-default)))
 
 (defun vemv/advice-nrepl* (&optional after)
   (interactive)
@@ -117,7 +117,16 @@
                       (when (and c
                                  (not (string-equal (vemv/current-ns)
                                                     (vemv/current-ns (window-buffer vemv/repl-window)))))
-                        (-some-> (vemv/current-ns) cider-repl-set-ns)))
+                        (when-let* ((n (vemv/current-ns)))
+                          (when (seq-some (lambda (session)
+                                            (cider--sesman-friendly-session-p session))
+                                          (sesman--all-system-sessions 'CIDER))
+                            ;; only set the ns if cider--sesman-friendly-session-p.
+                            ;; this way, we avoid an internal `in-ns`, which would cause cider--sesman-friendly-session-p
+                            ;; to always be t.
+                            ;; ...nowadays I'm trying for Clojure buffers to not always be evalable.
+                            ;; (at some point I'll want to run multiple projects concurrently)
+                            (cider-repl-set-ns n)))))
                     (-some-> after funcall)))
          1))
 
