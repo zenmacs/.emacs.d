@@ -20,9 +20,18 @@
                                                           (vemv/slurp filename))))))
     (read (vemv/slurp filename))))
 
+(defun vemv/remove-leftmost-directory (path)
+  "Remove the leftmost directory from PATH."
+  (let ((dirs (split-string path "/" t)))
+    (if (< (length dirs) 2)
+        path
+      (mapconcat 'identity (cdr dirs) "/"))))
+
 (defun vemv/calc-clj-repl-name ()
   (let* ((id (s-replace "/Users/vemv/" "~/" vemv/repl-identifier))
          (id (s-replace-regexp "/$" "" id))
+         (id-alt (s-replace "~/" "" id))
+         (id-alt-alt (vemv/remove-leftmost-directory id-alt))
          (port? vemv/cider-port)
          (port (or vemv/cider-port
                    (vemv/active-port ".nrepl-port")
@@ -38,6 +47,30 @@
                        "(clj)*")
                (concat "*cider-repl "
                        id
+                       ":localhost:"
+                       (when port
+                         (prin1-to-string port))
+                       "(clj)*")
+               (concat "*cider-repl "
+                       id-alt
+                       ":127.0.0.1:"
+                       (when port
+                         (prin1-to-string port))
+                       "(clj)*")
+               (concat "*cider-repl "
+                       id-alt
+                       ":localhost:"
+                       (when port
+                         (prin1-to-string port))
+                       "(clj)*")
+               (concat "*cider-repl "
+                       id-alt-alt
+                       ":127.0.0.1:"
+                       (when port
+                         (prin1-to-string port))
+                       "(clj)*")
+               (concat "*cider-repl "
+                       id-alt-alt
                        ":localhost:"
                        (when port
                          (prin1-to-string port))
@@ -285,7 +318,9 @@
                             (setq vemv/cider-port
                                   (or (vemv/active-port ".nrepl-port")
                                       (when (eq vemv/project-type :cljs)
-                                        (vemv/active-port ".shadow-cljs/nrepl.port")))))
+                                        (vemv/active-port ".shadow-cljs/nrepl.port"))
+                                      (when (eq vemv/project-type :cljs)
+                                        (vemv/active-port "target/repl-port")))))
                           (unless vemv/cider-port
                             (comm
                              (let* ((s (vemv/lein-deps-command)))
@@ -1072,15 +1107,24 @@ Adds kw-to-find-fallback."
 (defun vemv/set-cljs-repl-name ()
   (let* ((id (s-replace "/Users/vemv/" "~/" vemv/repl-identifier))
          (id (s-replace-regexp "/$" "" id))
-         (port (condition-case nil
-                   (nrepl--port-from-file (expand-file-name ".shadow-cljs/nrepl.port"
-                                                            vemv/project-root-dir))
-                 (error nil))))
+         (port (or (condition-case nil
+                       (nrepl--port-from-file (expand-file-name ".shadow-cljs/nrepl.port"
+                                                                vemv/project-root-dir))
+                     (error nil))
+                   (condition-case nil
+                       (nrepl--port-from-file (expand-file-name "target/repl-port" ;; figwheel
+                                                                vemv/project-root-dir))
+                     (error nil)))))
     (setq vemv/cljs-repl-name (->> (list (concat "*cider-repl "
                                                  id
                                                  ":localhost:"
                                                  port
                                                  "(cljs:shadow)*")
+                                         (concat "*cider-repl "
+                                                 id
+                                                 ":localhost:"
+                                                 port
+                                                 "(cljs:figwheel-main)*")
                                          (concat "*cider-repl "
                                                  id
                                                  ":localhost:"
@@ -1096,6 +1140,11 @@ Adds kw-to-find-fallback."
                                                  ":127.0.0.1:"
                                                  port
                                                  "(cljs:shadow)*")
+                                         (concat "*cider-repl "
+                                                 id
+                                                 ":127.0.0.1:"
+                                                 port
+                                                 "(cljs:figwheel-main)*")
                                          (concat "*cider-repl "
                                                  id
                                                  ":127.0.0.1:"
