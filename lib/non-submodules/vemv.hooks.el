@@ -813,6 +813,9 @@ START and END are buffer positions."
 
 (add-hook 'java-mode-hook 'zenmacs/remove-dos-eol)
 
+(advice-add 'cider-eval-buffer :before (argless (vemv/close-cider-error)))
+(advice-add 'cider-eval-last-sexp-to-repl :before (argless (vemv/close-cider-error)))
+
 (defun vemv/use-main_window (buffer alist)
   (prog1
       (window--display-buffer buffer vemv/main_window 'reuse alist)
