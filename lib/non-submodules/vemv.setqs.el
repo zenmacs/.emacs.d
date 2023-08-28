@@ -99,14 +99,17 @@
                                   company-backends))
   (push 'company-robe company-backends))
 
+(setq-default tab-width 2)
+
 (setq auto-save-default nil
       auto-save-list-file-prefix nil
       back-to-indentation-state nil
       backup-inhibited t
-      cider-auto-jump-to-error nil
+      cider-auto-jump-to-error t
       cider-repl-display-help-banner' nil
       cider-repl-pop-to-buffer-on-connect nil
-      cider-show-error-buffer nil
+      cider-show-error-buffer 'always
+      cider-stacktrace-navigate-to-other-window nil
       cider-stacktrace-default-positive-filters '(project)
       cider-stacktrace-default-filters '(tooling dup repl)
       cider-stacktrace-fill-column nil
@@ -173,7 +176,6 @@
       typescript-indent-level 2
       vc-follow-symlinks t
       vemv/cljr-ast-load-counter 0
-      vemv/launched nil
       visible-bell nil ;; disable flickering
       whitespace-style '(face lines-tail)
       x-select-enable-clipboard nil
@@ -182,6 +184,9 @@
       yas-use-menu nil
       yas-verbosity 1
       *grizzl-read-max-results* 10)
+
+;; must go separetely
+(setq vemv/launched nil)
 
 (setq cljr-magic-require-namespaces
       '(("case"   . "camel-snake-kebab.core")
@@ -209,6 +214,7 @@
                                     1000000))
  '(cider-use-tooltips nil)
  '(cider-enrich-classpath t)
+ '(cider-clojure-cli-aliases ":dev:test")
  '(cider-preferred-build-tool "lein")
  ;; '(cider-default-cljs-repl 'figwheel)
  '(cider-repl-auto-detect-type nil) ;; prevents repl buffers from magically changing from cljs type to clj type, which doesn't makessense for shadow-cljs repl buffers (they're always cljs)
@@ -267,17 +273,18 @@ of the buffer into a formatted string."
                       "node_modules" "coverage" "target" ".cljs_rhino_repl"))
         (files (".#*" "*~" "*.DS_Store"))))
 
-;; Without this, performance can freeze (update: not so much given we know correctly use `pe/omit-gitignore')
+;; Without this, performance can freeze (update: not so much given we now correctly use `pe/omit-gitignore')
 ;; `public`: for Rails' `public/assets`
-;; `checkouts`: important one, can get huge with my `accessible-jars` plugin
 (setq pe/omit-regex (mapconcat 'identity
                                (list "^#" "~$" "^node_modules$" "^tmp" ".git$" ".sass-cache" "^checkouts" ".elc$" "^backups"
                                      "^integration-testing$"
                                      "^unzipped-jdk-source$"
                                      "pom.xml" "^semantic"
                                      "classes" "^.cpcache"
-                                     "crux"
+                                     "crux" ".idea" ".shadow-cljs"
+                                     "package-lock.json"
                                      "core.async"
+                                     ".rebel_readline_history"
                                      ".lumo-cache" "^target" "auto-save-list" "project-explorer-cache" "^public$" ".nrepl-port"
                                      "^dist" "^generated" ".ok$" ".DS_Store" ".lein-*" ".nrepl-* " ".eastwood" ".cljs_rhino_repl"
                                      "^.clj-kondo" "^coverage" "\.*.log$")
