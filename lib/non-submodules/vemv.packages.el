@@ -2,7 +2,8 @@
 
 (require 'package)
 
-(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
+;; Not necessary - melpa has everything elpa has. Elpa has downtime more frequently.
+;; (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
 (when vemv/terminal-emacs?
