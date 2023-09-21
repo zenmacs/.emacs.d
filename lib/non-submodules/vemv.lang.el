@@ -119,7 +119,7 @@
     (load "vemv.shortcuts.global")
     (load "vemv.shortcuts.clojure")
     (load "vemv.shortcuts.ruby")
-    (load "vemv.theme")
+    (load "vemv-theme")
     (when (not was-verbose)
       (vemv/toggle-verbosity))
     (vemv/echo "Reloaded!")))

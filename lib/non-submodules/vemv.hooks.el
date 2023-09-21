@@ -2,7 +2,7 @@
 
 (setq lexical-binding t)
 
-(require 'vemv.theme)
+(require 'vemv-theme)
 (require 'vemv.setqs)
 (provide 'vemv.hooks)
 

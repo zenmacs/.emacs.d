@@ -2,6 +2,10 @@
 
 (setq lexical-binding t)
 
+(and load-file-name
+     (boundp 'custom-theme-load-path)
+     (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
+
 (require 'vemv.lang)
 (require 'vemv.setqs)
 (require 'vemv.window-system)
@@ -18,7 +22,11 @@
 (require 'vemv.data)
 (unless vemv/terminal-emacs?
   (require 'vemv.data.bindings))
-(require 'vemv.theme)
+(require 'vemv-theme)
+(setq custom-safe-themes '(default
+                            ;; sha of vemv-theme.el as automaticaly computed by emacs:
+                            "95f7f2071d5f85e335f754f5cbb274b144b4b4e00dc1ea1b65c05bf0b868d4cc"))
+(load-theme 'vemv)
 (require 'vemv.hooks)
 (require 'vemv.keyboard-init)
 (unless vemv/terminal-emacs?

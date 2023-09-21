@@ -266,7 +266,7 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
                            (call-interactively 'whitespace-mode))))))))
 
     (when (not (equal vemv/project-type old-project-type))
-      (load "vemv.theme"))
+      (load "vemv-theme"))
 
     (when switch-p
       (vemv/safe-select-window vemv/repl-window) ;; ensures the currently-selected project is visible

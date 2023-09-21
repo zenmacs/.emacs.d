@@ -1,5 +1,5 @@
 (require 'warnings)
-(require 'vemv.theme)
+(require 'vemv-theme)
 (provide 'vemv.setqs)
 
 (fset 'yes-or-no-p 'y-or-n-p)

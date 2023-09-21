@@ -4,9 +4,15 @@
 ;;   (buffer-string)
 
 (require 'vemv.project)
-(provide 'vemv.theme)
 
 (deftheme vemv "")
+
+(defgroup vemv nil
+  "vemv theme."
+  :group 'faces
+  :prefix "vemv-"
+  :link '(url-link :tag "GitHub" "https://github.com/zenmacs/.emacs.d")
+  :tag "vemv theme")
 
 (setq vemv-colors/blue "#6da5ff")
 (setq vemv-colors/light-blue "#BFD8FF")
@@ -218,7 +224,12 @@
  `(lazy-highlight ((t (:background "yellow" :foreground "black"))))
  `(query-replace ((t (:background ,vemv-default-autocomplete-popup-foreground-color))))
  `(Highline-face ((t (:background "SeaGreen"))))
- `(italic ((t (nil))))
+
+ ;; originally set this to ((t (nil))), for some reason.
+ ;; I left it at `:italic t` again, for java docstring rendering.
+ ;; if it turned out to be a nuisance, I could set in dynamically in company-completion-started-hook.
+ `(italic ((t (:italic t))))
+
  `(left-margin ((t (nil))))
  `(text-cursor ((t (:background "yellow" :foreground "black"))))
  `(toolbar ((t (nil))))
@@ -418,3 +429,5 @@
                                vemv-default-face
                                vemv-default-face
                                vemv-default-face])
+
+(provide-theme 'vemv)

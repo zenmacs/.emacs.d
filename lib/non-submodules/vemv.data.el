@@ -2,7 +2,7 @@
 (require 'vemv.lang)
 (provide 'vemv.data)
 
-(setq vemv/emacs-files '("vemv.init.el" "vemv.lang.el" "vemv.theme.el" "vemv.data.el"))
+(setq vemv/emacs-files '("vemv.init.el" "vemv.lang.el" "vemv-theme.el" "vemv.data.el"))
 
 ;; available: C-escape, C-', (C/M f/p), M-`
 ;; ummodificable: C-m, C-i, C-[
