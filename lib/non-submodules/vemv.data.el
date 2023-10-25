@@ -21,6 +21,9 @@
                                     [menu-bar options]
                                     [menu-bar buffer]))
 
+;; (global-unset-key [C-wheel-up])
+;; (global-unset-key [C-wheel-down])
+
 (setq vemv/key-bindings-to-dummy
       '([mouse-3] [mouse-6] [mouse-7]
         [double-mouse-6] [double-mouse-7]
