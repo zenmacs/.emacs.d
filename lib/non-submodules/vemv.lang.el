@@ -22,6 +22,11 @@
   (let ((where (or where
                    (case major-mode
                      ('clojure-mode :clj)
+                     ('clojurec-mode :clj)
+                     ('cider-repl-mode :clj)
+                     ('cider-test-report-mode :clj)
+                     ('cider-stacktrace-mode :clj)
+                     ('cider-inspector-mode :clj)
                      ('clojurescript-mode :cljs)
                      ('clojurec-mode vemv/project-type)
                      ('emacs-lisp-mode :ielm)
