@@ -106,10 +106,14 @@
       back-to-indentation-state nil
       backup-inhibited t
       cider-auto-jump-to-error t
+      clojure-toplevel-inside-comment-form t
+      cider-reuse-dead-repls 'any
       cider-repl-display-help-banner' nil
       cider-inspector-preferred-var-names '("X")
+      cider-save-file-on-load t
       cider-repl-pop-to-buffer-on-connect nil
       cider-show-error-buffer 'always
+      cider-use-overlays t
       cider-stacktrace-navigate-to-other-window nil
       cider-stacktrace-default-positive-filters '(project)
       cider-stacktrace-default-filters '(tooling dup repl)
