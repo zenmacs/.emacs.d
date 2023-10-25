@@ -40,7 +40,9 @@
 (ido-everywhere 1)
 (ido-ubiquitous-mode 1)
 (blink-cursor-mode -1)
-(tooltip-mode -1)
+(tooltip-mode (if vemv/use-eldoc-and-tooltips
+                  1
+                -1))
 (smex-initialize)
 (global-subword-mode)
 (savehist-mode 1)
@@ -61,7 +63,8 @@
 
 ;; Disables mode-line tooltips, making `vemv/echo-clojure-source' more persistent
 ;; Not in vemv.setqs, something else would reset it later
-(setq show-help-function nil)
+(unless vemv/use-eldoc-and-tooltips
+  (setq show-help-function nil))
 
 (defun undo (&rest args)
   (interactive)

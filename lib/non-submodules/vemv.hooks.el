@@ -412,6 +412,8 @@
 (add-hook 'clojure-mode-hook
           (argless (enable-paredit-mode)
                    (paren-face-mode 1)
+                   (unless vemv/use-eldoc-and-tooltips
+                     (remove-hook 'eldoc-documentation-functions #'cider-eldoc))
                    (global-set-key (kbd "C-r") 'vemv/test-this-ns) ;; must be defined there. TODO: define all clojure bindings here
                    (setq-local mode-line-format tabbed-line-format)
                    (let* ((f (buffer-file-name)))

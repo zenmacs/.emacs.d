@@ -212,7 +212,7 @@
  '(nrepl-message-buffer-max-size (* 15
                                     ;; the default:
                                     1000000))
- '(cider-use-tooltips nil)
+ `(cider-use-tooltips ,vemv/use-eldoc-and-tooltips)
  '(cider-enrich-classpath t)
  '(cider-clojure-cli-aliases ":dev:test")
  '(cider-preferred-build-tool "lein")

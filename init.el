@@ -1,5 +1,6 @@
 ;; avoid an annoying auto-inserted comment:
 (setq package--init-file-ensured t)
+(setq vemv/use-eldoc-and-tooltips nil)
 
 (setq vemv/terminal-emacs? (getenv "TERMINAL_EMACS"))
 
@@ -107,8 +108,10 @@
             (:eval (when (not (vemv/good-frame-p))
                      " (other)"))))
 
-    (setq vemv/should-start-in-verbose-mode nil)
+    ;; remember - useful for debugging emacs init:
 
+    (setq vemv/should-start-in-verbose-mode (or vemv/use-eldoc-and-tooltips
+                                                nil))
     (setq vemv/verbose-mode (not vemv/should-start-in-verbose-mode))
 
     ;; set globally (this seems the best way - a plain `setq` won't work)
