@@ -311,16 +311,16 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
   (setq vemv/running-project-root-dir nil)
   (setq vemv/running-project-type nil)
   (let ((ordered (unless vemv/terminal-emacs? (vemv.desktop/ordered-workspaces-list))))
-    (->> ordered
-         (vemv/sort-car-by-car vemv/available-workspaces)
-         (mapcar (lambda (w)
-                   (let* ((ws (car w))
-                          (projs (second w))
-                          (this (second (-first (lambda (_ws)
-                                                  (equal (car _ws) ws))
-                                                ordered))))
-                     (list ws (vemv/sort-list-by-list projs this)))))
-         (setq vemv/all-workspaces)))
+    (setq vemv/all-workspaces
+          (->> ordered
+               (vemv/sort-car-by-car vemv/available-workspaces)
+               (mapcar (lambda (w)
+                         (let* ((ws (car w))
+                                (projs (second w))
+                                (this (second (-first (lambda (_ws)
+                                                        (equal (car _ws) ws))
+                                                      ordered))))
+                           (list ws (vemv/sort-list-by-list projs this))))))))
   (setq vemv/current-workspace (car vemv/all-workspaces))
   (setq vemv/current-project (car (second vemv/current-workspace)))
 
