@@ -146,18 +146,78 @@
                                           (point)))))
       (apply #'hs-hide-all ()))))
 
+(defvar vemv/java-toggled nil)
+
+(defun vemv/java-hide-all ()
+  "Hides all Java methods and doc comments.
+Does not hide the top level itself.
+
+This defun is as copy of `hs-hide-all' except for the ALL-CAPS comments."
+  (interactive)
+  (hs-life-goes-on
+   (save-excursion
+     (unless hs-allow-nesting
+       (hs-discard-overlays (point-min) (point-max)))
+     (end-of-buffer) ;; ADDED
+     (beginning-of-defun) ;; ADDED
+     (re-search-forward "{") ;; ADDED
+     (next-line) ;; ADDED
+     ;; (goto-char (point-min)) ;; COMMENTED OUT
+     (syntax-propertize (point-max))
+     (let ((spew (make-progress-reporter "Hiding all blocks..."
+                                         (point-min) (point-max)))
+           (re (concat "\\("
+                       hs-block-start-regexp
+                       "\\)"
+                       (if hs-hide-comments-when-hiding-all
+                           (concat "\\|\\("
+                                   hs-c-start-regexp
+                                   "\\)")
+                         ""))))
+       (while (progn
+                (unless hs-hide-comments-when-hiding-all
+                  (forward-comment (point-max)))
+                (re-search-forward re (point-max) t))
+         (if (match-beginning 1)
+             ;; We have found a block beginning.
+             (progn
+               (goto-char (match-beginning 1))
+	             (unless (if hs-hide-all-non-comment-function
+			                     (funcall hs-hide-all-non-comment-function)
+			                   (hs-hide-block-at-point t))
+		             ;; Go to end of matched data to prevent from getting stuck
+		             ;; with an endless loop.
+                 (when (looking-at hs-block-start-regexp)
+		               (goto-char (match-end 0)))))
+           ;; found a comment, probably
+           (let ((c-reg (hs-inside-comment-p)))
+             (when (and c-reg (car c-reg))
+               (if (> (count-lines (car c-reg) (nth 1 c-reg)) 1)
+                   (hs-hide-block-at-point t c-reg)
+                 (goto-char (nth 1 c-reg))))))
+         (progress-reporter-update spew (point)))
+       (progress-reporter-done spew)))
+   (beginning-of-line)
+   (run-hooks 'hs-hide-hook)))
+
 (defun vemv/toggle-ns-hiding (&optional after-file-open)
   (interactive)
-  (when (not vemv-cleaning-namespaces)
-    (let ((curr-buff-name (buffer-name (current-buffer))))
-      (setq-local vemv/ns-shown (if after-file-open
+  (if (equal major-mode 'java-mode)
+      (progn
+        (setq vemv/java-toggled (not vemv/java-toggled))
+        (if vemv/java-toggled
+            (vemv/java-hide-all)
+          (hs-show-all)))
+    (when (not vemv-cleaning-namespaces)
+      (let ((curr-buff-name (buffer-name (current-buffer))))
+        (setq-local vemv/ns-shown (if after-file-open
+                                      (if vemv/ns-shown
+                                          vemv/ns-shown
+                                        nil)
                                     (if vemv/ns-shown
-                                        vemv/ns-shown
-                                      nil)
-                                  (if vemv/ns-shown
-                                      nil
-                                    curr-buff-name)))
-      (vemv/do-toggle-ns-hiding))))
+                                        nil
+                                      curr-buff-name)))
+        (vemv/do-toggle-ns-hiding)))))
 
 (defvar vemv/toggle-all--hidden nil)
 
