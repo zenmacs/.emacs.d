@@ -255,15 +255,18 @@ This defun is as copy of `hs-hide-all' except for the ALL-CAPS comments."
   (setq-local vemv/focus--focused (not vemv/focus--focused)))
 
 (defun vemv/show-clj-or-cljs-repl ()
-  (when (vemv/ciderable-p)
-    (let* ((was (with-selected-window vemv/main_window
-                  (vemv/current-buffer-is-cljs)))
-           (should (when vemv/cljs-repl-name
-                     (get-buffer vemv/cljs-repl-name))))
-      (with-selected-window vemv/repl-window
-        (if (and was should)
-            (vemv/safe-switch-to-buffer vemv/cljs-repl-name)
-          (vemv/safe-switch-to-buffer (vemv/safe-clj-repl-name vemv/clj-repl-name)))))))
+  (let* ((b (cider-current-repl 'any nil)))
+    (when (or b (vemv/ciderable-p))
+      (let* ((was (with-selected-window vemv/main_window
+                    (vemv/current-buffer-is-cljs)))
+             (should (when vemv/cljs-repl-name
+                       (get-buffer vemv/cljs-repl-name))))
+        (with-selected-window vemv/repl-window
+          (if (and was should)
+              (vemv/safe-switch-to-buffer vemv/cljs-repl-name)
+            (vemv/safe-switch-to-buffer (or (vemv/safe-clj-repl-name vemv/clj-repl-name)
+                                            (when b
+                                              (buffer-name b))))))))))
 
 (defun vemv/ensure-repl-visible ()
   (when (and (cider-connected-p)
@@ -816,28 +819,29 @@ it looks up the thing currently being invoked, i.e. the first element of the fir
 
 (defun vemv/clear-cider-repl-buffer (&optional recurring callback)
   (interactive)
-  (when (cider-connected-p)
-    (vemv/close-cider-error)
-    (when-let* ((w (get-buffer-window "*cider-test-report*")))
-      (with-selected-window w
-        (vemv/close-this)))
-    (vemv/show-clj-or-cljs-repl)
-    (vemv/save-window-excursion
-     (vemv/safe-select-window vemv/repl-window)
-     (end-of-buffer)
-     (let* ((should-recur (and (not recurring)
-                               (or (> (point-max) 5000) ;; b/c I think the code below is slow, can hang emacs
-                                   (vemv/contains? (prin1-to-string (buffer-string))
-                                                   "cider-repl-stdout-face")))))
-       (when should-recur
-         (cider-repl-return) ;; un-hijack the prompt. XXX: only do if there's no pending input
-         (cider-repl-clear-buffer)
-         (delay (argless (vemv/clear-cider-repl-buffer :recurring callback))
-                0.75))
-       (cider-repl-clear-buffer)
+  (when-let* ((b (cider-current-repl 'any nil)))
+    (with-current-buffer b
+      (vemv/close-cider-error)
+      (when-let* ((w (get-buffer-window "*cider-test-report*")))
+        (with-selected-window w
+          (vemv/close-this)))
+      (vemv/show-clj-or-cljs-repl)
+      (vemv/save-window-excursion
+       (vemv/safe-select-window vemv/repl-window)
        (end-of-buffer)
-       (when (or recurring (not should-recur))
-         (-some-> callback funcall))))))
+       (let* ((should-recur (and (not recurring)
+                                 (or (> (point-max) 5000) ;; b/c I think the code below is slow, can hang emacs
+                                     (vemv/contains? (prin1-to-string (buffer-string))
+                                                     "cider-repl-stdout-face")))))
+         (when should-recur
+           (cider-repl-return) ;; un-hijack the prompt. XXX: only do if there's no pending input
+           (cider-repl-clear-buffer)
+           (delay (argless (vemv/clear-cider-repl-buffer :recurring callback))
+                  0.75))
+         (cider-repl-clear-buffer)
+         (end-of-buffer)
+         (when (or recurring (not should-recur))
+           (-some-> callback funcall)))))))
 
 (setq vemv/latest-clojure-test-ran nil)
 (setq vemv/latest-cljs-test-ran nil)

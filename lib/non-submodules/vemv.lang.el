@@ -44,8 +44,12 @@
                                    (:ruby "*rails*")
                                    (:ielm "*ielm*")
                                    (:shell "*shell-1*")
-                                   (:clj vemv/clj-repl-name)
-                                   (:cljs vemv/cljs-repl-name)))
+                                   (:clj (or vemv/clj-repl-name
+                                             (when-let* ((b (cider-current-repl 'clj nil)))
+                                               (buffer-name b))))
+                                   (:cljs (or vemv/cljs-repl-name
+                                              (when-let* ((b (cider-current-repl 'cljs nil)))
+                                                (buffer-name b))))))
              (foreign? (not (seq-contains (vemv/all-buffer-names) destination-buffer)))
              (destination-buffer (if foreign?
                                      (buffer-name (window-buffer vemv/repl-window))
