@@ -1,0 +1,6 @@
+(->> (-> (Thread/currentThread)
+         (.getContextClassLoader)
+         (.getResources "data_readers.clj"))
+     (enumeration-seq)
+     (distinct)
+     (mapv str))
