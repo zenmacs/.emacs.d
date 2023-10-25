@@ -559,7 +559,7 @@ This defun is as copy of `hs-hide-all' except for the ALL-CAPS comments."
                                 (s-replace "import " "")
                                 (s-replace ";" ""))
                          (cider-symbol-at-point 'look-back)))
-           (curr-token-is-qualified-kw (vemv/starts-with curr-token "::")))
+           (curr-token-is-qualified-kw (vemv/starts-with curr-token ":")))
       (if curr-token-is-qualified-kw
           (call-interactively 'cider-find-keyword)
         (let* ((original-token curr-token)
@@ -967,10 +967,16 @@ When not, the callback will be invoked just once, so the code can be incondition
                             (let* ((curr-token (->> (cider-symbol-at-point 'look-back)
                                                     (string-remove-prefix "#'")
                                                     (string-remove-prefix "'")))
-                                   (curr-token-is-qualified-kw (vemv/starts-with curr-token "::"))
+                                   (curr-token-is-qualified-kw (vemv/starts-with curr-token ":"))
                                    (cider-prompt-for-symbol nil))
                               (when curr-token-is-qualified-kw
-                                (call-interactively 'vemv/cider-find-keyword-silently)))))))
+                                (nrepl-dbind-response (cider--find-keyword-loc (cider-symbol-at-point 'look-back))
+                                    (url dest dest-point)
+                                  (when url
+                                    (list (with-current-buffer dest
+                                            (goto-char dest-point)
+                                            (vemv/current-line-number))
+                                          url)))))))))
     (when line-and-file
       (let* ((line (first line-and-file))
              (file (second line-and-file)))
