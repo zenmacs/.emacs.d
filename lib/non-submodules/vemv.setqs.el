@@ -276,10 +276,13 @@ of the buffer into a formatted string."
         (files (".#*" "*~" "*.DS_Store"))))
 
 ;; Without this, performance can freeze (update: not so much given we now correctly use `pe/omit-gitignore')
-;; `public`: for Rails' `public/assets`
 (setq pe/omit-regex (mapconcat 'identity
                                (list "^#" "~$" "^node_modules$" "^tmp" ".git$" ".sass-cache" "^checkouts" ".elc$" "^backups"
                                      "^integration-testing$"
+                                     "emacs-source"
+                                     "^.make"
+                                     "test-runner"
+                                     "^.java"
                                      "^unzipped-jdk-source$"
                                      "pom.xml" "^semantic"
                                      "classes" "^.cpcache"
@@ -287,7 +290,9 @@ of the buffer into a formatted string."
                                      "package-lock.json"
                                      "core.async"
                                      ".rebel_readline_history"
-                                     ".lumo-cache" "^target" "auto-save-list" "project-explorer-cache" "^public$" ".nrepl-port"
+                                     ".lumo-cache" "^target" "auto-save-list" "project-explorer-cache"
+                                     "^public$" ;; XXX ideally, only do this if the project type is ruby
+                                     ".nrepl-port"
                                      "^dist" "^generated" ".ok$" ".DS_Store" ".lein-*" ".nrepl-* " ".eastwood" ".cljs_rhino_repl"
                                      "^.clj-kondo" "^coverage" "\.*.log$")
                                "\\|"))
