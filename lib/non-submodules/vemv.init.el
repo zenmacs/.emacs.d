@@ -24,8 +24,8 @@
   (require 'vemv.data.bindings))
 (require 'vemv-theme)
 (setq custom-safe-themes '(default
-                            ;; sha of vemv-theme.el as automaticaly computed by emacs:
-                            "95f7f2071d5f85e335f754f5cbb274b144b4b4e00dc1ea1b65c05bf0b868d4cc"))
+                            ;; shas of vemv-theme.el as automaticaly computed by emacs:
+                            "92a14c0924ae3efa1c875aeb3f2ff631153e487a442394b4848227c3e1576311"))
 (load-theme 'vemv)
 (require 'vemv.hooks)
 (require 'vemv.keyboard-init)

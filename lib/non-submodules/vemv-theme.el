@@ -1,6 +1,7 @@
 ;; for debugging:
 ;;   list-faces-display
 ;;   m-x describe-theme
+;;   m-x describe-char
 ;;   (buffer-string)
 
 (require 'vemv.project)
@@ -104,6 +105,8 @@
   (set-fringe-bitmap-face 'right-arrow 'vemv-cider-connection-face)
   (set-fringe-bitmap-face 'right-curly-arrow 'vemv-cider-connection-face))
 
+(setq vemv/default-face-attrs `((t (:background ,vemv-default-background-color :foreground ,vemv-default-foreground-color))))
+
 (custom-theme-set-faces
  'vemv
 
@@ -129,8 +132,8 @@
      (:foreground ,vemv-colors/keyword-green))
     (t (:foreground ,vemv-colors/keyword-green))))
 
- `(default ((t (:background ,vemv-default-background-color :foreground ,vemv-default-foreground-color))))
- `(default ((t (:background ,vemv-default-background-color :foreground ,vemv-default-foreground-color))))
+ `(default ,vemv/default-face-attrs)
+ `(default ,vemv/default-face-attrs)
  `(cursor ((t (:foreground "#4D575F" :background "#CFCFCF"))))
  `(blue ((t (:foreground "blue"))))
  `(bold ((t (:bold t))))
@@ -140,7 +143,7 @@
 
  `(whitespace-line ((t (:background ,vemv-colors/pink :foreground ,vemv-default-foreground-color))))
 
- `(compilation-info ((t (:background ,vemv-default-background-color :foreground ,vemv-default-foreground-color))))
+ `(compilation-info ,vemv/default-face-attrs)
 
  `(pe/directory-face ((t (:foreground ,vemv-colors/lighter-yellow :bold t))))
  `(pe/file-face ((t (:foreground ,vemv-colors/paren-grey-light :bold t))))
@@ -348,7 +351,25 @@
  `(erc-notice-face ((t (:bold t :foreground "grey26"))))
 
  `(vhl/default-face ((t (:background ,vemv-default-autocomplete-popup-foreground-color))))
- `(undo-tree-visualizer-active-branch-face ((t (:foreground "deep pink" :background "black")))))
+ `(undo-tree-visualizer-active-branch-face ((t (:foreground "deep pink" :background "black"))))
+
+ `(ansi-color-black ,vemv/default-face-attrs)
+ `(ansi-color-red ,vemv/default-face-attrs)
+ `(ansi-color-green ,vemv/default-face-attrs)
+ `(ansi-color-yellow ,vemv/default-face-attrs)
+ `(ansi-color-blue ,vemv/default-face-attrs)
+ `(ansi-color-magenta ,vemv/default-face-attrs)
+ `(ansi-color-cyan ,vemv/default-face-attrs)
+ `(ansi-color-white ,vemv/default-face-attrs)
+ `(ansi-color-bright-black ,vemv/default-face-attrs)
+ `(ansi-color-bright-red ,vemv/default-face-attrs)
+ `(ansi-color-bright-green ,vemv/default-face-attrs)
+ `(ansi-color-bright-yellow ,vemv/default-face-attrs)
+ `(ansi-color-bright-blue ,vemv/default-face-attrs)
+ `(ansi-color-bright-magenta ,vemv/default-face-attrs)
+ `(ansi-color-bright-cyan ,vemv/default-face-attrs)
+ `(ansi-color-bright-white ,vemv/default-face-attrs)
+ `(ansi-color-bold ,vemv/default-face-attrs))
 
 (setq ansi-color-faces-vector [vemv-default-face
                                vemv-default-face
