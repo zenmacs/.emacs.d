@@ -14,16 +14,6 @@
      (interactive)
      ,@forms))
 
-(defmacro if-let (binding &rest forms)
-  "Usage: (if-let (x (some-computation))
-                (then x)
-                (else x) (else_2) ... (else_N))"
-  (let ((symbol (first binding))
-        (value (second binding)))
-    `(let ((,symbol ,value))
-       (if ,symbol
-           ,@forms))))
-
 (defmacro replying-yes (&rest forms)
   `(cl-flet ((always-yes (&rest _) t))
      (cl-letf (((symbol-function 'y-or-n-p) #'always-yes)
