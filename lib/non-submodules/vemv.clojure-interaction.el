@@ -1034,11 +1034,6 @@ When not, the callback will be invoked just once, so the code can be incondition
     (replace-regexp "defn \\(\\_<.*?\\_>\\) \\["
                     "defn \\1\n  [")))
 
-(define-minor-mode vemv.clojure/warn-mode
-  "Highlights certain tokens as dangerous."
-  :lighter ""
-  (font-lock-add-keywords nil `(("\\b\\(when\\|=\\|and\\|or\\|if\\|if-not\\|when-not\\|->>\\|->\\)\\b" 0 'vemv-reverse-warning-face)))
-  (vemv/fontify))
 
 (defun cider-stacktrace--should-hide-p (neg-filters pos-filters flags)
   "I customized the logic here, didn't like the original one (`show' means for them: show unconditionally, disregarding negative filters)."
