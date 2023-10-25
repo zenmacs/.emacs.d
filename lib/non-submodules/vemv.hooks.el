@@ -458,6 +458,10 @@
                                                                               (let ((vemv/max-mini-window-height 0.99))
                                                                                 (vemv/message-clojure-doc))))))
 
+(add-hook 'ruby-mode-hook (argless
+                           (define-key ruby-mode-map (kbd "<backtab>") (argless
+                                                                        (call-interactively #'robe-doc)))))
+
 (add-hook 'haml-mode-hook (argless
                            (vemv/set-keys-for-scope haml-mode-map vemv/ruby-key-bindings)
                            (define-key haml-mode-map [tab] 'vemv/tab)
@@ -840,3 +844,9 @@ START and END are buffer positions."
 (advice-add 'cider-stacktrace-navigate :around (lambda (f &rest args)
                                                  (let ((cider-jump-to-pop-to-buffer-actions '((vemv/use-main_window))))
                                                    (apply f args))))
+
+(advice-add 'robe-completing-read
+            :around
+            (lambda (f &rest args)
+              (cider--with-temporary-ido-keys "<up>" "<down>"
+                                              (apply f args))))

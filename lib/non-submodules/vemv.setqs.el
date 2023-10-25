@@ -165,6 +165,7 @@
       redisplay-dont-pause t
       require-final-newline t
       robe-completing-read-func 'ido-completing-read
+      robe-show-doc-source t
       ruby-insert-encoding-magic-comment nil
       scroll-step 1
       sh-basic-offset 2

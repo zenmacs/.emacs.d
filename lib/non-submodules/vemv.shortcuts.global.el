@@ -214,6 +214,10 @@
                                              (r? (and (not l?)
                                                       (member major-mode '(ruby-mode inf-ruby-mode))
                                                       (get-buffer "*rails*"))))
+                                        (when r?
+                                          (when-let* ((w (get-buffer-window "*rspec-compilation*")))
+                                            (with-selected-window w
+                                              (vemv/close-this))))
                                         (with-selected-window vemv/repl-window
                                           (if l?
                                               (vemv/safe-switch-to-buffer "*ielm*")
