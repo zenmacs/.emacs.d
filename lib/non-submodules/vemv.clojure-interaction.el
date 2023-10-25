@@ -565,6 +565,7 @@ This defun is as copy of `hs-hide-all' except for the ALL-CAPS comments."
         (let* ((original-token curr-token)
                (curr-token (vemv/maybe-classify-token curr-token))
                (command (concat "
+(clojure.core/binding [clojure.core/*warn-on-reflection* false]
 (clojure.core/let [x '" curr-token "
                      y (try (clojure.core/-> x clojure.core/pr-str (clojure.string/split #\"/\") clojure.core/first clojure.core/read-string clojure.core/eval) (catch java.lang.Exception _))
                      module-qualified-resource #(do (clojure.java.io/resource (clojure.core/str %2 \"/\" %1)))]
@@ -573,7 +574,7 @@ This defun is as copy of `hs-hide-all' except for the ALL-CAPS comments."
                                        (clojure.core/or (clojure.core/some-> y clojure.core/pr-str clojure.core/munge (clojure.string/replace \".\" \"/\") (clojure.core/str \".java\") (clojure.java.io/resource) clojure.core/str)
                                                         (clojure.core/when-let [module-name (try (clojure.core/some-> y .getModule .getName) (catch Exception e (.printStackTrace e) nil))]
                                                                                (clojure.core/some-> y clojure.core/pr-str clojure.core/munge (clojure.string/replace \".\" \"/\") (clojure.core/str \".java\") (module-qualified-resource module-name)  clojure.core/str)))
-                                       ))"))
+                                       )))"))
                (maybe-jar-ref (read (vemv.clojure-interaction/sync-eval-to-string
                                      command)))
                (found-jar-ref? maybe-jar-ref)
