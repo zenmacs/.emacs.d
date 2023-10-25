@@ -29,7 +29,10 @@
 (add-to-list 'display-buffer-alist (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 (add-to-list 'special-display-buffer-names '("*Messages*" vemv/display-completion))
 (add-to-list 'special-display-buffer-names '("*xref*" vemv/display-completion))
-(add-to-list 'special-display-buffer-names '("*Help*" vemv/display-completion))
+
+;; nuisance while using Company
+;; (add-to-list 'special-display-buffer-names '("*Help*" vemv/display-completion))
+
 (add-to-list 'special-display-buffer-names '("*Ido Completions*" vemv/display-completion))
 (add-to-list 'special-display-buffer-names '("*Diff*" vemv/display-completion))
 
@@ -91,12 +94,18 @@
                          (when (vemv/good-window-p)
                            (vemv/present-one-tab-per-project-file)))))))
 
+(setq company-format-margin-function nil)
+(setq company-auto-update-doc t)
+
 (unless vemv/terminal-emacs?
   ;; https://github.com/company-mode/company-mode/issues/808
   (setq company-backends (-remove (lambda (x)
                                     (and (listp x)
                                          (equal (car x) 'company-dabbrev-code)))
                                   company-backends))
+  (setq company-frontends (-remove (lambda (x)
+                                     (equal x 'company-echo-metadata-frontend))
+                                   company-frontends))
   (push 'company-robe company-backends))
 
 (setq-default tab-width 2)

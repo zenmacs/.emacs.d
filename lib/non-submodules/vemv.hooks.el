@@ -509,21 +509,6 @@
 
 (add-hook 'cider-repl-mode-hook #'paredit-mode)
 
-(defvar vemv/verbosity-before-company)
-
-(add-hook 'company-completion-started-hook
-          (argless
-           (setq vemv/verbosity-before-company vemv/verbose-mode)
-           (vemv/set-verbosity-to t)))
-
-(add-hook 'company-completion-cancelled-hook
-          (argless
-           (vemv/set-verbosity-to vemv/verbosity-before-company)))
-
-(add-hook 'company-completion-finished-hook
-          (argless
-           (vemv/set-verbosity-to vemv/verbosity-before-company)))
-
 ;; for when one opens a file via the terminal
 ;; disabled, seems to mess up tabs
 ;; (add-hook 'buffer-list-update-hook 'vemv/clean-chosen-file-buffer-order)
@@ -844,6 +829,12 @@ START and END are buffer positions."
 (advice-add 'cider-stacktrace-navigate :around (lambda (f &rest args)
                                                  (let ((cider-jump-to-pop-to-buffer-actions '((vemv/use-main_window))))
                                                    (apply f args))))
+
+(advice-add 'cider-class-choice-completing-read
+            :around
+            (lambda (f a b)
+              (cider--with-temporary-ido-keys "<up>" "<down>"
+                                              (funcall f a b))))
 
 (advice-add 'robe-completing-read
             :around
