@@ -1227,3 +1227,11 @@ Adds kw-to-find-fallback."
                                    (filter (lambda (s)
                                              (get-buffer s)))
                                    (car)))))
+
+(defun vemv/inspect-tap ()
+  (interactive)
+  (cider-inspect-expr "(vemv.tap/view!)" (cider-current-ns)))
+
+(defun vemv/clear-tap ()
+  (interactive)
+  (cider-sync-tooling-eval "(vemv.tap/reset-queue!)"))
