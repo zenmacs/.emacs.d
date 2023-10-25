@@ -165,6 +165,7 @@
       vemv/shortcuts/global/tertiary-5              (vemv/safe-paredit-command 'clojure-unwind-all)
       vemv/shortcuts/global/tertiary-7              'vemv/toggle-between-api-and-implementation
       vemv/shortcuts/global/tertiary-9              (vemv/safe-paredit-command 'paredit-backward-up)
+      ;; NOTE: tertiary-0 will not work unless one unbinds it from macOS.
       vemv/shortcuts/global/tertiary-0              (vemv/safe-paredit-command 'paredit-forward-up)
       vemv/shortcuts/global/tertiary-RET            'vemv/load-clojure-buffer
       vemv/shortcuts/global/tertiary-SPC            'vemv/indent-region
@@ -174,6 +175,7 @@
       vemv/shortcuts/global/tertiary-bar            (vemv/safe-paredit-command 'paredit-split-sexp)
       vemv/shortcuts/global/tertiary-down           'end-of-defun
       vemv/shortcuts/global/tertiary-e              (argless (vemv/send nil nil nil :no-return))
+      vemv/shortcuts/global/tertiary-equal          'cider-load-buffer
       vemv/shortcuts/global/tertiary-end            'end-of-buffer
       vemv/shortcuts/global/tertiary-f              (argless
                                                      (vemv/save)
