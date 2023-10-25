@@ -8,6 +8,7 @@
                                  'clojurec-mode
                                  'clojurescript-mode
                                  'cider-repl-mode
+                                 'cider-inspector-mode
                                  'cider-test-report-mode
                                  'cider-stacktrace-mode))
 

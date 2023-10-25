@@ -107,6 +107,7 @@
       backup-inhibited t
       cider-auto-jump-to-error t
       cider-repl-display-help-banner' nil
+      cider-inspector-preferred-var-names '("X")
       cider-repl-pop-to-buffer-on-connect nil
       cider-show-error-buffer 'always
       cider-stacktrace-navigate-to-other-window nil
