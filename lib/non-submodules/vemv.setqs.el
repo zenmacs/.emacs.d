@@ -110,6 +110,9 @@
 
 (setq-default tab-width 2)
 
+(put 'thread-first 'lisp-indent-function nil)
+(put 'thread-last 'lisp-indent-function nil)
+
 (setq auto-save-default nil
       auto-save-list-file-prefix nil
       back-to-indentation-state nil
