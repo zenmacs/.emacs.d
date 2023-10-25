@@ -186,7 +186,7 @@
       vemv/shortcuts/global/tertiary-left           'vemv/previous-file-buffer
       vemv/shortcuts/global/tertiary-left-bracket   'vemv/pull-next-sexpr
       vemv/shortcuts/global/tertiary-o              'vemv/open-project
-      vemv/shortcuts/global/tertiary-r              'vemv/run-this-deftest
+      vemv/shortcuts/global/tertiary-r              'cider-test-run-test
       vemv/shortcuts/global/tertiary-right          'vemv/next-file-buffer
       vemv/shortcuts/global/tertiary-s              'vemv/save-all-buffers-for-this-project
       vemv/shortcuts/global/tertiary-slash          'zenmacs.clojure-interaction/show-java-decompilation-of-top-level-sexpr

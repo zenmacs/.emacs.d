@@ -617,7 +617,17 @@
                                                              'cljs
                                                            result)))
 
-(advice-add 'cider-test-run-test :around 'vemv/apply-tests-verbosely)
+(advice-add 'cider-test-run-test :around
+            (lambda (f &rest args)
+              (vemv/close-cider-error)
+              (vemv/remove-log-files!)
+              (vemv/save)
+              (let* ((v (cider-sync-tooling-eval "((clojure.core/resolve 'clojure.tools.namespace.repl/refresh))"))
+                     (e (nrepl-dict-get v "err")))
+                (if e
+                    (vemv/echo e)
+                  (apply 'vemv/apply-tests-verbosely f args)))))
+
 (advice-add 'cider-test-run-ns-tests :around 'vemv/apply-tests-verbosely)
 (advice-add 'cider-test-run-project-tests :around 'vemv/apply-tests-verbosely)
 (advice-add 'cider-test-rerun-failed-tests :around 'vemv/apply-tests-verbosely)
