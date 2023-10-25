@@ -709,23 +709,32 @@ This defun is as copy of `hs-hide-all' except for the ALL-CAPS comments."
                 (vemv/find-protocol-method var))))
     (when h
       (let* ((c (nrepl-dict-get h "class"))
-             (a (nrepl-dict-get h "arglists-str"))
-             (d (-some->> (nrepl-dict-get h "doc")
-                  (s-split "\n\n")
-                  (mapcar (lambda (x)
-                            (->> x
-                                 (s-split "\n")
-                                 (mapcar 's-trim)
-                                 (s-join "\n"))))
-                  (s-join "\n\n")))
-             (d (when d (s-trim (condition-case nil
-                                    (vemv/replace-backtick-words
-                                     (vemv/remove-irrelevant-docstring-suffix d))
-                                  (error d)))))
-             (d (if (and d
-                         (> (length (s-lines d)) 40))
-                    "..."
-                  d))
+             (a (or (nrepl-dict-get h "annotated-arglists")
+                    (unless c
+                      (nrepl-dict-get h "arglists-str"))))
+             (javadoc (when (nrepl-dict-contains h "doc-fragments")
+                        (vemv/render-docstring var (cdr h))))
+             (_ (setq J javadoc))
+             (d (or javadoc
+                    (-some->> (nrepl-dict-get h "doc")
+                      (s-split "\n\n")
+                      (mapcar (lambda (x)
+                                (->> x
+                                     (s-split "\n")
+                                     (mapcar 's-trim)
+                                     (s-join "\n"))))
+                      (s-join "\n\n"))))
+             (d (or javadoc
+                    (when d (s-trim (condition-case nil
+                                        (vemv/replace-backtick-words
+                                         (vemv/remove-irrelevant-docstring-suffix d))
+                                      (error d))))))
+             (d (or javadoc
+                    (if (and d
+                             (> (length (s-lines d)) 40))
+                        "..."
+                      d)))
+             (_ (setq DD d))
              (name (nrepl-dict-get h "name"))
              (ns (nrepl-dict-get h "ns")))
         (if c
@@ -746,25 +755,33 @@ This defun is as copy of `hs-hide-all' except for the ALL-CAPS comments."
                        (super-info (when (and super
                                               (not (string-equal super "java.lang.Object")))
                                      (concat " extends " (vemv/propertize-interface super))))
-                       (arglists-info (when a
-                                        (->> a
-                                             (s-replace "[" "")
-                                             (s-replace "]" "")
-                                             (s-replace " " ", ")
-                                             (s-split "\n")
-                                             (mapcar (lambda (s)
-                                                       (concat (vemv/propertize-class c)
-                                                               var
-                                                               "("
-                                                               (vemv/propertize-interface s)
-                                                               ")")))
-                                             (s-join "\n")))))
+                       (unprefixed (string-remove-prefix "." var))
+                       (the-count (length (concat c "/" unprefixed " ")))
+                       (arglists-info (concat (vemv/propertize-class c)
+                                              "/"
+                                              unprefixed
+                                              " "
+                                              (vemv/propertize-interface (car a))
+                                              (when (rest a)
+                                                (->> a
+                                                     rest
+                                                     (mapcar (lambda (s)
+                                                               (concat "\n"
+                                                                       (make-string the-count ?\s)
+                                                                       (vemv/propertize-interface s))))
+                                                     (s-join ""))))))
                   (if arglists-info
-                      arglists-info
+                      (concat arglists-info
+                              (when javadoc
+                                "\n\n")
+                              javadoc)
                     (concat (vemv/propertize-class c)
                             arglists-info
                             super-info
-                            i-info)))))
+                            i-info
+                            (when javadoc
+                              "\n\n")
+                            javadoc)))))
           (let* ((v (concat (if (and name ns)
                                 (vemv/propertize-class (concat ns "/" name))
                               name)
