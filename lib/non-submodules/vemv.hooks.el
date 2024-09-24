@@ -395,7 +395,9 @@
           (argless (setq-local mode-line-format vemv/pe/mode-line-format)))
 
 (add-hook 'cider-repl-mode-hook
-          (argless (yas-activate-extra-mode 'clojure-mode)))
+          (argless
+           (unless vemv/terminal-emacs?
+             (yas-activate-extra-mode 'clojure-mode))))
 
 (defvar vemv/text-scale-increase-once--increased? nil)
 
@@ -517,6 +519,9 @@
           (argless
            (setq vemv-cider-connecting nil)
            (setq vemv-cider-connected t)
+           (when (vemv/contains? (prin1-to-string (cider-current-repl))
+                                 "34567")
+             (load-theme 'deeper-blue t))
            (when (boundp 'cider-clojure-cli-command)
              (vemv/set-clj-repl-name)
              (vemv/set-cljs-repl-name))
@@ -525,7 +530,7 @@
              (vemv/advice-nrepl))
            (define-key clojure-mode-map (kbd "/") 'cljr-slash)
            (define-key clojurec-mode-map (kbd "/") 'cljr-slash)
-           (define-key clojurescript-mode-map (kbd "/") 'cljr-slash)))
+           (define-key clojurescript-mode-map (kbd "/") 'cljr-slash)
 
            (require 'cider-inspector)
            (require 'cider-apropos)
