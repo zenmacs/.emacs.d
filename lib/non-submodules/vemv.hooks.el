@@ -336,6 +336,21 @@
                                (setq inf-ruby-first-prompt-pattern inf-ruby-prompt-format)
                                (setq inf-ruby-prompt-pattern inf-ruby-prompt-format)))
 
+(add-hook 'cider-inspector-mode-hook (argless
+                                      (define-key cider-inspector-mode-map "b" #'cider-inspector-pop)
+                                      (define-key cider-inspector-mode-map "u" #'cider-inspector-open-thing-at-point)
+                                      (define-key cider-inspector-mode-map "r" #'cider-inspect-expr-from-inspector)))
+
+(defun vemv/read-eval-inspect ()
+  (interactive)
+  (let ((ns (cider-current-ns nil t)))
+    (cider-inspect-expr (cider-read-from-minibuffer (format "%s %s"
+                                                            cider-inspector-buffer
+                                                            (funcall cider-repl-prompt-function ns))
+                                                    nil
+                                                    'skip-colon)
+                        ns)))
+
 (defun vemv/start-robe ()
   (if-let (b (get-buffer "*rails*"))
       (with-current-buffer b
@@ -506,6 +521,17 @@
            (define-key clojure-mode-map (kbd "/") 'cljr-slash)
            (define-key clojurec-mode-map (kbd "/") 'cljr-slash)
            (define-key clojurescript-mode-map (kbd "/") 'cljr-slash)))
+
+           (require 'cider-inspector)
+           (require 'cider-apropos)
+           (let* ((frame (vemv/new-frame t t))
+                  (window (frame-selected-window frame)))
+             (setq vemv/inspector_frame frame)
+             (with-selected-window window
+               (cider-inspect-expr "nil" "user"))
+             (modify-frame-parameters frame '((visibility . t)))
+             (select-frame-set-input-focus vemv/main_frame)
+             (select-window vemv/main_window))
 
 (add-hook 'cider-repl-mode-hook #'paredit-mode)
 

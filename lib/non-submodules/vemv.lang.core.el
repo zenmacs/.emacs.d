@@ -163,9 +163,41 @@
       (read-kbd-macro key)
     key))
 
+(defun vemv/largest-unselected-window (window1 window2)
+  "Return the largest unselected window between WINDOW1 and WINDOW2."
+  (let ((selected-window (selected-window))
+        (area1 (* (window-width window1) (window-height window1)))
+        (area2 (* (window-width window2) (window-height window2))))
+    (cond
+     ;; If WINDOW1 is selected or WINDOW1 and WINDOW2 are the same, return WINDOW2 (if not selected).
+     ((or (eq window1 selected-window) (eq window1 window2))
+      (unless (eq window2 selected-window) window2))
+     ;; If WINDOW2 is selected, return WINDOW1 (if not selected).
+     ((eq window2 selected-window)
+      window1)
+     ;; If neither window is selected, return the one with the larger area.
+     ((> area1 area2) window1)
+     (t window2))))
+
+(defun vemv/assign-largest-unselected-window (buffer)
+  (let* ((window (vemv/largest-unselected-window vemv/main_window vemv/repl-window)))
+    ;; xxx if win is too small, enlarge it
+    (vemv/safe-select-window window)
+    (set-window-buffer window buffer)))
+
 (defun vemv/display-completion (buffer)
   (vemv/safe-select-window vemv/main_window)
   (set-window-buffer vemv/main_window buffer))
+
+(defun vemv/assign-current-window (buffer)
+  (set-window-buffer (get-buffer-window (current-buffer))
+                     buffer))
+
+(defun vemv/assign-inspector-window (buffer)
+  (let ((v (set-window-buffer (frame-first-window vemv/inspector_frame)
+                              buffer)))
+    (select-frame-set-input-focus vemv/inspector_frame)
+    v))
 
 (defun vemv/repl-completion (buffer)
   (vemv/safe-select-window vemv/repl-window)

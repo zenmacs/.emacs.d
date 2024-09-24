@@ -39,6 +39,10 @@
 (add-to-list 'special-display-buffer-names '("*rails*" vemv/repl-completion))
 (add-to-list 'special-display-buffer-names '("*helm-ag*" vemv/repl-completion))
 
+(if 1  ;; changed to `1` - I'm experimenting with always showing cider-inspector in a separate frame. ;; vemv/terminal-emacs?
+    (add-to-list 'special-display-buffer-names '("*cider-inspect*" vemv/assign-inspector-window))
+  (add-to-list 'special-display-buffer-names '("*cider-inspect*" vemv/assign-largest-unselected-window)))
+
 (add-to-list 'special-display-buffer-names '("*cider-test-report*" vemv.completions/split-window-vertically-small))
 (add-to-list 'special-display-buffer-names '("*cider-error*" vemv.completions/split-window-vertically-small))
 (add-to-list 'special-display-buffer-names '("*rspec-compilation*" vemv.completions/split-window-vertically-big))
@@ -122,6 +126,8 @@
       cider-reuse-dead-repls 'any
       cider-repl-display-help-banner' nil
       cider-inspector-preferred-var-names '("X")
+      cider-auto-inspect-after-eval-select-window nil
+      cider-inspector-auto-select-buffer nil
       cider-save-file-on-load t
       cider-repl-pop-to-buffer-on-connect nil
       cider-show-error-buffer 'always

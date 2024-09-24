@@ -1146,7 +1146,12 @@ When not, the callback will be invoked just once, so the code can be incondition
 
 (defun vemv/inspect-tap ()
   (interactive)
+  (select-frame-set-input-focus vemv/inspector_frame)
   (cider-inspect-expr "(vemv.tap/view!)" (cider-current-ns)))
+
+(defun vemv/inspect-region ()
+  (interactive)
+  (cider-inspect-expr (vemv/selected-region) (cider-current-ns)))
 
 (defun vemv/clear-tap ()
   (interactive)

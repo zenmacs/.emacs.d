@@ -207,11 +207,16 @@
           minor-mode-list)
     active-modes))
 
-(defun vemv/new-frame ()
+(defun vemv/new-frame (&optional no-show no-margin)
   (interactive)
-  (make-frame `((width . ,(frame-width)) (height . ,(frame-height))))
-  (when (> (frame-width) 189)
-    (set-window-margins (selected-window) 63)))
+  (let* ((p `((width . ,(frame-width)) (height . ,(frame-height))))
+         (p (if no-show
+                (cons '(visibility . nil) p)
+              p))
+         (f (make-frame p)))
+    (when (and (not no-margin) (> (frame-width) 189))
+      (set-window-margins (selected-window) 63))
+    f))
 
 (defun vemv/next-window ()
   "Switch to the next window."
