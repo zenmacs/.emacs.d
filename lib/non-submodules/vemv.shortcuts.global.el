@@ -139,6 +139,10 @@
                                                      (require 'vemv.undo)
                                                      (call-interactively 'undo-tree-undo))
       vemv/shortcuts/global/primary-secondary-8     (argless (setq vemv/input-enabled t))
+      vemv/shortcuts/global/primary-secondary-c     (argless
+                                                     (require 'cider-ns)
+                                                     (vemv/before-refresh nil)
+                                                     (cider-ns-refresh 'clear-and-inhibit))
       vemv/shortcuts/global/primary-secondary-d     'vemv/delete-file-and-buffer
       vemv/shortcuts/global/primary-secondary-w     (argless
                                                      (replying-yes
@@ -199,7 +203,7 @@
       vemv/shortcuts/global/tertiary-9              (vemv/safe-paredit-command 'paredit-backward-up)
       ;; NOTE: tertiary-0 will not work unless one unbinds it from macOS.
       vemv/shortcuts/global/tertiary-0              (vemv/safe-paredit-command 'paredit-forward-up)
-      vemv/shortcuts/global/tertiary-RET            'vemv/load-clojure-buffer
+
       vemv/shortcuts/global/tertiary-SPC            'vemv/indent-region
       vemv/shortcuts/global/tertiary-backspace      'vemv/unindent-region
       vemv/shortcuts/global/tertiary-a              'vemv/copy-inserting-at-kill-list
@@ -261,7 +265,15 @@
                                           (comint-clear-buffer)))))))
 
 ;; same here. control-ret is interpreted as s-return rather than as tertiary-RET
-(global-set-key [(s return)] 'vemv/load-clojure-buffer)
+(global-set-key [(s return)] (argless
+                              (require 'cider-ns)
+                              (vemv/before-refresh t)
+                              (cider-ns-refresh)))
+
 (global-set-key (kbd "C-M-<return>") (argless
-                                      (when (vemv/ciderable-p)
-                                        (vemv/load-clojure-buffer nil vemv/clojure-lightweight-reload-command))))
+                                      (comm
+                                       (when (vemv/ciderable-p)
+                                         (vemv/load-clojure-buffer nil vemv/clojure-lightweight-reload-command)))
+                                      (require 'cider-ns)
+                                      (vemv/before-refresh nil)
+                                      (cider-ns-refresh 'inhibit-fns)))

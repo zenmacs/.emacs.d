@@ -1266,6 +1266,12 @@ When not, the callback will be invoked just once, so the code can be incondition
       (or (vemv/maybe-close-magit-after-commit)
           (magit-refresh)))))
 
+(defun vemv/clear-and-refresh ()
+  "Performs a clear, then a refresh"
+  (interactive)
+  (require 'cider-ns)
+  (cider-ns-refresh 'clear))
+
 (defun vemv/rama-edit-macro ()
   (interactive)
   (if (use-region-p)

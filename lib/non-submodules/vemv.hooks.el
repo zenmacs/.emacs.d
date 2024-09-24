@@ -427,6 +427,8 @@
 ;; for then using `emacs` from iTerm:
 (advice-add 'pop-to-buffer-same-window :after 'vemv/after-file-open)
 
+(advice-add 'cider-ns-refresh--handle-response :after (argless (vemv/set-verbosity-to nil)))
+
 (add-hook 'clojure-mode-hook
           (argless (enable-paredit-mode)
                    (paren-face-mode 1)

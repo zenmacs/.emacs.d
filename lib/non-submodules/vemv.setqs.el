@@ -133,6 +133,7 @@
       cider-inspector-preferred-var-names '("X")
       cider-auto-inspect-after-eval-select-window nil
       cider-inspector-auto-select-buffer nil
+      cider-ns-save-files-on-refresh t
       cider-save-file-on-load t
       cider-repl-pop-to-buffer-on-connect nil
       cider-show-error-buffer 'always
