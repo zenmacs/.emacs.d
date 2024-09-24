@@ -310,13 +310,14 @@ of the buffer into a formatted string."
 ;; note that fiplr would break with a nil value.
 (setq fiplr-ignored-globs
       ;; `directories` entries must be single-segment, i.e `a/b` doesn't work.
-      '((directories (".git" "tmp" ".svn" ".hg" ".bzr" ".lumo-cache" "pom.xml" "semantic"
+      '((directories (".git" ".next" "tmp" ".svn" ".hg" ".bzr" ".lumo-cache" "pom.xml" "semantic"
                       "node_modules" "coverage" "target" ".cljs_rhino_repl"))
         (files (".#*" "*~" "*.DS_Store"))))
 
 ;; Without this, performance can freeze (update: not so much given we now correctly use `pe/omit-gitignore')
 (setq pe/omit-regex (mapconcat 'identity
                                (list "^#" "~$" "^node_modules$" "^tmp" ".git$" ".sass-cache" "^checkouts" ".elc$" "^backups"
+                                     ".next$"
                                      "^integration-testing$"
                                      "emacs-source"
                                      "^.make"
