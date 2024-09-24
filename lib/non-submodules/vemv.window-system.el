@@ -101,7 +101,9 @@
   (delete-window))
 
 (defun vemv/close-this-frame ()
-  (delete-frame (selected-frame) t))
+  (delete-frame (selected-frame) t)
+  (unless (equal (selected-frame) vemv/main_frame)
+    (select-frame-set-input-focus vemv/main_frame)))
 
 (defun vemv/stop-using-minibuffer (&optional callback)
   "Kills the minibuffer."
