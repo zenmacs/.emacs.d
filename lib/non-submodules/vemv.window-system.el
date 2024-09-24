@@ -12,7 +12,7 @@
     (vemv/maximize))
 
   (split-window-vertically)
-  (enlarge-window 8)
+  (enlarge-window 10)
 
   (setq default-directory vemv-home)
 
@@ -27,7 +27,7 @@
 
       (vemv/next-window)
       (setq vemv/main_window (selected-window))
-      (enlarge-window-horizontally 7)
+      (enlarge-window-horizontally -20)
 
       (vemv/next-window)
       (setq vemv/repl-window (selected-window))
