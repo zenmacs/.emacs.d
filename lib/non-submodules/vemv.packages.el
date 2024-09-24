@@ -2,9 +2,14 @@
 
 (require 'package)
 
+;; Eases going back to Emacs 26
+(setq package-check-signature nil)
+
 ;; Not necessary - melpa has everything elpa has. Elpa has downtime more frequently.
 ;; (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+
+(package-refresh-contents)
 
 (when vemv/terminal-emacs?
   (setq package-load-list '(all
@@ -35,36 +40,46 @@
                      hydra
                      ido-at-point
                      ido-completing-read+
+                     inf-ruby
                      inflections
+                     logview
                      magit
                      multiple-cursors
                      paren-face
                      parseedn
                      ;; pdf-tools
                      queue
-                     robe
+                     ;; robe
                      rspec-mode
                      rubocop
+                     ruby-end
                      simpleclip
                      smartparens
                      swift-mode
                      string-inflection
                      tide
                      yasnippet))
-    (unless (package-installed-p package)
-      (vemv/verbosely
-       (unless vemv/packages-refreshed
-         (package-refresh-contents)
-         (setq vemv/packages-refreshed t))
-       (condition-case nil
-           (package-install package)
-         (error
-          (package-refresh-contents)
-          (condition-case nil
-              (package-install package)
-            (error
+    (let ((refreshed nil))
+      (unless (package-installed-p package)
+        (vemv/verbosely
+         (unless vemv/packages-refreshed
+           (unless refreshed
              (package-refresh-contents)
-             (package-install package)))))))))
+             (setq refreshed t))
+           (setq vemv/packages-refreshed t))
+         (condition-case nil
+             (package-install package)
+           (error
+            (unless refreshed
+              (package-refresh-contents)
+              (setq refreshed t))
+            (condition-case nil
+                (package-install package)
+              (error
+               (unless refreshed
+                 (package-refresh-contents)
+                 (setq refreshed t))
+               (package-install package))))))))))
 
 (require 'dash)
 (defun vemv/maybe-omit-message (f m &rest args)
@@ -119,7 +134,7 @@
 (require 'fiplr)
 (unless vemv/terminal-emacs?
   (require 'desktop)
-  (require 'smartparens-config)
+  ;; (require 'smartparens-config)
   (require 'yasnippet)
   (custom-set-faces
    '(yas-field-highlight-face ((t (:inherit nil))))))

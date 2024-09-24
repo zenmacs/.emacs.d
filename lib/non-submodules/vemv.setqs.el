@@ -53,7 +53,7 @@
 (add-to-list 'special-display-buffer-names '("*cider-error*" vemv.completions/split-window-vertically-small))
 (add-to-list 'special-display-buffer-names '("*rspec-compilation*" vemv.completions/split-window-vertically-big))
 
-(unless vemv/terminal-emacs?
+(unless t ;; vemv/terminal-emacs?
   (add-to-list 'sp-no-reindent-after-kill-modes 'ruby-mode)
   (add-to-list 'sp-no-reindent-after-kill-modes 'haml-mode))
 
