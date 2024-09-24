@@ -44,6 +44,7 @@
   (add-to-list 'special-display-buffer-names '("*cider-inspect*" vemv/assign-largest-unselected-window)))
 
 (add-to-list 'special-display-buffer-names '("*cider-test-report*" vemv.completions/split-window-vertically-small))
+(add-to-list 'special-display-buffer-names '("*cider-log*" vemv.completions/split-window-vertically-small)) ;; TODO smallest
 (add-to-list 'special-display-buffer-names '("*cider-error*" vemv.completions/split-window-vertically-small))
 (add-to-list 'special-display-buffer-names '("*rspec-compilation*" vemv.completions/split-window-vertically-big))
 

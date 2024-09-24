@@ -286,13 +286,30 @@ This defun is as copy of `hs-hide-all' except for the ALL-CAPS comments."
 
 (setq vemv/cljr-building-ast-cache? nil) ;; XXX implement on new clj-refactor.el release
 
+(defun vemv/before-refresh (clear-cider-log?)
+  (vemv/set-verbosity-to t) ;; let cider-ns report progress
+  (progn
+    (ignore-errors ;; ignore-errors important, else the whole `vemv/load-clojure-buffer` operation can fail silently
+      (vemv/save-all-buffers-for-this-project :skip-check-unused-requires :skip-formatting))
+    (vemv/advice-nrepl)
+    (vemv/clear-cider-repl-buffer nil
+                                  (argless
+                                   (replying-yes
+                                    ;; Clear the fringes that are rendered after as successful `(refresh)`.
+                                    ;; This way, one can be sure of when a new `(refresh)` has actually completed:
+                                    ;; (possibly does not apply anymore after adopting cid-erns)
+                                    (with-selected-window vemv/repl-window
+                                      (dolist (o (overlays-in (window-start) (window-end)))
+                                        (when (overlay-get o 'cider-temporary)
+                                          (delete-overlay o))))))
+                                  clear-cider-log?)))
+
 (defun vemv/load-clojure-buffer (&optional callback reload-command)
   (interactive)
   (if (vemv/ciderable-p)
       (if (vemv/current-buffer-is-cljs)
           (-some-> callback funcall)
         (progn
-          ;; code has been potentially unloaded, so the underlying `vemv/check-unused-requires' will fail. Prevent that:
           (ignore-errors ;; ignore-errors important, else the whole `vemv/load-clojure-buffer` operation can fail silently
             (vemv/save-all-buffers-for-this-project :skip-check-unused-requires :skip-formatting))
           (vemv/advice-nrepl)
@@ -317,7 +334,10 @@ This defun is as copy of `hs-hide-all' except for the ALL-CAPS comments."
                                             (with-current-buffer (window-buffer vemv/main_window)
                                               (cider-load-buffer)
                                               (cider-load-all-project-ns)
-                                              (-some-> callback funcall))))))))
+                                              (-some-> callback funcall)))))
+                                        (if reload-command
+                                            (not (equal reload-command vemv/clojure-lightweight-reload-command))
+                                          t))))
     (if (vemv/in-a-lisp-mode?)
         (progn
           (vemv/save)
@@ -798,8 +818,7 @@ it looks up the thing currently being invoked, i.e. the first element of the fir
       (paredit-forward)
       (vemv/message-clojure-doc))))
 
-
-(defun vemv/clear-cider-repl-buffer (&optional recurring callback)
+(defun vemv/clear-cider-repl-buffer (&optional recurring callback clear-cider-log?)
   (interactive)
   (when-let* ((b (cider-current-repl 'any nil)))
     (with-current-buffer b
@@ -807,6 +826,9 @@ it looks up the thing currently being invoked, i.e. the first element of the fir
       (when-let* ((w (get-buffer-window "*cider-test-report*")))
         (with-selected-window w
           (vemv/close-this)))
+      (when clear-cider-log?
+        (when-let* ((b (get-buffer "*cider-log*")))
+          (cider-log-clear-event-buffer b)))
       (vemv/show-clj-or-cljs-repl)
       (vemv/save-window-excursion
        (vemv/safe-select-window vemv/repl-window)
@@ -818,7 +840,7 @@ it looks up the thing currently being invoked, i.e. the first element of the fir
          (when should-recur
            (cider-repl-return) ;; un-hijack the prompt. XXX: only do if there's no pending input
            (cider-repl-clear-buffer)
-           (delay (argless (vemv/clear-cider-repl-buffer :recurring callback))
+           (delay (argless (vemv/clear-cider-repl-buffer :recurring callback clear-cider-log?))
                   0.75))
          (cider-repl-clear-buffer)
          (end-of-buffer)

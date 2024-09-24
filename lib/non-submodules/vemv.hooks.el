@@ -533,6 +533,41 @@
              (select-frame-set-input-focus vemv/main_frame)
              (select-window vemv/main_window))
 
+           (when (and (member vemv/project-root-dir '("/Users/vemv/unep-gpml"
+                                                      "/Users/vemv/unep-gpml/"))
+                      (not (get-buffer "*cider-log*")))
+             (require 'cider-log)
+             (require 'logview)
+             (comm ;; This broke Mar 31 with CET->CEST
+              (setq datetime-locale "es-ES")
+              (setq logview-additional-level-mappings
+                    '(("vemv"    . ((error       "ERROR")
+                                    (warning     "WARN")
+                                    (information "INFO" "REPORT")
+                                    (debug       "DEBUG")
+                                    (trace       "TRACE")))))
+              (setq logview-additional-submodes
+                    '(("vemv" . ((format  . "TIMESTAMP LEVEL NAME -")
+                                 (levels  . "vemv")))))
+              (comm defun cider-log-event--format-logback (event)
+                    "Customizes the format"
+                    (nrepl-dbind-response event (_exception level logger message thread timestamp)
+                      (propertize (format "%s %s %s - %s\n"
+                                          (if (numberp timestamp)
+                                              (format-time-string "%T" (/ timestamp 1000))
+                                            (format "%s" timestamp))
+                                          ;; thread
+                                          (upcase level)
+                                          logger
+                                          (if (and (stringp message)
+                                                   (numberp cider-log-max-message-length))
+                                              (substring message 0 (min (length message) cider-log-max-message-length))
+                                            ""))
+                                  :cider-log-event event))))
+             (comm
+              (let ((default-directory vemv/project-clojure-dir))
+                (cider-log-show))))))
+
 (add-hook 'cider-repl-mode-hook #'paredit-mode)
 
 ;; for when one opens a file via the terminal
@@ -867,3 +902,9 @@ START and END are buffer positions."
             (lambda (f &rest args)
               (cider--with-temporary-ido-keys "<up>" "<down>"
                                               (apply f args))))
+
+(advice-add 'cider-log-inspect-event
+            :around
+            (lambda (f &rest args)
+              (let ((cider-inspector-auto-select-buffer t))
+                (apply f args))))

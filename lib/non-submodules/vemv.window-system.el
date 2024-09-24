@@ -76,6 +76,7 @@
                "project-explorer"
                "shell-1"
                "cider-repl"
+               "cider-log"
                "cider-test-report"
                "scratch")))
 
@@ -87,8 +88,10 @@
            (member (buffer-file-name)))))
 
 (defun vemv/good-window-p (&optional window)
-  (member (or window (selected-window))
-          (list vemv/main_window vemv/repl-window vemv/project-explorer-window)))
+  (or (member (or window (selected-window))
+              (list vemv/main_window vemv/repl-window vemv/project-explorer-window))
+      (vemv/contains? (buffer-name (window-buffer (selected-window)))
+                      "cider-log")))
 
 (defun vemv/close-this-window ()
   (delete-window))
