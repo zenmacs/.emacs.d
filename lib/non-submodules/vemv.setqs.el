@@ -40,6 +40,7 @@
 (add-to-list 'special-display-buffer-names '("*Ido Completions*" vemv/display-completion))
 (add-to-list 'special-display-buffer-names '("*Diff*" vemv/display-completion))
 
+;; (add-to-list 'special-display-buffer-names '("*cider-doc*" vemv/repl-completion)) ;; doesn't work? with company. maybe use non-legacy mechanism?
 (add-to-list 'special-display-buffer-names '("*rails*" vemv/repl-completion))
 (add-to-list 'special-display-buffer-names '("*helm-ag*" vemv/repl-completion))
 
@@ -112,15 +113,20 @@
                                     (and (listp x)
                                          (equal (car x) 'company-dabbrev-code)))
                                   company-backends))
-  (setq company-frontends (-remove (lambda (x)
-                                     (equal x 'company-echo-metadata-frontend))
-                                   company-frontends))
+  (comm
+   (setq company-frontends (-remove (lambda (x)
+                                      (equal x 'company-echo-metadata-frontend))
+                                    company-frontends)))
   (push 'company-robe company-backends))
 
 (setq-default tab-width 2)
 
 (put 'thread-first 'lisp-indent-function nil)
 (put 'thread-last 'lisp-indent-function nil)
+
+(unless vemv/terminal-emacs?
+  (define-key company-active-map (kbd "<left>") 'company-doc-buffer-previous)
+  (define-key company-active-map (kbd "<right>") 'company-doc-buffer-next))
 
 (setq auto-save-default nil
       auto-save-list-file-prefix nil

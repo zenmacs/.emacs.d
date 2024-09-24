@@ -90,7 +90,10 @@
       (and (not (vemv/non-completable-char-p))
            (call-interactively 'company-complete))
       (and (not (vemv/non-completable-char-p))
-           (call-interactively 'company-dabbrev))))
+           ;; (call-interactively 'company-dabbrev)
+           (progn
+             (require 'company-yasnippet)
+             (call-interactively 'company-yasnippet)))))
 
 (defun vemv/dumb-cut ()
   "Cuts the current selection, regardless of paredit boundaries"

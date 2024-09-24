@@ -46,3 +46,6 @@
 [submodule "lib/sesman"]
 	path = lib/sesman
 	url = git@github.com:vspinu/sesman.git
+[submodule "lib/company-mode"]
+	path = lib/company-mode
+	url = git@github.com:company-mode/company-mode.git
