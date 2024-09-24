@@ -1,5 +1,7 @@
 ;; avoid an annoying auto-inserted comment:
 (setq package--init-file-ensured t)
+(setq max-lisp-eval-depth 10000)
+(setq max-specpdl-size 10000)
 (setq vemv/use-eldoc-and-tooltips nil)
 
 (setq vemv/terminal-emacs? (getenv "TERMINAL_EMACS"))
