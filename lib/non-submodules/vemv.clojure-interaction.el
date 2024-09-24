@@ -1209,3 +1209,14 @@ When not, the callback will be invoked just once, so the code can be incondition
     (when (= 0 (magit-call-git "commit" "--amend" "-m" message))
       (or (vemv/maybe-close-magit-after-commit)
           (magit-refresh)))))
+
+(defun vemv/rama-edit-macro ()
+  (interactive)
+  (if (use-region-p)
+      (let ((region-start (region-beginning))
+            (region-end (region-end)))
+        (save-excursion
+          (goto-char region-start)
+          (while (re-search-forward "\\(\\*\\w+\\(?:-\\w+\\)*\\)" region-end t)
+            (replace-match (concat "'" (match-string 0) "#") nil nil))))
+    (message "No region selected")))
