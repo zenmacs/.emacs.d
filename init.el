@@ -355,3 +355,9 @@ Set `debug-on-error' with M-x toggle-debug-on-error if needed."
   ;; which allows controlling GUI emacs from a terminal.
   ;; sample usage: emacsclient --eval "(vemv/open-project \"$PWD\")" --socket-name="$(echo ~/.emacs.d/socket/server)"
   (server-start))
+
+(when vemv/terminal-emacs?
+  (autoload 'cider-jack-in-clj "cider.el" "No doc" t)
+  (autoload 'cider-connect-clj "cider.el" "No doc" t)
+  (require 'term-title)
+  (term-title-mode))
