@@ -391,9 +391,11 @@ This defun is as copy of `hs-hide-all' except for the ALL-CAPS comments."
 (defun vemv/clojure-init-or-send-sexpr ()
   (interactive)
   (when (vemv/in-clojure-mode?)
-    (if (not cider-launched)
+    (if (and (not cider-launched)
+             (not vemv-cider-connected))
         (progn
           (require 'cider)
+          (require 'cider-ns)
           (require 'cider-find)
           (require 'cider-xref)
           (require 'clj-refactor)
