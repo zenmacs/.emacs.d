@@ -138,6 +138,7 @@
  `(blue ((t (:foreground "blue"))))
  `(bold ((t (:bold t))))
  `(bold-italic ((t (:bold t :italic t))))
+ `(rama-dataflow-variable-face ((t (:foreground ,vemv-colors/paren-grey-light :italic t))))
  `(border-glyph ((t (nil))))
  `(buffers-tab ((t (:foreground "#F8F8F8"))))
 
@@ -198,6 +199,8 @@
  `(font-lock-regexp-grouping-backslash ((t (:foreground ,vemv-colors/yellow))))
  `(font-lock-regexp-grouping-construct ((t (:foreground ,vemv-colors/blue))))
  `(font-lock-string-face ((t (:foreground ,vemv-colors/light-blue))))
+ `(cider-custom-face-1 ((t (:foreground ,vemv-colors/light-blue :italic t))))
+ `(cider-custom-face-2 ((t (:foreground ,vemv-colors/lighter-yellow))))
  `(font-lock-doc-face ((t (:foreground ,vemv-colors/light-blue))))
 
  `(button ((t (:foreground ,vemv-default-foreground-color-very-slightly-darker :underline t))))

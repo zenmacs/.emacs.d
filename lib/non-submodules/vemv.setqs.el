@@ -237,7 +237,10 @@
  ;; '(cider-default-cljs-repl 'figwheel)
  '(cider-repl-auto-detect-type nil) ;; prevents repl buffers from magically changing from cljs type to clj type, which doesn't makessense for shadow-cljs repl buffers (they're always cljs)
  '(cider-repl-display-help-banner nil)
- '(cider-font-lock-dynamically '(macro deprecated))
+ '(cider-font-lock-dynamically '(macro
+                                 deprecated
+                                 custom-1
+                                 custom-2))
 
  ;; this ensures stdout is visible. However printng will be slower.
  ;; it could be selectively set to t for the following cases:
@@ -348,3 +351,28 @@ of the buffer into a formatted string."
                            "when"
                            "while"
                            "yield"))
+
+(setq cider-custom-symbol-categorizer-1 (lambda (sym meta)
+                                          (or (member sym
+                                                      '("NONE>"))
+                                              (member (nrepl-dict-get meta "ns")
+                                                      '("com.rpl.ramaspecter")))))
+
+(setq cider-custom-symbol-categorizer-2 (lambda (sym meta)
+                                          (member sym
+                                                  '("<<sources"
+                                                    "<<if"
+                                                    "continue>"
+                                                    "<<subsource"
+                                                    "<<switch"
+                                                    "loop<-"
+                                                    "<<cond"
+                                                    "<<ramaop"
+                                                    "<<ramafn"
+                                                    "or>"
+                                                    "and>"
+                                                    "else>"
+                                                    "case>"
+                                                    "ack-return>"
+                                                    "default>"
+                                                    "<<shadowif"))))
