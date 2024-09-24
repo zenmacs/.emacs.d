@@ -76,6 +76,38 @@
                                                      (revert-buffer t t t))
       vemv/shortcuts/global/primary-dash            'vemv/echo-clojure-source
       vemv/shortcuts/global/primary-down            'forward-paragraph
+      vemv/shortcuts/global/primary-dot             (argless
+
+                                                     (defun magit-diff-visit-file (file &optional other-window)
+                                                       (interactive (list (magit-diff--file-at-point t t) current-prefix-arg))
+                                                       (magit-diff-visit-file--internal file
+                                                                                        nil
+                                                                                        (lambda (buffer)
+                                                                                          (set-window-buffer vemv/main_window buffer)
+                                                                                          (select-frame-set-input-focus vemv/main_frame))))
+
+                                                     (let* ((default-directory (or (when buffer-file-name
+                                                                                     (file-name-directory buffer-file-name))
+                                                                                   vemv/project-root-dir))
+                                                            (found (car (seq-filter (lambda (b)
+                                                                                      (with-current-buffer b
+                                                                                        (and (get-buffer-window b t)
+                                                                                             (equal 'magit-status-mode major-mode))))
+                                                                                    (buffer-list))))
+                                                            (focused? (equal (selected-frame)
+                                                                             (window-frame (get-buffer-window found t)))))
+                                                       (if (and found focused?)
+                                                           (select-frame-set-input-focus (window-frame vemv/main_window))
+                                                         (if (and found (not focused?))
+                                                             (progn
+                                                               (select-frame-set-input-focus (window-frame (get-buffer-window found t)))
+                                                               (with-current-buffer found
+                                                                 (call-interactively 'magit-refresh)))
+                                                           (progn
+                                                             (condition-case nil
+                                                                 (vemv/save-all-buffers-for-this-project t t)
+                                                               (error nil))
+                                                             (call-interactively 'magit-status-here))))))
       vemv/shortcuts/global/primary-e               'vemv/send
       vemv/shortcuts/global/primary-equal           'mark-whole-buffer
       vemv/shortcuts/global/primary-f               'vemv/search-in-this-buffer

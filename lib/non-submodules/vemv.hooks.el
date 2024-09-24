@@ -837,6 +837,12 @@ START and END are buffer positions."
                        (magit-diff-arguments))))
   (magit-diff-setup rev-or-range nil args files))
 
+(add-hook 'magit-status-mode-hook
+          (lambda ()
+            (define-key magit-status-mode-map (kbd "c") #'vemv/git-commit)
+            (define-key magit-status-mode-map (kbd "a") #'vemv/git-commit-amend)
+            (define-key magit-status-mode-map (kbd "^w") #'vemv/close-this)))
+
 (add-hook 'pdf-view-mode-hook
           (lambda ()
             (setq-local mode-line-format
@@ -908,3 +914,10 @@ START and END are buffer positions."
             (lambda (f &rest args)
               (let ((cider-inspector-auto-select-buffer t))
                 (apply f args))))
+
+(add-hook 'git-commit-mode-hook (lambda ()
+                                  (auto-fill-mode -1)))
+
+(with-eval-after-load 'magit-mode
+  (add-hook 'after-save-hook 'magit-after-save-refresh-status t)
+  (advice-add 'vemv/git-add-A :after 'magit-after-save-refresh-status))

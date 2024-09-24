@@ -185,6 +185,20 @@
     (vemv/safe-select-window window)
     (set-window-buffer window buffer)))
 
+;; display-buffer-use-some-window
+(defun vemv/ensure-other-frame (buffer _alist)
+  (let* ((in-main-frame? (equal vemv/main_frame
+                                (window-frame (get-buffer-window (current-buffer)))))
+         (frame (if in-main-frame?
+                    (vemv/new-frame :no-show :no-margin)
+                  (selected-frame)))
+         (window (frame-selected-window frame)))
+    (set-window-buffer window buffer)
+    (when (vemv/contains? (buffer-name buffer) "magit:")
+      (setq vemv/magit_frame frame))
+    (modify-frame-parameters frame '((visibility . t)))
+    (select-frame-set-input-focus frame)))
+
 (defun vemv/display-completion (buffer)
   (vemv/safe-select-window vemv/main_window)
   (set-window-buffer vemv/main_window buffer))
@@ -274,6 +288,8 @@
 (define-global-minor-mode vemv/global-whitespace-mode whitespace-mode
   (lambda ()
     (when (and (buffer-file-name)
-               whitespace-line-column)
+               whitespace-line-column
+               ;; https://github.com/magit/magit/issues/4766#issue-1379227683
+               (not (derived-mode-p 'magit-mode)))
       (whitespace-mode 1)))
   :group 'whitespace)

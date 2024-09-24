@@ -27,6 +27,10 @@
 
 ;; Prevents annoying popups
 (add-to-list 'display-buffer-alist (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
+
+(unless vemv/terminal-emacs?
+  (add-to-list 'display-buffer-alist (cons "magit:.*" (cons #'vemv/ensure-other-frame nil))))
+
 (add-to-list 'special-display-buffer-names '("*Messages*" vemv/display-completion))
 (add-to-list 'special-display-buffer-names '("*xref*" vemv/display-completion))
 
@@ -172,6 +176,15 @@
       exec-path-from-shell-check-startup-files nil
       magit-completing-read-function 'magit-ido-completing-read
       magit-turn-on-auto-revert-mode nil
+      magit-section-initial-visibility-alist '((stashes . hide)
+                                               (branch . hide)
+                                               (status . hide)
+                                               (unpushed . hide)
+                                               (unpulled . hide)
+                                               (tag . hide)
+                                               (staged . show)
+                                               (unstaged . show)
+                                               (file . show))
       make-backup-files nil
       max-mini-window-height 0.25
       mouse-buffer-menu-maxlen 99999

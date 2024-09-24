@@ -1178,3 +1178,34 @@ When not, the callback will be invoked just once, so the code can be incondition
 (defun vemv/clear-tap ()
   (interactive)
   (cider-sync-tooling-eval "(vemv.tap/reset-queue!)"))
+
+(defun vemv/read-lines (prompt initial some-keyseq)
+  (let ((keymap (copy-keymap minibuffer-local-map)))
+    (define-key keymap (kbd "RET") 'newline)
+    (define-key keymap some-keyseq 'exit-minibuffer)
+    (read-from-minibuffer prompt initial keymap)))
+
+(defun vemv/maybe-close-magit-after-commit ()
+  (let ((default-directory vemv/project-root-dir))
+    (when (equal ""
+                 (shell-command-to-string "git status --porcelain"))
+      (when (frame-live-p vemv/magit_frame)
+        (with-selected-frame vemv/magit_frame
+          (vemv/close-this-frame)
+          t)))))
+
+(defun vemv/git-commit ()
+  (interactive)
+  (let* ((message (vemv/read-lines "Commit (C-s to confirm): " nil (kbd "C-s"))))
+    (when (= 0 (magit-call-git "commit" "-m" message))
+      (or (vemv/maybe-close-magit-after-commit)
+          (magit-refresh)))))
+
+(defun vemv/git-commit-amend ()
+  (interactive)
+  (let* ((message (vemv/read-lines "Amend (C-s to confirm): "
+                                   (replace-regexp-in-string "\r" "" (s-trim (shell-command-to-string "git log -1 --pretty=%B")))
+                                   (kbd "C-s"))))
+    (when (= 0 (magit-call-git "commit" "--amend" "-m" message))
+      (or (vemv/maybe-close-magit-after-commit)
+          (magit-refresh)))))

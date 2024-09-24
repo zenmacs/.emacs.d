@@ -68,17 +68,21 @@
                                      (get-file-buffer))
                             vemv/file-buffer-fallback)))))
 
-(defun vemv/noncloseable-buffer-p ()
+(defun vemv/noncloseable-buffer--p (buffername)
   (-any? (lambda (x)
-           (vemv/contains? (buffer-name) x))
+           (vemv/contains? buffername x))
          (list (vemv/safe-clj-repl-name vemv/clj-repl-name)
                vemv/cljs-repl-name
                "project-explorer"
                "shell-1"
+               "ielm"
                "cider-repl"
                "cider-log"
                "cider-test-report"
                "scratch")))
+
+(defun vemv/noncloseable-buffer-p ()
+  (vemv/noncloseable-buffer--p (buffer-name)))
 
 (defun vemv/good-buffer-p ()
   (or (vemv/buffer-of-current-project? (current-buffer))
@@ -113,24 +117,28 @@
   (interactive)
   ;; For when minibuffer gets stuck (asks for input, but minibuffer-frame is in a different buffer from the current one)
   (vemv/stop-using-minibuffer)
-  (let* ((current-window (selected-window)))
-    (if (or (and (vemv/good-buffer-p)
-                 (vemv/good-window-p))
-            (and (not (vemv/good-buffer-p))
-                 (not (vemv/noncloseable-buffer-p))
-                 (vemv/good-window-p)))
-        (vemv/close-this-buffer))
-    ;; buffer closing can change the selected window. ensure we remain in the original one:
-    (vemv/safe-select-window current-window)
-    (let* ((foreign-frame (not (vemv/good-frame-p)))
-           (window-count (length (window-list)))
-           (skip-closing-frame (and foreign-frame (> window-count 1))))
-      (unless (< (length (vemv/current-frame-buffers)) 2)
-        (unless (vemv/good-window-p)
-          (vemv/close-this-window)))
-      (unless (or (vemv/good-frame-p)
-                  skip-closing-frame)
-        (vemv/close-this-frame)))))
+  (if (and (fboundp 'magit-kill-this-buffer)
+           (equal (selected-frame) vemv/magit_frame)
+           (not (equal major-mode 'magit-status-mode)))
+      (magit-kill-this-buffer)
+    (let* ((current-window (selected-window)))
+      (if (or (and (vemv/good-buffer-p)
+                   (vemv/good-window-p))
+              (and (not (vemv/good-buffer-p))
+                   (not (vemv/noncloseable-buffer-p))
+                   (vemv/good-window-p)))
+          (vemv/close-this-buffer))
+      ;; buffer closing can change the selected window. ensure we remain in the original one:
+      (vemv/safe-select-window current-window)
+      (let* ((foreign-frame (not (vemv/good-frame-p)))
+             (window-count (length (window-list)))
+             (skip-closing-frame (and foreign-frame (> window-count 1))))
+        (unless (< (length (vemv/current-frame-buffers)) 2)
+          (unless (vemv/good-window-p)
+            (vemv/close-this-window)))
+        (unless (or (vemv/good-frame-p)
+                    skip-closing-frame)
+          (vemv/close-this-frame))))))
 
 (defun vemv/close-all-file-buffers ()
   (interactive)

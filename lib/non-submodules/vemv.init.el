@@ -54,6 +54,11 @@
   (menu-bar-mode)
   (yas-global-mode 1))
 
+(defun prevent-whitespace-mode-for-magit ()
+  (not (derived-mode-p 'magit-mode)))
+
+(add-function :before-while whitespace-enable-predicate 'prevent-whitespace-mode-for-magit)
+
 (global-auto-revert-mode t) ;; refresh buffers on external changes to the underlying files
 (global-hl-line-mode t)
 (make-variable-buffer-local 'global-hl-line-mode)

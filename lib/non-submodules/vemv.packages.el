@@ -8,8 +8,7 @@
 
 (when vemv/terminal-emacs?
   (setq package-load-list '(all
-                            (unwanted-package magit)
-                            )))
+                            (unwanted-package magit))))
 
 (package-initialize)
 
