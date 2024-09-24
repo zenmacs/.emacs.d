@@ -44,7 +44,9 @@
                 (call-interactively 'indent-for-tab-command))
               (pop-mark))
             (goto-line line)
-            (vemv/end-of-line-code* nil)
+            (condition-case nil
+                (vemv/end-of-line-code* nil)
+              (error nil))
             (when (or vemv/no-newline-at-eof yas)
               (save-excursion
                 (end-of-buffer)
