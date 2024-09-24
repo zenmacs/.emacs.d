@@ -194,6 +194,8 @@
                                                         (paredit-splice-sexp-killing-backward))))
       vemv/shortcuts/global/secondary-x             'vemv/smex
       vemv/shortcuts/global/secondary-w             'vemv/close-all-other-file-buffers
+      vemv/shortcuts/global/tertiary-comma          (argless
+                                                     (call-interactively 'xref-find-references))
       vemv/shortcuts/global/tertiary-1              (vemv/safe-paredit-command 'vemv/thread-first-all--but-last)
       vemv/shortcuts/global/tertiary-2              (vemv/safe-paredit-command 'vemv/thread-first-all--and-last)
       vemv/shortcuts/global/tertiary-3              (vemv/safe-paredit-command 'vemv/thread-last-all--but-last)
