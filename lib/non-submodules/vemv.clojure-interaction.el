@@ -681,13 +681,41 @@ This defun is as copy of `hs-hide-all' except for the ALL-CAPS comments."
   "Replace each backtick-delimited word in S with the same word, propertized with font-lock-comment-face."
   (let* ((input-string (propertize s 'face 'font-lock-string-face))
          (start 0))
-    (while (string-match "`\\([^`]+\\)`" input-string start)
+    ;; `+?` - non-greedy version
+    (while (string-match "`\\([^`]+?\\)`" input-string start)
       (let* ((match-string (match-string 1 input-string))
              (propertized-match-string (propertize match-string 'face 'clojure-keyword-face)))
         (setq input-string (replace-match propertized-match-string t t input-string))
         (setq start (- (match-end 0)
                        ;; 2, because we removed two backticks:
                        2))))
+    input-string))
+
+(defun vemv/replace-triple-backticks (s)
+  (let* ((input-string (propertize s 'face 'font-lock-string-face))
+         (start 0))
+    (while (string-match "```\\([^`]+?\\)```" input-string start)
+      (let* ((match-string (match-string 1 input-string))
+             (propertized-match-string (propertize match-string 'face 'clojure-keyword-face)))
+        (setq input-string (replace-match propertized-match-string t t input-string))
+        (setq start (- (match-end 0)
+                       6))))
+    input-string))
+
+(comm
+ (vemv/replace-triple-backticks "```
+a
+```"))
+
+(defun vemv/replace-brackets (s)
+  (let* ((input-string (propertize s 'face 'font-lock-string-face))
+         (start 0))
+    (while (string-match "\\[\\[\\([^`]+?\\)\\]\\]" input-string start)
+      (let* ((match-string (match-string 1 input-string))
+             (propertized-match-string (propertize match-string 'face 'clojure-keyword-face)))
+        (setq input-string (replace-match propertized-match-string t t input-string))
+        (setq start (- (match-end 0)
+                       4))))
     input-string))
 
 (defun vemv/remove-irrelevant-docstring-suffix (s)
@@ -729,23 +757,38 @@ This defun is as copy of `hs-hide-all' except for the ALL-CAPS comments."
                 (vemv/find-protocol-method var))))
     (when h
       (let* ((c (nrepl-dict-get h "class"))
-             (a (nrepl-dict-get h "arglists-str"))
-             (d (-some->> (nrepl-dict-get h "doc")
-                  (s-split "\n\n")
-                  (mapcar (lambda (x)
-                            (->> x
-                                 (s-split "\n")
-                                 (mapcar 's-trim)
-                                 (s-join "\n"))))
-                  (s-join "\n\n")))
-             (d (when d (s-trim (condition-case nil
-                                    (vemv/replace-backtick-words
-                                     (vemv/remove-irrelevant-docstring-suffix d))
-                                  (error d)))))
-             (d (if (and d
-                         (> (length (s-lines d)) 40))
-                    "..."
-                  d))
+             (a (or (nrepl-dict-get h "annotated-arglists")
+                    (unless c
+                      (nrepl-dict-get h "arglists-str"))))
+             (javadoc (when (nrepl-dict-contains h "doc-fragments")
+                        (cider--render-docstring (list "doc-fragments" (nrepl-dict-get h "doc-fragments")
+                                                       "doc-block-tags-fragments" (nrepl-dict-get h "doc-block-tags-fragments")
+                                                       "doc-first-sentence-fragments" (nrepl-dict-get h "doc-first-sentence-fragments")))
+                        ;; (vemv/render-docstring var (cdr h))
+                        ))
+             (d (or javadoc
+                    (-some->> (nrepl-dict-get h "doc")
+                      (s-split "\n\n")
+                      (mapcar (lambda (x)
+                                (->> x
+                                     (s-split "\n")
+                                     (mapcar 's-trim)
+                                     (s-join "\n"))))
+                      (s-join "\n\n"))
+                    (nrepl-dict-get h "doc")))
+             (d (or javadoc
+                    (when d (s-trim (condition-case nil
+                                        (vemv/replace-brackets
+                                         (vemv/replace-backtick-words
+                                          (vemv/replace-triple-backticks
+                                           (vemv/remove-irrelevant-docstring-suffix d))))
+                                      (error d))))))
+             (d (or javadoc
+                    (if (and d
+                             (> (length (s-lines d))
+                                40))
+                        "..."
+                      d)))
              (name (nrepl-dict-get h "name"))
              (ns (nrepl-dict-get h "ns")))
         (if c
@@ -756,7 +799,11 @@ This defun is as copy of `hs-hide-all' except for the ALL-CAPS comments."
                         (vemv/docstring-of-ctor var))
               (if (s-contains? "/" var)
                   (concat (vemv/propertize-class var)
-                          "\n\n" (nrepl-dict-get h "arglists-str"))
+                          "\n\n"
+                          (nrepl-dict-get h "arglists-str")
+                          (when javadoc
+                            "\n\n")
+                          javadoc)
                 (let* ((i (nrepl-dict-get h "interfaces"))
                        (i-info (when (first i)
                                  (concat "\n\nimplements " (->> i
@@ -766,25 +813,34 @@ This defun is as copy of `hs-hide-all' except for the ALL-CAPS comments."
                        (super-info (when (and super
                                               (not (string-equal super "java.lang.Object")))
                                      (concat " extends " (vemv/propertize-interface super))))
-                       (arglists-info (when a
-                                        (->> a
-                                             (s-replace "[" "")
-                                             (s-replace "]" "")
-                                             (s-replace " " ", ")
-                                             (s-split "\n")
-                                             (mapcar (lambda (s)
-                                                       (concat (vemv/propertize-class c)
-                                                               var
-                                                               "("
-                                                               (vemv/propertize-interface s)
-                                                               ")")))
-                                             (s-join "\n")))))
+                       (unprefixed (string-remove-prefix "." var))
+                       (the-count (length (concat c "/" unprefixed " ")))
+                       (arglists-info (concat (vemv/propertize-class c)
+                                              "/"
+                                              unprefixed
+                                              " "
+                                              (when (car a)
+                                                (vemv/propertize-interface (car a)))
+                                              (when (rest a)
+                                                (->> a
+                                                     rest
+                                                     (mapcar (lambda (s)
+                                                               (concat "\n"
+                                                                       (make-string the-count ?\s)
+                                                                       (vemv/propertize-interface s))))
+                                                     (s-join ""))))))
                   (if arglists-info
-                      arglists-info
+                      (concat arglists-info
+                              (when javadoc
+                                "\n\n")
+                              javadoc)
                     (concat (vemv/propertize-class c)
                             arglists-info
                             super-info
-                            i-info)))))
+                            i-info
+                            (when javadoc
+                              "\n\n")
+                            javadoc)))))
           (let* ((v (concat (if (and name ns)
                                 (vemv/propertize-class (concat ns "/" name))
                               name)
