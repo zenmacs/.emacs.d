@@ -543,40 +543,49 @@
              (select-frame-set-input-focus vemv/main_frame)
              (select-window vemv/main_window))
 
-           (when (and (member vemv/project-root-dir '("/Users/vemv/unep-gpml"
-                                                      "/Users/vemv/unep-gpml/"))
+           (when (and (member vemv/project-root-dir '("/Users/vemv/mush-api"
+                                                      "/Users/vemv/mush-api/"))
                       (not (get-buffer "*cider-log*")))
              (require 'cider-log)
              (require 'logview)
-             (comm ;; This broke Mar 31 with CET->CEST
-              (setq datetime-locale "es-ES")
-              (setq logview-additional-level-mappings
-                    '(("vemv"    . ((error       "ERROR")
-                                    (warning     "WARN")
-                                    (information "INFO" "REPORT")
-                                    (debug       "DEBUG")
-                                    (trace       "TRACE")))))
-              (setq logview-additional-submodes
-                    '(("vemv" . ((format  . "TIMESTAMP LEVEL NAME -")
-                                 (levels  . "vemv")))))
-              (comm defun cider-log-event--format-logback (event)
-                    "Customizes the format"
-                    (nrepl-dbind-response event (_exception level logger message thread timestamp)
-                      (propertize (format "%s %s %s - %s\n"
-                                          (if (numberp timestamp)
-                                              (format-time-string "%T" (/ timestamp 1000))
-                                            (format "%s" timestamp))
-                                          ;; thread
-                                          (upcase level)
-                                          logger
-                                          (if (and (stringp message)
-                                                   (numberp cider-log-max-message-length))
-                                              (substring message 0 (min (length message) cider-log-max-message-length))
-                                            ""))
-                                  :cider-log-event event))))
-             (comm
-              (let ((default-directory vemv/project-clojure-dir))
-                (cider-log-show))))))
+             (let ((default-directory vemv/project-clojure-dir))
+               (cider-log-show)))
+
+           (comm
+            (when (and (member vemv/project-root-dir '("/Users/vemv/unep-gpml"
+                                                       "/Users/vemv/unep-gpml/"))
+                       (not (get-buffer "*cider-log*")))
+              (require 'cider-log)
+              (require 'logview)
+              (comm ;; This broke Mar 31 with CET->CEST
+               (setq datetime-locale "es-ES")
+               (setq logview-additional-level-mappings
+                     '(("vemv"    . ((error       "ERROR")
+                                     (warning     "WARN")
+                                     (information "INFO" "REPORT")
+                                     (debug       "DEBUG")
+                                     (trace       "TRACE")))))
+               (setq logview-additional-submodes
+                     '(("vemv" . ((format  . "TIMESTAMP LEVEL NAME -")
+                                  (levels  . "vemv")))))
+               (comm defun cider-log-event--format-logback (event)
+                     "Customizes the format"
+                     (nrepl-dbind-response event (_exception level logger message thread timestamp)
+                       (propertize (format "%s %s %s - %s\n"
+                                           (if (numberp timestamp)
+                                               (format-time-string "%T" (/ timestamp 1000))
+                                             (format "%s" timestamp))
+                                           ;; thread
+                                           (upcase level)
+                                           logger
+                                           (if (and (stringp message)
+                                                    (numberp cider-log-max-message-length))
+                                               (substring message 0 (min (length message) cider-log-max-message-length))
+                                             ""))
+                                   :cider-log-event event))))
+              (comm
+               (let ((default-directory vemv/project-clojure-dir))
+                 (cider-log-show)))))))
 
 (add-hook 'cider-repl-mode-hook #'paredit-mode)
 
@@ -681,6 +690,8 @@
             (lambda (f &rest args)
               (vemv/close-cider-error)
               (vemv/remove-log-files!)
+              (when-let* ((b (get-buffer "*cider-log*")))
+                (cider-log-clear-event-buffer b))
               (vemv/save)
               (let* ((v (cider-sync-tooling-eval "((clojure.core/resolve 'clojure.tools.namespace.repl/refresh))"))
                      (e (nrepl-dict-get v "err")))
@@ -806,31 +817,31 @@ START and END are buffer positions."
                (let ((extended-region (font-lock-default-fontify-region start end loudly)))
                  (when css-fontify-colors
                    (when (and (consp extended-region)
-		              (eq (car extended-region) 'jit-lock-bounds))
-	             (setq start (cadr extended-region))
-	             (setq end (cddr extended-region)))
+		                          (eq (car extended-region) 'jit-lock-bounds))
+	                   (setq start (cadr extended-region))
+	                   (setq end (cddr extended-region)))
                    (save-excursion
-	             (let ((case-fold-search t))
-	               (goto-char start)
-	               (while (re-search-forward css--colors-regexp end t)
-	                 ;; Skip comments and strings.
-	                 (unless (nth 8 (syntax-ppss))
-	                   (let* ((start (match-beginning 0))
+	                   (let ((case-fold-search t))
+	                     (goto-char start)
+	                     (while (re-search-forward css--colors-regexp end t)
+	                       ;; Skip comments and strings.
+	                       (unless (nth 8 (syntax-ppss))
+	                         (let* ((start (match-beginning 0))
                                   (color (css--compute-color start (match-string 0))))
-		             (when color
-		               (with-silent-modifications
-		                 ;; Use the color as the background, to make it more
-		                 ;; clear.  Use a contrasting color as the foreground,
-		                 ;; to make it readable.  Finally, have a small box
-		                 ;; using the existing foreground color, to make sure
-		                 ;; it stands out a bit from any other text; in
-		                 ;; particular this is nice when the color matches the
-		                 ;; buffer's background color.
-		                 (add-text-properties
-		                  start (point)
-		                  (list 'face (list :background color
-				                    :foreground (css--contrasty-color color)
-				                    :box '(:line-width -1 :color "#4D575F"))))))))))))
+		                         (when color
+		                           (with-silent-modifications
+		                             ;; Use the color as the background, to make it more
+		                             ;; clear.  Use a contrasting color as the foreground,
+		                             ;; to make it readable.  Finally, have a small box
+		                             ;; using the existing foreground color, to make sure
+		                             ;; it stands out a bit from any other text; in
+		                             ;; particular this is nice when the color matches the
+		                             ;; buffer's background color.
+		                             (add-text-properties
+		                              start (point)
+		                              (list 'face (list :background color
+				                                            :foreground (css--contrasty-color color)
+				                                            :box '(:line-width -1 :color "#4D575F"))))))))))))
                  extended-region))))
 
 (defun magit-diff (rev-or-range &optional args files)
