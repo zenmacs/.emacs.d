@@ -323,7 +323,11 @@ of the buffer into a formatted string."
 
 ;; Without this, performance can freeze (update: not so much given we now correctly use `pe/omit-gitignore')
 (setq pe/omit-regex (mapconcat 'identity
-                               (list "^#" "~$" "^node_modules$" "^tmp" ".git$" ".sass-cache" "^checkouts" ".elc$" "^backups"
+                               (list "^#" "~$" "^node_modules$"
+                                     "^tmp"
+                                     "^app" ;; greg
+                                     "^storage"
+                                     ".git$" ".sass-cache" "^checkouts" ".elc$" "^backups"
                                      ".next$"
                                      "^integration-testing$"
                                      "emacs-source"
