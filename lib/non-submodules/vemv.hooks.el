@@ -879,6 +879,7 @@ START and END are buffer positions."
 
 (add-hook 'typescript-mode-hook (argless
                                  (interactive)
+                                 (setq tide-completion-show-source t) ;; this merely shows the relative path in the Company widget - not the actual source code
                                  (tide-setup)
                                  (defvar wd-backend-tslint
                                    (let ((config-file "/Users/vemv/wd-backend/tslint.json"))
@@ -891,6 +892,7 @@ START and END are buffer positions."
                                  (setq flycheck-check-syntax-automatically '(save mode-enabled))
                                  (tide-hl-identifier-mode 1)
                                  (smartparens-mode)
+                                 (define-key typescript-mode-map (kbd "<backtab>") 'tide-documentation-at-point)
                                  (vemv/set-keys-for-scope typescript-mode-map vemv/ruby-key-bindings)
                                  (define-key typescript-mode-map [tab] 'vemv/tab)
                                  (define-key typescript-mode-map [menu-bar Tools] nil)

@@ -58,6 +58,7 @@
                      swift-mode
                      string-inflection
                      tide
+                     typescript-mode
                      yasnippet))
     (let ((refreshed nil))
       (unless (package-installed-p package)

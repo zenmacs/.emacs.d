@@ -245,6 +245,9 @@
 
 ;; other S-RET syntaxes don't work. TODO: abstract away this
 (global-set-key [(shift return)] (argless
+                                  (when-let* ((w (get-buffer-window "*tide-documentation*")))
+                                    (with-selected-window w
+                                      (vemv/close-this)))
                                   (if (vemv/in-a-clojure-mode?)
                                       (vemv/clear-cider-repl-buffer)
                                     (if (eq major-mode 'messages-buffer-mode)

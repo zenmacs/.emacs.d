@@ -32,7 +32,8 @@
                      ('emacs-lisp-mode :ielm)
                      ('inferior-emacs-lisp-mode :ielm)
                      ('sh-mode :shell)
-                     ('ruby-mode :ruby))
+                     ('ruby-mode :ruby)
+                     ('typescript-mode :typescript))
                    :shell))
         (content (or content
                      (if (region-active-p)
