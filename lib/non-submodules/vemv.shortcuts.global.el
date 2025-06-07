@@ -158,6 +158,8 @@
       vemv/shortcuts/global/secondary-7             'vemv/toggle-between-domain-and-web
       vemv/shortcuts/global/secondary-S-k           'vemv/kill-backward-copying-content
       vemv/shortcuts/global/secondary-a             'vemv/copy-sexpr-content-backward
+      vemv/shortcuts/global/primary-at              'vemv/copy-relative-path
+      vemv/shortcuts/global/secondary-at            'vemv/copy-relative-path-with-at-prefix
       vemv/shortcuts/global/secondary-backspace     (vemv/safe-paredit-command 'paredit-backward-kill-word)
       vemv/shortcuts/global/secondary-backtick      (argless
                                                      (if (equal major-mode 'cider-inspector-mode)

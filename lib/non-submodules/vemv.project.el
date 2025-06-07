@@ -275,9 +275,20 @@ At opening time, it was ensured that that project didn't belong to vemv/availabl
 (unless vemv/terminal-emacs?
   (vemv/refresh-current-project vemv/current-project))
 
+(defun vemv/copy-relative-path-impl ()
+  (file-relative-name (buffer-file-name) (locate-dominating-file default-directory ".git")))
+
 (defun vemv/copy-relative-path ()
   (interactive)
-  (simpleclip-set-contents (file-relative-name (buffer-file-name) (locate-dominating-file default-directory ".git"))))
+  (let* ((s (vemv/copy-relative-path-impl)))
+    (simpleclip-set-contents s)
+    (vemv/echo (concat "Copied: " s))))
+
+(defun vemv/copy-relative-path-with-at-prefix ()
+  (interactive)
+  (let* ((s (concat "@" (vemv/copy-relative-path-impl) " ")))
+    (simpleclip-set-contents s)
+    (vemv/echo (concat "Copied: " s))))
 
 ;; inspired by cljr--find-source-ns-of-test-ns
 (defun vemv/find-test-namespaces-of-source-ns (ns file)
