@@ -2,6 +2,7 @@
 (require 'vemv.clojure-interaction)
 (require 'vemv.project-interaction)
 (require 'vemv.open)
+(require 'vemv.pe)
 (unless vemv/terminal-emacs?
   (require 'cider)) ;; Ideally would not be there as it slightly slows down things.
 (provide 'vemv.project)

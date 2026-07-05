@@ -222,6 +222,28 @@
       vemv/shortcuts/global/tertiary-a              'vemv/copy-inserting-at-kill-list
       vemv/shortcuts/global/tertiary-backtick       'vemv/jump-to-clojure-definition
       vemv/shortcuts/global/tertiary-bar            (vemv/safe-paredit-command 'paredit-split-sexp)
+      vemv/shortcuts/global/primary-comma           (argless
+                                                     (require 'claude-code)
+                                                     (defun diego--vterm-font-setup ()
+                                                       "Configure font settings specifically for vterm buffers, workaround claude-code."
+
+                                                       ;; Apply ASCII replacements for vterm specifically
+                                                       (let ((tbl (or buffer-display-table (setq buffer-display-table (make-display-table)))))
+                                                         (dolist (pair
+                                                                  '((#x273B . ?*) ; ✻ TEARDROP-SPOKED ASTERISK
+                                                                    (#x273D . ?*) ; ✽ HEAVY TEARDROP-SPOKED ASTERISK
+                                                                    (#x2722 . ?*) ; ✢ FOUR TEARDROP-SPOKED ASTERISK
+                                                                    (#x2736 . ?*) ; ✶ SIX-POINTED BLACK STAR
+                                                                    (#x2733 . ?*) ; ✳ EIGHT SPOKED ASTERISK
+                                                                    (#x23FA . ?*) ; ⏺ (RECORD BUTTON
+                                                                    ))
+                                                           (aset tbl (car pair) (vector (cdr pair))))))
+
+                                                     (add-hook 'vterm-mode-hook #'diego--vterm-font-setup)
+                                                     (vemv/toggle-claude-frame))
+      vemv/shortcuts/global/tertiary-c              (argless
+                                                     (require 'claude-code)
+                                                     (call-interactively 'claude-code-transient))
       vemv/shortcuts/global/tertiary-down           'end-of-defun
       vemv/shortcuts/global/tertiary-e              (argless (vemv/send nil nil nil :no-return))
       vemv/shortcuts/global/tertiary-equal          'cider-load-buffer

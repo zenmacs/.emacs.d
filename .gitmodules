@@ -55,3 +55,6 @@
 [submodule "lib/smartparens"]
 	path = lib/smartparens
 	url = git@github.com:Fuco1/smartparens.git
+[submodule "lib/claude-code"]
+	path = lib/claude-code
+	url = git@github.com:vemv/claude-code.git

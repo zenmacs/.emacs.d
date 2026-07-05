@@ -705,6 +705,8 @@
                     (vemv/echo e)
                   (apply 'vemv/apply-tests-verbosely f args)))))
 
+(setq vemv/claude-initialized nil)
+
 (advice-add 'cider-test-run-ns-tests :around 'vemv/apply-tests-verbosely)
 (advice-add 'cider-test-run-project-tests :around 'vemv/apply-tests-verbosely)
 (advice-add 'cider-test-rerun-failed-tests :around 'vemv/apply-tests-verbosely)

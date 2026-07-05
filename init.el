@@ -103,11 +103,12 @@
     (setq vemv/main_frame (selected-frame))
 
     (defvar vemv/inspector_frame nil)
-
+    (defvar vemv/claude_frame nil)
     (defvar vemv/magit_frame nil)
-
     (defun vemv/good-frame-p ()
-      (member (selected-frame) (list vemv/main_frame vemv/inspector_frame) ))
+      (member (selected-frame) (list vemv/main_frame
+                                     vemv/inspector_frame
+                                     vemv/claude_frame)))
 
     (unless vemv/terminal-emacs?
       (setq frame-title-format

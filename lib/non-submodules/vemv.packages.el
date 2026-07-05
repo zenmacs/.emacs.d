@@ -61,7 +61,8 @@
                      string-inflection
                      tide
                      typescript-mode
-                     yasnippet))
+                     yasnippet
+                     vterm))
     (let ((refreshed nil))
       (unless (package-installed-p package)
         (vemv/verbosely
@@ -120,6 +121,43 @@
 
 (when (member window-system '(mac ns x))
   (exec-path-from-shell-initialize))
+
+(defun vemv/parse-export-from-file (file-path var-name)
+  "Parse an export statement from FILE-PATH and return its value.
+Looks for lines like 'export VAR_NAME=\"value\"' or 'export VAR_NAME=value'."
+  (when (file-exists-p file-path)
+    (with-temp-buffer
+      (insert-file-contents file-path)
+      (goto-char (point-min))
+      (when (re-search-forward (concat "^export " var-name "=\\(.+\\)$") nil t)
+        (let ((value (match-string 1)))
+          ;; Remove surrounding quotes if present
+          (when (string-match "^[\"']\\(.*\\)[\"']$" value)
+            (setq value (match-string 1 value)))
+          value)))))
+
+(comm ;; using mfa now
+ (when-let* ((v (vemv/parse-export-from-file
+                 (concat vemv-home "/.macos/exports.sh")
+                 "AWS_BEARER_TOKEN_BEDROCK")))
+   (setenv "AWS_BEARER_TOKEN_BEDROCK" v)))
+
+(setenv "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING" "1")
+(setenv "CLAUDE_CODE_DISABLE_AUTO_MEMORY" "1")
+(setenv "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY" "1")
+(setenv "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC" "1")
+(setenv "CLAUDE_CODE_DISABLE_TERMINAL_TITLE" "1")
+(setenv "CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION" "false") ;; I normally like this on iTerm, in Emacs is rendered too boldly
+(setenv "DISABLE_AUTOUPDATER" "1")
+(setenv "IS_DEMO" "1")
+
+(comm ;; disabled for now. this would better be a hook, so that we can dispatch on cwd
+ (when-let* ((v (vemv/parse-export-from-file
+                 (concat vemv-home "/.macos/exports.sh")
+                 "AWS_REGION")))
+   (setenv "AWS_REGION" v))
+ (setenv "CLAUDE_CODE_USE_BEDROCK" "1")
+ (setenv "ANTHROPIC_MODEL" "arn:aws:bedrock:eu-west-1:663844207162:inference-profile/eu.anthropic.claude-sonnet-4-5-20250929-v1:0"))
 
 (unless vemv/terminal-emacs?
   (require 'saveplace))

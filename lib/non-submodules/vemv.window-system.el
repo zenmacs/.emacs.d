@@ -78,6 +78,7 @@
                "project-explorer"
                "shell-1"
                "ielm"
+               "claude:"
                "cider-repl"
                "cider-log"
                "cider-test-report"

@@ -213,6 +213,14 @@
     (select-frame-set-input-focus vemv/inspector_frame)
     v))
 
+(defun vemv/assign-claude-window (buffer)
+  (let ((v (set-window-buffer (frame-first-window vemv/claude_frame)
+                              buffer)))
+    (select-frame-set-input-focus vemv/claude_frame)
+    v))
+
+;; XXX claude window
+
 (defun vemv/repl-completion (buffer)
   (vemv/safe-select-window vemv/repl-window)
   (set-window-buffer vemv/repl-window buffer))

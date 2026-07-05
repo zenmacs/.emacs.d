@@ -138,6 +138,10 @@
     (insert content)
     (vemv/maybe-indent-on-paste content)))
 
+(defun vemv/vterm-paste-from-clipboard ()
+  (interactive)
+  (vterm-insert (substring-no-properties (simpleclip-get-contents))))
+
 (defun vemv/paste-from-kill-list ()
   (interactive)
   (vemv/before-paste)

@@ -48,6 +48,8 @@
     (add-to-list 'special-display-buffer-names '("*cider-inspect*" vemv/assign-inspector-window))
   (add-to-list 'special-display-buffer-names '("*cider-inspect*" vemv/assign-largest-unselected-window)))
 
+(add-to-list 'special-display-buffer-names '("\\*claude.*" vemv/assign-claude-window))
+
 (add-to-list 'special-display-buffer-names '("*cider-test-report*" vemv.completions/split-window-vertically-small))
 (add-to-list 'special-display-buffer-names '("*cider-log*" vemv.completions/split-window-vertically-small)) ;; TODO smallest
 (add-to-list 'special-display-buffer-names '("*cider-error*" vemv.completions/split-window-vertically-small))
@@ -327,6 +329,14 @@ of the buffer into a formatted string."
                 "*.zip" "*.csv" "*.json" "*.class"  ;; codescene
                 ))))
 
+(setq claude-code-terminal-backend 'vterm)
+(setq claude-code-program (let ((path "/Users/vemv/.nvm/versions/node/v23.11.0/bin/claude"))
+                            (or (when (file-exists-p path)
+                                  path)
+                                (let ((path "/Users/vemv/.local/bin/claude"))
+                                  (when (file-exists-p path)
+                                    path)))))
+
 (require 'vemv.pe)
 
 ;; Taken from ruby-mode
@@ -389,3 +399,7 @@ of the buffer into a formatted string."
                                                     "ack-return>"
                                                     "default>"
                                                     "<<shadowif"))))
+
+;; For https://github.com/stevemolitor/claude-code.el/blob/0197f15d592befd7d2550bb3376e983af412ba90/claude-code.el#L892 compat
+(defun project-root (&rest _)
+  vemv/project-root-dir)
