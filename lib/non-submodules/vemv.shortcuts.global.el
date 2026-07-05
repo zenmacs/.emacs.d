@@ -2,6 +2,14 @@
 (require 'vemv.shortcuts.global.base)
 (provide 'vemv.shortcuts.global)
 
+(defun vemv/primary-slash ()
+  (interactive)
+  (when (and vemv/inspector_frame
+             (frame-live-p vemv/inspector_frame))
+    (if (eq (selected-frame) vemv/inspector_frame)
+        (select-frame-set-input-focus (window-frame vemv/main_window))
+      (select-frame-set-input-focus vemv/inspector_frame))))
+
 (setq vemv/shortcuts/global/backspace               'vemv/backspace
       vemv/shortcuts/global/down                    'next-line
       vemv/shortcuts/global/end                     'vemv/end-of-line-or-code
@@ -122,6 +130,7 @@
                                                                (inf-ruby-console-auto))))))
       vemv/shortcuts/global/primary-k               'vemv/kill
       vemv/shortcuts/global/primary-left            (vemv/safe-paredit-command 'paredit-forward-barf-sexp)
+      vemv/shortcuts/global/primary-slash           'vemv/primary-slash
       vemv/shortcuts/global/primary-n               'vemv/new-frame
       vemv/shortcuts/global/primary-o               'vemv/open-at-pwd
       vemv/shortcuts/global/primary-p               'vemv/repeat-last-search-in-this-buffer
@@ -223,6 +232,15 @@
                                                      (vemv/with-helm-follow nil
                                                        (call-interactively 'helm-do-ag-this-file)))
       vemv/shortcuts/global/tertiary-home           'beginning-of-buffer
+      vemv/shortcuts/global/tertiary-i              (argless
+                                                     (if (eq (selected-frame) vemv/inspector_frame)
+                                                         (vemv/primary-slash) ;; switch to main window
+                                                       (vemv/inspect-tap)))
+      vemv/shortcuts/global/tertiary-l              (argless
+                                                     (vemv/clear-tap)
+                                                     (if (eq (selected-frame) vemv/inspector_frame)
+                                                         (vemv/primary-slash) ;; switch to main window
+                                                       (vemv/echo "Tap cleared.")))
       vemv/shortcuts/global/tertiary-j              (argless
                                                      (if (vemv/in-a-clojure-mode?)
                                                          (cider-eval-sexp-at-point)

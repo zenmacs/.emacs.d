@@ -264,6 +264,7 @@
  ;; '(cider-default-cljs-repl 'figwheel)
  '(cider-repl-auto-detect-type nil) ;; prevents repl buffers from magically changing from cljs type to clj type, which doesn't makessense for shadow-cljs repl buffers (they're always cljs)
  '(cider-repl-display-help-banner nil)
+ '(cider-repl-init-code '("(require 'vemv 'vemv.tap 'vemv.resources 'vemv.usages 'vemv.emacs-backend)")) ;; (clojure.tools.namespace.repl/refresh)
  '(cider-font-lock-dynamically '(macro
                                  deprecated
                                  custom-1
