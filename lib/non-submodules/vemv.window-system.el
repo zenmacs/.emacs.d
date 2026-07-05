@@ -188,9 +188,12 @@
   (toggle-frame-maximized))
 
 (defun vemv/switch-to-buffer-in-any-frame (buffer-name)
-  (if (seq-contains (vemv/current-frame-buffers) buffer-name)
-      (switch-to-buffer buffer-name)
-    (switch-to-buffer-other-frame buffer-name)))
+  (let ((buffer-name-str (if (bufferp buffer-name)
+                             (buffer-name buffer-name)
+                           buffer-name)))
+    (if (seq-contains (vemv/current-frame-buffers) buffer-name-str)
+        (switch-to-buffer buffer-name)
+      (switch-to-buffer-other-frame buffer-name))))
 
 (defun vemv/safe-select-window (w)
   (unless (minibuffer-prompt)
