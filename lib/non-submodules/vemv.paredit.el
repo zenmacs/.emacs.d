@@ -23,7 +23,9 @@
                  ;; for `indent-for-tab-command`:
                  (last-command nil)
                  (dc (string-equal "dc" (car vemv/current-workspace)))
-                 (clash? (or (s-contains? "/monorail" default-directory)))
+                 (skip-formatting? (or (s-contains? "codescene" default-directory)
+                                       (s-contains? "collage" default-directory)
+                                       (s-contains? "/ace" default-directory)))
                  (yas (vemv/contains? (buffer-file-name) "/snippets/")))
             (unless (or vemv.project/skip-formatting
                         skip-formatting
@@ -31,11 +33,11 @@
                         (member major-mode `(fundamental-mode ruby-mode)))
               (unless dc
                 (delete-trailing-whitespace))
-              (unless (or clash?
+              (unless (or skip-formatting?
                           (member major-mode `(conf-colon-mode sql-mode makefile-automake-mode makefile-bsdmake-mode)))
                 (call-interactively 'mark-whole-buffer)
                 (call-interactively 'indent-for-tab-command))
-              (when (and clash?
+              (when (and skip-formatting?
                          (vemv/in-a-clojure-mode?))
                 (save-excursion
                   (beginning-of-defun)
@@ -402,6 +404,7 @@ inserting it at a new line."
                                        (recur (inc result))))))))
 
 (defun vemv/copy-selection-or-next-sexpr ()
+  (interactive)
   (let ((content (if (region-active-p)
                      (vemv/selected-region)
                    (vemv/sexpr-content))))
