@@ -33,6 +33,7 @@
                      ('inferior-emacs-lisp-mode :ielm)
                      ('sh-mode :shell)
                      ('ruby-mode :ruby)
+                     ('kotlin-mode :kotlin)
                      ('typescript-mode :typescript))
                    :shell))
         (content (or content

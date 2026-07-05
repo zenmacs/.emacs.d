@@ -44,6 +44,7 @@
                      inflections
                      logview
                      magit
+                     kotlin-mode
                      multiple-cursors
                      paren-face
                      parseedn
