@@ -260,7 +260,7 @@
                                     ;; the default:
                                     1000000))
  `(cider-use-tooltips ,vemv/use-eldoc-and-tooltips)
- '(cider-enrich-classpath t)
+ ;; '(cider-enrich-classpath t)
  '(cider-clojure-cli-aliases ":dev:test")
  '(cider-preferred-build-tool "lein")
  ;; '(cider-default-cljs-repl 'figwheel)
