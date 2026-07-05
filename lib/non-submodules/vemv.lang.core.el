@@ -186,10 +186,9 @@
     (set-window-buffer window buffer)))
 
 ;; display-buffer-use-some-window
+;; Used for Magit only currently
 (defun vemv/ensure-other-frame (buffer _alist)
-  (let* ((in-main-frame? (equal vemv/main_frame
-                                (window-frame (get-buffer-window (current-buffer)))))
-         (frame (if in-main-frame?
+  (let* ((frame (if (vemv/good-frame-p)
                     (vemv/new-frame :no-show :no-margin)
                   (selected-frame)))
          (window (frame-selected-window frame)))
