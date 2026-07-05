@@ -258,9 +258,14 @@
                                       (let* ((l? (vemv/in-a-lisp-mode?))
                                              (r? (and (not l?)
                                                       (member major-mode '(ruby-mode inf-ruby-mode))
-                                                      (get-buffer "*rails*"))))
+                                                      ;; (get-buffer "*rails*") probably unnecessary
+                                                      )))
                                         (when r?
                                           (when-let* ((w (get-buffer-window "*rspec-compilation*")))
+                                            (with-selected-window w
+                                              (vemv/close-this)))
+                                          (when-let* ((buf (seq-find (lambda (b) (string-prefix-p "*Minitest" (buffer-name b))) (buffer-list)))
+                                                      (w (get-buffer-window buf)))
                                             (with-selected-window w
                                               (vemv/close-this))))
                                         (with-selected-window vemv/repl-window

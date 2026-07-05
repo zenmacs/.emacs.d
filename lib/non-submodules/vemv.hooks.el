@@ -334,10 +334,10 @@
                                    (define-key inf-ruby-mode-map [menu-bar Inf-Ruby] nil)
                                    (define-key inf-ruby-minor-mode-map [menu-bar Inf-Ruby] nil)))
 
-(add-hook 'inf-ruby-mode-hook (argless
-                               (setq inf-ruby-prompt-format "^pry>")
-                               (setq inf-ruby-first-prompt-pattern inf-ruby-prompt-format)
-                               (setq inf-ruby-prompt-pattern inf-ruby-prompt-format)))
+(comm add-hook 'inf-ruby-mode-hook (argless
+                                    (setq inf-ruby-prompt-format "^pry>")
+                                    (setq inf-ruby-first-prompt-pattern inf-ruby-prompt-format)
+                                    (setq inf-ruby-prompt-pattern inf-ruby-prompt-format)))
 
 (add-hook 'cider-inspector-mode-hook (argless
                                       (define-key cider-inspector-mode-map "b" #'cider-inspector-pop)
@@ -362,7 +362,10 @@
           ;; we wait for `pry` to show up over a `rails c` session.
           ;; this indicates that we're ready to robe.
           ;; note that IDK how to make `pry` show up on `.bin/console`, so this won't work on gem development.
-          (if (search-forward vemv/pry-prompt nil t)
+          (if (search-forward
+               ">"
+               ;; vemv/pry-prompt
+               nil t)
               (progn
                 (robe-start)
                 (setq vemv-robe-connecting nil)
