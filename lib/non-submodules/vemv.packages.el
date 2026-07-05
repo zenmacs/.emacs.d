@@ -54,6 +54,7 @@
                      rubocop
                      ruby-end
                      simpleclip
+                     slim-mode
                      smartparens
                      swift-mode
                      string-inflection
@@ -150,6 +151,9 @@
 
 (autoload 'haml-mode "haml-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.haml$" . haml-mode))
+
+(autoload 'slim-mode "slim-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.slim$" . slim-mode))
 
 (autoload 'js "js-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.js$" . js-mode))
