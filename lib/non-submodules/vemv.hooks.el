@@ -536,6 +536,7 @@
            (define-key clojurescript-mode-map (kbd "/") 'cljr-slash)
 
            (require 'cider-inspector)
+           (require 'cider-ns)
            (require 'cider-apropos)
            (let* ((frame (vemv/new-frame t t))
                   (window (frame-selected-window frame)))
@@ -553,6 +554,8 @@
              (require 'logview)
              (let ((default-directory vemv/project-clojure-dir))
                (cider-log-show)))
+
+           (cider-ns-refresh 'inhibit-fns)
 
            (comm
             (when (and (member vemv/project-root-dir '("/Users/vemv/unep-gpml"
