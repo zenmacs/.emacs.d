@@ -780,11 +780,16 @@
       (if (vemv/in-a-git-repo? vemv/project-fiplr-dir)
           (concat
            "cd " vemv/project-fiplr-dir "; "
-           "comm -23 <(sort <(git ls-files --exclude-standard | while read line; do echo \"$PWD/$line\"; done) "
-           "                <(cd $(git rev-parse --show-toplevel); git status --porcelain | grep -v \"^ D\" | sed s/^...// | while read line; do echo \"$PWD/$line\"; done) "
+           "comm -23 <(sort <(git ls-files --exclude-standard -- "
+           vemv/project-fiplr-dir ;; in case the vemv/project-fiplr-dir is a sub-dir of a larger repo, to be ignored
+           " | while read line; do echo \"$PWD/$line\"; done) "
+           "                <(cd $(git rev-parse --show-toplevel); git status --porcelain "
+           vemv/project-fiplr-dir ;; in case the vemv/project-fiplr-dir is a sub-dir of a larger repo, to be ignored
+           " | grep -v \"^ D\" | sed s/^...// | while read line; do echo \"$PWD/$line\"; done) "
            "                 | uniq | sort) "
            "         <(git ls-files --deleted | while read line; do echo \"$PWD/$line\"; done | sort) "
            "| ruby -e 'puts STDIN.read.split(\"\\n\").sort_by{|line| -(%w("
+           ;; sort criteria:
            (if (eq vemv/project-type :ruby)
                "app/controllers spec"
              (if (eq vemv/project-type :elisp)
@@ -947,3 +952,33 @@ START and END are buffer positions."
 (with-eval-after-load 'magit-mode
   (add-hook 'after-save-hook 'magit-after-save-refresh-status t)
   (advice-add 'vemv/git-add-A :after 'magit-after-save-refresh-status))
+
+;; adds the ability to honor fiplr-ignored-globs again - they used to get ignored due to our custom `fiplr-list-files-shell-command`.
+(advice-add 'fiplr-list-files :around
+            (lambda (f type path ignored-globs)
+              (let* ((result (funcall f type path ignored-globs))
+                     (ignored-dirs (cadr (assoc 'directories ignored-globs)))
+                     (ignored-files (cadr (assoc 'files ignored-globs)))
+                     (regexp-cache (make-hash-table :test 'equal))
+                     (get-regexp (lambda (pattern)
+                                   (or (gethash pattern regexp-cache)
+                                       (puthash pattern (wildcard-to-regexp pattern) regexp-cache)))))
+                (seq-remove (lambda (item)
+                              (or
+                               (and ignored-dirs
+                                    (let* ((dir-part (file-name-directory item))
+                                           (dir-name (when dir-part (directory-file-name dir-part))))
+                                      (when (and dir-part dir-name)
+                                        (seq-some (lambda (pattern)
+                                                    (string-match-p (funcall get-regexp pattern)
+                                                                    dir-name))
+                                                  ignored-dirs))))
+                               (and ignored-files
+                                    (let ((file-name (file-name-nondirectory item)))
+                                      (when (and (not (string-empty-p file-name))
+                                                 (not (string-suffix-p "/" file-name)))
+                                        (seq-some (lambda (pattern)
+                                                    (string-match-p (funcall get-regexp pattern)
+                                                                    file-name))
+                                                  ignored-files))))))
+                            result))))

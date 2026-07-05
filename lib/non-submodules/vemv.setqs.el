@@ -316,6 +316,7 @@ of the buffer into a formatted string."
 
 ;; set something brief, since we already are applying .gitignore.
 ;; note that fiplr would break with a nil value.
+;; these work thanks to `advice-add 'fiplr-list-files :around`, else they would get ignored due to our custom `fiplr-list-files-shell-command`.
 (setq fiplr-ignored-globs
       ;; `directories` entries must be single-segment, i.e `a/b` doesn't work.
       '((directories (".git" ".next" "tmp" ".svn" ".hg" ".bzr" ".lumo-cache" "pom.xml" "semantic"
