@@ -44,6 +44,7 @@
                      inflections
                      logview
                      magit
+                     minitest
                      kotlin-mode
                      multiple-cursors
                      paren-face
