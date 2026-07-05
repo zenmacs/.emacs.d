@@ -6,6 +6,7 @@
 
 (defun vemv/initial-layout (done-fn)
 
+  (require 'vemv.pe)
   (require 'vemv.project-explorer)
 
   (when (window-system)
@@ -19,6 +20,7 @@
   (let* ((default-directory vemv/project-root-dir)
          (pe/project-root default-directory))
     (vemv/safely-open-pe-window)
+    (setq pe/omit-regex (vemv/pe-omit-regex vemv/project-root-dir))
     (project-explorer-open
      (argless
       (setq pe/project-root default-directory)

@@ -103,6 +103,7 @@
   (with-selected-window vemv/project-explorer-window
     (with-current-buffer (window-buffer vemv/project-explorer-window)
       (setq vemv/project-explorer-initialized nil)
+      (setq pe/omit-regex (vemv/pe-omit-regex (funcall pe/project-root-function)))
       (project-explorer-open
        (argless
         (setq pe/project-root (funcall pe/project-root-function))

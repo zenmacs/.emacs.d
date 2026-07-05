@@ -318,35 +318,14 @@ of the buffer into a formatted string."
 (setq fiplr-ignored-globs
       ;; `directories` entries must be single-segment, i.e `a/b` doesn't work.
       '((directories (".git" ".next" "tmp" ".svn" ".hg" ".bzr" ".lumo-cache" "pom.xml" "semantic"
-                      "node_modules" "coverage" "target" ".cljs_rhino_repl"))
-        (files (".#*" "*~" "*.DS_Store"))))
+                      "node_modules" "coverage" "target" ".cljs_rhino_repl"
+                      "test" ;; codescene (analytics repo)
+                      ))
+        (files (".#*" "*~" "*.DS_Store"
+                "*.zip" "*.csv" "*.json" "*.class"  ;; codescene
+                ))))
 
-;; Without this, performance can freeze (update: not so much given we now correctly use `pe/omit-gitignore')
-(setq pe/omit-regex (mapconcat 'identity
-                               (list "^#" "~$" "^node_modules$"
-                                     "^tmp"
-                                     "^app" ;; greg
-                                     "^storage"
-                                     ".git$" ".sass-cache" "^checkouts" ".elc$" "^backups"
-                                     ".next$"
-                                     "^integration-testing$"
-                                     "emacs-source"
-                                     "^.make"
-                                     "test-runner"
-                                     "^.java"
-                                     "^unzipped-jdk-source$"
-                                     "pom.xml" "^semantic"
-                                     "classes" "^.cpcache"
-                                     "crux" ".idea" ".shadow-cljs"
-                                     "package-lock.json"
-                                     "core.async"
-                                     ".rebel_readline_history"
-                                     ".lumo-cache" "^target" "auto-save-list" "project-explorer-cache"
-                                     "^public$" ;; XXX ideally, only do this if the project type is ruby
-                                     ".nrepl-port"
-                                     "^dist" "^generated" ".ok$" ".DS_Store" ".lein-*" ".nrepl-* " ".eastwood" ".cljs_rhino_repl"
-                                     "^.clj-kondo" "^coverage" "\.*.log$")
-                               "\\|"))
+(require 'vemv.pe)
 
 ;; Taken from ruby-mode
 (setq vemv/ruby-keywords '("alias"
